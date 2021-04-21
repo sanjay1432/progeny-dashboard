@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+.cache
+package-lock.json
+/src/service-worker.js
+/src/serviceWorkerRegistration.js
+OPEX.postman_collection.json
+/server/
+/.github

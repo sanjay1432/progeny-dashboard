@@ -1,0 +1,38 @@
+.rs-modal {
+  .rs-modal-content {
+    .rs-modal-body {
+      .filter {
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+      .__new-row {
+        display: flex;
+        &.center {
+          align-items: center;
+        }
+        margin-bottom: 0.75rem;
+        &._header {
+          align-items: unset;
+        }
+        .__new-col {
+          width: 160px;
+          font-size: 1rem;
+          color: $body-color;
+          margin-right: 1.25rem;
+          &:first-child {
+            width: 140px;
+          }
+          &.md {
+            flex: 1;
+          }
+        }
+        h2 {
+          font-weight: 600;
+          font-size: 1rem;
+          color: $body-color;
+        }
+      }
+    }
+  }
+}

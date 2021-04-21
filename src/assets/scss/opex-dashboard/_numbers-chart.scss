@@ -1,0 +1,103 @@
+.numbers_chart {
+  padding-bottom: 1.875rem !important;
+  .process-line-chart__header {
+    margin-bottom: 1.25rem;
+  }
+  .__numbers_left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .__numbers {
+      display: flex;
+      flex-wrap: wrap;
+      flex: 1;
+      .__number {
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #e6ebfe;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        border: 1px solid #cfd8fb;
+        padding: 1.25rem;
+        min-width: 160px;
+        border-radius: 8px;
+        margin-right: 1.25rem;
+        margin-bottom: 1.25rem;
+        &:hover {
+          cursor: pointer;
+        }
+        h2 {
+          color: $body-color-dark;
+          font-size: 1.125rem;
+          margin-bottom: 1rem;
+        }
+        h1 {
+          font-size: 2rem;
+          color: #d94745;
+          font-weight: 600;
+          display: flex;
+          align-content: flex-start;
+          line-height: 1;
+          i {
+            font-size: 0.875rem;
+            margin-left: 0.625rem;
+          }
+        }
+        h3 {
+          font-size: 1rem;
+        }
+        h1,
+        h2,
+        h3 {
+          &.green {
+            color: $body-color-dark;
+            i {
+              color: #40ce1e;
+            }
+          }
+          &.red {
+            color: #d94745;
+          }
+        }
+      }
+      &.__table {
+        flex-direction: column;
+        border: 0.4px solid #c9c9c9;
+        margin-right: 15px;
+        .__number {
+          border: none;
+          box-shadow: none;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin: 0;
+          border-radius: 0;
+          padding: 0.5rem;
+          h1,
+          h2,
+          h3 {
+            font-size: 1rem;
+            align-content: center;
+            margin: 0;
+            line-height: 1.5;
+            align-items: center;
+            flex: 1;
+          }
+          &:nth-child(even) {
+            background-color: #f7f9ff;
+          }
+        }
+      }
+    }
+  }
+}
+.btn-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 !important;
+  border-radius: 50%;
+  margin: 0;
+  margin-right: -15px;
+  font-size: 1.25rem;
+}

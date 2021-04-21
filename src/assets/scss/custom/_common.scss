@@ -1,0 +1,529 @@
+.main-section {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.info_box {
+  i {
+    color: $body-color-dark;
+  }
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0px;
+  strong {
+    color: $body-color-dark;
+    font-weight: bold;
+  }
+  margin-bottom: 2rem;
+}
+
+.opex_card {
+  padding: 1.25rem;
+  border-radius: 8px;
+  height: 100%;
+  h2 {
+    font-size: 0.875rem;
+    color: $color-heading;
+    font-weight: 600;
+  }
+  &.mt {
+    margin-top: 1rem;
+  }
+  &.dark {
+    background-color: #fbfbfb;
+    border: 1px solid #f4f5f8;
+    box-shadow: 0px 2px 6px #0000000a;
+  }
+  &.light {
+    background-color: #ffffff;
+    box-shadow: 0px 2px 15px #0000001f;
+  }
+  .opex_chart {
+    &.gauge {
+      display: block;
+    }
+    h2 {
+      text-align: center;
+      color: $color-heading;
+      small {
+        color: $body-color;
+      }
+    }
+    .__chart-container {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      flex: 1;
+      margin: 0 auto;
+      flex-direction: column;
+      p {
+        margin: 0;
+      }
+      .__numbers-min-max {
+        margin-top: -115px;
+        p {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #43425d;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+    }
+  }
+}
+
+.number-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  h2 {
+    margin: 0;
+  }
+  ._center {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    h1 {
+      font-size: 42px;
+      color: $primary;
+      font-weight: 600;
+      text-align: center;
+      margin: 0;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      margin: 0;
+      &.__down {
+        color: $red;
+      }
+      &.__up {
+        color: #40ce1e;
+      }
+    }
+  }
+}
+
+//Loading
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.multi-ripple {
+  width: 2.6rem;
+  height: 2.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  div {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 0.3rem solid $primary;
+    animation: 1.5s ripple infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+  }
+}
+
+.date-picker {
+  .input-group .input-group-prepend .input-group-text {
+    border-right: 1px solid $input-border-color;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+}
+
+//Product squared boxes
+.product_square_boxes {
+  display: flex;
+  flex-wrap: wrap;
+  .__item {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 0.8125rem;
+    .__box {
+      display: block;
+      background-color: $white;
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
+      margin-right: 5px;
+      &.__max {
+        background-color: #3979ef;
+      }
+      &.__min {
+        background-color: #ff8373;
+      }
+    }
+  }
+}
+
+//Select box
+.opex-select {
+  min-width: 170px;
+  .opex-select__control {
+    min-height: 30px;
+    .opex-select__single-value {
+      font-size: 0.75rem;
+    }
+    .opex-select__indicator {
+      padding: 0;
+    }
+  }
+  .opex-select__menu {
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+}
+
+//radio button
+.opex-radio {
+  display: flex;
+  align-items: center;
+  padding-left: 0 !important;
+  margin-right: 1.5rem;
+  .custom-control-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    &::before {
+      border-radius: 8px;
+      width: 20px;
+      height: 10px;
+      display: block;
+      position: relative;
+      left: 0;
+      top: 0;
+    }
+    span {
+      display: block;
+      left: 0;
+      top: 0;
+      font-size: 0.75rem;
+      margin-left: 9px;
+    }
+    &:after {
+      background-image: none;
+      display: none;
+    }
+  }
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: $primary;
+    border-color: $primary;
+  }
+}
+
+.opex-table {
+  table {
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    color: #43425d;
+    th {
+      border-top: 0;
+      border-bottom: 0;
+      background-color: #f5f6fa;
+      color: #43425d;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: $font-family-base;
+      padding: 0.5rem;
+    }
+    tr:nth-of-type(odd) {
+      background-color: #fff;
+    }
+    tr:nth-of-type(even) {
+      background-color: #f5f6fa;
+    }
+    td {
+      border-bottom: 0;
+      padding: 0.5rem;
+      color: #43425d;
+      font-size: 0.875rem;
+      font-weight: 300;
+      font-family: $font-family-base;
+    }
+  }
+  .MuiPagination-root {
+    margin-top: 0.5rem;
+    .MuiPagination-ul {
+      justify-content: flex-end;
+      li {
+        button {
+          margin: 0;
+          border-radius: 0;
+          &.MuiPaginationItem-textPrimary.Mui-selected {
+            background-color: $primary;
+          }
+          &:focus {
+            outline-color: transparent;
+          }
+        }
+        &:first-child {
+          button {
+            border-top-left-radius: 0.2rem;
+            border-bottom-left-radius: 0.2rem;
+          }
+        }
+        &:last-child {
+          button {
+            border-top-right-radius: 0.2rem;
+            border-bottom-right-radius: 0.2rem;
+          }
+        }
+      }
+    }
+  }
+}
+.btn-sm {
+  padding: 0.5rem 1.25rem;
+  text-transform: none;
+}
+
+.btn-rounded {
+  &.btn-sm {
+    border-radius: 1.25rem;
+    padding: 0.5rem 2rem;
+    text-transform: none;
+  }
+  &.pd-big {
+    padding: 0.5rem 2.5rem;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.sign-down,
+.sign-red {
+  color: $red;
+}
+.sign-up,
+.sign-green {
+  color: #40ce1e;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.main-tabs-content {
+  height: calc(100vh - 126px);
+  overflow: hidden;
+  border-radius: 0 8px 8px 8px;
+  border-width: 0;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
+    rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+  > .card-body {
+    padding: 0;
+    .tab-content {
+      padding: 0.5rem;
+      .opex-panel-content {
+        > .__header {
+          padding: 1rem;
+          padding-top: 0.5rem;
+          .__header_top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 0.8px;
+            margin-bottom: 24px;
+          }
+          p {
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 24px;
+            letter-spacing: 0.8px;
+          }
+        }
+        .__content-tab {
+          display: flex;
+          height: calc(100vh - 226px);
+          .__row {
+            margin-top: 1rem;
+            &:first-child {
+              margin-top: 0;
+            }
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.rs-tooltip {
+  &.in {
+    opacity: 1 !important;
+    -webkit-transition: opacity 0.15s linear, -webkit-transform 0.15s ease-in !important;
+    transition: opacity 0.15s linear, transform 0.15s ease-in,
+      -webkit-transform 0.15s ease-in !important;
+  }
+  .rs-tooltip-inner {
+    background-color: #1b1f25;
+    color: #f4f4f4;
+  }
+  ul {
+    list-style-type: none;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    min-width: 200px;
+    padding: 0px;
+    li {
+      justify-content: space-between !important;
+      display: flex !important;
+    }
+  }
+}
+.empty {
+  h2 {
+    margin-top: 80px;
+  }
+}
+.gauge_chart {
+  &.overview {
+    min-height: 400px;
+    .opex_card.__general {
+      padding: 1.25rem 0;
+    }
+  }
+
+  margin: 0 auto;
+  .opex_card.__general {
+    padding: 1rem 0 0 0;
+    min-height: 200px;
+    .gauge-general {
+      .__chart-container {
+        width: 250px;
+        height: 125px;
+        .__numbers-custom {
+          margin-top: -20px;
+          margin-left: 0;
+          margin-right: 0;
+          .rs-row {
+            padding: 0;
+          }
+          .__numbers-custom-value {
+            display: flex;
+          }
+          p {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #43425d;
+            min-width: 60px;
+            &.text-left {
+              padding-left: 24px;
+            }
+            &.text-right {
+              padding-right: 24px;
+            }
+          }
+          h1 {
+            font-size: 29px;
+            color: $default;
+            font-weight: bold;
+            margin-bottom: 0;
+            flex: 1;
+          }
+        }
+      }
+      h2 {
+      }
+    }
+  }
+}
+
+button.export-btn {
+  margin-right: 1.25rem;
+  .rs-icon::before {
+    color: white;
+  }
+}
+
+.opex-group-btn {
+  .rs-btn-default {
+    background: #fff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+    &.rs-btn-active {
+      background: $primary;
+      color: #fff;
+    }
+  }
+}
+
+.chart-header {
+  flex: 1;
+}
+
+.expand-chart {
+  .rs-btn-default {
+    background: #fff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+    &.rs-btn-active,
+    &:hover {
+      background: $primary;
+      color: #fff;
+    }
+  }
+}
+
+._in-line {
+  display: flex;
+  align-items: center;
+}
+
+.hover {
+  &:hover {
+    cursor: pointer;
+    &.highlight {
+      color: $primary;
+    }
+  }
+}
+
+.__label {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  color: $color-heading;
+}

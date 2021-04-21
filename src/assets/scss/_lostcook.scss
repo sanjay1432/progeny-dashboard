@@ -1,0 +1,262 @@
+#lostcook {
+  .lostcook-filter {
+  }
+  .lostcook-process-lines {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .process-line-container {
+      & > h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $color-heading;
+      }
+    }
+  }
+  .number-card__lostcook {
+    background-color: #e6ebfe;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border: 1px solid #cfd8fb;
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    display: flex;
+    flex-direction: column;
+    color: $body-color-dark;
+    min-width: 180px;
+    margin-bottom: 1.25rem;
+    margin-right: 1.2rem;
+    .__header {
+      display: flex;
+      justify-content: space-between;
+      flex: 1;
+      .__header-title {
+        min-height: 39px;
+      }
+    }
+    h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1;
+    }
+    .__additional {
+      &:hover {
+        cursor: pointer;
+      }
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      span {
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+    }
+    .__value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $body-color-dark;
+      &.red {
+        color: $red;
+      }
+      &.green {
+        color: $green;
+      }
+      .lc_warning {
+        float: right;
+        line-height: 3rem;
+        font-size: 1.2rem;
+        color: $red;
+      }
+    }
+    .__desc {
+      font-size: 0.75rem;
+      color: $body-color;
+      font-weight: 700;
+      &.has-adt {
+        font-size: 1.5rem;
+      }
+    }
+    small {
+      &.__desc {
+        font-size: 0.75rem;
+        color: $body-color;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .lostcook__numbers {
+    display: flex;
+    flex-wrap: wrap;
+    .number-card__lostcook {
+      margin-right: 1.2rem;
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .__cumulative-adt {
+    .__cards {
+      flex: 1;
+    }
+  }
+
+  .process-line-chart__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    font-size: 1rem;
+    color: $color-heading;
+    strong {
+      color: $primary;
+      &.actual {
+        color: #d2207f;
+      }
+      &.target {
+        color: $primary;
+      }
+    }
+    .__title {
+      flex: 1;
+      text-align: center;
+    }
+    h2 {
+      margin: 0;
+    }
+  }
+
+  // For Lostcook
+
+  .__lostcook {
+    display: flex;
+    // flex-wrap: wrap;
+    & > div {
+      flex: 1;
+      margin-right: 20px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .opex_card {
+      // flex: 1;
+      width: 160px;
+      height: 145px;
+      border-radius: 8px;
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+      &.blueLc {
+        background-color: #e6ebfe;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 1px;
+      }
+    }
+
+    // We will come back to this to clean it up
+    &-featured {
+      @extend .__lostcook;
+      border: 2px solid #999;
+    }
+  }
+
+  .__lostcookOverall {
+    display: flex;
+    flex-wrap: wrap;
+    & > div {
+      margin-right: 20px;
+      margin-bottom: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .opex_card {
+      // flex: 1;
+      width: 145px;
+      height: 145px;
+      margin-right: 10px;
+      border-radius: 8px;
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.blueLc {
+        background-color: #e6ebfe;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 1px;
+      }
+    }
+  }
+
+  .__spanHeader {
+    height: 35px;
+    background-color: #1e345d;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: medium;
+  }
+
+  .__spanFilter {
+    height: 35px;
+    background-color: #1e345d;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: medium;
+  }
+
+  .__table {
+    table {
+      margin-bottom: 5px;
+      margin-top: 30px;
+      border: 1px solid #d9d9d9;
+      border-radius: 10px;
+      color: #43425d;
+      th {
+        border-top: 0;
+        background-color: #fbfbfb;
+      }
+      tr:nth-of-type(odd) {
+        background-color: #fff;
+      }
+      tr:nth-of-type(even) {
+        background-color: #fbfbfb;
+      }
+    }
+    &-featured {
+      @extend .__table;
+      font-size: medium;
+    }
+  }
+
+  .btn-sm {
+    border-radius: 35px;
+  }
+
+  .__filterStyle {
+    background-color: #fbfbfb;
+  }
+
+  .__atd-boxs {
+    display: flex;
+    span {
+      color: $color-heading;
+      font-weight: 600;
+      font-size: 1rem;
+      border-right: 1px solid #c8c8ce;
+      margin-right: 5px;
+      padding-right: 5px;
+      &:last-child {
+        border: none;
+        margin-right: 0;
+        padding-right: 0;
+      }
+    }
+    margin-bottom: 1.25rem;
+  }
+}

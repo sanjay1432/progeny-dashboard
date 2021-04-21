@@ -1,0 +1,11 @@
+/build
+/node_modules
+/server/node_modules
+package-lock.json
+.env
+.eslintcache
+/.idea
+.scannerwork
+coverage
+/.github
+.github/workflows/main.yml

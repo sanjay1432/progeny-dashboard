@@ -1,0 +1,71 @@
+#ci {
+  a,
+  a:hover,
+  a:focus,
+  a:visited {
+    &.text-primary {
+      color: $primary !important;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+    &.text-danger {
+      color: #d2207f;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  }
+
+  .opex_card {
+    padding: 1.25rem 0 !important;
+  }
+
+  a[role="combobox"] {
+    border-radius: 4px !important;
+  }
+
+  .__row {
+    margin-bottom: 30px;
+  }
+
+  .process-line-chart__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    font-size: 1rem;
+    color: $color-heading;
+    strong {
+      color: $primary;
+      &.actual {
+        color: #d2207f;
+      }
+      &.target {
+        color: $primary;
+      }
+    }
+    .__title {
+      flex: 1;
+      text-align: center;
+    }
+    h2 {
+      margin: 0;
+    }
+  }
+
+  .selected-process-table {
+    & > div:first-child {
+      background-color: #f5f6fa;
+      padding-top: 0.875rem;
+      padding-bottom: 0.875rem;
+      button {
+        margin-right: 2rem;
+      }
+      border: 1px solid #d9d9d9;
+      border-bottom: none;
+    }
+  }
+}
