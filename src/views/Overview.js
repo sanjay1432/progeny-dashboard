@@ -125,6 +125,7 @@ const Overview = props => {
                     ) : (
                       <Container fluid>
                         <Row className="justify-content-center">
+                          <h1>MyTable</h1>
                           {/* MAIN COMPOENTS */}
                         </Row>
                       </Container>
