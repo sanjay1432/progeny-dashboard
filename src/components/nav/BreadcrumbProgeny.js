@@ -2,7 +2,7 @@ import React from "react"
 import { Icon, Breadcrumb } from "rsuite"
 import { useSelector } from "react-redux"
 
-const BreadcrumbOpex = () => {
+const BreadcrumbProgeny = () => {
   const breadcrumb = useSelector(state => state.appReducer.breadcrumb)
 
   return (
@@ -20,4 +20,4 @@ const BreadcrumbOpex = () => {
     </>
   )
 }
-export default BreadcrumbOpex
+export default BreadcrumbProgeny

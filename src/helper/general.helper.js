@@ -17,8 +17,7 @@ import {
   Row,
   Table
 } from "rsuite"
-import GeneralService from "../services/general.service"
-import ReactSpeedometer from "react-d3-speedometer"
+// import GeneralService from "../services/general.service"
 import classnames from "classnames"
 const { Cell } = Table
 
@@ -33,22 +32,6 @@ const generateArrayOfYears = (plusYearFromThisYear = 5) => {
     })
   }
   return years
-}
-
-const getProductionTypes = (millId = 1) => {
-  switch (millId) {
-    case 2:
-    case 3:
-    case 5:
-      return [PRODUCTION_TYPES.default]
-
-    default:
-      return [
-        PRODUCTION_TYPES.default,
-        PRODUCTION_TYPES.ae,
-        PRODUCTION_TYPES.kp
-      ]
-  }
 }
 
 const chartDateFormatter = value => {
@@ -124,111 +107,11 @@ const loadingOnDialog = () => {
   )
 }
 
-const getMillListBaseOnRoles = (mills, roles, buId) => {
-  const temArr = roles
-    .filter(item => (buId ? item.buId === buId : true))
-    .map(role => role.millId)
-
-  const millArray = temArr.filter(
-    (value, index) => temArr.indexOf(value) === index
-  )
-  return mills.filter(mill => {
-    return millArray.indexOf(mill.mill_id) >= 0
-  })
-}
-
-const getKpiList = (mill, kpiCategoryId, source, setKpiState) => {
-  const param = {
-    buId: mill.buId,
-    millId: mill.millId,
-    kpiCategoryIds: [kpiCategoryId]
-  }
-  GeneralService.getKpis(param, source).then(
-    data => {
-      setKpiState(data)
-    },
-    error => {
-      if (error && error.message !== CANCEL_REQUEST) {
-        Alert.error("We got an unknown error.", 5000)
-      }
-      console.log(error)
-      return Promise.reject()
-    }
-  )
-}
-
-const buildGaugeChart = (gaugeChart, index = 1, width = 250) => {
-  const min = gaugeChart.min || 0
-  const value = gaugeChart.value
-  const threshold = gaugeChart.threshold
-  let max = gaugeChart.max || gaugeChart.maximum
-  if (isNaN(Number.parseInt(max))) {
-    max = min
-  }
-  if (!gaugeChart) {
-    return <Placeholder.Paragraph rows={3} />
-  }
-  return (
-    <div className="opex_card __general" key={index}>
-      <div className="opex_chart gauge gauge-general">
-        <div className="__chart-container" style={{ width: width }}>
-          <ReactSpeedometer
-            forceRender={true}
-            maxSegmentLabels={0}
-            segments={3}
-            maxValue={max}
-            minValue={min}
-            customSegmentStops={[min, threshold * 0.95, threshold, max]}
-            segmentColors={["#FE4831", "#ffbc38", "#218630"]}
-            value={Number.parseFloat(Number.parseFloat(value).toFixed(0))}
-            valueTextFontSize={"29px"}
-            textColor={"#43425D"}
-            paddingVertical={18}
-            needleColor="#434343"
-            needleHeightRatio={0.55}
-            ringWidth={30}
-            fluidWidth={true}
-          />
-          <Grid fluid className="__numbers-custom">
-            <div className="__numbers-custom-value">
-              <p className="text-left">{min}</p>
-              <h1 className="text-center">
-                {Number.parseFloat(Number.parseFloat(value).toFixed(0))}
-              </h1>
-              <p className="text-right">{max}</p>
-            </div>
-            {gaugeChart.name && (
-              <Row>
-                <Col md={24}>
-                  <h2 className="text-center">{gaugeChart.name}</h2>
-                </Col>
-              </Row>
-            )}
-          </Grid>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 const buildDisplayName = (firstName, lastName, userName) => {
   if (firstName === "" && lastName === "") {
     return userName
   }
   return `${firstName} ${lastName}`
-}
-
-const getKpiCategoryListByBUID = buId => {
-  if (buId === 4) {
-    return [KPI_CATEGORIES.recoveryBoiler, KPI_CATEGORIES.powerKpi]
-  } else {
-    return [
-      KPI_CATEGORIES.chemical,
-      KPI_CATEGORIES.utility,
-      KPI_CATEGORIES.wood,
-      KPI_CATEGORIES.quality
-    ]
-  }
 }
 
 const sortDataByStartDate = data => {
@@ -262,31 +145,26 @@ const getColorOfPattern = pattern => {
   }
 }
 
-const timeToMinutes = (time)=>{
-  var a = time.split(':');
-  return (+a[0]) * 60 + (+a[1]); 
+const timeToMinutes = time => {
+  var a = time.split(":")
+  return +a[0] * 60 + +a[1]
 }
 
-const minutesToTime =(n) =>{
-  var num = n;
-  var hours = (num / 60);
-  var rhours = Math.floor(hours);
-  var minutes = (hours - rhours) * 60;
-  var rminutes = Math.round(minutes);
-  return  rhours + " h " + rminutes + "m";
-  }
+const minutesToTime = n => {
+  var num = n
+  var hours = num / 60
+  var rhours = Math.floor(hours)
+  var minutes = (hours - rhours) * 60
+  var rminutes = Math.round(minutes)
+  return rhours + " h " + rminutes + "m"
+}
 
 const GeneralHelper = {
   generateArrayOfYears,
-  getProductionTypes,
   chartDateFormatter,
   chartDateFormatterAnnotation,
   DateCell,
-  getKpiList,
-  buildGaugeChart,
-  getMillListBaseOnRoles,
   BuCell,
-  getKpiCategoryListByBUID,
   buildDisplayName,
   ReadMoreCell,
   loadingOnDialog,

@@ -13,7 +13,6 @@ import { Provider } from "react-redux"
 import configureAppStore from "./redux/store"
 import StateLoader from "./redux/StateLoader"
 import Login from "./views/Login"
-import Main from "views/Main.js"
 import Overview from "./views/Overview"
 import { AbilityContext } from "./config/Can"
 import ability from "./config/ability"
@@ -38,7 +37,6 @@ ReactDOM.render(
     <AbilityContext.Provider value={ability}>
       <BrowserRouter basename={`${BASE_NAME}`}>
         <Switch>
-          <Route path="/main" render={props => <Main {...props} />} />
           <Route
             path="/overview"
             exact

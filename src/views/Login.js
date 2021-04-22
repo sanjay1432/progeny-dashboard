@@ -81,6 +81,7 @@ const Login = props => {
     if (checkBtn.current.context._errors.length === 0) {
       dispatch(login(username, password))
         .then(() => {
+          // props.history.push("/overview")
           props.history.push("/overview")
         })
         .catch(() => {
@@ -96,6 +97,7 @@ const Login = props => {
     setLoading(true)
     dispatch(loginSSO(ssoToken))
       .then(() => {
+        // props.history.push("/overview")
         props.history.push("/overview")
       })
       .catch(() => {
@@ -107,11 +109,11 @@ const Login = props => {
     return <Redirect to="/overview" />
   }
 
-  const backToLogin = () => {
-    setLoginMethod(null)
-    setSsoUsername("")
-    setSsoToken("")
-  }
+  // const backToLogin = () => {
+  //   setLoginMethod(null)
+  //   setSsoUsername("")
+  //   setSsoToken("")
+  // }
 
   return (
     <>
@@ -120,14 +122,11 @@ const Login = props => {
           <Container>
             <Card className="bg-transparent border-0">
               <CardBody>
-                <div
-                  className="text-center login-logo"
-                  onClick={() => backToLogin()}
-                >
+                <div className="text-center login-logo">
                   <img src={logo} alt="RGE Group" height={100} />
-                  <h2>Login to OPEX Dashboard</h2>
+                  <h2>Login to Progeny Dashboard</h2>
                 </div>
-                {loginMethod === null && (
+                {/* {loginMethod === null && (
                   <>
                     <div className="login-method">
                       <IconButton
@@ -140,8 +139,8 @@ const Login = props => {
                       </IconButton>
                     </div>
                   </>
-                )}
-                {loginMethod === LOGIN_METHOD.sso && (
+                )} */}
+                {/* {loginMethod === LOGIN_METHOD.sso && (
                   <div>
                     {message && (
                       <div className="form-group">
@@ -171,54 +170,54 @@ const Login = props => {
                       <span>SSO Login</span>
                     </button>
                   </div>
-                )}
-                {loginMethod === LOGIN_METHOD.normal && (
-                  <Form onSubmit={handleLogin} ref={form}>
-                    <div className="custom-input">
-                      <input
-                        name="username"
-                        type="text"
-                        placeholder="Username"
-                        onChange={onChangeUsername}
-                        value={username}
-                        validations={[required]}
-                      />
-                      <label htmlFor="username">Username</label>
-                    </div>
-                    <div className="custom-input">
-                      <input
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={onChangePassword}
-                        validations={[required]}
-                      />
-                      <label htmlFor="Password">Password</label>
-                    </div>
+                )} */}
+                {/* {loginMethod === LOGIN_METHOD.normal && ( */}
+                <Form onSubmit={handleLogin} ref={form}>
+                  <div className="custom-input">
+                    <input
+                      name="username"
+                      type="text"
+                      placeholder="Username"
+                      onChange={onChangeUsername}
+                      value={username}
+                      validations={[required]}
+                    />
+                    <label htmlFor="username">Username</label>
+                  </div>
+                  <div className="custom-input">
+                    <input
+                      name="password"
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={onChangePassword}
+                      validations={[required]}
+                    />
+                    <label htmlFor="Password">Password</label>
+                  </div>
 
+                  <div className="form-group">
+                    <button
+                      className="btn btn-primary btn-block btn-lg login"
+                      disabled={loading}
+                    >
+                      {loading && (
+                        <span className="spinner-border spinner-border-sm" />
+                      )}
+                      <span>Login</span>
+                    </button>
+                  </div>
+
+                  {message && (
                     <div className="form-group">
-                      <button
-                        className="btn btn-primary btn-block btn-lg login"
-                        disabled={loading}
-                      >
-                        {loading && (
-                          <span className="spinner-border spinner-border-sm" />
-                        )}
-                        <span>Login</span>
-                      </button>
-                    </div>
-
-                    {message && (
-                      <div className="form-group">
-                        <div className="alert alert-danger" role="alert">
-                          {message}
-                        </div>
+                      <div className="alert alert-danger" role="alert">
+                        {message}
                       </div>
-                    )}
-                    <CheckButton style={{ display: "none" }} ref={checkBtn} />
-                  </Form>
-                )}
+                    </div>
+                  )}
+                  <CheckButton style={{ display: "none" }} ref={checkBtn} />
+                </Form>
+                {/* )} */}
               </CardBody>
             </Card>
             <p>

@@ -1,42 +1,69 @@
 import Overview from "./views/Overview"
+import Overview from "./views/Overview"
 import Dashboard from "./views/pulp/Dashboard"
 import Lostcook from "./views/pulp/Lostcook"
 import CI from "./views/pulp/CI"
 import Benchmark from "./views/pulp/Benchmark"
-import ProductionThresholdSetup from "./views/ProductionThresholdSetup"
-import OtherKpisThresholdSetup from "views/OtherKpisThresholdSetup"
 import { MODULE, BUSINESS_UNIT_LIST } from "./constants"
 import Blank from "./components/shared/Blank"
 import PowerDashboard from "./views/power/PowerDashboard"
 import SPC from "./views/pulp/SPC"
 const router = [
+  // {
+  //   path: "/overview",
+  //   name: "Overview",
+  //   moduleName: MODULE.overview,
+  //   bu: [BUSINESS_UNIT_LIST[0].buId],
+  //   component: Overview,
+  //   children: [
+  //     {
+  //       path: "pulp",
+  //       tab: true,
+  //       name: "Pulp"
+  //     },
+  //     {
+  //       path: "power",
+  //       tab: true,
+  //       name: "Power"
+  //     },
+  //     {
+  //       path: "paper",
+  //       tab: true,
+  //       name: "Paper"
+  //     },
+  //     {
+  //       path: "viscose",
+  //       tab: true,
+  //       name: "Viscose"
+  //     }
+  //   ]
+  // },
   {
     path: "/overview",
     name: "Overview",
-    moduleName: MODULE.overview,
-    bu: [BUSINESS_UNIT_LIST[0].buId],
+    moduleName: MODULE.Overview,
     component: Overview,
     children: [
-      {
-        path: "pulp",
-        tab: true,
-        name: "Pulp"
-      },
-      {
-        path: "power",
-        tab: true,
-        name: "Power"
-      },
-      {
-        path: "paper",
-        tab: true,
-        name: "Paper"
-      },
-      {
-        path: "viscose",
-        tab: true,
-        name: "Viscose"
-      }
+      // {
+      //   path: "pulp",
+      //   tab: true,
+      //   name: "Pulp"
+      // },
+      // {
+      //   path: "power",
+      //   tab: true,
+      //   name: "Power"
+      // },
+      // {
+      //   path: "paper",
+      //   tab: true,
+      //   name: "Paper"
+      // },
+      // {
+      //   path: "viscose",
+      //   tab: true,
+      //   name: "Viscose"
+      // }
     ]
   },
   {
@@ -191,52 +218,6 @@ const router = [
         path: "textual-analysis",
         tab: true,
         name: "Analytics"
-      }
-    ]
-  },
-  {
-    name: "Setup",
-    icon: "setting",
-    moduleName: MODULE.setting,
-    bu: [BUSINESS_UNIT_LIST[0].buId, BUSINESS_UNIT_LIST[1].buId],
-    menu: "main",
-    children: [
-      {
-        path: "/main/threshold-setup",
-        moduleName: MODULE.threshold,
-        name: "Threshold Setup",
-        menu: "main",
-        children: [
-          {
-            path: "/main/threshold-setup/production",
-            component: ProductionThresholdSetup,
-            bu: [BUSINESS_UNIT_LIST[0].buId],
-            name: "Production",
-            children: [
-              {
-                path: "production-target",
-                tab: true,
-                name: "Production Target"
-              },
-              {
-                path: "process-line-target",
-                tab: true,
-                name: "Process Line Target"
-              },
-              {
-                path: "annual-configuration",
-                tab: true,
-                name: "Annual Configuration"
-              }
-            ]
-          },
-          {
-            path: "/main/threshold-setup/other-kpis",
-            component: OtherKpisThresholdSetup,
-            bu: [BUSINESS_UNIT_LIST[0].buId, BUSINESS_UNIT_LIST[1].buId],
-            name: "Other KPIs"
-          }
-        ]
       }
     ]
   }
