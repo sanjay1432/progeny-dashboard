@@ -26,44 +26,44 @@
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
 // Theme Core
-@import "opex-dashboard/theme";
+
 
 // React Differences
-@import "react/react-differences";
+
 
 //Filter
-@import "opex-dashboard/filter";
+
 
 //numbers_chart
-@import "opex-dashboard/numbers-chart";
+
 
 //rsuitejs Override
-@import "custom/rsuite";
 
-@import "dialog";
 
-@import "main";
+
+
+
 
 //Login page
 @import "login";
 
 //Overview panel
-@import "overview";
+
 
 //PowerDashboard
-@import "dashboard";
+
 
 //Lostcook
-@import "lostcook";
+
 
 //CI
-@import "ci";
+
 
 //Benchmark
-@import "benchmark";
+
 
 //SPC
-@import "spc";
+
 
 //Common
-@import "./custom/common";
+

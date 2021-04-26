@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { CANCEL_REQUEST, FREQUENCY_SELECT_OPTS } from "../constants"
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
 import classnames from "classnames"
 import logo from "assets/img/RGE-logo/dmp-square.svg"
 // reactstrap components
@@ -26,7 +27,9 @@ import {
   Nav as NavRS,
   Container as ContainerRS,
   Dropdown,
-  InputPicker
+  InputPicker,
+  Sidenav,
+  FlexboxGrid
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../redux/actions/app.action"
@@ -35,11 +38,21 @@ import BreadcrumbProgeny from "../components/nav/BreadcrumbProgeny"
 import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
+import { Link } from "react-router-dom"
+import { set } from "lodash"
+import Estate from "./Estate"
 
 const headerStyles = {
-  padding: 8,
-  paddingLeft: 16,
-  height: 56,
+  padding: 0,
+  height: 60,
+  color: "#333",
+  whiteSpace: "nowrap",
+  overflow: "hidden"
+}
+
+const navigationStyles = {
+  padding: 17,
+  height: 60,
   color: "#333",
   whiteSpace: "nowrap",
   overflow: "hidden"
@@ -48,6 +61,7 @@ const headerStyles = {
 const Overview = props => {
   const [activeTab, setActiveTab] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isActive, setIsActive] = useState(true)
   const dispatch = useDispatch()
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
   const history = useHistory()
@@ -80,44 +94,66 @@ const Overview = props => {
   if (isLoading) {
     return <Loader center content="Loading" />
   }
+
+  const NavigationBar = ({ action, onSelect, ...props }) => {
+    function handleChange() {
+      if (isActive) {
+        setIsActive(false)
+      } else {
+        setIsActive(true)
+      }
+    }
+
+    return (
+      <NavRS appearance="subtle" {...props} onClick={handleChange}>
+        <NavRS.Item eventKey="estate" active={isActive}>
+          Estate
+        </NavRS.Item>
+        <NavRS.Item eventKey="trial">Trial and Replicate</NavRS.Item>
+        <NavRS.Item eventKey="plot">Plot</NavRS.Item>
+        <NavRS.Item eventKey="palm">Palm</NavRS.Item>
+        <NavRS.Item eventKey="progeny">Progeny</NavRS.Item>
+      </NavRS>
+    )
+  }
+
   return (
     <>
       {isLoggedIn && (
         <div className="sidebar-page">
+          <div style={headerStyles}>
+            <Navbar.Header>
+              <MenuRoundedIcon />
+              <img alt="RGE" height={40} src={logo} />
+            </Navbar.Header>
+          </div>
           <ContainerRS>
             <ContainerRS>
               <Header>
                 <Navbar className="custom-navs">
-                  <Navbar.Header>
-                    <div style={headerStyles}>
-                      <img alt="RGE" height={40} src={logo} />
-                    </div>
-                  </Navbar.Header>
                   <Navbar.Body>
-                    <NavRS>
-                      <BreadcrumbProgeny />
-                    </NavRS>
-                    <NavRS pullRight>
-                      <Dropdown
-                        icon={<Icon icon="user-o" />}
-                        title={GeneralHelper.buildDisplayName(
-                          user.firstName,
-                          user.lastName,
-                          user.username
-                        )}
-                      >
-                        <Dropdown.Item
-                          icon={<Icon icon="sign-out" />}
-                          onClick={() => dispatch(logout())}
-                        >
-                          Logout
-                        </Dropdown.Item>
-                      </Dropdown>
-                    </NavRS>
+                    <NavigationBar />
                   </Navbar.Body>
                 </Navbar>
               </Header>
               <Content>
+                <NavRS pullRight>
+                  <Dropdown
+                    icon={<Icon icon="user-o" />}
+                    title={GeneralHelper.buildDisplayName(
+                      user.firstName,
+                      user.lastName,
+                      user.username
+                    )}
+                  >
+                    <Dropdown.Item
+                      icon={<Icon icon="sign-out" />}
+                      onClick={() => dispatch(logout())}
+                    >
+                      Logout
+                    </Dropdown.Item>
+                  </Dropdown>
+                </NavRS>
                 <main>
                   <section id="overview" className="main-section">
                     {isLoading ? (
@@ -125,13 +161,14 @@ const Overview = props => {
                     ) : (
                       <Container fluid>
                         <Row className="justify-content-center">
-                          <h1>MyTable</h1>
+                          <Estate />
                           {/* MAIN COMPOENTS */}
                         </Row>
                       </Container>
                     )}
                   </section>
                 </main>
+                <NavRS pullRight></NavRS>
               </Content>
             </ContainerRS>
           </ContainerRS>

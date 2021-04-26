@@ -2,6 +2,7 @@
   display: flex;
   padding: 20px;
   flex-direction: column;
+  
   height: 100vh;
   overflow: auto;
   .login-logo {
@@ -26,61 +27,40 @@
     margin: 0;
   }
 
-  h2 {
-    font-size: 18px;
+  .title {
+    font-size: 19px;
     font-style: normal;
     color: $default;
     margin-top: 32px;
     margin-bottom: 32px;
+    color: #009d57;
+  }
+
+  .login-label {
+    /*font-size: small;*/
+    font-size: 20px;
     font-weight: bold;
+    color: #444444;
+    width: 115px;
   }
-  .custom-input {
-    margin-bottom: 22px;
-    position: relative;
-    background: #ffffff 0% 0% no-repeat padding-box;
-    box-shadow: 0px 12px 40px #00000014;
+
+  .form-login {
+    background-color: #FFFFFF;
+    border: 1px solid #CECECE;
+    color: #444444;
     border-radius: 8px;
-    height: 56px;
-    padding: 8px 8px 0 8px;
-    input {
-      background: transparent;
-      border: none;
-      padding-left: 8px;
-      transition: padding 0.4s;
-      width: 100%;
-      font-size: 1rem;
-      color: $body-color;
-      height: 48px;
-      border-bottom: solid 1px #ffdb59;
-    }
-    input:placeholder-shown + label {
-      color: $body-color;
-      font-size: 14px;
-      top: 16px;
-      left: 16px;
-    }
-    input:focus + label,
-    label {
-      color: rgba($color: $body-color, $alpha: 0.5);
-      font-size: 8px;
-      pointer-events: none;
-      position: absolute;
-      left: 16px;
-      top: 8px;
-      transition: top 0.4s, left 0.4s, font-size 0.4s;
-    }
-    input::placeholder {
-      color: transparent;
-      display: none;
-    }
-    input:focus,
-    input:not(:placeholder-shown) {
-      outline: none;
-    }
+    min-width: 327px;
+    height: 40px;
+    margin-bottom: 15px;
+    padding: 10px 16px 11px 16px;
+    font-size: 20px;
   }
+  
   .btn.login {
-    margin-top: 32px;
-    height: 56px;
+    width: 444px;
+    //height: 56px;
+    background-color: #009d57;
+    border-radius: 8px;
   }
 
   .login-method {
