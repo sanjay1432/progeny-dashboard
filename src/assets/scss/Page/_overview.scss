@@ -70,20 +70,23 @@
     flex-direction: row;
 
     .drawer-img {
-        width: 90px;
-        height: 90px;
+        width: 65px;
+        height: 65px;
     }
 
     .drawer-title {
-        margin: 26px 64px 26px 30px;
+        margin: 5px 20px 26px 15px;
     }
 
     .drawer-title-content {
         color: $primary-green;
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 700;
     }
 }
 
-
+//rsuite drawer icon
+.drawer-content-icon {
+    margin-right: 20px;
+}
 

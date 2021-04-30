@@ -248,13 +248,9 @@ const Overview = props => {
           >
             <Drawer.Header id="drawer">
               <img src={logo} className="drawer-img" />
-              <div className="drawer">
-                <Drawer.Title className="drawer-title-content">
-                  Progeny
-                </Drawer.Title>
-                <Drawer.Title className="drawer-title-content">
-                  Management System
-                </Drawer.Title>
+              <div className="drawer-title">
+                <div className="drawer-title-content">Progeny</div>
+                <div className="drawer-title-content">Management System</div>
               </div>
             </Drawer.Header>
             <Drawer.Body style={{ margin: "30px 0px" }}>
@@ -266,8 +262,16 @@ const Overview = props => {
                 <Sidenav.Body>
                   <NavRS>
                     {listItems.map((item, i) => (
-                      <NavRS.Item icon={item.Icon} eventKey={item.eventKey}>
-                        {<item.customIcon />} {item.name}
+                      <NavRS.Item
+                        eventKey={item.eventKey}
+                        icon={
+                          <item.customIcon
+                            className="drawer-content-icon"
+                            key={i}
+                          />
+                        }
+                      >
+                        {item.name}
                       </NavRS.Item>
                     ))}
                   </NavRS>

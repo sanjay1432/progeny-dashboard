@@ -1,13 +1,48 @@
-.rs-sidenav {
-    .rs-nav-item{
-        background-color: #fff;
+//Sidebar Drawer
+.rs-drawer-content {
+    width: 318px;
+
+    .rs-drawer-header {
+        margin: 20px 7px 0;
+        height: 60px;
     }
-    
-    .rs-nav-item-hover{
-        background-color: #fff;
+
+    .rs-drawer-header-close {
+        display: none;
     }
-    
-    .rs-nav-item-active {
-        background-color: #eff4f2;
+
+    .rs-sidenav {
+        .rs-nav-item .rs-nav-item-content, .rs-dropdown .rs-dropdown-toggle  {
+            padding-left: 25px;
+        }
+
+        .rs-nav-item-content {
+            color: #444444;
+            background-color: #fff;
+        }
+
+        .rs-nav .rs-nav-item-active > .rs-nav-item-content
+         {
+            color: $primary-green;
+            background-color: $background-green;
+        }
+
+        .rs-nav-item > a.rs-nav-item-content:hover {
+            color: #000;
+            background-color: transparent;
+        }
     }
 }
+
+//Sub-Navigation
+.rs-navbar-nav .rs-nav-item > .rs-nav-item-content {
+    padding: 3px 16px;
+    height: 42px;
+}
+
+.rs-nav-subtle.rs-nav-horizontal .rs-nav-item > .rs-nav-item-content::before {
+    height: 4px;
+    font-weight: 700;
+}
+
+

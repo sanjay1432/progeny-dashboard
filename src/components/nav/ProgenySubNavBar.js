@@ -13,27 +13,19 @@ const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
         <Navbar {...props} id="navbar">
           <Navbar.Body style={{ textAlign: "left" }}>
             <Nav
-              className="hihi"
               {...props}
               appearance="subtle"
               activeKey={active}
               onSelect={onSelect}
             >
-              <div
-                className={
-                  currentItem.customClass ? currentItem.customClass : ""
-                }
-              >
-                <b>{currentItem.name} |</b>
-              </div>
-              <div>
-                {listItems.map((item, i) => (
-                  <Nav.Item eventKey={item.eventKey} key={i}>
-                    {" "}
-                    {item.name}
-                  </Nav.Item>
-                ))}
-              </div>
+              <b className="masterData">{currentItem.name}</b>
+              <b className="symbol">|</b>
+              {listItems.map((item, i) => (
+                <Nav.Item eventKey={item.eventKey} key={i}>
+                  {" "}
+                  {item.name}
+                </Nav.Item>
+              ))}
             </Nav>
           </Navbar.Body>
         </Navbar>
