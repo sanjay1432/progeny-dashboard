@@ -1,0 +1,485 @@
+/* fontstyles */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* font-family: 'Roboto', sans-serif */
+
+/* fontstyles */
+
+  /* Note all buttons and forms have a border radius of 8px for admin */
+
+/* Colors for Progeny */
+
+.primary-green{
+ color:#009D57;
+}
+
+.secondary-green{
+ color:#35795B;
+}
+
+.error-color{
+ color:#FF3A3A;
+}
+
+.error-color-dark{
+ color:#D71E1E;
+}
+
+.white{
+ color:#FFFFFF;
+}
+
+.black-color-web{
+ color:#444444;
+}
+
+.yellow{
+ color:#EA9A44;
+}
+
+.body-color{
+ color:#F9F9F9;
+}
+
+/* use this for any disabled color for backgrounds  */
+.disabled-color-bg{
+  color:#CECECE;
+}
+/* use this for any disabled color for backgrounds  */
+
+/* use this for any disabled color for for the text  */
+.disabled-color-text{
+ color:#666666;
+}
+/* use this for any disabled color for for the text  */
+
+.placeholder-color{
+ color:#444444;
+ opacity: 0.5;
+}
+
+
+/* Colors for Progeny */
+
+/* Modal box for admin  */
+
+.modal{
+ box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+ border-radius: 10px;
+}
+
+.modal-success-header-title{
+ color:#009D57;
+ font-weight: bold;
+}
+
+.modal-negative-header-title{
+ color:#FF3A3A;
+ font-weight: bold;
+}
+
+.button-modal{
+   font-size:12px;
+   background-color: #009D57;
+   height:30px;
+}
+
+.form-inside-modal{
+ background-color:#FFFFFF;
+ border:2px solid #CECECE;
+ color:#444444;
+ border-radius:8px;
+ height:30px;
+ font-size:12px;
+}
+
+/* Modal box for admin  */
+
+/* notifications  */
+.notification{
+ background: #35795B;
+box-shadow: 0px 8px 12px rgba(1, 37, 22, 0.2);
+border-radius: 8px;
+color:#FFFFFF;
+}
+
+
+
+/* notifications  */
+
+/* Table */
+
+/* this is the minimum table size  */
+.table{
+  min-width:964px;
+  overflow-x: scroll;
+}
+/* this is the minimum table size  */
+
+.Table-header{
+ border-radius:8px;
+ background-color:#35795B;
+ color: #FFFFFF;
+
+}
+
+/* //this is for all odd rows  */
+.table-first-row{
+ background-color: #FFFFFF;
+ color:#444444;
+ min-height: 60px;
+}
+/* //this is for all odd rows  */
+
+/* //this is for all even rows  */
+.table-second-row{
+ background-color: #F5F5F5;
+ color:#444444;
+ min-height: 60px;
+}
+/* //this is for all even rows  */
+
+.table-body{
+ overflow-x:scroll;
+}
+
+
+/* this is for the column status in the table  */
+.status-column-active{
+ border: 1px solid #009D57;
+ box-sizing: border-box;
+ border-radius: 8px;
+ text-transform: uppercase;
+ font-size: 12px;
+
+}
+
+.status-column-canceled{
+ border: 1px solid #FF3A3A;
+box-sizing: border-box;
+border-radius: 8px;
+text-transform: uppercase;
+font-size: 12px;
+}
+
+.status-column-finish{
+ border: 1px solid #FBAB54;
+box-sizing: border-box;
+border-radius: 8px;
+text-transform: uppercase;
+font-size: 12px;
+
+}
+
+/* this is for the column status in the table  */
+
+/* //this is for if Trial is planted into two estates refer to the design spec docs v1.1  */
+.table-for-new-estate{
+
+background: #CCE2CA;
+
+}
+/* /this is for if Trial is planted into two estates refer to the design spec docs v1.1   */
+
+/* /this is for if edited replicate in a Trial refer to the design spec docs v1.1   */
+.edited-tag-after-after-completing-an-edited row{
+ background: #009D57;
+border: 1px solid #009D57;
+box-sizing: border-box;
+border-radius: 4px;
+
+}
+/* /this is for if edited replicate in a Trial refer to the design spec docs v1.1   */
+
+
+
+
+
+/* Table  */
+
+/* button */
+
+
+
+.button-green{
+   background-color:#009D57;
+   color:white;
+   border-radius:8px;
+   font-size: 14px;
+   align-items: center;
+}
+/* //this is secondary button for table  */
+.secondary-button-green{
+   background-color:#FFFFFF;
+   border-radius:8px;
+   color:#009D57;
+   border: 2px solid #009D57;
+    font-size: 14px;
+     align-items: center;
+}
+/* //this is secondary button for table  */
+
+/* delete button */
+
+.delete-button-red{
+   background-color:#FF3A3A;
+   border-radius:8px;
+   color:#009D57;
+   border: 2px solid #009D57;
+    font-size: 14px;
+     align-items: center;
+}
+
+/* delete button */
+
+
+.disabled-buttons{
+   border-radius: 8px;
+   color:#666666;
+   background-color:#CECECE;
+    font-size: 14px;
+     align-items: center;
+}
+
+/* this is secondary button for the forms (like add trial or edit trial ) */
+.secondary-button-white{
+   background-color:#FFFFFF;
+    font-size: 14px;
+     align-items: center;
+
+}
+/* this is secondary button for the forms (like add trial or edit trial ) */
+
+/* the min width of save generate table button  */
+.Filter-button-save-button{
+    min-width:142px;
+    color:#009D57;
+    border-radius:8px;
+     font-size: 14px;
+      align-items: center;
+}
+/* the min width of save generate table button  */
+
+/* buttons near the table  */
+
+.buttons-near-table{
+ min-width: 107px;
+ font-size: 14px;
+  align-items: center;
+}
+
+
+.padding-between-buttons{
+ padding-left:24px;
+ padding-right:24px;
+}
+
+
+/* buttons near the table  */
+
+ /* button */
+
+
+
+/* forms  */
+.form-active{
+ background-color:#FFFFFF;
+ border:1px solid #CECECE;
+ color:#444444;
+ border-radius:8px;
+ padding-top:10px;
+ padding-bottom:11px;
+ padding-left: 16px;
+ padding-right: 16px;
+ font-size: 16px;
+ vertical-align: center;
+}
+
+.form-active-label{
+  font-size: 16px;
+   color:#444444;
+}
+
+.disabled-forms{
+ background-color:#CECECE;
+ border:1px solid #CECECE;
+ color:#666666;
+ border-radius:8px;
+ padding-top:10px;
+ padding-bottom:11px;
+ padding-left: 16px;
+ padding-right: 16px;
+  font-size: 16px;
+  vertical-align: center;
+}
+
+.forms-inside-table{
+  font-size: 14px;
+  background-color:#FFFFFF;
+  border:1px solid #CECECE;
+  color:#444444;
+  border-radius:8px;
+  padding:12px;
+  vertical-align: center;
+
+}
+
+.dropdown-forms-inside-table{
+ min-height: 84px;
+}
+
+.dropdown-forms-with-search-inside-table{
+ min-height: 154px;
+ vertical-align: center;
+}
+
+
+
+.filter-forms{
+  background-color:#FFFFFF;
+  border:1px solid #CECECE;
+  color:#444444;
+  border-radius:8px;
+  padding-top:8px;
+  padding-bottom:8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 14px;
+  vertical-align: center;
+}
+
+.filter-forms-label{
+  color:#444444;
+  font-size: 14px;
+}
+
+.dropdown-forms-filter{
+ min-height: 156px;
+ padding:16px;
+ vertical-align: center;
+}
+
+.padding-between-filter-forms{
+ padding-right:24px;
+}
+
+
+/* this is for attach progeny to plot forms in the table as well as replicte in the trial forms in the table  */
+.forms-inside-table{
+ background-color:#FFFFFF;
+ border:1px solid #CECECE;
+ color:#444444;
+ border-radius:8px;
+ padding-left:12px;
+ padding-right: 12px;
+ padding-top: 12px;
+ padding-bottom: 12px;
+ vertical-align: center;
+}
+
+.forms-inside-table-disabled{
+  background-color:#CECECE;
+  border:1px solid #CECECE;
+  color:#666666;
+ border-radius:8px;
+ padding-left:12px;
+ padding-right: 12px;
+ padding-top: 12px;
+ padding-bottom: 12px;
+ vertical-align: center;
+}
+/* this is for attach progeny to plot forms in the table as well as replicte in the trial forms in the table  */
+
+/* forms  */
+
+/* icons */
+.icon{
+ color:#444444
+}
+
+/* disabled  */
+.icon-not-active{
+ color:#CECECE;
+}
+
+/* icons */
+
+
+/* navbar  */
+.navbar{
+background-color:white;
+font-size: 24px;
+position: fixed;
+}
+
+/* defeault color  */
+.navbar-items{
+ color:#444444;
+ font-size:16px;
+ position: fixed;
+}
+
+/* when selected an item in the navbar  */
+.navbar-items{
+ color:#009D57;
+ font-size: 16px;
+ position: fixed;
+}
+
+
+/* navbar  */
+
+
+
+/* pagination */
+.Selected-page{
+background: #35795B;
+border-radius: 4px;
+color:white;
+}
+
+.Not-Selected-Page{
+background: #FFFFFF;
+border: 1px solid #CECECE;
+box-sizing: border-box;
+border-radius: 4px;
+}
+
+.disabled-button-arrow-left{
+ background-color:#CECECE;
+ color: #666666;
+ border-radius:4px;
+}
+/* pagination */
+
+/* LoginCSS Page  */
+
+.login-button{
+ width: 444px;
+height: 41px;
+background: #009D57;
+border-radius: 8px;
+vertical-align: center;
+}
+
+.form-login{
+ background-color:#FFFFFF;
+ border:1px solid #CECECE;
+ color:#444444;
+ border-radius:8px;
+ min-width: 327px;
+}
+
+.label-color{
+ color:#444444;
+}
+
+/* this is the text color for Login to Progeny Managemetn system Dashboard  */
+.text-color{
+ color:#009D57;
+}
+/* this is the text color for Login to Progeny Managemetn system Dashboard  */
+
+
+/* LoginCSS Page */
