@@ -6,7 +6,7 @@ import Form from "react-validation/build/form"
 import CheckButton from "react-validation/build/button"
 
 import { login, loginSSO } from "../redux/actions/auth.action"
-import logo from "assets/img/RGE-logo/dmp-square.svg"
+import logo from "assets/img/Progeny-logo/logoStyle02.png"
 import { IconButton, Icon, Loader } from "rsuite"
 import { useHistory } from "react-router-dom"
 import { SSO_WEB_LOGIN } from "../constants/index"
@@ -66,11 +66,6 @@ const Login = props => {
     setPassword(e.target.value)
   }
 
-  const selectSSOLogin = () => {
-    setLoading(true)
-    window.location.replace(SSO_WEB_LOGIN)
-  }
-
   const handleLogin = e => {
     e.preventDefault()
 
@@ -92,19 +87,6 @@ const Login = props => {
     }
   }
 
-  const ssoLogin = e => {
-    e.preventDefault()
-    setLoading(true)
-    dispatch(loginSSO(ssoToken))
-      .then(() => {
-        // props.history.push("/overview")
-        props.history.push("/overview")
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
-
   if (isLoggedIn) {
     return <Redirect to="/overview" />
   }
@@ -122,79 +104,50 @@ const Login = props => {
           <Container>
             <Card className="bg-transparent border-0">
               <CardBody>
-                <div className="text-center login-logo">
-                  <img src={logo} alt="RGE Group" height={100} />
-                  <h2>Login to Progeny Dashboard</h2>
+                <div className="text-center">
+                  <img
+                    src={logo}
+                    alt="Progeny Management System"
+                    height={200}
+                  />
+                  <p className="title">
+                    Login to <b>Progeny Management System</b> Dashboard
+                  </p>
                 </div>
-                {/* {loginMethod === null && (
-                  <>
-                    <div className="login-method">
-                      <IconButton
-                        onClick={() => selectSSOLogin()}
-                        icon={<Icon icon="angle-right" />}
-                        placement="right"
-                        block
-                      >
-                        <span>Single Sign-On (SSO)</span>
-                      </IconButton>
-                    </div>
-                  </>
-                )} */}
-                {/* {loginMethod === LOGIN_METHOD.sso && (
-                  <div>
-                    {message && (
-                      <div className="form-group">
-                        <div className="alert alert-danger" role="alert">
-                          {message}
-                        </div>
-                      </div>
-                    )}
-                    <div className="custom-input">
+                <Form onSubmit={handleLogin} ref={form}>
+                  <tr>
+                    <td>
+                      <label className="login-label">Username</label>
+                    </td>
+                    <td>
                       <input
+                        className="form-login"
                         name="username"
                         type="text"
                         placeholder="Username"
-                        disabled={true}
-                        value={ssoUsername}
+                        onChange={onChangeUsername}
+                        value={username}
+                        validations={[required]}
                       />
-                      <label htmlFor="username">Username</label>
-                    </div>
-                    <button
-                      onClick={e => ssoLogin(e)}
-                      className="btn btn-primary btn-block btn-lg login"
-                      disabled={loading || ssoUsername === ""}
-                    >
-                      {loading && (
-                        <span className="spinner-border spinner-border-sm" />
-                      )}
-                      <span>SSO Login</span>
-                    </button>
-                  </div>
-                )} */}
-                {/* {loginMethod === LOGIN_METHOD.normal && ( */}
-                <Form onSubmit={handleLogin} ref={form}>
-                  <div className="custom-input">
-                    <input
-                      name="username"
-                      type="text"
-                      placeholder="Username"
-                      onChange={onChangeUsername}
-                      value={username}
-                      validations={[required]}
-                    />
-                    <label htmlFor="username">Username</label>
-                  </div>
-                  <div className="custom-input">
-                    <input
-                      name="password"
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={onChangePassword}
-                      validations={[required]}
-                    />
-                    <label htmlFor="Password">Password</label>
-                  </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label className="login-label">Username</label>
+                    </td>
+                    <td>
+                      <input
+                        className="form-login"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={onChangePassword}
+                        validations={[required]}
+                      />
+                    </td>
+                  </tr>
 
                   <div className="form-group">
                     <button

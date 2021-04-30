@@ -1,272 +1,48 @@
-.rs-picker-has-value .rs-btn .rs-picker-toggle-value,
-.rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value {
-  color: $color-heading;
-}
+//Sidebar Drawer
+.rs-drawer-content {
+    width: 318px;
 
-.rs-calendar-table-cell-selected .rs-calendar-table-cell-content {
-  border-color: $primary;
-  background-color: $primary;
-  border-radius: 5px;
-}
-.rs-picker-toolbar-right-btn-ok {
-  border-color: $primary;
-  background-color: $primary;
-  border-radius: 5px;
-}
-.rs-picker-toolbar-option {
-  color: $primary;
-}
-
-.rs-picker-toggle {
-  &.rs-btn {
-    .rs-picker-toggle-caret,
-    .rs-picker-toggle-clean {
-      top: 6px !important;
+    .rs-drawer-header {
+        margin: 20px 7px 0;
+        height: 60px;
     }
-  }
-  font-size: 0.8125rem;
-  color: $color-heading;
-  .rs-picker-toggle-value,
-  .rs-picker-toggle-placeholder {
-    color: $color-heading;
-    font-size: 0.8125rem;
-  }
-}
 
-.rs-picker-toggle {
-  border-color: transparent !important;
-  border-width: 1px;
-}
+    .rs-drawer-header-close {
+        display: none;
+    }
 
-.rs-picker-input,
-.rs-picker-daterange,
-.rs-input,
-.rs-picker-date,
-.rs-picker-check {
-  box-shadow: 0 2px 3px #0000000d;
-  border: 1px solid #d7dae2 !important;
-  border-radius: 4px;
-  font-size: 0.8125rem;
-  min-height: 36px;
-  &.rs-picker-disabled {
-    background: #fff !important;
-  }
-}
-.rs-picker-input,
-.rs-picker-date,
-.rs-picker-check {
-  &.rs-picker-disabled .rs-btn {
-    background: #fff !important;
-  }
-}
-.rs-picker-select-menu-items {
-  font-size: 0.8125rem;
-}
-
-.rs-input-group {
-  &.rs-input-group-inside {
-    .rs-input {
-      box-shadow: 0px 2px 3px #0000000d;
-      border: 1px solid #d7dae2 !important;
-      border-radius: 4px;
-    }
-    .rs-input-group-addon {
-      padding: 0;
-    }
-    &.rs-input-group-md > .rs-input-group-addon {
-      padding: 11px 13px 8px 13px;
-    }
-  }
-}
-
-.rs-picker-menu {
-  &.fade.in {
-    opacity: 1 !important;
-  }
-  .rs-picker-check-menu-items {
-    label {
-      font-size: 0.8125rem;
-    }
-  }
-}
-.rs-popover {
-  &.fade {
-    opacity: 1 !important;
-  }
-  .rs-popover-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: $body-color-dark;
-  }
-}
-.btn-color-primary {
-  color: $primary;
-  font-size: 0.9rem;
-  font-weight: 600;
-  &:hover {
-    color: $primary;
-  }
-}
-
-.btn-color-danger {
-  color: $danger;
-  font-size: 0.9rem;
-  font-weight: 600;
-  &:hover {
-    color: $danger;
-  }
-}
-
-.rs-table {
-  .rs-table-row {
-    font-size: 1rem;
-    &.rs-table-row-header {
-      .rs-table-cell {
-        background-color: #e6ebfe;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: $body-color-dark;
-      }
-      .rs-table-column-resize-spanner {
-        border-color: #e6ebfe;
-      }
-    }
-    .rs-table-cell-content {
-      font-size: 0.9rem;
-    }
-    .__action_col {
-      .rs-table-cell-content {
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        .rs-icon,
-        .rs-btn {
-          color: $primary;
+    .rs-sidenav {
+        .rs-nav-item .rs-nav-item-content, .rs-dropdown .rs-dropdown-toggle  {
+            padding-left: 25px;
         }
-      }
+
+        .rs-nav-item-content {
+            color: #444444;
+            background-color: #fff;
+        }
+
+        .rs-nav .rs-nav-item-active > .rs-nav-item-content
+         {
+            color: $primary-green;
+            background-color: $background-green;
+        }
+
+        .rs-nav-item > a.rs-nav-item-content:hover {
+            color: #000;
+            background-color: transparent;
+        }
     }
-  }
-}
-.rs-table-pagination-toolbar {
-  .rs-table-pagination-length-menu {
-    .rs-picker-toggle.rs-btn {
-      .rs-picker-toggle-caret {
-        top: 0 !important;
-      }
-    }
-  }
 }
 
-.rs-modal-wrapper {
-  .rs-modal-backdrop.fade.in {
-    opacity: 0.3 !important;
-  }
-  .rs-modal {
-    .rs-modal-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: $body-color-dark;
-    }
-  }
+//Sub-Navigation
+.rs-navbar-nav .rs-nav-item > .rs-nav-item-content {
+    padding: 3px 16px;
+    height: 42px;
 }
 
-.rs-drawer-wrapper {
-  .rs-drawer-backdrop.fade.in {
-    opacity: 0.3 !important;
-  }
-  .rs-drawer-dialog {
-    .rs-drawer-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: $body-color-dark;
-    }
-  }
+.rs-nav-subtle.rs-nav-horizontal .rs-nav-item > .rs-nav-item-content::before {
+    height: 4px;
+    font-weight: 700;
 }
 
-.rs-input[disabled],
-.rs-picker-disabled {
-  color: #6d6d6d;
-  opacity: 1;
-  background: #fff !important;
-  font-size: 0.9rem;
-}
 
-.rs-nav-tabs.rs-nav-horizontal {
-  .rs-nav-item {
-    margin-right: 5px;
-    > .rs-nav-item-content {
-      background-color: #e9e9e9;
-    }
-    &.rs-nav-item-active > .rs-nav-item-content {
-      color: $default;
-      font-weight: 600;
-      background-color: #fff;
-    }
-  }
-}
-
-.custom-tab {
-  border: 1px solid #d9d9d9;
-  border-top: 0;
-  padding: 1.25rem 0.8rem 1rem 0.8rem;
-}
-
-.rs-picker-toggle-wrapper {
-  vertical-align: top;
-}
-
-.rs-input-number {
-  .rs-input {
-    border: none !important;
-  }
-}
-
-.opex-select {
-  box-shadow: 0px 2px 3px #0000000d;
-  border: 1px solid #d7dae2 !important;
-  border-radius: 4px;
-}
-
-.rs-panel-collapse.collapse.in {
-  display: block !important;
-}
-.table-small {
-  .rs-table-cell-content {
-    padding: 6px 3px !important;
-    font-size: 0.875rem !important;
-    line-height: 1;
-  }
-}
-
-.rs-form-control-wrapper.read-only {
-  opacity: 0.7;
-  .rs-picker-default .rs-picker-toggle {
-    background: #eaeaea !important;
-    border-radius: 4px !important;
-  }
-}
-
-.rs-table-scrollbar {
-  &.rs-table-scrollbar-vertical {
-    width: 16px;
-    .rs-table-scrollbar-handle {
-      border-radius: 4px;
-      width: 16px;
-      opacity: 0.4;
-      &:hover {
-        opacity: 0.8;
-      }
-    }
-  }
-  &.rs-table-scrollbar-horizontal {
-    height: 16px;
-    .rs-table-scrollbar-handle {
-      height: 16px;
-      border-radius: 4px;
-      opacity: 0.4;
-      &:hover {
-        opacity: 0.8;
-      }
-    }
-  }
-}

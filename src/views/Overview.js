@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { CANCEL_REQUEST, FREQUENCY_SELECT_OPTS } from "../constants"
-import classnames from "classnames"
-import logo from "assets/img/PG-logo/asianagri_dpp-h.svg"
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
+import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
+import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
+import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
+import logo from "assets/img/Progeny-logo/logoStyle02.png"
 // reactstrap components
 import {
   Container,
@@ -26,7 +29,8 @@ import {
   Nav as NavRS,
   Container as ContainerRS,
   Dropdown,
-  InputPicker
+  InputPicker,
+  FlexboxGrid
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../redux/actions/app.action"
@@ -38,15 +42,8 @@ import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
 import { Drawer, Button, IconButton, Sidenav } from "rsuite"
-
-const headerStyles = {
-  padding: 8,
-  paddingLeft: 16,
-  height: 56,
-  color: "#333",
-  whiteSpace: "nowrap",
-  overflow: "hidden"
-}
+import Table from "../components/table/Table"
+import Estate from "./Estate"
 
 const initialSidenavState = {
   expanded: true,
@@ -58,7 +55,9 @@ const initialSubnavState = {
 const listItems = [
   {
     name: "Master Data",
-    icon: "dashboard",
+    customClass: "master",
+    customIcon: ImportantDevicesRoundedIcon,
+    icon: "desktop",
     eventKey: "1",
     sublist: [
       {
@@ -227,15 +226,50 @@ const listItems = [
   {
     name: "User Management",
     icon: "group",
+    customIcon: SupervisedUserCircleRoundedIcon,
+    customClass: "master",
     eventKey: "2",
     sublist: [
       {
+        name: "User List",
+        eventKey: "userlist",
+        filters: [
+          {
+            name: "position",
+            label: "Position",
+            type: "select"
+          }
+        ],
+        search: true
+      },
+      {
         name: "Estate Assignment",
-        eventKey: "estate"
+        eventKey: "estate",
+        filters: [
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          }
+        ],
+        search: true
       },
       {
         name: "User Assignment",
-        eventKey: "user"
+        eventKey: "user",
+        filters: [
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          },
+          {
+            name: "position",
+            label: "Position",
+            type: "select"
+          }
+        ],
+        search: true
       }
     ]
   }
@@ -264,6 +298,12 @@ const Overview = props => {
   }
   function handleSelectTab(eventKey) {
     setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }))
+    if (eventKey === "2") {
+      setSubnavState(() => ({ ...subnavState, active: "userlist" }))
+    } else {
+      setSubnavState(() => ({ ...subnavState, active: "estate" }))
+    }
+
     close()
   }
   function handleSelect(activeKey) {
@@ -301,34 +341,35 @@ const Overview = props => {
   return (
     <>
       {isLoggedIn && (
-        <div className="sidebar-page">
-          <ContainerRS>
-            <ContainerRS>
-              <Header>
-                <Navbar className="custom-navs">
-                  <Navbar.Header>
-                    <div style={headerStyles}>
-                      <IconButton
-                        icon={<Icon icon="angle-right" />}
-                        onClick={() => toggleDrawer()}
-                      >
-                        Left
-                      </IconButton>
-                    </div>
-                  </Navbar.Header>
+        <ContainerRS id="main-page">
+          <div>
+            <Header>
+              <Navbar className="headNav">
+                <Navbar.Header style={{ height: 70 }}>
+                  <div className="headNav-left">
+                    <MenuRoundedIcon
+                      className="headNav-toggle"
+                      onClick={() => toggleDrawer()}
+                    />
+                    <img
+                      className="headNav-img"
+                      alt="Progeny Management System"
+                      src={logo}
+                    />
 
-                  <Navbar.Header>
-                    <div style={headerStyles}>
-                      <img alt="RGE" height={40} src={logo} />
-                    </div>
-                  </Navbar.Header>
-                  <Navbar.Body>
-                    {/* <NavRS>
-                      <BreadcrumbProgeny />
-                    </NavRS> */}
-                    <NavRS pullRight>
+                    <p className="headNav-title">Progeny Management System</p>
+                  </div>
+                </Navbar.Header>
+                <Navbar.Body>
+                  {/* <NavRS>
+                        <BreadcrumbProgeny />
+                      </NavRS> */}
+                  <div>
+                    <NavRS pullRight className="headNav-logout">
                       <Dropdown
-                        icon={<Icon icon="user-o" />}
+                        icon={
+                          <AccountCircleRoundedIcon className="headNav-profileLogo" />
+                        }
                         title={GeneralHelper.buildDisplayName(
                           user.firstName,
                           user.lastName,
@@ -343,64 +384,82 @@ const Overview = props => {
                         </Dropdown.Item>
                       </Dropdown>
                     </NavRS>
-                  </Navbar.Body>
-                </Navbar>
-              </Header>
-              <Content>
-                <main>
-                  <ProgenySubNavBar
-                    active={active}
-                    onSelect={handleSelect}
-                    currentItem={currentSideItem}
-                  />
-                  <section id="overview" className="main-section">
-                    {isLoading ? (
-                      <Loader center content="Loading" />
-                    ) : (
-                      <Container fluid>
-                        <TabPanel
-                          currentSubNavState={subnavState}
-                          currentItem={currentSideItem}
-                        />
-                      </Container>
-                    )}
-                  </section>
-                </main>
-              </Content>
-              <Drawer
-                size="xs"
-                placement="left"
-                backdrop
-                show={isDrawer}
-                onHide={close}
+                  </div>
+                </Navbar.Body>
+              </Navbar>
+            </Header>
+          </div>
+
+          <Content>
+            <main id="content-section">
+              <div className="subNav">
+                <ProgenySubNavBar
+                  style={{ backgroundColor: "white" }}
+                  active={active}
+                  onSelect={handleSelect}
+                  currentItem={currentSideItem}
+                />
+              </div>
+              <div className="content" style={{ backgroundColor: "#f9f9f9" }}>
+                <section id="overview">
+                  {isLoading ? (
+                    <Loader center content="Loading" />
+                  ) : (
+                    <Container fluid>
+                      {/* MAIN COMPOENTS */}
+                      <TabPanel
+                        currentSubNavState={subnavState}
+                        currentItem={currentSideItem}
+                      />
+                    </Container>
+                  )}
+                </section>
+              </div>
+            </main>
+            <NavRS pullRight></NavRS>
+          </Content>
+
+          <Drawer
+            size="xs"
+            placement="left"
+            backdrop
+            show={isDrawer}
+            onHide={close}
+          >
+            <Drawer.Header id="drawer">
+              <img src={logo} className="drawer-img" />
+              <div className="drawer-title">
+                <div className="drawer-title-content">Progeny</div>
+                <div className="drawer-title-content">Management System</div>
+              </div>
+            </Drawer.Header>
+            <Drawer.Body style={{ margin: "30px 0px" }}>
+              <Sidenav
+                expanded={expanded}
+                activeKey={activeKey}
+                onSelect={handleSelectTab}
               >
-                <Drawer.Header>
-                  <Drawer.Title>Progeny Management System</Drawer.Title>
-                </Drawer.Header>
-                <Drawer.Body style={{ margin: "30px 0px" }}>
-                  <Sidenav
-                    expanded={expanded}
-                    activeKey={activeKey}
-                    onSelect={handleSelectTab}
-                  >
-                    <Sidenav.Body>
-                      <NavRS>
-                        {listItems.map((item, i) => (
-                          <NavRS.Item
-                            eventKey={item.eventKey}
-                            icon={<Icon icon={item.icon} key={i} />}
-                          >
-                            {item.name}
-                          </NavRS.Item>
-                        ))}
-                      </NavRS>
-                    </Sidenav.Body>
-                  </Sidenav>
-                </Drawer.Body>
-              </Drawer>
-            </ContainerRS>
-          </ContainerRS>
-        </div>
+                <Sidenav.Body>
+                  <NavRS>
+                    {listItems.map((item, i) => (
+                      <NavRS.Item
+                        eventKey={item.eventKey}
+                        icon={
+                          <item.customIcon
+                            className="drawer-content-icon"
+                            key={i}
+                          />
+                        }
+                      >
+                        {item.name}
+                      </NavRS.Item>
+                    ))}
+                  </NavRS>
+                </Sidenav.Body>
+              </Sidenav>
+            </Drawer.Body>
+          </Drawer>
+        </ContainerRS>
       )}
     </>
   )
