@@ -25,8 +25,9 @@ const SearchFilter = forwardRef(
     const [selectedFilters, setFilters] = useState(initialFilters)
 
     // console.log(currentSubNavState)
-    // console.log(currentItem)
+
     const { active } = currentSubNavState
+    console.log({ currentItem }, { active })
     const isDesktopOrLaptop = useMediaQuery({
       query: "(min-device-width: 1224px)"
     })
