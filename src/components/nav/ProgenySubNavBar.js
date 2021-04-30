@@ -2,7 +2,7 @@ import React from "react"
 import { Icon, Breadcrumb, Header, Navbar, Nav } from "rsuite"
 import { useSelector } from "react-redux"
 const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
-  console.log({ currentItem })
+  // console.log({ currentItem })
   const listItems = currentItem ? currentItem.sublist : []
   const breadcrumb = useSelector(state => state.appReducer.breadcrumb)
 

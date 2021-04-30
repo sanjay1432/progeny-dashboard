@@ -2,7 +2,7 @@ import React from "react"
 import { Container, Row, Col } from "reactstrap"
 import SearchFilter from "./SearchFilter"
 const Table = ({ currentSubNavState, ...props }) => {
-  console.log(currentSubNavState)
+  // console.log(currentSubNavState)
   return (
     <>
       <main>
