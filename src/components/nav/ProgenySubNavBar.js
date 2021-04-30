@@ -1,5 +1,6 @@
 import React from "react"
 import { Icon, Breadcrumb, Header, Navbar, Nav } from "rsuite"
+//import '../../assets/scss/ProgenySubNavBar.scss'
 import { useSelector } from "react-redux"
 const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
   console.log({ currentItem })
@@ -9,21 +10,30 @@ const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
   return (
     <>
       <Header>
-        <Navbar {...props} className="navbar">
-          <Navbar.Body>
+        <Navbar {...props} id="navbar">
+          <Navbar.Body style={{ textAlign: "left" }}>
             <Nav
+              className="hihi"
               {...props}
               appearance="subtle"
               activeKey={active}
               onSelect={onSelect}
             >
-              {currentItem.name} |
-              {listItems.map((item, i) => (
-                <Nav.Item eventKey={item.eventKey} key={i}>
-                  {" "}
-                  {item.name}
-                </Nav.Item>
-              ))}
+              <div
+                className={
+                  currentItem.customClass ? currentItem.customClass : ""
+                }
+              >
+                <b>{currentItem.name} |</b>
+              </div>
+              <div>
+                {listItems.map((item, i) => (
+                  <Nav.Item eventKey={item.eventKey} key={i}>
+                    {" "}
+                    {item.name}
+                  </Nav.Item>
+                ))}
+              </div>
             </Nav>
           </Navbar.Body>
         </Navbar>

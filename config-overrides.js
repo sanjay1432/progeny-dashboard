@@ -5,7 +5,10 @@ module.exports = override(
     // If you are using less-loader@5 or older version, please spread the lessOptions to options directly.
     lessOptions: {
       javascriptEnabled: true,
-      modifyVars: { "@icon-font-path": "./fonts" }
+      modifyVars: {
+        "@primary-color:": "#009d57",
+        "@base-color": "#009d57"
+      }
     }
   })
 )

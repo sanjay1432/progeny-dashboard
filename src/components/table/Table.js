@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import "rsuite/dist/styles/rsuite-default.css"
 import { Scrollbars } from "react-custom-scrollbars"
 import { Table, Loader } from "rsuite"
 const { Column, HeaderCell, Cell, Pagination } = Table
@@ -69,11 +68,7 @@ const DataTable = ({ columns, data }) => {
                 return (
                   <Column width={width} fixed={fixed}>
                     <HeaderCell>{col.name}</HeaderCell>
-                    {customCell ? (
-                      <customCell dataKey={dataKey} />
-                    ) : (
-                      <Cell dataKey={dataKey} />
-                    )}
+                    {customCell ? customCell : <Cell dataKey={dataKey} />}
                   </Column>
                 )
               })}

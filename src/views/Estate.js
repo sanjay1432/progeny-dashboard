@@ -18,6 +18,18 @@ const Estate = () => {
     return () => {}
   }, [])
 
+  const CheckCell = ({ rowData, dataKey, ...props }) => (
+    <Cell {...props}>
+      <input type="checkbox" id="id" value={rowData[dataKey]} />
+    </Cell>
+  )
+
+  const ActionCell = ({ rowData, dataKey, ...props }) => (
+    <Cell {...props}>
+      <OpenInNewRoundedIcon onClick={handleClick} />
+    </Cell>
+  )
+
   const COLUMNS = [
     {
       name: "",
@@ -51,18 +63,6 @@ const Estate = () => {
       width: 170
     }
   ]
-
-  const CheckCell = ({ rowData, dataKey, ...props }) => (
-    <Cell {...props}>
-      <input type="checkbox" id="id" value={rowData[dataKey]} />
-    </Cell>
-  )
-
-  const ActionCell = ({ rowData, dataKey, ...props }) => (
-    <Cell {...props}>
-      <OpenInNewRoundedIcon onClick={handleClick} />
-    </Cell>
-  )
 
   function handleClick({ rowData, dataKey }) {
     alert(rowData[dataKey])

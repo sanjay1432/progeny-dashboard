@@ -1,0 +1,89 @@
+#main-page {
+    background-color: $white;
+
+    .headNav {
+        background-color: $white;
+        box-shadow: 0px 0px 5px 0px #ccc;   
+    }
+
+    .headNav-left {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .headNav-toggle {
+        background-color: $primary-green;  
+        color: $white;
+        border-radius: 5px;
+        padding: 7px;
+        margin: 17.5px 10px 17.5px 25px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .headNav-img {
+        width: 65.8px;
+        height: 52.2px;
+        margin: 8.9px 0px 8.9px 10px;
+    }
+
+    .headNav-title {
+        color: $primary-green;
+        font-size: 27px;
+        font-weight: 600;
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 10px;
+    }
+
+    .headNav-profileLogo {
+        margin-right: 10px;
+        color: $primary-green;
+    }
+
+    .headNav-logout {
+        margin-top: 7px;
+    }
+
+    .subNav {
+        float: left;
+    }
+}
+
+#content-section{
+    margin-top: 3px;
+    display: flex;
+    flex-direction: column;
+    
+
+    .subNav {
+        margin-right: auto;
+        border: none;
+    }
+
+
+}
+
+//SideNavigation Drawer
+#drawer {
+    display: flex;
+    flex-direction: row;
+
+    .drawer-img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .drawer-title {
+        margin: 26px 64px 26px 30px;
+    }
+
+    .drawer-title-content {
+        color: $primary-green;
+        font-size: 20px;
+        font-weight: 700;
+    }
+}
+
+
+
