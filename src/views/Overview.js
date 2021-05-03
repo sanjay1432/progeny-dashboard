@@ -62,23 +62,164 @@ const listItems = [
     sublist: [
       {
         name: "Estate",
-        eventKey: "estate"
+        eventKey: "estate",
+        filters: [
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          }
+        ],
+        search: true
       },
       {
         name: "Trial and Replicate",
-        eventKey: "trial"
+        eventKey: "trial",
+        filters: [
+          {
+            name: "trialid",
+            label: "Trial Id",
+            type: "select"
+          },
+          {
+            name: "planteddate",
+            label: "Planted Date (year)",
+            type: "select"
+          },
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          },
+          {
+            name: "soiltype",
+            label: "Soil Type",
+            type: "select"
+          }
+        ],
+        search: false
       },
       {
         name: "Plot",
-        eventKey: "plot"
+        eventKey: "plot",
+        filters: [
+          {
+            name: "trialid",
+            label: "Trial Id",
+            type: "select"
+          },
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          },
+          {
+            name: "replicate",
+            label: "Replicate",
+            type: "select"
+          }
+        ],
+        search: false
       },
       {
         name: "Palm",
-        eventKey: "palm"
+        eventKey: "palm",
+        filters: [
+          {
+            name: "trialid",
+            label: "Trial Id",
+            type: "select"
+          },
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          },
+          {
+            name: "replicate",
+            label: "Replicate",
+            type: "select"
+          },
+          {
+            name: "plot",
+            label: "Plot",
+            type: "select"
+          }
+        ],
+        search: false
       },
       {
         name: "Progeny",
-        eventKey: "progeny"
+        eventKey: "progeny",
+        filters: [
+          // {
+          //   name:"popvar",
+          //   label:"Pop Var",
+          //   type: "select"
+          // },
+          // {
+          //   name:"generation",
+          //   label:"Generation",
+          //   type: "select"
+          // },
+          // {
+          //   name:"crosstype",
+          //   label:"Cross Type",
+          //   type: "select"
+          // },
+          // {
+          //   name:"fpvar",
+          //   label:"FP Var",
+          //   type: "select"
+          // },
+          // {
+          //   name:"mpvar",
+          //   label:"MP Var",
+          //   type: "select"
+          // },
+          {
+            name: "progenyId",
+            label: "Progeny ID",
+            type: "text"
+          },
+          {
+            name: "progeny",
+            label: "Progeny",
+            type: "text"
+          },
+          {
+            name: "fp",
+            label: "FP",
+            type: "text"
+          },
+          {
+            name: "fpfam",
+            label: "FP Fam",
+            type: "text"
+          },
+          {
+            name: "mp",
+            label: "MP",
+            type: "text"
+          },
+          {
+            name: "mpfam",
+            label: "MP Fam",
+            type: "text"
+          },
+
+          // {
+          //   name:"progenyremark",
+          //   label:"Progeny Remark",
+          //   type: "text"
+          // },
+          {
+            name: "orlet",
+            label: "Orlet",
+            type: "text"
+          }
+        ],
+        search: false
       }
     ]
   },
@@ -90,12 +231,45 @@ const listItems = [
     eventKey: "2",
     sublist: [
       {
+        name: "User List",
+        eventKey: "userlist",
+        filters: [
+          {
+            name: "position",
+            label: "Position",
+            type: "select"
+          }
+        ],
+        search: true
+      },
+      {
         name: "Estate Assignment",
-        eventKey: "estate"
+        eventKey: "estate",
+        filters: [
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          }
+        ],
+        search: true
       },
       {
         name: "User Assignment",
-        eventKey: "user"
+        eventKey: "user",
+        filters: [
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select"
+          },
+          {
+            name: "position",
+            label: "Position",
+            type: "select"
+          }
+        ],
+        search: true
       }
     ]
   }
@@ -113,7 +287,8 @@ const Overview = props => {
   const currentSideItem = listItems.find(
     item => item.eventKey === sidenavState.activeKey
   )
-  console.log({ currentSideItem }, sidenavState)
+
+  // console.log({ currentSideItem }, sidenavState)
   const toggleNavs = (e, index) => {
     e.preventDefault()
     setActiveTab(index)
@@ -123,6 +298,12 @@ const Overview = props => {
   }
   function handleSelectTab(eventKey) {
     setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }))
+    if (eventKey === "2") {
+      setSubnavState(() => ({ ...subnavState, active: "userlist" }))
+    } else {
+      setSubnavState(() => ({ ...subnavState, active: "estate" }))
+    }
+
     close()
   }
   function handleSelect(activeKey) {
@@ -225,12 +406,11 @@ const Overview = props => {
                     <Loader center content="Loading" />
                   ) : (
                     <Container fluid>
-                      <Row className="justify-content-center">
-                        {/* MAIN COMPOENTS */}
-                        <TabPanel currentSubNavState={subnavState} />
-
-                        <Table />
-                      </Row>
+                      {/* MAIN COMPOENTS */}
+                      <TabPanel
+                        currentSubNavState={subnavState}
+                        currentItem={currentSideItem}
+                      />
                     </Container>
                   )}
                 </section>
