@@ -88,7 +88,7 @@ const SearchFilter = forwardRef(
     function SearchBox() {
       if (filterList.search) {
         return (
-          <Col xs={8} sm={4} md={3} lg={3}>
+          <Col xs={4}>
             <div className="show-col">
               {" "}
               <Search />
@@ -102,14 +102,11 @@ const SearchFilter = forwardRef(
       // const {show} = show;
       if (showMoreFiltersButton) {
         return (
-          <Col xs={8} sm={4} md={3} lg={3}>
-            <div
-              className="show-col"
-              //style={{ padding: "25px 0 0px 0px" }}
-            >
+          <Col xs={4}>
+            <div className="show-col" style={{ padding: "25px 0 0px 0px" }}>
               <Button
-                className="moreFilter"
-                appearance="primary"
+                appearance="ghost"
+                className="btnMoreFilter"
                 //style={{ width: "100%" }}
                 onClick={() => toggleDrawer()}
               >
@@ -153,7 +150,7 @@ const SearchFilter = forwardRef(
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
-                <Col xs={8} sm={4} md={3} lg={3}>
+                <Col xs={4}>
                   <div className="show-col">
                     {" "}
                     <Filter
@@ -166,27 +163,18 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col xs={8} sm={4} md={3} lg={3}>
-              <div
-                className="show-col"
-                //style={{ padding: "25px 0 0px 0px" }}
-              >
+            <Col xs={4}>
+              <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
+                  className="btnApply"
                   appearance="primary"
-                  //style={{ width: "100%" }}
                   onClick={onApply}
                 >
                   Apply
                 </Button>
               </div>
             </Col>
-            <Col
-              xs={4}
-              sm={2}
-              md={2}
-              lg={2}
-              //style={{ padding: "25px 0 0px 0px" }}
-            >
+            <Col xs={4} style={{ padding: "25px 0 0px 0px" }}>
               <div className="show-col">
                 {/* <Button appearance="subtle"  onClick={() => childRef.current.onClear()}>Reset Filter</Button> */}
                 <Button appearance="subtle" onClick={onReset}>
@@ -207,7 +195,13 @@ const SearchFilter = forwardRef(
           )}
           {isTabletOrMobileDevice && <p>You are a tablet or mobile phone</p>}
         </Grid>
-        <Drawer placement="right" size="xs" show={isDrawer} onHide={close}>
+        <Drawer
+          id="moreFilterDrawer"
+          placement="right"
+          size="xs"
+          show={isDrawer}
+          onHide={close}
+        >
           <Drawer.Header>
             <Drawer.Title>More Filters</Drawer.Title>
           </Drawer.Header>
@@ -233,19 +227,11 @@ const SearchFilter = forwardRef(
           </Sidenav> */}
           </Drawer.Body>
           <Drawer.Footer>
-            <Button
-              onClick={close}
-              appearance="primary"
-              //style={{ width: "100%" }}
-            >
+            <Button onClick={close} appearance="primary">
               Apply
             </Button>
             <br />
-            <Button
-              onClick={close}
-              appearance="subtle"
-              //style={{ width: "100%" }}
-            >
+            <Button onClick={close} appearance="subtle">
               Reset filter
             </Button>
           </Drawer.Footer>

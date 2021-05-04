@@ -1,3 +1,32 @@
+//MasterData main Page
+.rs-row {
+    margin: 36px 15px 36px 15px;
+}
+
+.rs-control-label {
+    color: $primary-black;
+}
+.rs-input  {
+    width: 140px;
+    height: 40px;
+    border-radius: 9px;
+}
+
+.rs-control-label{
+    font-size: 12px;
+    font-weight: 700;
+    width: 160px;
+}
+
+.rs-picker-toggle {
+    width: 140px;
+    height: 40px;
+}
+
+a {
+    color: #444444;
+}
+
 //Sidebar Drawer
 .rs-drawer-backdrop.in {
     opacity: .3;
@@ -63,21 +92,64 @@
     color: $primary-green;
 }
 
-//Input-Box
-.rs-input, rs-input:hover {
-    width: 175px;
-    height: 40px;
-    border-radius: 9px;
-}
 
-.rs-btn-default {
-    width: 175px;
-    height: 40px;
-    border-radius: 9px;
-}
 
-.rs-btn-subtle {
-    font-size: 14px;
-    font-weight: 700;
-    color: $primary-green;
+//More Filter Drawer
+#moreFilterDrawer{
+    .rs-drawer-content {
+        width: 400px;
+        padding: 50px;
+    }
+
+    .rs-drawer-header {
+        margin: 0;
+        padding: 0;
+
+        .rs-drawer-title {
+            color: $primary-green;
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+
+    .rs-drawer-body {
+        margin: 0px 0px 50px 0px;
+
+        .rs-control-label {
+            color: $primary-black;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .rs-flex-box-grid-item {
+            margin-bottom: 20px;
+        }
+
+        .rs-flex-box-grid-center{
+            justify-content: left;
+        }
+    
+        .rs-input, .rs-btn {
+            width: 280px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    }
+
+    .rs-drawer-footer {
+        margin: 20px 0px 20px 0px;
+
+        .rs-btn-primary {
+            width: 100%;
+        }
+
+        .rs-btn-subtle {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .rs-btn-subtle:hover {
+            background-color: white;
+        }
+    }    
 }

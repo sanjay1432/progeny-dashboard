@@ -13,6 +13,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
     <>
       <main>
         <SearchFilter
+          id="searchFilter"
           currentSubNavState={currentSubNavState}
           currentItem={currentItem}
           ref={searchFiltersRef}

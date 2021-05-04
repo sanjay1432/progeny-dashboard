@@ -1,3 +1,11 @@
-.moreFilter{
-    width: 200px;
+.btnMoreFilter{
+    width: 140px;
+    border: 1px solid $primary-green;
+    background-color: white;
+    color: $primary-green;
+    font-weight: 700;
+}
+
+.show-col {
+    width: 100px;
 }

@@ -3,7 +3,8 @@ import { Container, Row, Col } from "reactstrap"
 import { Input, InputGroup, Icon, ControlLabel } from "rsuite"
 const Search = ({ currentSubNavState, ...props }) => {
   const styles = {
-    marginBottom: 10
+    width: 140,
+    marginRight: 5
   }
   return (
     <>
