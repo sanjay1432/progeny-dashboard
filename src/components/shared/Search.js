@@ -1,22 +1,30 @@
 import React from "react"
 import { Container, Row, Col } from "reactstrap"
 import { Input, InputGroup, Icon, ControlLabel } from "rsuite"
+import Radium, { StyleRoot } from "radium"
 const Search = ({ currentSubNavState, ...props }) => {
   const styles = {
     width: 140,
-    marginRight: 5
+    marginRight: 5,
+    "@media (min-width: 1900px": {
+      width: 170,
+      marginRight: 5
+    }
   }
+
   return (
-    <>
-      <ControlLabel>Search</ControlLabel>
-      <InputGroup inside style={styles}>
-        <Input />
-        <InputGroup.Button>
-          <Icon icon="search" />
-        </InputGroup.Button>
-      </InputGroup>
-    </>
+    <StyleRoot>
+      <div>
+        <ControlLabel>Search</ControlLabel>
+        <InputGroup inside style={styles}>
+          <Input />
+          <InputGroup.Button>
+            <Icon icon="search" />
+          </InputGroup.Button>
+        </InputGroup>
+      </div>
+    </StyleRoot>
   )
 }
 
-export default Search
+export default Radium(Search)

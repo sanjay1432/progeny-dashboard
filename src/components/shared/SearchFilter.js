@@ -88,7 +88,7 @@ const SearchFilter = forwardRef(
     function SearchBox() {
       if (filterList.search) {
         return (
-          <Col xs={4}>
+          <Col md={4} lg={3}>
             <div className="show-col">
               {" "}
               <Search />
@@ -102,7 +102,7 @@ const SearchFilter = forwardRef(
       // const {show} = show;
       if (showMoreFiltersButton) {
         return (
-          <Col xs={4}>
+          <Col md={4} lg={3}>
             <div className="show-col" style={{ padding: "25px 0 0px 0px" }}>
               <Button
                 appearance="ghost"
@@ -150,7 +150,7 @@ const SearchFilter = forwardRef(
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
-                <Col xs={4}>
+                <Col md={4} lg={3}>
                   <div className="show-col">
                     {" "}
                     <Filter
@@ -163,7 +163,7 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col xs={4}>
+            <Col md={4} lg={3}>
               <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
                   className="btnApply"
@@ -174,7 +174,7 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col xs={4} style={{ padding: "25px 0 0px 0px" }}>
+            <Col md={4} lg={3} style={{ padding: "25px 0 0px 0px" }}>
               <div className="show-col">
                 {/* <Button appearance="subtle"  onClick={() => childRef.current.onClear()}>Reset Filter</Button> */}
                 <Button appearance="subtle" onClick={onReset}>

@@ -5,9 +5,10 @@
 
 .rs-control-label {
     color: $primary-black;
+    margin-left: 2px;
 }
-.rs-input  {
-    width: 140px;
+.rs-input-group, .rs-input-group-inside, .rs-input  {
+    width: 140px !important;
     height: 40px;
     border-radius: 9px;
 }
@@ -21,6 +22,24 @@
 .rs-picker-toggle {
     width: 140px;
     height: 40px;
+}
+
+.rs-picker-toggle-hover {
+    border: 1px solid #000;
+}
+
+.rs-picker-select-menu-item.rs-picker-select-menu-item-active, .rs-picker-select-menu-item.rs-picker-select-menu-item-active:hover {
+    color: #444444;
+    font-weight: bold;
+    background-color: white;
+}
+
+.rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value {
+    color: #000;
+}
+
+.fade:not(.show) {
+    opacity: 100;
 }
 
 a {
@@ -92,8 +111,6 @@ a {
     color: $primary-green;
 }
 
-
-
 //More Filter Drawer
 #moreFilterDrawer{
     .rs-drawer-content {
@@ -153,3 +170,14 @@ a {
         }
     }    
 }
+
+
+
+//Screen design for 1920x1080
+@media screen and (min-width: 1800px) {
+    
+    .rs-picker-toggle {
+        width: 170px;
+        height: 40px;
+    }
+}    
