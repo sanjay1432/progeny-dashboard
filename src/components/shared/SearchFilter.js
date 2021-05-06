@@ -16,14 +16,13 @@ let initialFilters = {}
 let currentFilters = []
 const SearchFilter = forwardRef(
   ({ currentItem, currentSubNavState, ...props }, ref) => {
-    const childRef = useRef()
     useEffect(() => {
       currentFilters = []
     })
 
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
-
+    const [selectedValue, setValues] = useState({})
     // console.log(currentSubNavState)
 
     const { active } = currentSubNavState
@@ -154,8 +153,10 @@ const SearchFilter = forwardRef(
                     {" "}
                     <Filter
                       filter={filter}
+                      selected={
+                        selectedFilters ? selectedFilters[filter.name] : null
+                      }
                       onUpdate={e => onChange(e)}
-                      ref={childRef}
                     />
                   </div>
                 </Col>
@@ -181,50 +182,35 @@ const SearchFilter = forwardRef(
               style={{ padding: "25px 0 0px 0px" }}
             >
               <div className="show-col">
-                {/* <Button appearance="subtle"  onClick={() => childRef.current.onClear()}>Reset Filter</Button> */}
                 <Button appearance="subtle" onClick={onReset}>
                   Reset Filter
                 </Button>
               </div>
             </Col>
           </Row>
-          <h1>Device Test!</h1>
-          {isDesktopOrLaptop && (
-            <>
-              <p>You are a desktop or laptop</p>
-              {isBigScreen && <p>You also have a huge screen</p>}
-              {isTabletOrMobile && (
-                <p>You are sized like a tablet or mobile phone though</p>
-              )}
-            </>
-          )}
-          {isTabletOrMobileDevice && <p>You are a tablet or mobile phone</p>}
         </Grid>
         <Drawer placement="right" size="xs" show={isDrawer} onHide={close}>
           <Drawer.Header>
             <Drawer.Title>More Filters</Drawer.Title>
           </Drawer.Header>
           <Drawer.Body>
-            {/* <Paragraph /> */}
-            {/* <Sidenav defaultOpenKeys={["3", "4"]} activeKey="1">
-            <Sidenav.Body>
-              <Nav> */}
-
             {filters.map((filter, i) => (
               <FlexboxGrid justify="center">
                 <FlexboxGrid.Item colspan={12} style={{ width: "100%" }}>
-                  <Filter filter={filter} />
+                  <Filter
+                    filter={filter}
+                    selected={
+                      selectedFilters ? selectedFilters[filter.name] : null
+                    }
+                    onUpdate={e => onChange(e)}
+                  />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
             ))}
-
-            {/* </Nav>
-            </Sidenav.Body>
-          </Sidenav> */}
           </Drawer.Body>
           <Drawer.Footer>
             <Button
-              onClick={close}
+              onClick={onApply}
               appearance="primary"
               style={{ width: "100%" }}
             >
@@ -232,7 +218,7 @@ const SearchFilter = forwardRef(
             </Button>
             <br />
             <Button
-              onClick={close}
+              onClick={onReset}
               appearance="subtle"
               style={{ width: "100%" }}
             >

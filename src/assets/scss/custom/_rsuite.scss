@@ -49,3 +49,29 @@
     opacity: 1 !important;
 }
 
+.rs-table-body-row-wrapper{
+    color: black;
+}
+// .rs-table-row-header .rs-table-cell {
+//     background: #206713;
+// }
+
+.rs-table-cell-group-right-shadow{
+    box-shadow: none
+}
+.rs-pagination{
+    color: black;
+}
+.rs-pagination-btn> a{
+    border: solid 1px black;
+    margin-left: 10px !important;
+}
+
+.rs-pagination > li.rs-pagination-btn-active > a:hover{
+    color: #fff;
+    background-color: #008f53;
+}
+.rs-pagination > li.rs-pagination-btn-active > a{
+    color: #fff;
+    background-color: #008f53;
+}
