@@ -102,10 +102,14 @@ const SearchFilter = forwardRef(
       if (showMoreFiltersButton) {
         return (
           <Col xs={8} sm={4} md={3} lg={3}>
-            <div className="show-col" style={{ padding: "25px 0 0px 0px" }}>
+            <div
+              className="show-col"
+              //style={{ padding: "25px 0 0px 0px" }}
+            >
               <Button
+                className="moreFilter"
                 appearance="primary"
-                style={{ width: "100%" }}
+                //style={{ width: "100%" }}
                 onClick={() => toggleDrawer()}
               >
                 More Filters
@@ -164,10 +168,13 @@ const SearchFilter = forwardRef(
             ))}
             <MoreFilter />
             <Col xs={8} sm={4} md={3} lg={3}>
-              <div className="show-col" style={{ padding: "25px 0 0px 0px" }}>
+              <div
+                className="show-col"
+                //style={{ padding: "25px 0 0px 0px" }}
+              >
                 <Button
                   appearance="primary"
-                  style={{ width: "100%" }}
+                  //style={{ width: "100%" }}
                   onClick={onApply}
                 >
                   Apply
@@ -179,7 +186,7 @@ const SearchFilter = forwardRef(
               sm={2}
               md={2}
               lg={2}
-              style={{ padding: "25px 0 0px 0px" }}
+              //style={{ padding: "25px 0 0px 0px" }}
             >
               <div className="show-col">
                 <Button appearance="subtle" onClick={onReset}>
@@ -196,7 +203,10 @@ const SearchFilter = forwardRef(
           <Drawer.Body>
             {filters.map((filter, i) => (
               <FlexboxGrid justify="center">
-                <FlexboxGrid.Item colspan={12} style={{ width: "100%" }}>
+                <FlexboxGrid.Item
+                  colspan={12}
+                  // style={{ width: "100%" }}
+                >
                   <Filter
                     filter={filter}
                     selected={
@@ -212,7 +222,7 @@ const SearchFilter = forwardRef(
             <Button
               onClick={onApply}
               appearance="primary"
-              style={{ width: "100%" }}
+              //style={{ width: "100%" }}
             >
               Apply
             </Button>
@@ -220,7 +230,7 @@ const SearchFilter = forwardRef(
             <Button
               onClick={onReset}
               appearance="subtle"
-              style={{ width: "100%" }}
+              //style={{ width: "100%" }}
             >
               Reset filter
             </Button>
