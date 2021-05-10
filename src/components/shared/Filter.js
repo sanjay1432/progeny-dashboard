@@ -7,79 +7,25 @@ import React, {
 } from "react"
 import { Input, InputGroup, Icon, SelectPicker, ControlLabel } from "rsuite"
 const Filter = forwardRef(
-  ({ selected, onUpdate, filter, currentSubNavState, ...props }, ref) => {
-    const data = [
-      {
-        label: "Eugenia",
-        value: "Eugenia",
-        role: "Master"
-      },
-      {
-        label: "Kariane",
-        value: "Kariane",
-        role: "Master"
-      },
-      {
-        label: "Louisa",
-        value: "Louisa",
-        role: "Master"
-      },
-      {
-        label: "Marty",
-        value: "Marty",
-        role: "Master"
-      },
-      {
-        label: "Kenya",
-        value: "Kenya",
-        role: "Master"
-      },
-      {
-        label: "Hal",
-        value: "Hal",
-        role: "Developer"
-      },
-      {
-        label: "Julius",
-        value: "Julius",
-        role: "Developer"
-      },
-      {
-        label: "Travon",
-        value: "Travon",
-        role: "Developer"
-      },
-      {
-        label: "Vincenza",
-        value: "Vincenza",
-        role: "Developer"
-      },
-      {
-        label: "Dominic",
-        value: "Dominic",
-        role: "Developer"
-      },
-      {
-        label: "Pearlie",
-        value: "Pearlie",
-        role: "Guest"
-      },
-      {
-        label: "Tyrel",
-        value: "Tyrel",
-        role: "Guest"
-      },
-      {
-        label: "Jaylen",
-        value: "Jaylen",
-        role: "Guest"
-      },
-      {
-        label: "Rogelio",
-        value: "Rogelio",
-        role: "Guest"
-      }
-    ]
+  (
+    { selected, onUpdate, filter, filterData, currentSubNavState, ...props },
+    ref
+  ) => {
+    const dataToFilter = []
+    console.log("on filter:", filterData)
+    if (filterData) {
+      filterData.forEach(filter => {
+        dataToFilter.push({
+          label: filter,
+          value: filter
+        })
+      })
+    } else {
+      dataToFilter.push({
+        label: "not available",
+        value: "not available"
+      })
+    }
 
     function onChangeSelection(e) {
       onUpdate(e)
@@ -90,7 +36,7 @@ const Filter = forwardRef(
         {filter.type === "select" ? (
           <SelectPicker
             id={filter.name}
-            data={data}
+            data={dataToFilter}
             value={selected ? selected.value : null}
             style={{ width: "100%" }}
             onChange={(value, e) =>

@@ -206,7 +206,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }))
   }
   function getData(displaylength) {
-    //console.log("YP")
     return fakeData.filter((v, i) => {
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
@@ -291,7 +290,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           autoHeight
           autoWidth
         >
-          <Column flexGrow={1} align="center" fixed>
+          <Column width={70} align="center" fixed>
             <HeaderCell className="tableHeader">
               <Checkbox
                 //style={{marginBottom: "10px"}}
@@ -316,29 +315,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               }}
             </Cell>
           </Column>
-          <Column flexGrow={3} align="left">
+          <Column width={300} align="left">
             <HeaderCell className="tableHeader">Estate</HeaderCell>
             <Cell dataKey="Estate" />
           </Column>
 
-          <Column flexGrow={3} align="left">
+          <Column width={300} align="left">
             <HeaderCell className="tableHeader">Estate Full Name</HeaderCell>
             <Cell dataKey="Estate Full Name" />
           </Column>
 
-          <Column flexGrow={3} align="left">
+          <Column width={200} align="left">
             <HeaderCell className="tableHeader">No of Estate Block</HeaderCell>
             <Cell dataKey="No of Estate Block" />
           </Column>
 
-          <Column flexGrow={3} align="left">
+          <Column width={200} align="left">
             <HeaderCell className="tableHeader">
               No Trial on this Estate
             </HeaderCell>
             <Cell dataKey="No Trial on this Estate" />
           </Column>
 
-          <Column flexGrow={1} align="center" fixed="right">
+          <Column width={200} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
             <Cell align="center">
               {rowData => {

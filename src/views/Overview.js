@@ -34,6 +34,7 @@ import {
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../redux/actions/app.action"
+import { getDashboardData } from "../redux/actions/dashboarddata.action"
 import axios from "axios"
 import BreadcrumbProgeny from "../components/nav/BreadcrumbProgeny"
 import ProgenySubNavBar from "../components/nav/ProgenySubNavBar"
@@ -282,6 +283,7 @@ const Overview = props => {
   const [sidenavState, setSidenavState] = useState(initialSidenavState)
   const [subnavState, setSubnavState] = useState(initialSubnavState)
   const dispatch = useDispatch()
+
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
   const history = useHistory()
   const currentSideItem = listItems.find(
@@ -307,6 +309,8 @@ const Overview = props => {
     close()
   }
   function handleSelect(activeKey) {
+    console.log({ activeKey })
+    dispatch(getDashboardData(activeKey))
     setSubnavState(() => ({ ...subnavState, active: activeKey }))
   }
   function close() {
@@ -318,7 +322,9 @@ const Overview = props => {
         pathname: "/login"
       })
     } else {
+      const { active } = subnavState
       dispatch(setBreadcrumb(["Progeny", "Overview"]))
+      dispatch(getDashboardData(active))
       const CancelToken = axios.CancelToken
       const source = CancelToken.source()
 
