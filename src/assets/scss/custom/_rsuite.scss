@@ -276,17 +276,21 @@
 .rs-table {
     border-radius: 10px !important;
 }
-
-.rs-table
-
-.rs-table-row-header 
-.rs-table-cell {
+.rs-table-row-header{
+    background-color: $secondary-green;
+}
+.rs-table-row-header .rs-table-cell {
     background-color: $secondary-green;
     color: white;
     font-size: 16px;
     font-weight: 700;
 }
-
+.rs-table-hover .rs-table-row-header:hover .rs-table-cell {
+    background-color: $secondary-green;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
 .rs-pagination > li.rs-pagination-btn-active > a {
     background-color: $secondary-green;
     border: none;

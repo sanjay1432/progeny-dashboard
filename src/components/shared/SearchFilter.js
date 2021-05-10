@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle
 } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { Grid, Row, Col } from "rsuite"
 import { Button, IconButton, ButtonGroup, ButtonToolbar } from "rsuite"
 import { useMediaQuery } from "react-responsive"
@@ -15,6 +16,7 @@ import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded"
 import { refresh } from "less"
 let initialFilters = {}
 let currentFilters = []
+let filterData = {}
 const SearchFilter = forwardRef(
   ({ currentItem, currentSubNavState, ...props }, ref) => {
     useEffect(() => {
@@ -23,10 +25,14 @@ const SearchFilter = forwardRef(
 
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
+
     const [selectedValue, setValues] = useState({})
     // console.log(currentSubNavState)
 
     const { active } = currentSubNavState
+
+    const dashboardData = useSelector(state => state.dashboardDataReducer)
+
     console.log({ currentItem }, { active })
     const isDesktopOrLaptop = useMediaQuery({
       query: "(min-device-width: 1224px)"
@@ -47,6 +53,22 @@ const SearchFilter = forwardRef(
       currentFilters.push(filter)
     })
     let mainPageFilters = currentFilters
+
+    console.log({ dashboardData })
+    if (dashboardData.result[active]) {
+      mainPageFilters.forEach(filter => {
+        const filterName = filter.name
+        if (filter.type === "select") {
+          const filterdata = dashboardData.result[active].map(
+            res => res[filterName]
+          )
+          filterData[filterName] = filterdata
+        }
+      })
+      console.log({ filterData })
+    }
+
+    console.log({ mainPageFilters })
 
     const sidebarFilters = filters
 
@@ -69,7 +91,7 @@ const SearchFilter = forwardRef(
       const updatedFilters = []
       if (mainPageFilters.length > 4) {
         mainPageFilters.forEach((filter, i) => {
-          if (i <= 4) {
+          if (i < 4) {
             updatedFilters.push(filter)
           }
         })
@@ -88,7 +110,7 @@ const SearchFilter = forwardRef(
     function SearchBox() {
       if (filterList.search) {
         return (
-          <Col md={4} lg={4}>
+          <Col xs={4} sm={4} md={4} lg={3}>
             <div className="show-col">
               {" "}
               <Search />
@@ -102,7 +124,7 @@ const SearchFilter = forwardRef(
       // const {show} = show;
       if (showMoreFiltersButton) {
         return (
-          <Col md={4} lg={4}>
+          <Col xs={4} sm={4} md={4} lg={3}>
             <div className="show-col">
               <Button
                 appearance="ghost"
@@ -150,11 +172,12 @@ const SearchFilter = forwardRef(
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
-                <Col md={4} lg={4}>
+                <Col xs={4} sm={4} md={4} lg={3}>
                   <div className="show-col">
                     {" "}
                     <Filter
                       filter={filter}
+                      filterData={filterData[filter.name]}
                       selected={
                         selectedFilters ? selectedFilters[filter.name] : null
                       }
@@ -165,7 +188,7 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col md={4} lg={3}>
+            <Col xs={4} sm={4} md={4} lg={3}>
               <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
                   className="btnApply"
@@ -176,7 +199,7 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col md={4} lg={3}>
+            <Col xs={4} sm={4} md={4} lg={3}>
               <div className="show-col">
                 <Button
                   className="btnResetFilter"
