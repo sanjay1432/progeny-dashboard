@@ -339,17 +339,6 @@ const Overview = props => {
     }
   }, [dispatch, history, isLoggedIn, props.location.state, user])
 
-  useEffect(() => {
-    const header = document.getElementById("Header")
-    const sticky = header.OffsetTop
-    const scrollCallBack = window.addEventListener("scroll", () => {
-      header.classList.add("sticky")
-    })
-    return () => {
-      window.removeEventListener("scroll", scrollCallBack)
-    }
-  })
-
   if (isLoading) {
     return <Loader center content="Loading" />
   }

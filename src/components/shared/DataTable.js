@@ -227,7 +227,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function modalAction() {
     setModal(!isModal)
-    console.log(isModal)
   }
 
   const noOfPages = getPages()
@@ -241,7 +240,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={3}>
+              <Col sm={5} md={5} lg={4}>
                 <FlexboxGrid.Item className="paginationOption">
                   <InputPicker
                     className="Option"

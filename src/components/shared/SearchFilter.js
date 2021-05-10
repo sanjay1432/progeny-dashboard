@@ -110,7 +110,7 @@ const SearchFilter = forwardRef(
     function SearchBox() {
       if (filterList.search) {
         return (
-          <Col xs={4} sm={4} md={4} lg={3}>
+          <Col xs={5} sm={5} md={4} lg={3}>
             <div className="show-col">
               {" "}
               <Search />
@@ -124,7 +124,7 @@ const SearchFilter = forwardRef(
       // const {show} = show;
       if (showMoreFiltersButton) {
         return (
-          <Col xs={4} sm={4} md={4} lg={3}>
+          <Col xs={5} sm={5} md={4} lg={3}>
             <div className="show-col">
               <Button
                 appearance="ghost"
@@ -172,7 +172,7 @@ const SearchFilter = forwardRef(
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
-                <Col xs={4} sm={4} md={4} lg={3}>
+                <Col xs={5} sm={5} md={4} lg={3}>
                   <div className="show-col">
                     {" "}
                     <Filter
@@ -188,7 +188,7 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col xs={4} sm={4} md={4} lg={3}>
+            <Col xs={5} sm={5} md={4} lg={3}>
               <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
                   className="btnApply"
@@ -199,7 +199,7 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col xs={4} sm={4} md={4} lg={3}>
+            <Col xs={5} sm={5} md={4} lg={3}>
               <div className="show-col">
                 <Button
                   className="btnResetFilter"
