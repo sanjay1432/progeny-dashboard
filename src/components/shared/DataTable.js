@@ -227,11 +227,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function modalAction() {
-    if (isModal == true) {
-      setModal(false)
-    } else if (isModal == false) {
-      setModal(true)
-    }
+    setModal(!isModal)
+    console.log(isModal)
   }
 
   const noOfPages = getPages()
@@ -301,16 +298,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <Cell>
               {rowData => {
                 function handleCheck() {
-                  //alert(`id:${rowData.id}`)
-                  if (rowData.check == false) {
-                    rowData.check(true)
-                  } else {
-                    rowData.check(false)
-                  }
+                  alert(rowData.Estate)
                 }
                 return (
                   <span>
-                    <Checkbox checked={rowData.check} onChange={handleCheck} />
+                    <Checkbox
+                      datakey="Estate"
+                      value={rowData.check}
+                      onChange={handleCheck}
+                    />
                   </span>
                 )
               }}
