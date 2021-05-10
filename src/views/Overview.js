@@ -42,8 +42,8 @@ import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
 import { Drawer, Button, IconButton, Sidenav } from "rsuite"
-import Table from "../components/table/Table"
-import Estate from "./Estate"
+
+//const scrollCallBack = window.addEventListener
 
 const initialSidenavState = {
   expanded: true,
@@ -333,6 +333,17 @@ const Overview = props => {
     }
   }, [dispatch, history, isLoggedIn, props.location.state, user])
 
+  useEffect(() => {
+    const header = document.getElementById("Header")
+    const sticky = header.OffsetTop
+    const scrollCallBack = window.addEventListener("scroll", () => {
+      header.classList.add("sticky")
+    })
+    return () => {
+      window.removeEventListener("scroll", scrollCallBack)
+    }
+  })
+
   if (isLoading) {
     return <Loader center content="Loading" />
   }
@@ -342,7 +353,7 @@ const Overview = props => {
     <>
       {isLoggedIn && (
         <ContainerRS id="main-page">
-          <div>
+          <div id="Header">
             <Header>
               <Navbar className="headNav">
                 <Navbar.Header style={{ height: 70 }}>

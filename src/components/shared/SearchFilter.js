@@ -102,7 +102,7 @@ const SearchFilter = forwardRef(
       if (showMoreFiltersButton) {
         return (
           <Col md={4} lg={3}>
-            <div className="show-col" style={{ padding: "25px 0 0px 0px" }}>
+            <div className="show-col">
               <Button
                 appearance="ghost"
                 className="btnMoreFilter"
@@ -145,7 +145,7 @@ const SearchFilter = forwardRef(
     return (
       <>
         <Grid fluid>
-          <Row gutter={16}>
+          <Row>
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
@@ -164,7 +164,7 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col md={4} lg={3}>
+            <Col md={4} lg={2}>
               <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
                   className="btnApply"
@@ -175,9 +175,13 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col md={4} lg={3} style={{ padding: "25px 0 0px 0px" }}>
+            <Col md={4} lg={2} style={{ padding: "25px 0 0px 0px" }}>
               <div className="show-col">
-                <Button appearance="subtle" onClick={onReset}>
+                <Button
+                  className="btnResetFilter"
+                  appearance="subtle"
+                  onClick={onReset}
+                >
                   Reset Filter
                 </Button>
               </div>

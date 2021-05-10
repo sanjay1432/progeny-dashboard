@@ -23,7 +23,7 @@ const Search = ({ currentSubNavState, ...props }) => {
     <>
       <StyleRoot>
         <ControlLabel>Search</ControlLabel>
-        <InputGroup inside style={styles}>
+        <InputGroup inside>
           <AutoComplete data={data} />
           <InputGroup.Button>
             <Icon icon="search" />

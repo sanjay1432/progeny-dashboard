@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
+import AddEstateModal from "../shared/AddEstateModal"
 import {
   Table,
   FlexboxGrid,
@@ -11,7 +12,8 @@ import {
   Row,
   Col,
   Checkbox,
-  Pagination
+  Pagination,
+  Modal
 } from "rsuite"
 
 const { Column, HeaderCell, Cell } = Table
@@ -25,8 +27,10 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-const DataTable = ({ currentSubNavState, ...props }) => {
+const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   console.log(currentSubNavState)
+  const searchFiltersRef = useRef()
+  const [isModal, setModal] = useState(false)
   const [pagination, setPagination] = useState(initialState)
   const [checkState, setCheckState] = useState(false)
   const { activePage, displaylength } = pagination
@@ -75,7 +79,7 @@ const DataTable = ({ currentSubNavState, ...props }) => {
       "No Trial on this Estate": 23
     },
     {
-      check: true,
+      check: false,
       Estate: "El Chol",
       "Estate Full Name": "Caluire-et-Cuire",
       "No of Estate Block": 7,
@@ -166,7 +170,7 @@ const DataTable = ({ currentSubNavState, ...props }) => {
       "No Trial on this Estate": 30
     },
     {
-      check: false,
+      check: true,
       Estate: "Ad Dawādimī",
       "Estate Full Name": "Ngamba",
       "No of Estate Block": 1,
@@ -202,7 +206,7 @@ const DataTable = ({ currentSubNavState, ...props }) => {
     }))
   }
   function getData(displaylength) {
-    console.log("YP")
+    //console.log("YP")
     return fakeData.filter((v, i) => {
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
@@ -222,95 +226,121 @@ const DataTable = ({ currentSubNavState, ...props }) => {
     setCheckState(e)
   }
 
+  function modalAction() {
+    if (isModal == true) {
+      setModal(false)
+    } else if (isModal == false) {
+      setModal(true)
+    }
+  }
+
   const noOfPages = getPages()
   return (
     <>
       <div>
-        <Grid fluid style={{ padding: "1rem" }}>
-          <Row className="show-grid" style={{ color: "black" }}>
-            <Col xs={9} xsPush={15}>
-              <FlexboxGrid justify="space-around">
-                <FlexboxGrid.Item>
+        <Grid fluid>
+          <Row className="show-grid" id="tableOption">
+            <Col md={6} lg={2}>
+              <b className="totalRecord">Total records ({fakeData.length})</b>
+            </Col>
+
+            <FlexboxGrid justify="end">
+              <Col md={5} lg={2}>
+                <FlexboxGrid.Item className="paginationOption">
                   <InputPicker
+                    className="Option"
                     data={perpage}
                     defaultValue={"10"}
-                    style={{ width: 80 }}
                     onChange={handleChangeLength}
                   />{" "}
-                  per page
+                  <b className="Page">per page</b>
                 </FlexboxGrid.Item>
-                <FlexboxGrid.Item>
-                  <Button appearance="primary" style={{ width: "100%" }}>
-                    Add {active}
-                  </Button>
-                </FlexboxGrid.Item>
+              </Col>
+
+              <Col md={4} lg={2}>
                 <FlexboxGrid.Item>
                   <Button
                     appearance="primary"
-                    style={{ width: "100%" }}
-                    disabled
+                    className="btnAdd"
+                    onClick={modalAction}
                   >
+                    Add {active}
+                  </Button>
+                </FlexboxGrid.Item>
+              </Col>
+
+              <AddEstateModal show={isModal} />
+
+              <Col md={4} lg={2}>
+                <FlexboxGrid.Item>
+                  <Button className="btnDelete" disabled>
                     Delete
                   </Button>
                 </FlexboxGrid.Item>
-              </FlexboxGrid>
-            </Col>
-            <Col xs={3} xsPull={9}>
-              <b>Total records ({fakeData.length})</b>
-            </Col>
+              </Col>
+            </FlexboxGrid>
           </Row>
         </Grid>
 
         <Table
-          height={300}
+          //height={300}
           data={getData(displaylength)}
           onRowClick={data1 => {
             console.log(data1)
           }}
+          autoHeight
+          autoWidth
         >
-          <Column width={70} align="center" fixed>
-            <HeaderCell>
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell className="tableHeader">
               <Checkbox
+                //style={{marginBottom: "10px"}}
                 onChange={(value, checked, event) => onCheckboxClick(checked)}
               />
             </HeaderCell>
             <Cell>
               {rowData => {
-                function handleAction() {
-                  alert(`id:${rowData.id}`)
+                function handleCheck() {
+                  //alert(`id:${rowData.id}`)
+                  if (rowData.check == false) {
+                    rowData.check(true)
+                  } else {
+                    rowData.check(false)
+                  }
                 }
                 return (
                   <span>
-                    <Checkbox checked={rowData.check} />
+                    <Checkbox checked={rowData.check} onChange={handleCheck} />
                   </span>
                 )
               }}
             </Cell>
           </Column>
-          <Column width={300} align="center">
-            <HeaderCell>Estate</HeaderCell>
+          <Column flexGrow={3} align="left">
+            <HeaderCell className="tableHeader">Estate</HeaderCell>
             <Cell dataKey="Estate" />
           </Column>
 
-          <Column width={300}>
-            <HeaderCell>Estate Full Name</HeaderCell>
+          <Column flexGrow={3} align="left">
+            <HeaderCell className="tableHeader">Estate Full Name</HeaderCell>
             <Cell dataKey="Estate Full Name" />
           </Column>
 
-          <Column width={300}>
-            <HeaderCell>No of Estate Block</HeaderCell>
+          <Column flexGrow={3} align="left">
+            <HeaderCell className="tableHeader">No of Estate Block</HeaderCell>
             <Cell dataKey="No of Estate Block" />
           </Column>
 
-          <Column width={300}>
-            <HeaderCell>No Trial on this Estate</HeaderCell>
+          <Column flexGrow={3} align="left">
+            <HeaderCell className="tableHeader">
+              No Trial on this Estate
+            </HeaderCell>
             <Cell dataKey="No Trial on this Estate" />
           </Column>
 
-          <Column width={100} fixed="right">
-            <HeaderCell>Action</HeaderCell>
-
-            <Cell>
+          <Column flexGrow={1} align="center" fixed="right">
+            <HeaderCell className="tableHeader">Action</HeaderCell>
+            <Cell align="center">
               {rowData => {
                 function handleAction() {
                   alert(`id:${rowData.id}`)
