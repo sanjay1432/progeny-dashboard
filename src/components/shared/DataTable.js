@@ -240,12 +240,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       <div>
         <Grid fluid>
           <Row className="show-grid" id="tableOption">
-            <Col md={6} lg={2}>
+            <Col sm={6} md={6} lg={6}>
               <b className="totalRecord">Total records ({fakeData.length})</b>
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col md={5} lg={2}>
+              <Col sm={5} md={5} lg={3}>
                 <FlexboxGrid.Item className="paginationOption">
                   <InputPicker
                     className="Option"
@@ -257,7 +257,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col md={4} lg={2}>
+              <Col sm={5} md={5} lg={3}>
                 <FlexboxGrid.Item>
                   <Button
                     appearance="primary"
@@ -271,7 +271,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddEstateModal show={isModal} />
 
-              <Col md={4} lg={2}>
+              <Col sm={4} md={4} lg={3}>
                 <FlexboxGrid.Item>
                   <Button className="btnDelete" disabled>
                     Delete
