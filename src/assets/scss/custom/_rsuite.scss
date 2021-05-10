@@ -7,6 +7,13 @@
     opacity: 1;
 }
 
+//Col Layout
+.rs-col-lg-4 {
+    width: 195px;
+}
+
+
+
 //Label
 .rs-control-label {
     color: $primary-black;
@@ -322,7 +329,7 @@
 
 
 //Screen design for 1920x1080
-@media screen and (min-width: 1920px) {
+@media screen and (min-width: 1400px) {
 
     .rs-navbar-nav .rs-dropdown > .rs-dropdown-toggle {
         margin-right: 0px;
