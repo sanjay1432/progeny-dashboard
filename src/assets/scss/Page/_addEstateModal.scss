@@ -1,0 +1,27 @@
+#addEstate {
+
+    .title {
+
+    }
+
+    .description {
+        font-size: 16px;
+        font-weight: 400;
+        color: $primary-black;
+        margin-top: 10px;
+    }
+
+    .btnCancel {
+        width: 140px;
+    }
+
+    .btnAdd {
+        font-size: 14px;
+        width: 140px;
+    }
+
+    .estateRecord {
+        font-size: 14px;
+        color: $primary-black;
+    }
+}

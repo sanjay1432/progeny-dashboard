@@ -16,14 +16,13 @@ let initialFilters = {}
 let currentFilters = []
 const SearchFilter = forwardRef(
   ({ currentItem, currentSubNavState, ...props }, ref) => {
-    const childRef = useRef()
     useEffect(() => {
       currentFilters = []
     })
 
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
-
+    const [selectedValue, setValues] = useState({})
     // console.log(currentSubNavState)
 
     const { active } = currentSubNavState
@@ -103,7 +102,7 @@ const SearchFilter = forwardRef(
       if (showMoreFiltersButton) {
         return (
           <Col md={4} lg={3}>
-            <div className="show-col" style={{ padding: "25px 0 0px 0px" }}>
+            <div className="show-col">
               <Button
                 appearance="ghost"
                 className="btnMoreFilter"
@@ -146,7 +145,7 @@ const SearchFilter = forwardRef(
     return (
       <>
         <Grid fluid>
-          <Row gutter={16}>
+          <Row>
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
@@ -155,15 +154,17 @@ const SearchFilter = forwardRef(
                     {" "}
                     <Filter
                       filter={filter}
+                      selected={
+                        selectedFilters ? selectedFilters[filter.name] : null
+                      }
                       onUpdate={e => onChange(e)}
-                      ref={childRef}
                     />
                   </div>
                 </Col>
               </div>
             ))}
             <MoreFilter />
-            <Col md={4} lg={3}>
+            <Col md={4} lg={2}>
               <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
                   className="btnApply"
@@ -174,26 +175,18 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col md={4} lg={3} style={{ padding: "25px 0 0px 0px" }}>
+            <Col md={4} lg={2} style={{ padding: "25px 0 0px 0px" }}>
               <div className="show-col">
-                {/* <Button appearance="subtle"  onClick={() => childRef.current.onClear()}>Reset Filter</Button> */}
-                <Button appearance="subtle" onClick={onReset}>
+                <Button
+                  className="btnResetFilter"
+                  appearance="subtle"
+                  onClick={onReset}
+                >
                   Reset Filter
                 </Button>
               </div>
             </Col>
           </Row>
-          <h1>Device Test!</h1>
-          {isDesktopOrLaptop && (
-            <>
-              <p>You are a desktop or laptop</p>
-              {isBigScreen && <p>You also have a huge screen</p>}
-              {isTabletOrMobile && (
-                <p>You are sized like a tablet or mobile phone though</p>
-              )}
-            </>
-          )}
-          {isTabletOrMobileDevice && <p>You are a tablet or mobile phone</p>}
         </Grid>
         <Drawer
           id="moreFilterDrawer"
@@ -206,32 +199,37 @@ const SearchFilter = forwardRef(
             <Drawer.Title>More Filters</Drawer.Title>
           </Drawer.Header>
           <Drawer.Body>
-            {/* <Paragraph /> */}
-            {/* <Sidenav defaultOpenKeys={["3", "4"]} activeKey="1">
-            <Sidenav.Body>
-              <Nav> */}
-
             {filters.map((filter, i) => (
               <FlexboxGrid justify="center">
                 <FlexboxGrid.Item
                   colspan={12}
-                  //style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                 >
-                  <Filter filter={filter} />
+                  <Filter
+                    filter={filter}
+                    selected={
+                      selectedFilters ? selectedFilters[filter.name] : null
+                    }
+                    onUpdate={e => onChange(e)}
+                  />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
             ))}
-
-            {/* </Nav>
-            </Sidenav.Body>
-          </Sidenav> */}
           </Drawer.Body>
           <Drawer.Footer>
-            <Button onClick={close} appearance="primary">
+            <Button
+              onClick={onApply}
+              appearance="primary"
+              //style={{ width: "100%" }}
+            >
               Apply
             </Button>
             <br />
-            <Button onClick={close} appearance="subtle">
+            <Button
+              onClick={onReset}
+              appearance="subtle"
+              //style={{ width: "100%" }}
+            >
               Reset filter
             </Button>
           </Drawer.Footer>

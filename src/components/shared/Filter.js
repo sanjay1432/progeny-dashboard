@@ -1,13 +1,13 @@
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react"
+import React, {
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  useEffect
+} from "react"
 import { Input, InputGroup, Icon, SelectPicker, ControlLabel } from "rsuite"
 const Filter = forwardRef(
-  ({ onUpdate, filter, currentSubNavState, ...props }, ref) => {
-    const selectInputRef = useRef()
-    const styles = {
-      width: 300,
-      marginBottom: 10
-    }
-
+  ({ selected, onUpdate, filter, currentSubNavState, ...props }, ref) => {
     const data = [
       {
         label: "Eugenia",
@@ -81,24 +81,7 @@ const Filter = forwardRef(
       }
     ]
 
-    const [selectedOption, setSelectedOption] = useState({})
-
-    useImperativeHandle(ref, () => ({
-      onClear() {
-        console.log(selectedOption)
-        // selectInputRef.current.state.value = null
-        setSelectedOption(null)
-      }
-    }))
-
     function onChangeSelection(e) {
-      console.log(e.target.value)
-
-      // setSelectedOption(e.target.value)
-      setSelectedOption(() => ({
-        ...selectedOption,
-        [e.target.name]: e.target.value
-      }))
       onUpdate(e)
     }
     return (
@@ -106,10 +89,9 @@ const Filter = forwardRef(
         <ControlLabel>{filter.label}</ControlLabel>
         {filter.type === "select" ? (
           <SelectPicker
-            ref={selectInputRef}
             id={filter.name}
             data={data}
-            value={selectedOption?.value}
+            value={selected ? selected.value : null}
             style={{ width: "100%" }}
             onChange={(value, e) =>
               onChangeSelection({ target: { name: filter.name, value: value } })
@@ -117,7 +99,6 @@ const Filter = forwardRef(
           />
         ) : (
           <Input
-            ref={selectInputRef}
             id={filter.name}
             name={filter.name}
             placeholder={` Enter ${filter.label}`}

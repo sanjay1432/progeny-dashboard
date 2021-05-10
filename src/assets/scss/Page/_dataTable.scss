@@ -1,0 +1,57 @@
+#tableOption {
+    color: black;
+
+    .totalRecord {
+        width: 150px;
+        //margin-top: 100px;
+    }
+    
+    .paginationOption {
+        .Option {
+            
+        }
+
+        .Page{
+
+        }
+    }
+
+    .btnAdd {
+        width: 120px;
+        height: 38px;
+    }
+
+    .btnDelete {
+        width: 105px;
+        height: 38px;
+        background-color: #CECECE;
+        color: #666666;
+        margin-left: 18px;
+    }
+}
+
+//Table
+.tableHeader {
+    background-color: $secondary-green;
+}
+
+
+@media screen and (min-width: 1900px) {
+    #tableOption {
+ 
+        .rs-picker-toggle {
+            width: 170px;
+            height: 40px;
+        }
+
+        .btnAdd {
+            margin-left: 0px;
+            
+        }
+
+        .btnDelete {
+            margin-left: 0px;
+            width: 140px;
+        }
+    }
+}  

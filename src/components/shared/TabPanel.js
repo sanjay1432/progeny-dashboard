@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react"
 import { Container, Row, Col } from "reactstrap"
 import SearchFilter from "./SearchFilter"
-import Table from "./Table"
+import DataTable from "./DataTable"
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   // console.log(currentSubNavState)
   const searchFiltersRef = useRef()
@@ -18,7 +18,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
           currentItem={currentItem}
           ref={searchFiltersRef}
         />
-        <Table currentSubNavState={currentSubNavState} />
+        <DataTable currentSubNavState={currentSubNavState} />
       </main>
     </>
   )
