@@ -1,3 +1,51 @@
+//MasterData main Page
+.rs-row {
+    margin: 36px 15px 36px 15px;
+}
+
+.rs-control-label {
+    color: $primary-black;
+    margin-left: 2px;
+}
+.rs-input-group, .rs-input-group-inside, .rs-input  {
+    width: 140px !important;
+    height: 40px;
+    border-radius: 9px;
+}
+
+.rs-control-label{
+    font-size: 12px;
+    font-weight: 700;
+    width: 160px;
+}
+
+.rs-picker-toggle {
+    width: 140px;
+    height: 40px;
+}
+
+.rs-picker-toggle-hover {
+    border: 1px solid #000;
+}
+
+.rs-picker-select-menu-item.rs-picker-select-menu-item-active, .rs-picker-select-menu-item.rs-picker-select-menu-item-active:hover {
+    color: #444444;
+    font-weight: bold;
+    background-color: white;
+}
+
+.rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value {
+    color: #000;
+}
+
+.fade:not(.show) {
+    opacity: 100;
+}
+
+a {
+    color: #444444;
+}
+
 //Sidebar Drawer
 .rs-drawer-backdrop.in {
     opacity: .3;
@@ -93,21 +141,73 @@
     color: $primary-green;
 }
 
-//Input-Box
-.rs-input, rs-input:hover {
-    width: 175px;
-    height: 40px;
-    border-radius: 9px;
+//More Filter Drawer
+#moreFilterDrawer{
+    .rs-drawer-content {
+        width: 400px;
+        padding: 50px;
+    }
+
+    .rs-drawer-header {
+        margin: 0;
+        padding: 0;
+
+        .rs-drawer-title {
+            color: $primary-green;
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+
+    .rs-drawer-body {
+        margin: 0px 0px 50px 0px;
+
+        .rs-control-label {
+            color: $primary-black;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .rs-flex-box-grid-item {
+            margin-bottom: 20px;
+        }
+
+        .rs-flex-box-grid-center{
+            justify-content: left;
+        }
+    
+        .rs-input, .rs-btn {
+            width: 280px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    }
+
+    .rs-drawer-footer {
+        margin: 20px 0px 20px 0px;
+
+        .rs-btn-primary {
+            width: 100%;
+        }
+
+        .rs-btn-subtle {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .rs-btn-subtle:hover {
+            background-color: white;
+        }
+    }    
 }
 
-.rs-btn-default {
-    width: 175px;
-    height: 40px;
-    border-radius: 9px;
-}
 
-.rs-btn-subtle {
-    font-size: 14px;
-    font-weight: 700;
-    color: $primary-green;
-}
+
+//Screen design for 1920x1080
+@media screen and (min-width: 1800px) {
+    
+    .rs-picker-toggle {
+        width: 170px;
+        height: 40px;
+    }
+}    
