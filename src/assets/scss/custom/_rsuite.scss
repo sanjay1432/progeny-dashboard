@@ -12,6 +12,10 @@
     width: 195px;
 }
 
+.rs-col-lg-3 {
+    width: 14%;
+}
+
 
 
 //Label
@@ -97,6 +101,14 @@
     height: 650px;
 }
 
+//Checkbox
+.rs-checkbox-wrapper {
+    background-color: white;
+}
+
+.rs-checkbox-checker {
+    padding-left: 100px;
+}
 
 
 //Sidebar Drawer
@@ -268,6 +280,16 @@
     .rs-picker-toggle-clean {
         display: none;
     }
+
+    .rs-btn-default.rs-btn-disabled {
+        background-color: #CECECE !important;
+        color: #666666 !important;
+    }
+
+    button.rs-btn.rs-btn-default.btnDelete {
+        background-color: $primary-red;
+        color: white;
+    }
 }
 
 
@@ -325,6 +347,12 @@
 
 
 
+//Screen design for 1200 - 1599 width
+@media (min-width: 1200px){
+    .rs-col-lg-3 {
+        width: 14%;
+    }
+}
 
 
 
@@ -332,11 +360,8 @@
 
 
 
-
-
-
-//Screen design for 1920x1080
-@media screen and (min-width: 1650px) {
+//Screen design for 1600 width or more
+@media screen and (min-width: 1600px) {
 
     .rs-navbar-nav .rs-dropdown > .rs-dropdown-toggle {
         margin-right: 0px;
@@ -382,3 +407,9 @@
         
     }
 }    
+
+.cus-table{
+    .rs-checkbox-wrapper{
+        top: 3px;
+    }
+}

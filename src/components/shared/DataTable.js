@@ -12,9 +12,13 @@ import {
   Row,
   Col,
   Checkbox,
+  CheckboxGroup,
   Pagination,
   Modal
 } from "rsuite"
+import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded"
+import { check } from "prettier"
+import { set } from "lodash"
 
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -32,9 +36,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const searchFiltersRef = useRef()
   const [isModal, setModal] = useState(false)
   const [pagination, setPagination] = useState(initialState)
-  const [checkState, setCheckState] = useState(false)
+  const [checkState, setCheckState] = useState([])
+  const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
+  const [dataTable, setDataTable] = useState([])
   const fakeData = [
     {
       check: false,
@@ -205,8 +211,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       displaylength: dataKey
     }))
   }
-  function getData(displaylength) {
-    return fakeData.filter((v, i) => {
+  function getData() {
+    return dataTable.filter((v, i) => {
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
@@ -225,11 +231,59 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setCheckState(e)
   }
 
-  function modalAction() {
+  function OpenModal() {
+    setModal(true)
+  }
+
+  const toggle = () => {
     setModal(!isModal)
   }
 
+  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
+    <Cell {...props} style={{ padding: 0 }}>
+      <div style={{ lineHeight: "46px" }}>
+        <Checkbox
+          value={rowData[dataKey]}
+          inline
+          onChange={onChange}
+          checked={checkedKeys.some(item => item === rowData[dataKey])}
+        />
+      </div>
+    </Cell>
+  )
+
+  let checked = false
+  let indeterminate = false
+  let disabled = true
+
+  if (checkStatus.length === fakeData.length) {
+    checked = true
+    disabled = false
+  } else if (checkStatus.length === 0) {
+    checked = false
+  } else if (checkStatus.length > 0 && checkStatus.length < fakeData.length) {
+    indeterminate = true
+    disabled = false
+  }
+
+  const handleCheckAll = (value, checked) => {
+    const keys = checked ? fakeData.map(item => item.Estate) : []
+    setCheckStatus(keys)
+  }
+
+  const handleCheck = (value, checked) => {
+    const keys = checked
+      ? [...checkStatus, value]
+      : checkStatus.filter(item => item !== value)
+    setCheckStatus(keys)
+    console.log(keys)
+  }
+
   const noOfPages = getPages()
+  useEffect(() => {
+    //call api
+    setDataTable(fakeData)
+  }, [])
   return (
     <>
       <div>
@@ -240,7 +294,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={4}>
+              <Col sm={5} md={5} lg={3}>
                 <FlexboxGrid.Item className="paginationOption">
                   <InputPicker
                     className="Option"
@@ -252,23 +306,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col sm={5} md={5} lg={3}>
+              <Col sm={5} md={4} lg={3}>
                 <FlexboxGrid.Item>
                   <Button
                     appearance="primary"
                     className="btnAdd"
-                    onClick={modalAction}
+                    onClick={OpenModal}
                   >
                     Add {active}
                   </Button>
                 </FlexboxGrid.Item>
               </Col>
-
-              <AddEstateModal show={isModal} />
+              <AddEstateModal OpenModal={isModal} CloseModal={toggle} />
 
               <Col sm={4} md={4} lg={3}>
                 <FlexboxGrid.Item>
-                  <Button className="btnDelete" disabled>
+                  <Button className="btnDelete" disabled={disabled}>
                     Delete
                   </Button>
                 </FlexboxGrid.Item>
@@ -277,81 +330,71 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </Row>
         </Grid>
 
-        <Table
-          //height={300}
-          data={getData(displaylength)}
-          onRowClick={data1 => {
-            console.log(data1)
-          }}
-          autoHeight
-          autoWidth
-        >
-          <Column width={70} align="center" fixed>
-            <HeaderCell className="tableHeader">
-              <Checkbox
-                //style={{marginBottom: "10px"}}
-                onChange={(value, checked, event) => onCheckboxClick(checked)}
+        <div style={{ width: "100%" }}>
+          <Table
+            data={getData()}
+            className="cus-table"
+            onRowClick={data1 => {
+              console.log(data1)
+            }}
+            autoHeight
+          >
+            <Column align="center" width={150} fixed>
+              <HeaderCell className="tableHeader">
+                <Checkbox
+                  indeterminate={indeterminate}
+                  checked={checked}
+                  onChange={handleCheckAll}
+                />
+              </HeaderCell>
+              <CheckCell
+                dataKey="Estate"
+                checkedKeys={checkStatus}
+                onChange={handleCheck}
               />
-            </HeaderCell>
-            <Cell>
-              {rowData => {
-                function handleCheck() {
-                  alert(rowData.Estate)
-                }
-                return (
-                  <span>
-                    <Checkbox
-                      datakey="Estate"
-                      value={rowData.check}
-                      onChange={handleCheck}
-                    />
-                  </span>
-                )
-              }}
-            </Cell>
-          </Column>
-          <Column width={300} align="left">
-            <HeaderCell className="tableHeader">Estate</HeaderCell>
-            <Cell dataKey="Estate" />
-          </Column>
+            </Column>
 
-          <Column width={300} align="left">
-            <HeaderCell className="tableHeader">Estate Full Name</HeaderCell>
-            <Cell dataKey="Estate Full Name" />
-          </Column>
+            <Column width={300} align="left">
+              <HeaderCell className="tableHeader">Estate</HeaderCell>
+              <Cell dataKey="Estate" />
+            </Column>
 
-          <Column width={200} align="left">
-            <HeaderCell className="tableHeader">No of Estate Block</HeaderCell>
-            <Cell dataKey="No of Estate Block" />
-          </Column>
+            <Column width={300} align="left">
+              <HeaderCell className="tableHeader">Estate Full Name</HeaderCell>
+              <Cell dataKey="Estate Full Name" />
+            </Column>
 
-          <Column width={200} align="left">
-            <HeaderCell className="tableHeader">
-              No Trial on this Estate
-            </HeaderCell>
-            <Cell dataKey="No Trial on this Estate" />
-          </Column>
+            <Column width={300} align="left">
+              <HeaderCell className="tableHeader">
+                No of Estate Block
+              </HeaderCell>
+              <Cell dataKey="No of Estate Block" />
+            </Column>
 
-          <Column width={200} align="center" fixed="right">
-            <HeaderCell className="tableHeader">Action</HeaderCell>
-            <Cell align="center">
-              {rowData => {
-                function handleAction() {
-                  alert(`id:${rowData.id}`)
-                }
-                return (
-                  <span>
-                    <IconButton
-                      size="xs"
-                      icon={<Icon icon="star" />}
-                      onClick={handleAction}
-                    />
-                  </span>
-                )
-              }}
-            </Cell>
-          </Column>
-        </Table>
+            <Column width={300} align="left">
+              <HeaderCell className="tableHeader">
+                No Trial on this Estate
+              </HeaderCell>
+              <Cell dataKey="No Trial on this Estate" />
+            </Column>
+
+            <Column width={150} align="center" fixed="right">
+              <HeaderCell className="tableHeader">Action</HeaderCell>
+              <Cell align="center">
+                {rowData => {
+                  function handleAction() {
+                    alert(`id:${rowData.id}`)
+                  }
+                  return (
+                    <span>
+                      <OpenInNewRoundedIcon onClick={handleAction} />
+                    </span>
+                  )
+                }}
+              </Cell>
+            </Column>
+          </Table>
+        </div>
         <div style={{ float: "right", padding: "1rem" }}>
           <Pagination
             {...pagination}
