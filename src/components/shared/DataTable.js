@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import AddEstateModal from "../shared/AddEstateModal"
 import {
   Table,
@@ -15,6 +16,7 @@ import {
   Pagination,
   Modal
 } from "rsuite"
+import { Switch } from "react-router"
 
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -27,7 +29,13 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
+let tableData = []
+let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
+  useEffect(() => {
+    tableData = []
+    currentTableDataFields = []
+  })
   console.log(currentSubNavState)
   const searchFiltersRef = useRef()
   const [isModal, setModal] = useState(false)
@@ -178,6 +186,89 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   ]
 
+  const tableDataFields = [
+    {
+      label: "Estate",
+      value: "estate",
+      width: 100
+    },
+    {
+      label: "Estate Full Name",
+      value: "estatefullname",
+      width: 300
+    },
+    {
+      label: "No of Estate Block",
+      value: "noofestateblock",
+      width: 200
+    },
+    {
+      label: "No. Trials on this Estate",
+      value: "nooftrails",
+      width: 200
+    },
+    {
+      label: "No. Trials on this Estate",
+      value: "nooftrails",
+      width: 200
+    },
+    {
+      label: "Trial ID",
+      value: "trialid",
+      width: 200
+    },
+    {
+      label: "Trial",
+      value: "trial",
+      width: 200
+    },
+    {
+      label: "Trial Remarks",
+      value: "trialremark",
+      width: 300
+    },
+    {
+      label: "Area (ha)",
+      value: "area",
+      width: 100
+    },
+    {
+      label: "Planted Date",
+      value: "planteddate",
+      width: 100
+    },
+    {
+      label: "n Progeny",
+      value: "nofprogeny",
+      width: 100
+    },
+    {
+      label: "n Of Replicate",
+      value: "nofreplicate",
+      width: 200
+    },
+    {
+      label: "Soil Type",
+      value: "soiltype",
+      width: 200
+    },
+    {
+      label: "n Of Plot",
+      value: "nofplot",
+      width: 100
+    },
+    {
+      label: "n Of Subblock/Rep",
+      value: "nofsubblock",
+      width: 200
+    },
+    {
+      label: "n Of Plot/subblock",
+      value: "nofplot_subblock",
+      width: 200
+    }
+  ]
+
   const perpage = [
     {
       label: "10",
@@ -205,17 +296,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       displaylength: dataKey
     }))
   }
-  function getData(displaylength) {
-    return fakeData.filter((v, i) => {
-      const start = displaylength * (activePage - 1)
-      const end = start + displaylength
-      return i >= start && i < end
-    })
-  }
 
   function getPages() {
     const { displaylength } = pagination
-    return Math.ceil(fakeData.length / displaylength)
+    return Math.ceil(tableData.length / displaylength)
   }
 
   function onCheckboxClick(e) {
@@ -230,13 +314,105 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const noOfPages = getPages()
+
+  const dashboardData = useSelector(state => state.dashboardDataReducer)
+
+  if (dashboardData.result[active]) {
+    console.log("TABLE DATA", dashboardData.result[active])
+    tableData = dashboardData.result[active]
+    const availableKeys = Object.keys(tableData[0])
+
+    availableKeys.forEach(key => {
+      const field = tableDataFields.find(field => field.value === key)
+      if (field) {
+        currentTableDataFields.push(field)
+      }
+    })
+  }
+  console.log({ currentTableDataFields })
+
+  function getData(displaylength) {
+    console.log("GET DATA::", tableData)
+    return tableData.filter((v, i) => {
+      v["check"] = false
+      const start = displaylength * (activePage - 1)
+      const end = start + displaylength
+      return i >= start && i < end
+    })
+  }
+
+  function AddButton() {
+    switch (active) {
+      case "estate":
+        return (
+          <Col sm={5} md={5} lg={3}>
+            <FlexboxGrid.Item>
+              <Button
+                appearance="primary"
+                className="btnAdd"
+                onClick={modalAction}
+              >
+                Add Estate
+              </Button>
+            </FlexboxGrid.Item>
+          </Col>
+        )
+
+      case "trial":
+        return (
+          <Col sm={5} md={5} lg={3}>
+            <FlexboxGrid.Item>
+              <Button
+                appearance="primary"
+                className="btnAdd"
+                onClick={modalAction}
+              >
+                Add New Trial
+              </Button>
+            </FlexboxGrid.Item>
+          </Col>
+        )
+      case "plot":
+        return (
+          <Col sm={5} md={5} lg={3}>
+            <FlexboxGrid.Item>
+              <Button
+                appearance="primary"
+                className="btnAdd"
+                onClick={modalAction}
+              >
+                Attach Progenies
+              </Button>
+            </FlexboxGrid.Item>
+          </Col>
+        )
+      case "palm":
+        return null
+      case "progeny":
+        return (
+          <Col sm={5} md={5} lg={3}>
+            <FlexboxGrid.Item>
+              <Button
+                appearance="primary"
+                className="btnAdd"
+                onClick={modalAction}
+              >
+                Add New Progeny
+              </Button>
+            </FlexboxGrid.Item>
+          </Col>
+        )
+      default:
+        return null
+    }
+  }
   return (
     <>
       <div>
         <Grid fluid>
           <Row className="show-grid" id="tableOption">
             <Col sm={6} md={6} lg={6}>
-              <b className="totalRecord">Total records ({fakeData.length})</b>
+              <b className="totalRecord">Total records ({tableData.length})</b>
             </Col>
 
             <FlexboxGrid justify="end">
@@ -252,33 +428,25 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col sm={5} md={5} lg={3}>
-                <FlexboxGrid.Item>
-                  <Button
-                    appearance="primary"
-                    className="btnAdd"
-                    onClick={modalAction}
-                  >
-                    Add {active}
-                  </Button>
-                </FlexboxGrid.Item>
-              </Col>
+              <AddButton />
 
               <AddEstateModal show={isModal} />
 
-              <Col sm={4} md={4} lg={3}>
-                <FlexboxGrid.Item>
-                  <Button className="btnDelete" disabled>
-                    Delete
-                  </Button>
-                </FlexboxGrid.Item>
-              </Col>
+              {active != "palm" ? (
+                <Col sm={4} md={4} lg={3}>
+                  <FlexboxGrid.Item>
+                    <Button className="btnDelete" disabled>
+                      Delete
+                    </Button>
+                  </FlexboxGrid.Item>
+                </Col>
+              ) : null}
             </FlexboxGrid>
           </Row>
         </Grid>
 
         <Table
-          //height={300}
+          wordWrap
           data={getData(displaylength)}
           onRowClick={data1 => {
             console.log(data1)
@@ -310,27 +478,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               }}
             </Cell>
           </Column>
-          <Column width={300} align="left">
-            <HeaderCell className="tableHeader">Estate</HeaderCell>
-            <Cell dataKey="Estate" />
-          </Column>
 
-          <Column width={300} align="left">
-            <HeaderCell className="tableHeader">Estate Full Name</HeaderCell>
-            <Cell dataKey="Estate Full Name" />
-          </Column>
-
-          <Column width={200} align="left">
-            <HeaderCell className="tableHeader">No of Estate Block</HeaderCell>
-            <Cell dataKey="No of Estate Block" />
-          </Column>
-
-          <Column width={200} align="left">
-            <HeaderCell className="tableHeader">
-              No Trial on this Estate
-            </HeaderCell>
-            <Cell dataKey="No Trial on this Estate" />
-          </Column>
+          {currentTableDataFields.map((field, i) => (
+            <Column width={field.width} align="left" key={i}>
+              <HeaderCell className="tableHeader">{field.label}</HeaderCell>
+              <Cell dataKey={field.value} />
+            </Column>
+          ))}
 
           <Column width={200} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
