@@ -245,7 +245,7 @@ const listItems = [
       },
       {
         name: "Estate Assignment",
-        eventKey: "estate",
+        eventKey: "estateAssignment",
         filters: [
           {
             name: "estate",
@@ -257,7 +257,7 @@ const listItems = [
       },
       {
         name: "User Assignment",
-        eventKey: "user",
+        eventKey: "userAssignment",
         filters: [
           {
             name: "estate",
