@@ -8,13 +8,7 @@
 }
 
 //Col Layout
-.rs-col-lg-4 {
-    width: 195px;
-}
 
-.rs-col-lg-3 {
-    width: 14%;
-}
 
 
 
@@ -344,19 +338,17 @@
     }
 }
 
+//Screen design for 800 - 992 width
+@media (max-width: 1200px){
+    
+}
 
 
 
 //Screen design for 1200 - 1599 width
 @media (min-width: 1200px){
-    .rs-col-lg-3 {
-        width: 14%;
-    }
+    
 }
-
-
-
-
 
 
 
@@ -376,9 +368,7 @@
     }
 
     //Col Layout
-    .rs-col-lg-3 {
-        width: 11% !important;
-    }
+    
 
     //Input
     .rs-input {

@@ -12,8 +12,6 @@ import { useMediaQuery } from "react-responsive"
 import Search from "../shared/Search"
 import Filter from "../shared/Filter"
 import { Drawer, Sidenav, Nav, Icon, FlexboxGrid } from "rsuite"
-import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded"
-import { refresh } from "less"
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}
@@ -110,7 +108,7 @@ const SearchFilter = forwardRef(
     function SearchBox() {
       if (filterList.search) {
         return (
-          <Col xs={5} sm={5} md={4} lg={3}>
+          <Col sm={5} md={4} lg={3}>
             <div className="show-col">
               {" "}
               <Search />
@@ -124,7 +122,7 @@ const SearchFilter = forwardRef(
       // const {show} = show;
       if (showMoreFiltersButton) {
         return (
-          <Col xs={5} sm={5} md={4} lg={3}>
+          <Col sm={5} md={4} lg={3}>
             <div className="show-col">
               <Button
                 appearance="ghost"
@@ -172,7 +170,7 @@ const SearchFilter = forwardRef(
             <SearchBox />
             {mainPageFilters.map((filter, i) => (
               <div>
-                <Col xs={5} sm={5} md={4} lg={3}>
+                <Col sm={5} md={4} lg={3}>
                   <div className="show-col">
                     {" "}
                     <Filter
@@ -188,7 +186,7 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col xs={5} sm={5} md={4} lg={3}>
+            <Col sm={5} md={4} lg={3}>
               <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
                 <Button
                   className="btnApply"
@@ -199,7 +197,7 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col xs={5} sm={5} md={4} lg={3}>
+            <Col sm={3} md={4} lg={3}>
               <div className="show-col">
                 <Button
                   className="btnResetFilter"
