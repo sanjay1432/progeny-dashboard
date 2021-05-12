@@ -231,6 +231,7 @@ const SearchFilter = forwardRef(
                 >
                   <Filter
                     filter={filter}
+                    filterData={filterData[filter.name]}
                     selected={
                       selectedFilters ? selectedFilters[filter.name] : null
                     }
