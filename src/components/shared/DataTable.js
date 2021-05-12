@@ -16,8 +16,7 @@ import {
   Pagination,
   Modal
 } from "rsuite"
-import { Switch } from "react-router"
-
+import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -266,6 +265,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       label: "n Of Plot/subblock",
       value: "nofplot_subblock",
       width: 200
+    },
+    {
+      label: "Status",
+      value: "status",
+      width: 100
     }
   ]
 
@@ -402,6 +406,69 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </Col>
         )
+      case "userlist":
+        return (
+          <Col sm={5} md={5} lg={3}>
+            <FlexboxGrid.Item>
+              <Button
+                appearance="primary"
+                className="btnAdd"
+                onClick={modalAction}
+              >
+                Add New User
+              </Button>
+            </FlexboxGrid.Item>
+          </Col>
+        )
+      case "estateAssignment":
+        return null
+      case "userAssignment":
+        return null
+      default:
+        return null
+    }
+  }
+
+  function DeleteButton() {
+    if (
+      active === "palm" ||
+      active === "estateAssignment" ||
+      active === "userAssignment"
+    ) {
+      return null
+    } else {
+      return (
+        <Col sm={4} md={4} lg={3}>
+          <FlexboxGrid.Item>
+            <Button className="btnDelete" disabled>
+              Delete
+            </Button>
+          </FlexboxGrid.Item>
+        </Col>
+      )
+    }
+  }
+
+  function StatusButton({ status }) {
+    switch (status) {
+      case "active":
+        return (
+          <Button color="green" appearance="ghost">
+            Active
+          </Button>
+        )
+      case "canceled":
+        return (
+          <Button color="red" appearance="ghost">
+            canceled
+          </Button>
+        )
+      case "finished":
+        return (
+          <Button color="yellow" appearance="ghost">
+            finished
+          </Button>
+        )
       default:
         return null
     }
@@ -431,16 +498,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <AddButton />
 
               <AddEstateModal show={isModal} />
-
-              {active != "palm" ? (
-                <Col sm={4} md={4} lg={3}>
-                  <FlexboxGrid.Item>
-                    <Button className="btnDelete" disabled>
-                      Delete
-                    </Button>
-                  </FlexboxGrid.Item>
-                </Col>
-              ) : null}
+              <DeleteButton />
             </FlexboxGrid>
           </Row>
         </Grid>
@@ -479,14 +537,25 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </Cell>
           </Column>
 
-          {currentTableDataFields.map((field, i) => (
-            <Column width={field.width} align="left" key={i}>
-              <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-              <Cell dataKey={field.value} />
-            </Column>
-          ))}
+          {currentTableDataFields.map((field, i) =>
+            field.value === "status" ? (
+              <Column width={field.width} align="center" key={i} fixed="right">
+                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
+                <Cell align="center">
+                  {rowData => {
+                    return <StatusButton status={rowData.status} />
+                  }}
+                </Cell>
+              </Column>
+            ) : (
+              <Column width={field.width} align="left" key={i}>
+                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
+                <Cell dataKey={field.value} />
+              </Column>
+            )
+          )}
 
-          <Column width={200} align="center" fixed="right">
+          <Column width={100} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
             <Cell align="center">
               {rowData => {
@@ -495,11 +564,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 }
                 return (
                   <span>
-                    <IconButton
+                    <img src={OpenNew} />
+                    {/* <IconButton
                       size="xs"
-                      icon={<Icon icon="star" />}
+                      icon={<Icon icon={OpenNew} />}
                       onClick={handleAction}
-                    />
+                    /> */}
                   </span>
                 )
               }}
