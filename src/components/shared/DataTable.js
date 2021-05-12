@@ -18,6 +18,7 @@ import {
   Modal
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
+import LinkIcon from "../../assets/img/icons/link_24px.svg"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -520,6 +521,92 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return null
     }
   }
+
+  function ActionButtons() {
+    switch (active) {
+      case "estate":
+        return (
+          <span>
+            <img src={OpenNew} />
+          </span>
+        )
+      case "trial":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <img src={OpenNew} />
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              <Icon icon="pencil" size="md" />
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              <img src={LinkIcon} />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+
+      case "plot":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <Icon icon="qrcode" size="md" />
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              <Icon icon="pencil" size="md" />
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              <img src={LinkIcon} />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+      case "palm":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <Icon icon="pencil" size="md" />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+      case "progeny":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <Icon icon="pencil" size="md" />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+
+      case "userlist":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <Icon icon="pencil" size="md" />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+      case "estateAssignment":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <img src={OpenNew} />
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              <Icon icon="user-circle" size="md" />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+      case "userAssignment":
+        return (
+          <FlexboxGrid justify="space-between">
+            <FlexboxGrid.Item>
+              <Icon icon="user-circle" size="md" />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        )
+      default:
+        return null
+    }
+  }
   return (
     <>
       <div>
@@ -605,21 +692,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <Column width={100} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
             <Cell align="center">
-              {rowData => {
-                function handleAction() {
-                  alert(`id:${rowData.id}`)
-                }
-                return (
-                  <span>
-                    <img src={OpenNew} />
-                    {/* <IconButton
-                      size="xs"
-                      icon={<Icon icon={OpenNew} />}
-                      onClick={handleAction}
-                    /> */}
-                  </span>
-                )
-              }}
+              <ActionButtons />
             </Cell>
           </Column>
         </Table>
