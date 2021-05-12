@@ -401,7 +401,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <Button
                 appearance="primary"
                 className="btnAdd"
-                onClick={modalAction}
+                onClick={OpenModal}
               >
                 Add Estate
               </Button>
@@ -416,7 +416,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <Button
                 appearance="primary"
                 className="btnAdd"
-                onClick={modalAction}
+                onClick={OpenModal}
               >
                 Add New Trial
               </Button>
@@ -430,7 +430,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <Button
                 appearance="primary"
                 className="btnAdd"
-                onClick={modalAction}
+                onClick={OpenModal}
               >
                 Attach Progenies
               </Button>
@@ -446,7 +446,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <Button
                 appearance="primary"
                 className="btnAdd"
-                onClick={modalAction}
+                onClick={OpenModal}
               >
                 Add New Progeny
               </Button>
@@ -460,7 +460,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <Button
                 appearance="primary"
                 className="btnAdd"
-                onClick={modalAction}
+                onClick={OpenModal}
               >
                 Add New User
               </Button>
