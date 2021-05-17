@@ -14,6 +14,7 @@ import Filter from "../shared/Filter"
 import { Drawer, Sidenav, Nav, Icon, FlexboxGrid } from "rsuite"
 import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded"
 import { refresh } from "less"
+import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}
@@ -22,7 +23,7 @@ const SearchFilter = forwardRef(
     useEffect(() => {
       currentFilters = []
     })
-
+    const dispatch = useDispatch()
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
 
@@ -142,6 +143,10 @@ const SearchFilter = forwardRef(
     }
 
     function onChange(e) {
+      if (!e.target.value) {
+        delete selectedFilters[e.target.name]
+        return setFilters(selectedFilters)
+      }
       setFilters(() => ({
         ...selectedFilters,
         [e.target.name]: e.target.value
@@ -159,10 +164,12 @@ const SearchFilter = forwardRef(
         input => (input.value = "")
       )
       setFilters(null)
+      dispatch(clearFilter())
     }
 
     function onApply() {
       console.log({ selectedFilters })
+      dispatch(setFilter(selectedFilters))
     }
 
     return (

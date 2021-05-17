@@ -1,21 +1,4 @@
 const InitializeState = {
-  appReducer: {
-    mill: {
-      millId: 1,
-      millCode: "KRC",
-      buId: 1,
-      logo: "Kerinci",
-      name: "Kerinci",
-      countryId: 1
-    },
-    mills: null,
-    breadcrumb: ["Dashboard", "Production"],
-    expandChart: {
-      show: false,
-      data: {},
-      title: "Chart"
-    }
-  },
   authReducer: { isLoggedIn: false, user: null },
   dashboardDataReducer: { result: {} },
   dashboardReducer: {
@@ -24,19 +7,6 @@ const InitializeState = {
     processLines: null,
     displayProcessLine: {},
     displayPeriods: []
-  },
-  lostcookReducer: {
-    fiberlines: [],
-    lcAnalysisFilteredTable: null,
-    lcAnalysisTable: null,
-    selectedDateOnBarChart: null,
-    selectedTypeOnPieChart: null
-  },
-  lostcookSummaryTodayReducer: {
-    saveNewProductList: [],
-    saveModifiedProductList: [],
-    isModifiedConfig: false,
-    saveModifiedSummaryCookList: []
   }
 }
 

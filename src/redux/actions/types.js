@@ -5,6 +5,9 @@ export const LOGOUT = "LOGOUT"
 export const SET_MESSAGE = "SET_MESSAGE"
 export const CLEAR_MESSAGE = "CLEAR_MESSAGE"
 
+export const SET_FILTER = "SET_FILTER"
+export const CLEAR_FILTER = "CLEAR_FILTER"
+
 export const SET_BREADCRUMB = "SET_BREADCRUMB"
 
 export const DASHBOARDDATA_SUCCESS = "DASHBOARDDATA_SUCCESS"
