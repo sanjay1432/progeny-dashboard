@@ -44,150 +44,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
-  const [dataTable, setDataTable] = useState([])
-
-  const fakeData = [
-    {
-      check: false,
-      Estate: "Buurhakaba",
-      "Estate Full Name": "Licheng",
-      "No of Estate Block": 7,
-      "No Trial on this Estate": 9
-    },
-    {
-      check: false,
-      Estate: "Rinconada",
-      "Estate Full Name": "Ngawi",
-      "No of Estate Block": 10,
-      "No Trial on this Estate": 97
-    },
-    {
-      check: false,
-      Estate: "Bāsawul",
-      "Estate Full Name": "Jianling",
-      "No of Estate Block": 3,
-      "No Trial on this Estate": 63
-    },
-    {
-      check: false,
-      Estate: "Hongxing",
-      "Estate Full Name": "Czerwionka-Leszczyny",
-      "No of Estate Block": 6,
-      "No Trial on this Estate": 17
-    },
-    {
-      check: false,
-      Estate: "Prestea",
-      "Estate Full Name": "Komyshany",
-      "No of Estate Block": 8,
-      "No Trial on this Estate": 29
-    },
-    {
-      check: false,
-      Estate: "Ginir",
-      "Estate Full Name": "Corral",
-      "No of Estate Block": 3,
-      "No Trial on this Estate": 23
-    },
-    {
-      check: false,
-      Estate: "El Chol",
-      "Estate Full Name": "Caluire-et-Cuire",
-      "No of Estate Block": 7,
-      "No Trial on this Estate": 34
-    },
-    {
-      check: false,
-      Estate: "Stockholm",
-      "Estate Full Name": "Emiliano Zapata",
-      "No of Estate Block": 3,
-      "No Trial on this Estate": 23
-    },
-    {
-      check: false,
-      Estate: "Ulee Gle",
-      "Estate Full Name": "Sanquan",
-      "No of Estate Block": 9,
-      "No Trial on this Estate": 70
-    },
-    {
-      check: false,
-      Estate: "Manga",
-      "Estate Full Name": "Maqia",
-      "No of Estate Block": 4,
-      "No Trial on this Estate": 80
-    },
-    {
-      check: false,
-      Estate: "Kushima",
-      "Estate Full Name": "Rakiv Lis",
-      "No of Estate Block": 10,
-      "No Trial on this Estate": 75
-    },
-    {
-      check: false,
-      Estate: "Krajan Langenharjo",
-      "Estate Full Name": "Jelsa",
-      "No of Estate Block": 8,
-      "No Trial on this Estate": 35
-    },
-    {
-      check: false,
-      Estate: "Krasnoye",
-      "Estate Full Name": "Parobé",
-      "No of Estate Block": 5,
-      "No Trial on this Estate": 3
-    },
-    {
-      check: false,
-      Estate: "Malaba",
-      "Estate Full Name": "Dagsar",
-      "No of Estate Block": 5,
-      "No Trial on this Estate": 49
-    },
-    {
-      check: false,
-      Estate: "Grenoble",
-      "Estate Full Name": "Ipojuca",
-      "No of Estate Block": 5,
-      "No Trial on this Estate": 80
-    },
-    {
-      check: false,
-      Estate: "Dapo",
-      "Estate Full Name": "Simpangpasir",
-      "No of Estate Block": 4,
-      "No Trial on this Estate": 4
-    },
-    {
-      check: false,
-      Estate: "Potok Złoty",
-      "Estate Full Name": "Badai",
-      "No of Estate Block": 4,
-      "No Trial on this Estate": 78
-    },
-    {
-      check: false,
-      Estate: "Sukasari",
-      "Estate Full Name": "Novonikol’sk",
-      "No of Estate Block": 2,
-      "No Trial on this Estate": 88
-    },
-    {
-      check: false,
-      Estate: "Lidoríki",
-      "Estate Full Name": "Longbo",
-      "No of Estate Block": 4,
-      "No Trial on this Estate": 30
-    },
-    {
-      check: true,
-      Estate: "Ad Dawādimī",
-      "Estate Full Name": "Ngamba",
-      "No of Estate Block": 1,
-      "No Trial on this Estate": 54
-    }
-  ]
 
   const tableDataFields = [
     {
@@ -274,6 +130,136 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       label: "Status",
       value: "status",
       width: 100
+    },
+    {
+      label: "Replicate",
+      value: "replicate",
+      width: 100
+    },
+    {
+      label: "Estate Block",
+      value: "estateblock",
+      width: 100
+    },
+    {
+      label: "Design",
+      value: "design",
+      width: 100
+    },
+    {
+      label: "Density",
+      value: "density",
+      width: 100
+    },
+    {
+      label: "Plot",
+      value: "plot",
+      width: 100
+    },
+    {
+      label: "Subblock",
+      value: "subblock",
+      width: 100
+    },
+    {
+      label: "Progeny ID",
+      value: "progenyId",
+      width: 100
+    },
+    {
+      label: "Progeny",
+      value: "progeny",
+      width: 100
+    },
+    {
+      label: "Ortet",
+      value: "ortet",
+      width: 100
+    },
+    {
+      label: "FP",
+      value: "fp",
+      width: 100
+    },
+    {
+      label: "MP",
+      value: "mp",
+      width: 100
+    },
+    {
+      label: "nPalm",
+      value: "noofPalm",
+      width: 100
+    },
+    {
+      label: "Palm No",
+      value: "palmno",
+      width: 100
+    },
+    {
+      label: "Palm Name",
+      value: "palmname",
+      width: 100
+    },
+    {
+      label: "Progeny ID",
+      value: "progenyId",
+      width: 100
+    },
+    {
+      label: "Pop Var",
+      value: "popvar",
+      width: 100
+    },
+    {
+      label: "Origin",
+      value: "origin",
+      width: 100
+    },
+    {
+      label: "Progeny Remark",
+      value: "progenyremark",
+      width: 100
+    },
+    {
+      label: "Progeny Remark",
+      value: "progenyremark",
+      width: 100
+    },
+    {
+      label: "Generation",
+      value: "generation",
+      width: 100
+    },
+    {
+      label: "FP Fam",
+      value: "fpFam",
+      width: 100
+    },
+    {
+      label: "FP Var",
+      value: "fpVar",
+      width: 100
+    },
+    {
+      label: "MP Fam",
+      value: "mpFam",
+      width: 100
+    },
+    {
+      label: "MP Var",
+      value: "mpVar",
+      width: 100
+    },
+    {
+      label: "Cross",
+      value: "cross",
+      width: 100
+    },
+    {
+      label: "Cross Type",
+      value: "crossType",
+      width: 100
     }
   ]
 
@@ -313,7 +299,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const noOfPages = getPages()
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
-
+  const filterData = useSelector(state => state.filterReducer)
+  console.log("FILTER AT TABLE::", filterData)
   if (dashboardData.result[active]) {
     //console.log("TABLE DATA", dashboardData.result[active])
     tableData = dashboardData.result[active]
@@ -330,7 +317,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   //console.log({ currentTableDataFields })
 
   function getData(displaylength) {
-    //console.log("GET DATA::", tableData)
+    console.log("GET DATA::", tableData)
+    if (filterData.filter != "") {
+      tableData = filterTable(filterData.filter, tableData)
+    }
+    console.log("GET FILTERED DATA::", tableData)
     return tableData.filter((v, i) => {
       v["check"] = false
       const start = displaylength * (activePage - 1)
