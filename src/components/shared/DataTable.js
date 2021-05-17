@@ -318,7 +318,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function getData(displaylength) {
     console.log("GET DATA::", tableData)
-    if (filterData.filter != "") {
+    if (Object.keys(filterData).length > 0 && filterData.filter != "") {
       tableData = filterTable(filterData.filter, tableData)
     }
     console.log("GET FILTERED DATA::", tableData)
