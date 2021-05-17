@@ -47,7 +47,6 @@
     "moment": "2.29.1",
     "node-sass": "^4.14.1",
     "nouislider": "14.6.3",
-    "radium": "^0.26.1",
     "react": "^17.0.1",
     "react-app-rewired": "^2.1.8",
     "react-custom-scrollbars": "^4.2.1",

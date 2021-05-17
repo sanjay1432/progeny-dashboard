@@ -92,7 +92,7 @@
 //Modal
 .rs-modal-content {
     width: 570px;
-    height: 650px;
+    height: 750px;
 }
 
 //Checkbox
@@ -294,13 +294,26 @@
 }
 .rs-table-row-header{
     background-color: $secondary-green;
+    
+
 }
 .rs-table-row-header .rs-table-cell {
     background-color: $secondary-green;
     color: white;
     font-size: 16px;
     font-weight: 700;
+
+    .rs-checkbox-wrapper {
+        top: 5px;
+    }
 }
+
+.rs-table-cell-header .rs-table-cell-content {
+    padding: 7px 10px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
 .rs-table-hover .rs-table-row-header:hover .rs-table-cell {
     background-color: $secondary-green;
     color: white;
@@ -337,20 +350,6 @@
         border: none;
     }
 }
-
-//Screen design for 800 - 992 width
-@media (max-width: 1200px){
-    
-}
-
-
-
-//Screen design for 1200 - 1599 width
-@media (min-width: 1200px){
-    
-}
-
-
 
 //Screen design for 1600 width or more
 @media screen and (min-width: 1600px) {

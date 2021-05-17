@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import AddEstateModal from "../shared/AddEstateModal"
+import AddEstateModal from "../modal/AddEstateModal"
 import {
   Table,
   FlexboxGrid,
@@ -37,15 +37,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     tableData = []
     currentTableDataFields = []
   })
-  console.log(currentSubNavState)
+  //console.log(currentSubNavState)
   const searchFiltersRef = useRef()
   const [isModal, setModal] = useState(false)
   const [pagination, setPagination] = useState(initialState)
-  const [checkState, setCheckState] = useState([])
   const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
   const [dataTable, setDataTable] = useState([])
+
   const fakeData = [
     {
       check: false,
@@ -193,7 +193,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     {
       label: "Estate",
       value: "estate",
-      width: 100
+      width: 300
     },
     {
       label: "Estate Full Name",
@@ -203,12 +203,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     {
       label: "No of Estate Block",
       value: "noofestateblock",
-      width: 200
+      width: 300
     },
     {
       label: "No. Trials on this Estate",
       value: "nooftrails",
-      width: 200
+      width: 300
     },
     {
       label: "No. Trials on this Estate",
@@ -310,24 +310,48 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     return Math.ceil(tableData.length / displaylength)
   }
 
-  function onCheckboxClick(e) {
-    // fakeData.forEach(element => {
-    //   element.check = e
-    // });
-    setCheckState(e)
+  const noOfPages = getPages()
+
+  const dashboardData = useSelector(state => state.dashboardDataReducer)
+
+  if (dashboardData.result[active]) {
+    //console.log("TABLE DATA", dashboardData.result[active])
+    tableData = dashboardData.result[active]
+    const availableKeys = Object.keys(tableData[0])
+
+    availableKeys.forEach(key => {
+      const field = tableDataFields.find(field => field.value === key)
+      if (field) {
+        currentTableDataFields.push(field)
+      }
+    })
+  }
+
+  //console.log({ currentTableDataFields })
+
+  function getData(displaylength) {
+    //console.log("GET DATA::", tableData)
+    return tableData.filter((v, i) => {
+      v["check"] = false
+      const start = displaylength * (activePage - 1)
+      const end = start + displaylength
+      return i >= start && i < end
+    })
   }
 
   function OpenModal() {
-    setModal(true)
-  }
-
-  const toggle = () => {
     setModal(!isModal)
   }
 
+  function CloseModal() {
+    setModal(!isModal)
+  }
+
+  ;<AddEstateModal show={isModal} hide={CloseModal} />
+
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
-      <div style={{ lineHeight: "46px" }}>
+      <div>
         <Checkbox
           value={rowData[dataKey]}
           inline
@@ -342,19 +366,26 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   let indeterminate = false
   let disabled = true
 
-  if (checkStatus.length === fakeData.length) {
-    checked = true
-    disabled = false
-  } else if (checkStatus.length === 0) {
+  if (checkStatus.length === 0) {
     checked = false
-  } else if (checkStatus.length > 0 && checkStatus.length < fakeData.length) {
+    indeterminate = false
+    disabled = true
+  } else if (checkStatus.length > 0 && checkStatus.length < tableData.length) {
+    checked = false
     indeterminate = true
+    disabled = false
+  } else if (checkStatus.length === tableData.length) {
+    checked = true
+    indeterminate = false
     disabled = false
   }
 
   const handleCheckAll = (value, checked) => {
-    const keys = checked ? fakeData.map(item => item.Estate) : []
+    const keys = checked ? tableData.map(item => item.estate) : []
     setCheckStatus(keys)
+    console.log("keys", keys)
+    console.log(tableData)
+    console.log(tableData.map(item => item.estate))
   }
 
   const handleCheck = (value, checked) => {
@@ -362,35 +393,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
-    console.log(keys)
-  }
-
-  const noOfPages = getPages()
-
-  const dashboardData = useSelector(state => state.dashboardDataReducer)
-
-  if (dashboardData.result[active]) {
-    console.log("TABLE DATA", dashboardData.result[active])
-    tableData = dashboardData.result[active]
-    const availableKeys = Object.keys(tableData[0])
-
-    availableKeys.forEach(key => {
-      const field = tableDataFields.find(field => field.value === key)
-      if (field) {
-        currentTableDataFields.push(field)
-      }
-    })
-  }
-  console.log({ currentTableDataFields })
-
-  function getData(displaylength) {
-    console.log("GET DATA::", tableData)
-    return tableData.filter((v, i) => {
-      v["check"] = false
-      const start = displaylength * (activePage - 1)
-      const end = start + displaylength
-      return i >= start && i < end
-    })
   }
 
   function AddButton() {
@@ -401,7 +403,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
-                className="btnAdd"
+                className="btnAddEstate"
                 onClick={OpenModal}
               >
                 Add Estate
@@ -409,16 +411,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </Col>
         )
-
       case "trial":
         return (
           <Col sm={5} md={5} lg={3}>
             <FlexboxGrid.Item>
-              <Button
-                appearance="primary"
-                className="btnAdd"
-                onClick={OpenModal}
-              >
+              <Button appearance="primary" className="btnAddTrial">
                 Add New Trial
               </Button>
             </FlexboxGrid.Item>
@@ -426,13 +423,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "plot":
         return (
-          <Col sm={5} md={5} lg={3}>
+          <Col sm={5} md={6} lg={4}>
             <FlexboxGrid.Item>
-              <Button
-                appearance="primary"
-                className="btnAdd"
-                onClick={OpenModal}
-              >
+              <Button appearance="primary" className="btnAddPlot">
                 Attach Progenies
               </Button>
             </FlexboxGrid.Item>
@@ -442,13 +435,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return null
       case "progeny":
         return (
-          <Col sm={5} md={5} lg={3}>
+          <Col sm={5} md={5} lg={4}>
             <FlexboxGrid.Item>
-              <Button
-                appearance="primary"
-                className="btnAdd"
-                onClick={OpenModal}
-              >
+              <Button appearance="primary" className="btnAddProgeny">
                 Add New Progeny
               </Button>
             </FlexboxGrid.Item>
@@ -458,11 +447,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <Col sm={5} md={5} lg={3}>
             <FlexboxGrid.Item>
-              <Button
-                appearance="primary"
-                className="btnAdd"
-                onClick={OpenModal}
-              >
+              <Button appearance="primary" className="btnAddUser">
                 Add New User
               </Button>
             </FlexboxGrid.Item>
@@ -488,7 +473,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       return (
         <Col sm={4} md={4} lg={3}>
           <FlexboxGrid.Item>
-            <Button className="btnDelete" disabled>
+            <Button className="btnDelete" disabled={disabled}>
               Delete
             </Button>
           </FlexboxGrid.Item>
@@ -607,6 +592,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return null
     }
   }
+
   return (
     <>
       <div>
@@ -640,35 +626,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         <Table
           wordWrap
           data={getData(displaylength)}
-          onRowClick={data1 => {
-            console.log(data1)
-          }}
+          onRowClick={data1 => {}}
           autoHeight
-          autoWidth
         >
           <Column width={70} align="center" fixed>
             <HeaderCell className="tableHeader">
               <Checkbox
-                //style={{marginBottom: "10px"}}
-                onChange={(value, checked, event) => onCheckboxClick(checked)}
+                checked={checked}
+                indeterminate={indeterminate}
+                onChange={handleCheckAll}
               />
             </HeaderCell>
-            <Cell>
-              {rowData => {
-                function handleCheck() {
-                  alert(rowData.Estate)
-                }
-                return (
-                  <span>
-                    <Checkbox
-                      datakey="Estate"
-                      value={rowData.check}
-                      onChange={handleCheck}
-                    />
-                  </span>
-                )
-              }}
-            </Cell>
+            <CheckCell
+              dataKey="estate"
+              checkedKeys={checkStatus}
+              onChange={handleCheck}
+            />
           </Column>
 
           {currentTableDataFields.map((field, i) =>
