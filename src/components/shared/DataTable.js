@@ -330,6 +330,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     })
   }
 
+  function filterTable(filters, data) {
+    var filterKeys = Object.keys(filters)
+    return data.filter(function (eachObj) {
+      return filterKeys.every(function (eachKey) {
+        return eachObj[eachKey] === filters[eachKey]
+      })
+    })
+  }
+
   function OpenModal() {
     setModal(!isModal)
   }
