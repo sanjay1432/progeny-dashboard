@@ -1,25 +1,27 @@
 import { Button, Grid, Row, Col } from "rsuite"
-import Search from "./Search"
 import Filter from "./Filter"
 
 const SearchFilter = () => {
   return (
-    <Grid>
-      <Row>
-        <Col>
-          <Search />
-        </Col>
-        <Col>
-          <Filter />
-        </Col>
-        <Col>
-          <Button>Apply</Button>
-        </Col>
-        <Col>
-          <Button>Reset Filter</Button>
-        </Col>
-      </Row>
-    </Grid>
+    <>
+      <Grid fluid>
+        <Row>
+          <Col md={8} lg={8}>
+            <Filter className="filter" />
+          </Col>
+          <Col md={8} lg={8}>
+            <Button appearance="primary" className="btnApply">
+              Apply
+            </Button>
+          </Col>
+          <Col md={8} lg={8}>
+            <Button appearance="subtle" className="btnResetFilter">
+              Reset Filter
+            </Button>
+          </Col>
+        </Row>
+      </Grid>
+    </>
   )
 }
 

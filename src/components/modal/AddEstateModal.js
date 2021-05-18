@@ -17,8 +17,6 @@ const AddEstateModal = ({ show, hide }) => {
     fetchData()
   }, [])
 
-  console.log(data)
-
   const columns = [
     {
       name: "Estate",
@@ -69,6 +67,8 @@ const AddEstateModal = ({ show, hide }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <SearchFilter />
+        <b className="totalRecord">Total records ({data.length})</b>
         <CommonTable columns={columns} data={data} />
       </Modal.Body>
       <Modal.Footer>

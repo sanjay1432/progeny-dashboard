@@ -11,6 +11,18 @@
         margin-top: 10px;
     }
 
+    .filter {
+
+    }
+
+    .btnApply {
+        font-size: 100px;
+    }
+
+    .btnResetFilter {
+        margin: 0px;
+    }
+
     .btnCancel {
         width: 140px;
     }
@@ -25,3 +37,5 @@
         color: $primary-black;
     }
 }
+
+//Search Filter

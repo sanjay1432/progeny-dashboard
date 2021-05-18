@@ -374,9 +374,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const handleCheckAll = (value, checked) => {
     const keys = checked ? tableData.map(item => item.estate) : []
     setCheckStatus(keys)
-    console.log("keys", keys)
-    console.log(tableData)
-    console.log(tableData.map(item => item.estate))
+    console.log("inside", tableData)
   }
 
   const handleCheck = (value, checked) => {
@@ -384,6 +382,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
+    console.log(keys)
   }
 
   function filterTable(filters, data) {
@@ -616,7 +615,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddButton />
 
-              <AddEstateModal show={isModal} />
+              <AddEstateModal show={isModal} hide={CloseModal} />
               <DeleteButton />
             </FlexboxGrid>
           </Row>

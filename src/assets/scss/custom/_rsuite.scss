@@ -92,7 +92,7 @@
 //Modal
 .rs-modal-content {
     width: 570px;
-    height: 750px;
+    height: 700px;
 }
 
 //Checkbox
@@ -338,12 +338,17 @@
 }
 
 #addEstate {
-
+    .rs-row {
+        margin: 0px;
+    }
 
     .rs-modal-header {
         .rs-modal-title {
             color: $primary-green;
         }
+    }
+    .rs-modal-body {
+        margin: 0px;
     }
 
     .rs-btn-ghost {
