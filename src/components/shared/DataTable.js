@@ -34,10 +34,10 @@ let tableData = []
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   useEffect(() => {
-    tableData = []
+    // tableData = []
     currentTableDataFields = []
   })
-  //console.log(currentSubNavState)
+
   const searchFiltersRef = useRef()
   const [isModal, setModal] = useState(false)
   const [pagination, setPagination] = useState(initialState)
@@ -298,7 +298,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   const filterData = useSelector(state => state.filterReducer)
-  console.log("FILTER AT TABLE::", filterData)
+
   if (dashboardData.result[active]) {
     //console.log("TABLE DATA", dashboardData.result[active])
     tableData = dashboardData.result[active]
@@ -312,16 +312,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     })
   }
 
-  //console.log({ currentTableDataFields })
-
   function getData(displaylength) {
-    console.log("GET DATA::", tableData)
     if (Object.keys(filterData).length > 0 && filterData.filter != "") {
       tableData = filterTable(filterData.filter, tableData)
     }
-    console.log("GET FILTERED DATA::", tableData)
     return tableData.filter((v, i) => {
       v["check"] = false
+      v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
@@ -370,11 +367,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const handleCheckAll = (value, checked) => {
-    const keys = checked ? tableData.map(item => item.estate) : []
+    const keys = checked ? tableData.map(item => item.rowNumber) : []
     setCheckStatus(keys)
-    console.log("keys", keys)
-    console.log(tableData)
-    console.log(tableData.map(item => item.estate))
   }
 
   const handleCheck = (value, checked) => {
@@ -635,7 +629,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </HeaderCell>
             <CheckCell
-              dataKey="estate"
+              dataKey="rowNumber"
               checkedKeys={checkStatus}
               onChange={handleCheck}
             />
