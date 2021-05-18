@@ -9,33 +9,50 @@
         font-weight: 400;
         color: $primary-black;
         margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .filter {
 
+
     }
 
     .btnApply {
-        font-size: 100px;
+        width: 98px;
+        height: 30px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-top: 28px;
     }
 
     .btnResetFilter {
-        margin: 0px;
-    }
-
-    .btnCancel {
-        width: 140px;
-    }
-
-    .btnAdd {
-        font-size: 14px;
-        width: 140px;
+        width: 98px;
+        height: 30px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-top: 28px;
+        color: $primary-green;
     }
 
     .estateRecord {
         font-size: 14px;
         color: $primary-black;
+        margin: 5px 0px 16px 0px;
     }
+
+    .btnCancel {
+        width: 142px;
+        height: 40px;
+    }
+
+    .btnAdd {
+        width: 142px;
+        height: 40px;
+        font-size: 14px;
+        
+    }
+
+
 }
 
 //Search Filter

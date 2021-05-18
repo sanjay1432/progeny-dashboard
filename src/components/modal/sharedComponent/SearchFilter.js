@@ -1,4 +1,4 @@
-import { Button, Grid, Row, Col } from "rsuite"
+import { Button, ControlLabel, Grid, Row, Col } from "rsuite"
 import Filter from "./Filter"
 
 const SearchFilter = () => {
@@ -6,15 +6,16 @@ const SearchFilter = () => {
     <>
       <Grid fluid>
         <Row>
-          <Col md={8} lg={8}>
-            <Filter className="filter" />
+          <Col md={7} lg={7}>
+            <ControlLabel>Estate</ControlLabel>
+            <Filter />
           </Col>
-          <Col md={8} lg={8}>
+          <Col md={5} lg={5}>
             <Button appearance="primary" className="btnApply">
               Apply
             </Button>
           </Col>
-          <Col md={8} lg={8}>
+          <Col md={5} lg={5}>
             <Button appearance="subtle" className="btnResetFilter">
               Reset Filter
             </Button>

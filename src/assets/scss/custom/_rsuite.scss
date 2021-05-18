@@ -23,7 +23,7 @@
 
 //Modal Layout
 .rs-modal-content {
-    padding: 30px;
+    padding: 32px;
 }
 
 //Button
@@ -338,8 +338,21 @@
 }
 
 #addEstate {
+    .rs-modal-header-close {
+        top: 32px;
+        right: 32px;
+    }
+    
     .rs-row {
-        margin: 0px;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    .rs-grid-container-fluid {
+        padding-left: 0px;
+    }
+
+    .rs-col.rs-col-md-7.rs-col-lg-7 {
+        padding-left: 0px;
     }
 
     .rs-modal-header {
@@ -349,10 +362,28 @@
     }
     .rs-modal-body {
         margin: 0px;
+        max-height: 100% !important;
     }
 
     .rs-btn-ghost {
         border: none;
+    }
+    
+    .rs-picker-toggle {
+        width: 130px;
+        height: 30px;
+    }
+
+    .rs-picker-default .rs-picker-toggle.rs-btn {
+        padding-top: 4px;
+    }
+
+    .rs-picker-default .rs-picker-toggle.rs-btn .rs-picker-toggle-caret {
+        top: 5px;
+    }
+
+    .rs-picker-toggle-placeholder {
+        font-size: 12px;
     }
 }
 

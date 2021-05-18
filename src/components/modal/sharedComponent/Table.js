@@ -22,7 +22,7 @@ const DataTable = ({ columns, data }) => {
     <div>
       {columns && data ? (
         <div>
-          <Table data={getData()} height={450} bordered loading={loading}>
+          <Table data={getData()} height={400} bordered loading={loading}>
             {columns.map(col => {
               const width = col.width ? col.width : 50
               const fixed = col.fixed ? col.fixed : false
@@ -31,7 +31,11 @@ const DataTable = ({ columns, data }) => {
               return (
                 <Column width={width} fixed={fixed}>
                   <HeaderCell>{col.name}</HeaderCell>
-                  {customCell ? customCell : <Cell dataKey={dataKey} />}
+                  {customCell ? (
+                    <customCell dataKey={dataKey} />
+                  ) : (
+                    <Cell dataKey={dataKey} />
+                  )}
                 </Column>
               )
             })}

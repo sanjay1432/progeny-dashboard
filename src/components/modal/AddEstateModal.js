@@ -17,6 +17,27 @@ const AddEstateModal = ({ show, hide }) => {
     fetchData()
   }, [])
 
+  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
+    <Cell {...props} style={{ padding: 0 }}>
+      <div>
+        <Checkbox
+          value={rowData[dataKey]}
+          inline
+          onChange={onChange}
+          checked={checkedKeys.some(item => item === rowData[dataKey])}
+        />
+      </div>
+    </Cell>
+  )
+
+  const ActionCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <AddCircleRoundedIcon />
+      </Cell>
+    )
+  }
+
   const columns = [
     {
       name: "Estate",
@@ -37,27 +58,8 @@ const AddEstateModal = ({ show, hide }) => {
     }
   ]
 
-  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
-    <Cell {...props} style={{ padding: 0 }}>
-      <div>
-        <Checkbox
-          value={rowData[dataKey]}
-          inline
-          onChange={onChange}
-          checked={checkedKeys.some(item => item === rowData[dataKey])}
-        />
-      </div>
-    </Cell>
-  )
-
-  const ActionCell = ({ rowData, dataKey, ...props }) => (
-    <Cell {...props}>
-      <AddCircleRoundedIcon />
-    </Cell>
-  )
-
   return (
-    <Modal id="addEstate" size="sm" show={show}>
+    <Modal id="addEstate" size="sm" show={show} onHide={hide}>
       <Modal.Header>
         <Modal.Title>
           <div>
@@ -68,7 +70,7 @@ const AddEstateModal = ({ show, hide }) => {
       </Modal.Header>
       <Modal.Body>
         <SearchFilter />
-        <b className="totalRecord">Total records ({data.length})</b>
+        <p className="estateRecord">List of Estates ({data.length})</p>
         <CommonTable columns={columns} data={data} />
       </Modal.Body>
       <Modal.Footer>
