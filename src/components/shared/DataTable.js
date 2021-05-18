@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import AddEstateModal from "../modal/AddEstateModal"
+import AddEstateModal from "../../components/modal/AddEstateModal"
 import {
   Table,
   FlexboxGrid,
@@ -291,12 +291,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }))
   }
 
-  function getPages() {
+  function getNoPages() {
     const { displaylength } = pagination
     return Math.ceil(tableData.length / displaylength)
   }
-
-  const noOfPages = getPages()
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   const filterData = useSelector(state => state.filterReducer)
@@ -671,7 +669,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         <div style={{ float: "right", padding: "1rem" }}>
           <Pagination
             {...pagination}
-            pages={noOfPages}
+            pages={getNoPages()}
             maxButtons={2}
             activePage={activePage}
             onSelect={handleChangePage}
