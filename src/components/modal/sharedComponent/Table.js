@@ -5,19 +5,9 @@ const { Column, HeaderCell, Cell } = Table
 
 const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [displayLength, setDisplayLength] = useState(10)
-  const [sortColumn, setSortColumn] = useState(null)
-  const [sortType, setSortType] = useState(null)
-  const [checkStatus, setCheckStatus] = useState([])
-  //console.log(renderExpandedCell)
-  const getData = () => {
-    //setLoading(true)
-    return data.filter((v, i) => {
-      const start = displayLength * (page - 1)
-      const end = start + displayLength
-      return i >= start && i < end
-    })
+
+  function getData() {
+    //if(Object.keys())
   }
 
   return (
@@ -25,7 +15,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
       {columns && data ? (
         <div>
           <Table
-            data={getData()}
+            data={data}
             height={400}
             bordered
             loading={loading}
@@ -40,7 +30,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
                   {col.name ? (
                     <HeaderCell>{col.name}</HeaderCell>
                   ) : (
-                    <HeaderCell>{col.name}</HeaderCell>
+                    <col.cell />
                   )}
 
                   {col.customCell ? (
