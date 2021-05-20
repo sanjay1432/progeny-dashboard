@@ -1,14 +1,16 @@
 import React, { useState } from "react"
 import { Table, Loader } from "rsuite"
-const { Column, HeaderCell, Cell, Pagination } = Table
+import Estate from "views/Estate"
+const { Column, HeaderCell, Cell } = Table
 
-const DataTable = ({ columns, data }) => {
+const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [displayLength, setDisplayLength] = useState(10)
   const [sortColumn, setSortColumn] = useState(null)
   const [sortType, setSortType] = useState(null)
-
+  const [checkStatus, setCheckStatus] = useState([])
+  //console.log(renderExpandedCell)
   const getData = () => {
     //setLoading(true)
     return data.filter((v, i) => {
@@ -22,19 +24,29 @@ const DataTable = ({ columns, data }) => {
     <div>
       {columns && data ? (
         <div>
-          <Table data={getData()} height={400} bordered loading={loading}>
+          <Table
+            data={getData()}
+            height={400}
+            bordered
+            loading={loading}
+            expandedRowKeys={expandedCell}
+            renderRowExpanded={renderExpandedCell}
+          >
             {columns.map(col => {
               const width = col.width ? col.width : 50
               const fixed = col.fixed ? col.fixed : false
-              const dataKey = col.dataKey
-              const customCell = col.customCell
               return (
                 <Column width={width} fixed={fixed}>
-                  <HeaderCell>{col.name}</HeaderCell>
-                  {customCell ? (
-                    <customCell dataKey={dataKey} />
+                  {col.name ? (
+                    <HeaderCell>{col.name}</HeaderCell>
                   ) : (
-                    <Cell dataKey={dataKey} />
+                    <HeaderCell>{col.name}</HeaderCell>
+                  )}
+
+                  {col.customCell ? (
+                    <col.customCell dataKey={col.dataKey} />
+                  ) : (
+                    <Cell dataKey={col.dataKey} />
                   )}
                 </Column>
               )

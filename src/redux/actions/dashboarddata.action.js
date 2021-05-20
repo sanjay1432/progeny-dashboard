@@ -13,7 +13,6 @@ export const getDashboardData = type => dispatch => {
         type: DASHBOARDDATA_SUCCESS,
         payload: { result }
       })
-
       return Promise.resolve()
     },
     error => {

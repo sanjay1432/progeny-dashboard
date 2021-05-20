@@ -66,10 +66,10 @@ const SearchFilter = forwardRef(
           filterData[filterName] = filterdata
         }
       })
-      console.log({ filterData })
+      console.log("filterData", { filterData })
     }
 
-    console.log({ mainPageFilters })
+    console.log("mainPageFilters", { mainPageFilters })
 
     const sidebarFilters = filters
 

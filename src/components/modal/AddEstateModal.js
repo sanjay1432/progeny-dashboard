@@ -1,58 +1,93 @@
 import React, { useState, useEffect } from "react"
+import { useSelector } from "react-redux"
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded"
+import CancelRoundedIcon from "@material-ui/icons/CancelRounded"
 import axios from "axios"
 import { Modal, Table, Button, Checkbox } from "rsuite"
 import CommonTable from "./sharedComponent/Table"
 import SearchFilter from "./sharedComponent/SearchFilter"
 const { Column, HeaderCell, Cell } = Table
 
-const AddEstateModal = ({ show, hide }) => {
+let originalData = []
+const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
   const [data, setData] = useState([])
+  const [expandedCell, setExpandedCell] = useState([])
+  const { active } = currentSubNavState
+  console.log(currentSubNavState)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios("https://jsonplaceholder.typicode.com/posts")
-      setData(result.data)
-    }
-    fetchData()
-  }, [])
+  const dashboardData = useSelector(state => state.dashboardDataReducer)
+  const filteredData = useSelector(state => state.filterReducer)
+
+  if (dashboardData.result.estate) {
+    //console.log("Original Data",originalData)
+    originalData = dashboardData.result.estate
+  }
+
+  //console.log("Modal notice", dashboardData)
+  const CheckAllCell = ({ ...props }) => (
+    <HeaderCell>
+      <Checkbox />
+    </HeaderCell>
+  )
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
-        <Checkbox
-          value={rowData[dataKey]}
-          inline
-          onChange={onChange}
-          checked={checkedKeys.some(item => item === rowData[dataKey])}
-        />
+        <Checkbox value={rowData[dataKey]} inline onChange={onChange} />
       </div>
     </Cell>
   )
 
-  const ActionCell = ({ rowData, dataKey, ...props }) => {
+  const rowKey = "id"
+  const ActionCell = ({ rowData, dataKey, onChange, expandCell, ...props }) => {
     return (
       <Cell {...props}>
-        <AddCircleRoundedIcon />
+        <AddCircleRoundedIcon
+          expandCell={expandCell}
+          onClick={handleExpandedCell}
+        />
       </Cell>
     )
+  }
+
+  const handleExpandedCell = (rowData, dataKey) => {
+    let open = false
+    const nextExpandedCell = []
+
+    expandedCell.forEach(key => {
+      if (key === rowData[rowKey]) {
+        open = true
+      } else {
+        nextExpandedCell.push(key)
+      }
+    })
+
+    if (!open) {
+      nextExpandedCell.push(rowData[rowKey])
+    }
+
+    setExpandedCell(nextExpandedCell)
+  }
+
+  const renderExpandedCell = rowData => {
+    return <Cell>{rowData.id}</Cell>
   }
 
   const columns = [
     {
       name: "Estate",
-      dataKey: "id",
+      dataKey: "estate",
       customCell: CheckCell,
-      width: 100
+      width: 80
     },
     {
       name: "Estate",
-      dataKey: "id",
+      dataKey: "estate",
       width: 300
     },
     {
       name: "Action",
-      dataKey: "id",
+      dataKey: "estateblocks",
       customCell: ActionCell,
       width: 100
     }
@@ -71,7 +106,13 @@ const AddEstateModal = ({ show, hide }) => {
       <Modal.Body>
         <SearchFilter />
         <p className="estateRecord">List of Estates ({data.length})</p>
-        <CommonTable columns={columns} data={data} />
+        <CommonTable
+          columns={columns}
+          data={originalData}
+          expandedCell={expandedCell}
+          renderExpandedCell={renderExpandedCell}
+          currentSubNavState={currentSubNavState}
+        />
       </Modal.Body>
       <Modal.Footer>
         <Button className="btnCancel" appearance="ghost" onClick={hide}>

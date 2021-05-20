@@ -5,7 +5,7 @@ const stateLoader = new StateLoader()
 
 const getModalData = type => {
   return axiosApiInstance
-    .get(`${API_URL}/v1/external/modal/table`)
+    .get(`${API_URL}/v1/external-data/modal`)
     .then(response => {
       return response.data
     })

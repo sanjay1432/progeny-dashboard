@@ -9,7 +9,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
     //ON TAB SWITCH CLEAR THE FILTER DATA
     searchFiltersRef.current.onResetRef()
   })
-
+  console.log("Tab currentSubNavState", currentSubNavState)
   return (
     <>
       <main>
