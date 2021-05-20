@@ -18,6 +18,8 @@ import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}
+let selectedFilterArray = []
+
 const SearchFilter = forwardRef(
   ({ currentItem, currentSubNavState, ...props }, ref) => {
     useEffect(() => {
@@ -60,9 +62,9 @@ const SearchFilter = forwardRef(
       mainPageFilters.forEach(filter => {
         const filterName = filter.name
         if (filter.type === "select") {
-          const filterdata = dashboardData.result[active].map(
-            res => res[filterName]
-          )
+          const filterdata = [
+            ...new Set(dashboardData.result[active].map(res => res[filterName]))
+          ]
           filterData[filterName] = filterdata
         }
       })
@@ -144,13 +146,39 @@ const SearchFilter = forwardRef(
 
     function onChange(e) {
       if (!e.target.value) {
+        //In case of checking the disable state
+        const index = selectedFilterArray.indexOf(e.target.name)
+        if (index > -1) {
+          selectedFilterArray.splice(index, 1)
+        }
+        //In case of checking the disable state
+
         delete selectedFilters[e.target.name]
         return setFilters(selectedFilters)
       }
+
       setFilters(() => ({
         ...selectedFilters,
         [e.target.name]: e.target.value
       }))
+
+      /*********************************/
+      /*SET THE filters disbale value*/
+      if (["plot", "palm"].includes(active)) {
+        if (e.target.value) {
+          selectedFilterArray.push(e.target.name)
+        }
+
+        if (selectedFilterArray.length > 1) {
+          mainPageFilters.forEach(item => {
+            if (item.disable) {
+              item.disable = false
+            }
+          })
+        }
+      }
+      /*SET THE filters disbale value*/
+      /*********************************/
     }
 
     useImperativeHandle(ref, () => ({
@@ -164,7 +192,18 @@ const SearchFilter = forwardRef(
         input => (input.value = "")
       )
       setFilters(null)
+      selectedFilterArray = []
       dispatch(clearFilter())
+
+      /*********************************/
+      /*RESET THE filters disbale value*/
+      mainPageFilters.forEach(item => {
+        if (item.name === "replicate" || item.name === "plot") {
+          item.disable = true
+        }
+      })
+      /*RESET THE filters disbale value*/
+      /*********************************/
     }
 
     function onApply() {
@@ -176,7 +215,7 @@ const SearchFilter = forwardRef(
       <>
         <Grid fluid>
           <Row>
-            <SearchBox />
+            {/* <SearchBox /> */}
             {mainPageFilters.map((filter, i) => (
               <div>
                 <Col sm={5} md={4} lg={3}>
@@ -231,7 +270,7 @@ const SearchFilter = forwardRef(
           </Drawer.Header>
           <Drawer.Body>
             {filters.map((filter, i) => (
-              <FlexboxGrid justify="center">
+              <FlexboxGrid justify="center" key={i}>
                 <FlexboxGrid.Item
                   colspan={12}
                   // style={{ width: "100%" }}

@@ -9,7 +9,7 @@ const InitializeState = {
       countryId: 1
     },
     mills: null,
-    breadcrumb: ["Dashboard", "Production"],
+    breadcrumb: {},
     expandChart: {
       show: false,
       data: {},
