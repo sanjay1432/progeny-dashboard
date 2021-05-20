@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb } from "../../redux/actions/app.action"
-import AddEstateModal from "../../components/modal/AddEstateModal"
 import {
   Table,
   FlexboxGrid,
@@ -18,8 +16,7 @@ import {
   Pagination,
   Modal
 } from "rsuite"
-import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
-import LinkIcon from "../../assets/img/icons/link_24px.svg"
+
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -33,7 +30,12 @@ const initialState = {
 }
 let tableData = []
 let currentTableDataFields = []
-const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
+const EstateBlockTable = ({
+  currentSubNavState,
+  currentItem,
+  option,
+  ...props
+}) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -41,13 +43,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     currentTableDataFields = []
   })
 
-  const searchFiltersRef = useRef()
   const [isModal, setModal] = useState(false)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
-  console.log("Table currentSubNavState", currentSubNavState)
+
   const tableDataFields = [
     {
       label: "Estate",
@@ -303,44 +304,32 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const filterData = useSelector(state => state.filterReducer)
 
   if (dashboardData.result[active]) {
-    //console.log("TABLE DATA", dashboardData.result[active])
-    tableData = dashboardData.result[active]
-    const availableKeys = Object.keys(tableData[0])
+    const { estateblocks } = dashboardData.result[active].find(
+      estate => estate.estate === option.estate
+    )
+    tableData = estateblocks
+    console.log("TABLE DATA", tableData)
+    // const availableKeys = Object.keys(tableData[0])
 
-    availableKeys.forEach(key => {
-      const field = tableDataFields.find(field => field.value === key)
-      if (field) {
-        currentTableDataFields.push(field)
-      }
-    })
+    // availableKeys.forEach(key => {
+    //   const field = tableDataFields.find(field => field.value === key)
+    //   if (field) {
+    //     currentTableDataFields.push(field)
+    //   }
+    // })
   }
 
   function getData(displaylength) {
-    if (Object.keys(filterData).length > 0 && filterData.filter != "") {
-      tableData = filterTable(filterData.filter, tableData)
-    }
+    // if (Object.keys(filterData).length > 0 && filterData.filter != "") {
+    //   tableData = filterTable(filterData.filter, tableData)
+    // }
     return tableData.filter((v, i) => {
-      v["check"] = false
       v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
     })
   }
-
-  function OpenModal() {
-    setModal(!isModal)
-  }
-
-  function CloseModal() {
-    setModal(!isModal)
-  }
-
-  ;<AddEstateModal
-    show={isModal}
-    hide={CloseModal}
-    currentSubNavState={currentSubNavState}
-  />
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
@@ -383,7 +372,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
-    console.log(keys)
   }
 
   function filterTable(filters, data) {
@@ -393,215 +381,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return eachObj[eachKey] === filters[eachKey]
       })
     })
-  }
-
-  function AddButton() {
-    switch (active) {
-      case "estate":
-        return (
-          <Col sm={5} md={5} lg={3}>
-            <FlexboxGrid.Item>
-              <Button
-                appearance="primary"
-                className="btnAddEstate"
-                onClick={OpenModal}
-              >
-                Add Estate
-              </Button>
-            </FlexboxGrid.Item>
-          </Col>
-        )
-      case "trial":
-        return (
-          <Col sm={5} md={5} lg={3}>
-            <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddTrial">
-                Add New Trial
-              </Button>
-            </FlexboxGrid.Item>
-          </Col>
-        )
-      case "plot":
-        return (
-          <Col sm={5} md={6} lg={4}>
-            <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddPlot">
-                Attach Progenies
-              </Button>
-            </FlexboxGrid.Item>
-          </Col>
-        )
-      case "palm":
-        return null
-      case "progeny":
-        return (
-          <Col sm={5} md={5} lg={4}>
-            <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddProgeny">
-                Add New Progeny
-              </Button>
-            </FlexboxGrid.Item>
-          </Col>
-        )
-      case "userlist":
-        return (
-          <Col sm={5} md={5} lg={3}>
-            <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddUser">
-                Add New User
-              </Button>
-            </FlexboxGrid.Item>
-          </Col>
-        )
-      case "estateAssignment":
-        return null
-      case "userAssignment":
-        return null
-      default:
-        return null
-    }
-  }
-
-  function DeleteButton() {
-    if (
-      active === "palm" ||
-      active === "estateAssignment" ||
-      active === "userAssignment"
-    ) {
-      return null
-    } else {
-      return (
-        <Col sm={4} md={4} lg={3}>
-          <FlexboxGrid.Item>
-            <Button className="btnDelete" disabled={disabled}>
-              Delete
-            </Button>
-          </FlexboxGrid.Item>
-        </Col>
-      )
-    }
-  }
-
-  function StatusButton({ status }) {
-    switch (status) {
-      case "active":
-        return (
-          <Button color="green" appearance="ghost">
-            Active
-          </Button>
-        )
-      case "canceled":
-        return (
-          <Button color="red" appearance="ghost">
-            canceled
-          </Button>
-        )
-      case "finished":
-        return (
-          <Button color="yellow" appearance="ghost">
-            finished
-          </Button>
-        )
-      default:
-        return null
-    }
-  }
-
-  function ActionButtons({ data }) {
-    switch (active) {
-      case "estate":
-        return (
-          <span>
-            <img
-              src={OpenNew}
-              onClick={() =>
-                handleActionExpand(["Estate", `Estate ${data.estate}`], {
-                  estate: data.estate
-                })
-              }
-            />
-          </span>
-        )
-      case "trial":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <img src={OpenNew} />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <img src={LinkIcon} />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-
-      case "plot":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="qrcode" size="md" />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <img src={LinkIcon} />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "palm":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "progeny":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-
-      case "userlist":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "estateAssignment":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <img src={OpenNew} />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <Icon icon="user-circle" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "userAssignment":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="user-circle" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      default:
-        return null
-    }
-  }
-
-  function handleActionExpand(breadcrumb, option) {
-    dispatch(setBreadcrumb({ breadcrumb, option }))
   }
 
   return (
@@ -626,10 +405,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 </FlexboxGrid.Item>
               </Col>
 
-              <AddButton />
+              <Col sm={5} md={5} lg={3}>
+                <FlexboxGrid.Item>
+                  <Button appearance="primary" className="btnAddEstate">
+                    Add Estate Block
+                  </Button>
+                </FlexboxGrid.Item>
+              </Col>
 
-              <AddEstateModal show={isModal} hide={CloseModal} />
-              <DeleteButton />
+              <Col sm={4} md={4} lg={3}>
+                <FlexboxGrid.Item>
+                  <Button className="btnDelete" disabled={disabled}>
+                    Delete
+                  </Button>
+                </FlexboxGrid.Item>
+              </Col>
             </FlexboxGrid>
           </Row>
         </Grid>
@@ -655,29 +445,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             />
           </Column>
 
-          {currentTableDataFields.map((field, i) =>
-            field.value === "status" ? (
-              <Column width={field.width} align="center" key={i} fixed="right">
-                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                <Cell align="center">
-                  {rowData => {
-                    return <StatusButton status={rowData.status} />
-                  }}
-                </Cell>
-              </Column>
-            ) : (
-              <Column width={field.width} align="left" key={i}>
-                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                <Cell dataKey={field.value} />
-              </Column>
-            )
-          )}
+          <Column width={300} align="left">
+            <HeaderCell className="tableHeader">Estate Block</HeaderCell>
+            <Cell dataKey="estateblock" />
+          </Column>
 
-          <Column width={100} align="center" fixed="right">
-            <HeaderCell className="tableHeader">Action</HeaderCell>
-            <Cell align="center">
-              {rowData => <ActionButtons data={rowData} />}
-            </Cell>
+          <Column width={300} align="left">
+            <HeaderCell className="tableHeader">Size (ha)</HeaderCell>
+            <Cell dataKey="size" />
+          </Column>
+
+          <Column width={300} align="left">
+            <HeaderCell className="tableHeader">Density (p/ha)</HeaderCell>
+            <Cell dataKey="density" />
           </Column>
         </Table>
         <div style={{ float: "right", padding: "1rem" }}>
@@ -694,4 +474,4 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   )
 }
 
-export default DataTable
+export default EstateBlockTable

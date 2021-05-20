@@ -33,7 +33,7 @@ import {
   FlexboxGrid
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb } from "../redux/actions/app.action"
+import { setBreadcrumb, clearBreadcrumb } from "../redux/actions/app.action"
 import { getDashboardData } from "../redux/actions/dashboarddata.action"
 import axios from "axios"
 import BreadcrumbProgeny from "../components/nav/BreadcrumbProgeny"
@@ -68,7 +68,14 @@ const listItems = [
           {
             name: "estate",
             label: "Estate",
-            type: "select"
+            type: "select",
+            disable: false
+          },
+          {
+            name: "estatefullname",
+            label: "Estate Full Name",
+            type: "select",
+            disable: false
           }
         ],
         search: true
@@ -80,22 +87,26 @@ const listItems = [
           {
             name: "trialid",
             label: "Trial Id",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "planteddate",
             label: "Planted Date (year)",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "estate",
             label: "Estate",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "soiltype",
             label: "Soil Type",
-            type: "select"
+            type: "select",
+            disable: false
           }
         ],
         search: false
@@ -107,17 +118,20 @@ const listItems = [
           {
             name: "trialid",
             label: "Trial Id",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "estate",
             label: "Estate",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "replicate",
             label: "Replicate",
-            type: "select"
+            type: "select",
+            disable: true
           }
         ],
         search: false
@@ -129,22 +143,26 @@ const listItems = [
           {
             name: "trialid",
             label: "Trial Id",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "estate",
             label: "Estate",
-            type: "select"
+            type: "select",
+            disable: false
           },
           {
             name: "replicate",
             label: "Replicate",
-            type: "select"
+            type: "select",
+            disable: true
           },
           {
             name: "plot",
             label: "Plot",
-            type: "select"
+            type: "select",
+            disable: true
           }
         ],
         search: false
@@ -283,8 +301,9 @@ const Overview = props => {
   const [sidenavState, setSidenavState] = useState(initialSidenavState)
   const [subnavState, setSubnavState] = useState(initialSubnavState)
   const dispatch = useDispatch()
-
+  // dispatch(clearBreadcrumb())
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
+
   const history = useHistory()
   const currentSideItem = listItems.find(
     item => item.eventKey === sidenavState.activeKey
@@ -323,7 +342,7 @@ const Overview = props => {
       })
     } else {
       const { active } = subnavState
-      dispatch(setBreadcrumb(["Progeny", "Overview"]))
+
       dispatch(getDashboardData(active))
       const CancelToken = axios.CancelToken
       const source = CancelToken.source()
