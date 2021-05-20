@@ -12,7 +12,7 @@ let originalData = []
 const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
   const [data, setData] = useState([])
   const [expandedCell, setExpandedCell] = useState([])
-  const { active } = currentSubNavState
+  //const { active } = currentSubNavState
   console.log(currentSubNavState)
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)

@@ -385,7 +385,7 @@ const EstateBlockTable = ({
 
   return (
     <>
-      <div>
+      <div id="estateBlockTable">
         <Grid fluid>
           <Row className="show-grid" id="tableOption">
             <Col sm={6} md={6} lg={6}>
@@ -405,9 +405,9 @@ const EstateBlockTable = ({
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col sm={5} md={5} lg={3}>
+              <Col sm={5} md={5} lg={4}>
                 <FlexboxGrid.Item>
-                  <Button appearance="primary" className="btnAddEstate">
+                  <Button appearance="primary" className="btnAddEstateBlock">
                     Add Estate Block
                   </Button>
                 </FlexboxGrid.Item>

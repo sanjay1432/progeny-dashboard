@@ -419,13 +419,13 @@ const Overview = props => {
             <main id="content-section">
               <div className="subNav">
                 <ProgenySubNavBar
-                  style={{ backgroundColor: "white" }}
+                  className="progenySubNavBar"
                   active={active}
                   onSelect={handleSelect}
                   currentItem={currentSideItem}
                 />
               </div>
-              <div className="content" style={{ backgroundColor: "#f9f9f9" }}>
+              <div className="content">
                 <section id="overview">
                   {isLoading ? (
                     <Loader center content="Loading" />

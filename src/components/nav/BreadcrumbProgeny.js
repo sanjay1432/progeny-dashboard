@@ -6,7 +6,7 @@ const BreadcrumbProgeny = () => {
   const dispatch = useDispatch()
   const { breadcrumb } = useSelector(state => state.appReducer.breadcrumb)
   function handleClick(e) {
-    console.log(breadcrumb)
+    //console.log("breadcrumb",breadcrumb)
     dispatch(clearBreadcrumb())
   }
   return (

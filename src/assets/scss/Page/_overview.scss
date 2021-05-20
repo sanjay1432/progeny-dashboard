@@ -55,7 +55,15 @@
     margin-top: 3px;
     display: flex;
     flex-direction: column;
+
+    .progenySubNavBar {
+        background-color: white;
+        display: flex;
+    }
     
+    .content {
+        background-color: $body-color;
+    }
 
     .subNav {
         margin-right: auto;

@@ -15,6 +15,7 @@ const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
         <Navbar {...props} id="navbar">
           <Navbar.Body style={{ textAlign: "left" }}>
             <Nav
+              className="breadcrumb"
               {...props}
               appearance="subtle"
               activeKey={active}

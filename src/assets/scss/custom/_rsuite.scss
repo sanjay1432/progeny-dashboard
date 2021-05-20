@@ -7,10 +7,6 @@
     opacity: 1;
 }
 
-//Col Layout
-
-
-
 
 //Label
 .rs-control-label {
@@ -87,6 +83,18 @@
 .rs-picker-toggle 
 .rs-picker-toggle-value {
     color: #000;
+}
+
+.rs-picker-default.rs-picker-disabled .rs-picker-toggle, .rs-picker-input.rs-picker-disabled .rs-picker-toggle, .rs-picker-default.rs-picker-disabled .rs-btn, .rs-picker-input.rs-picker-disabled .rs-btn {
+    background-color: $disabled-color-bg !important;
+
+    span.rs-picker-toggle-placeholder {
+        color: $disabled-color-text;
+    }
+}
+
+.rs-picker-toggle .rs-picker-toggle-placeholder {
+    color: $primary-black;
 }
 
 //Modal
@@ -181,6 +189,32 @@
 .rs-pagination > li.rs-pagination-btn-active > a{
     color: #fff;
     background-color: #008f53;
+}
+
+.progenySubNavBar {
+    .rs-nav > ul {
+        display: flex;
+    }
+
+    .rs-breadcrumb {
+        padding: 0px;
+        color: $primary-black;
+        
+    }
+
+    .rs-icon-angle-right {
+        width: 20px;
+        height: 20px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    span {
+        font-size: 16px;
+        font-weight: 700;
+        color: $primary-green;
+        margin-right: 10px;
+    }
 }
 
 
