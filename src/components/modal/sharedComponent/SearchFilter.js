@@ -1,7 +1,6 @@
 import { Button, ControlLabel, Grid, Row, Col } from "rsuite"
 import Filter from "./Filter"
 
-let FilterData = {}
 const SearchFilter = () => {
   return (
     <>

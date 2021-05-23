@@ -19,10 +19,12 @@ const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
   const filteredData = useSelector(state => state.filterReducer)
 
   if (dashboardData.result.estate) {
+    //console.log("Original Data",originalData)
     originalData = dashboardData.result.estate
   }
 
-  const CheckAllCell = () => (
+  //console.log("Modal notice", dashboardData)
+  const CheckAllCell = ({ ...props }) => (
     <HeaderCell>
       <Checkbox />
     </HeaderCell>
@@ -73,7 +75,7 @@ const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
 
   const columns = [
     {
-      cell: CheckAllCell,
+      name: "Estate",
       dataKey: "estate",
       customCell: CheckCell,
       width: 80
@@ -103,7 +105,7 @@ const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
       </Modal.Header>
       <Modal.Body>
         <SearchFilter />
-        <p className="estateRecord">List of Estates ({originalData.length})</p>
+        <p className="estateRecord">List of Estates ({data.length})</p>
         <CommonTable
           columns={columns}
           data={originalData}

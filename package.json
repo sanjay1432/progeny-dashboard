@@ -94,12 +94,12 @@
     "eslint-plugin-prettier": "^3.3.1",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.8",
+    "husky": "3.0.5",
     "jquery": "^3.5.1",
+    "lint-staged": "9.2.5",
     "prettier": "^2.2.1",
     "typescript": "3.7.5",
-    "workbox-build": "^6.1.2",
-    "husky": "3.0.5",
-    "lint-staged": "9.2.5"
+    "workbox-build": "^6.1.2"
   },
   "husky": {
     "hooks": {
