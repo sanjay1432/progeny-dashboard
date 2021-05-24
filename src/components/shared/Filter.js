@@ -6,7 +6,7 @@ const Filter = forwardRef(
     ref
   ) => {
     const dataToFilter = []
-    console.log("on filter:", filterData)
+
     if (filterData) {
       filterData.forEach(filter => {
         dataToFilter.push({
@@ -20,6 +20,8 @@ const Filter = forwardRef(
         value: "not available"
       })
     }
+    console.log("filterData", filterData)
+    console.log("dataToFilter", dataToFilter)
 
     function onChangeSelection(e) {
       onUpdate(e)

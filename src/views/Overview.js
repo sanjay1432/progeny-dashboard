@@ -309,6 +309,8 @@ const Overview = props => {
     item => item.eventKey === sidenavState.activeKey
   )
 
+  console.log("currentSideItem", currentSideItem)
+
   // console.log({ currentSideItem }, sidenavState)
   const toggleNavs = (e, index) => {
     e.preventDefault()

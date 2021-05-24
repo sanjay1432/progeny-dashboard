@@ -12,11 +12,10 @@ import { useMediaQuery } from "react-responsive"
 import Search from "../shared/Search"
 import Filter from "../shared/Filter"
 import { Drawer, Sidenav, Nav, Icon, FlexboxGrid } from "rsuite"
-import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded"
-import { refresh } from "less"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 let initialFilters = {}
 let currentFilters = []
+console.log("currentFilter", currentFilters)
 let filterData = {}
 let selectedFilterArray = []
 
@@ -30,7 +29,8 @@ const SearchFilter = forwardRef(
     const [selectedFilters, setFilters] = useState(initialFilters)
 
     const [selectedValue, setValues] = useState({})
-    // console.log(currentSubNavState)
+    console.log("currentItem", currentItem)
+    console.log("currentSubNavState", currentSubNavState)
 
     const { active } = currentSubNavState
 
@@ -49,13 +49,17 @@ const SearchFilter = forwardRef(
     const filterList = currentItem.sublist.find(
       type => type.eventKey === active
     )
-    // console.log({ filterList })
+    console.log("filterList", filterList)
 
     const filters = filterList.filters
+
     filters.forEach(filter => {
       currentFilters.push(filter)
     })
+    console.log("currentFilters", currentFilters)
+
     let mainPageFilters = currentFilters
+    console.log("mainPageFilters", mainPageFilters)
 
     console.log({ dashboardData })
     if (dashboardData.result[active]) {

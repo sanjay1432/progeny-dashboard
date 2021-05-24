@@ -4,26 +4,29 @@ import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded"
 import CancelRoundedIcon from "@material-ui/icons/CancelRounded"
 import axios from "axios"
 import { Modal, Table, Button, Checkbox } from "rsuite"
-import CommonTable from "./sharedComponent/Table"
-import SearchFilter from "./sharedComponent/SearchFilter"
+import CommonTable from "../sharedComponent/Table"
+import FilterPanel from "../sharedComponent/FilterPanel"
 const { Column, HeaderCell, Cell } = Table
 
 let originalData = []
-const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
+const AddEstateModal = ({
+  show,
+  hide,
+  currentSubNavState,
+  currentItem,
+  ...props
+}) => {
   const [data, setData] = useState([])
   const [expandedCell, setExpandedCell] = useState([])
-  //const { active } = currentSubNavState
-  console.log(currentSubNavState)
+  const { active } = currentSubNavState
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   const filteredData = useSelector(state => state.filterReducer)
 
-  if (dashboardData.result.estate) {
-    //console.log("Original Data",originalData)
-    originalData = dashboardData.result.estate
+  if (dashboardData.result[active]) {
+    originalData = dashboardData.result[active]
   }
 
-  //console.log("Modal notice", dashboardData)
   const CheckAllCell = ({ ...props }) => (
     <HeaderCell>
       <Checkbox />
@@ -104,7 +107,11 @@ const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <SearchFilter />
+        <FilterPanel
+          currentSubNavState={currentSubNavState}
+          currentItem={currentItem}
+          data={originalData}
+        />
         <p className="estateRecord">List of Estates ({data.length})</p>
         <CommonTable
           columns={columns}
@@ -112,6 +119,7 @@ const AddEstateModal = ({ show, hide, currentSubNavState, ...props }) => {
           expandedCell={expandedCell}
           renderExpandedCell={renderExpandedCell}
           currentSubNavState={currentSubNavState}
+          currentItem={currentItem}
         />
       </Modal.Body>
       <Modal.Footer>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
-import AddEstateModal from "../../components/modal/AddEstateModal"
+import AddEstateModal from "../modal/estateModal/AddEstate"
 import {
   Table,
   FlexboxGrid,
@@ -35,7 +35,7 @@ let tableData = []
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
-
+  console.log(currentSubNavState)
   useEffect(() => {
     // tableData = []
     currentTableDataFields = []
@@ -336,12 +336,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setModal(!isModal)
   }
 
-  ;<AddEstateModal
-    show={isModal}
-    hide={CloseModal}
-    currentSubNavState={currentSubNavState}
-  />
-
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
@@ -447,7 +441,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <Col sm={5} md={5} lg={3}>
             <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddUser">
+              <Button
+                appearance="primary"
+                className="btnAddUser"
+                onClick={() =>
+                  handleActionExpand(["User List", "Add New User"], {})
+                }
+              >
                 Add New User
               </Button>
             </FlexboxGrid.Item>
@@ -628,7 +628,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddButton />
 
-              <AddEstateModal show={isModal} hide={CloseModal} />
+              <AddEstateModal
+                show={isModal}
+                hide={CloseModal}
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+              />
               <DeleteButton />
             </FlexboxGrid>
           </Row>
