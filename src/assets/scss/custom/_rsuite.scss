@@ -100,7 +100,7 @@
 //Modal
 .rs-modal-content {
     width: 570px;
-    height: 700px;
+    // height: 750px;
 }
 
 //Checkbox
@@ -471,4 +471,13 @@
     .rs-checkbox-wrapper{
         top: 3px;
     }
+}
+
+.rs-message-success{
+    background-color: #35795b;
+    color: #fff;
+    width: 35%;
+    margin: 0 35%;
+    bottom: 5rem;
+    position: fixed;
 }
