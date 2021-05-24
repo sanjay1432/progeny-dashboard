@@ -263,6 +263,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       label: "Cross Type",
       value: "crossType",
       width: 100
+    },
+    {
+      label: "User ID",
+      value: "userId",
+      width: 100
+    },
+    {
+      label: "Username",
+      value: "username",
+      width: 100
+    },
+    {
+      label: "Position",
+      value: "position",
+      width: 100
     }
   ]
 

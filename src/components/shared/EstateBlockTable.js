@@ -14,9 +14,10 @@ import {
   Checkbox,
   CheckboxGroup,
   Pagination,
-  Modal
+  Modal,
+  Message
 } from "rsuite"
-
+import DashboardDataService from "../../services/dashboarddata.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -39,233 +40,18 @@ const EstateBlockTable = ({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // tableData = []
     currentTableDataFields = []
   })
 
   const [isModal, setModal] = useState(false)
+  const [ebAdded, setebAdded] = useState(false)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
+  const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
+  const [estateBlocks, setEstateBlocks] = useState([])
+  const [updateDate, setUpdateDate] = useState(null)
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
-
-  const tableDataFields = [
-    {
-      label: "Estate",
-      value: "estate",
-      width: 300
-    },
-    {
-      label: "Estate Full Name",
-      value: "estatefullname",
-      width: 300
-    },
-    {
-      label: "No of Estate Block",
-      value: "noofestateblock",
-      width: 300
-    },
-    {
-      label: "No. Trials on this Estate",
-      value: "nooftrails",
-      width: 300
-    },
-    {
-      label: "No. Trials on this Estate",
-      value: "nooftrails",
-      width: 200
-    },
-    {
-      label: "Trial ID",
-      value: "trialid",
-      width: 200
-    },
-    {
-      label: "Trial",
-      value: "trial",
-      width: 200
-    },
-    {
-      label: "Trial Remarks",
-      value: "trialremark",
-      width: 300
-    },
-    {
-      label: "Area (ha)",
-      value: "area",
-      width: 100
-    },
-    {
-      label: "Planted Date",
-      value: "planteddate",
-      width: 100
-    },
-    {
-      label: "n Progeny",
-      value: "nofprogeny",
-      width: 100
-    },
-    {
-      label: "n Of Replicate",
-      value: "nofreplicate",
-      width: 200
-    },
-    {
-      label: "Soil Type",
-      value: "soiltype",
-      width: 200
-    },
-    {
-      label: "n Of Plot",
-      value: "nofplot",
-      width: 100
-    },
-    {
-      label: "n Of Subblock/Rep",
-      value: "nofsubblock",
-      width: 200
-    },
-    {
-      label: "n Of Plot/subblock",
-      value: "nofplot_subblock",
-      width: 200
-    },
-    {
-      label: "Status",
-      value: "status",
-      width: 100
-    },
-    {
-      label: "Replicate",
-      value: "replicate",
-      width: 100
-    },
-    {
-      label: "Estate Block",
-      value: "estateblock",
-      width: 100
-    },
-    {
-      label: "Design",
-      value: "design",
-      width: 100
-    },
-    {
-      label: "Density",
-      value: "density",
-      width: 100
-    },
-    {
-      label: "Plot",
-      value: "plot",
-      width: 100
-    },
-    {
-      label: "Subblock",
-      value: "subblock",
-      width: 100
-    },
-    {
-      label: "Progeny ID",
-      value: "progenyId",
-      width: 100
-    },
-    {
-      label: "Progeny",
-      value: "progeny",
-      width: 100
-    },
-    {
-      label: "Ortet",
-      value: "ortet",
-      width: 100
-    },
-    {
-      label: "FP",
-      value: "fp",
-      width: 100
-    },
-    {
-      label: "MP",
-      value: "mp",
-      width: 100
-    },
-    {
-      label: "nPalm",
-      value: "noofPalm",
-      width: 100
-    },
-    {
-      label: "Palm No",
-      value: "palmno",
-      width: 100
-    },
-    {
-      label: "Palm Name",
-      value: "palmname",
-      width: 100
-    },
-    {
-      label: "Progeny ID",
-      value: "progenyId",
-      width: 100
-    },
-    {
-      label: "Pop Var",
-      value: "popvar",
-      width: 100
-    },
-    {
-      label: "Origin",
-      value: "origin",
-      width: 100
-    },
-    {
-      label: "Progeny Remark",
-      value: "progenyremark",
-      width: 100
-    },
-    {
-      label: "Progeny Remark",
-      value: "progenyremark",
-      width: 100
-    },
-    {
-      label: "Generation",
-      value: "generation",
-      width: 100
-    },
-    {
-      label: "FP Fam",
-      value: "fpFam",
-      width: 100
-    },
-    {
-      label: "FP Var",
-      value: "fpVar",
-      width: 100
-    },
-    {
-      label: "MP Fam",
-      value: "mpFam",
-      width: 100
-    },
-    {
-      label: "MP Var",
-      value: "mpVar",
-      width: 100
-    },
-    {
-      label: "Cross",
-      value: "cross",
-      width: 100
-    },
-    {
-      label: "Cross Type",
-      value: "crossType",
-      width: 100
-    }
-  ]
 
   const perpage = [
     {
@@ -301,34 +87,33 @@ const EstateBlockTable = ({
   }
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
-  const filterData = useSelector(state => state.filterReducer)
 
   if (dashboardData.result[active]) {
     const { estateblocks } = dashboardData.result[active].find(
       estate => estate.estate === option.estate
     )
     tableData = estateblocks
-    console.log("TABLE DATA", tableData)
-    // const availableKeys = Object.keys(tableData[0])
-
-    // availableKeys.forEach(key => {
-    //   const field = tableDataFields.find(field => field.value === key)
-    //   if (field) {
-    //     currentTableDataFields.push(field)
-    //   }
-    // })
   }
 
   function getData(displaylength) {
-    // if (Object.keys(filterData).length > 0 && filterData.filter != "") {
-    //   tableData = filterTable(filterData.filter, tableData)
-    // }
     return tableData.filter((v, i) => {
       v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
     })
+  }
+
+  async function getEstateData() {
+    const {
+      data,
+      updatedDate
+    } = await DashboardDataService.getUpdatedEstateBlocks()
+    setUpdateDate(updatedDate)
+    const { estate } = option
+    const estatedata = data.find(estates => estates.estate === estate)
+    const { estateblocks } = estatedata
+    setEstateBlocks(estateblocks)
   }
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -362,30 +147,130 @@ const EstateBlockTable = ({
     disabled = false
   }
 
+  let ebchecked = false
+  let ebindeterminate = false
+
+  if (checkStatusEstateBlock.length === estateBlocks.length) {
+    ebchecked = true
+  } else if (checkStatusEstateBlock.length === 0) {
+    ebchecked = false
+  } else if (
+    checkStatusEstateBlock.length > 0 &&
+    checkStatusEstateBlock.length < estateBlocks.length
+  ) {
+    ebindeterminate = true
+  }
+
   const handleCheckAll = (value, checked) => {
     const keys = checked ? tableData.map(item => item.rowNumber) : []
     setCheckStatus(keys)
   }
 
+  const handleCheckAllEstateBlocks = (value, checked) => {
+    const keys = checked ? estateBlocks.map(item => item.estateblock) : []
+    setCheckStatusEstateBlock(keys)
+  }
   const handleCheck = (value, checked) => {
     const keys = checked
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
   }
+  const handleCheckEstateBlocks = (value, checked) => {
+    const keys = checked
+      ? [...checkStatusEstateBlock, value]
+      : checkStatusEstateBlock.filter(item => item !== value)
+    setCheckStatusEstateBlock(keys)
+  }
+  function close() {
+    setModal(false)
+  }
+  function open() {
+    getEstateData()
+    setModal(true)
+  }
 
-  function filterTable(filters, data) {
-    var filterKeys = Object.keys(filters)
-    return data.filter(function (eachObj) {
-      return filterKeys.every(function (eachKey) {
-        return eachObj[eachKey] === filters[eachKey]
-      })
-    })
+  function onAddEB() {
+    console.log({ checkStatusEstateBlock })
+    setModal(false)
+    setebAdded(true)
+  }
+
+  function SuccessMessage() {
+    if (ebAdded) {
+      return (
+        <>
+          <Message
+            showIcon
+            type="success"
+            description="Estate Blocks have been added to the system."
+            onClick={() => {
+              setebAdded(false)
+            }}
+          />
+        </>
+      )
+    } else {
+      return <></>
+    }
   }
 
   return (
     <>
       <div id="estateBlockTable">
+        <Modal show={isModal} onHide={close}>
+          <Modal.Header>
+            <Modal.Title>Add Estate Block</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div style={{ color: "black" }}>
+              <div>
+                Last updated on :{" "}
+                <b>
+                  {new Date(updateDate).toLocaleDateString("en-US", {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  })}
+                </b>
+              </div>
+              <div>
+                Estate: <b>{option.estate}</b>
+              </div>
+              <div>List of Estate Blocks({estateBlocks.length})</div>
+            </div>
+            <Table wordWrap data={estateBlocks}>
+              <Column width={70} align="center" fixed>
+                <HeaderCell className="tableHeader">
+                  <Checkbox
+                    checked={ebchecked}
+                    indeterminate={ebindeterminate}
+                    onChange={handleCheckAllEstateBlocks}
+                  />
+                </HeaderCell>
+                <CheckCell
+                  dataKey="estateblock"
+                  checkedKeys={checkStatusEstateBlock}
+                  onChange={handleCheckEstateBlocks}
+                />
+              </Column>
+
+              <Column width={300} align="left">
+                <HeaderCell className="tableHeader">Estate Block</HeaderCell>
+                <Cell dataKey="estateblock" />
+              </Column>
+            </Table>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={close} appearance="subtle">
+              Cancel
+            </Button>
+            <Button onClick={onAddEB} appearance="primary">
+              Add Estate Block
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <Grid fluid>
           <Row className="show-grid" id="tableOption">
             <Col sm={6} md={6} lg={6}>
@@ -407,7 +292,11 @@ const EstateBlockTable = ({
 
               <Col sm={5} md={5} lg={4}>
                 <FlexboxGrid.Item>
-                  <Button appearance="primary" className="btnAddEstateBlock">
+                  <Button
+                    appearance="primary"
+                    className="btnAddEstateBlock"
+                    onClick={open}
+                  >
                     Add Estate Block
                   </Button>
                 </FlexboxGrid.Item>
@@ -460,6 +349,7 @@ const EstateBlockTable = ({
             <Cell dataKey="density" />
           </Column>
         </Table>
+        <SuccessMessage />
         <div style={{ float: "right", padding: "1rem" }}>
           <Pagination
             {...pagination}

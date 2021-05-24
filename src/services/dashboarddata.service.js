@@ -11,7 +11,14 @@ const getDashboardData = type => {
       return response.data
     })
 }
-
+const getUpdatedEstateBlocks = () => {
+  return axiosApiInstance
+    .get(`${API_URL}/v1/general/master-data/estate/estate-blocks`)
+    .then(response => {
+      return response.data
+    })
+}
 export default {
-  getDashboardData
+  getDashboardData,
+  getUpdatedEstateBlocks
 }
