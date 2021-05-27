@@ -44,8 +44,6 @@ import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
 import { Drawer, Button, IconButton, Sidenav } from "rsuite"
 
-//const scrollCallBack = window.addEventListener
-
 const initialSidenavState = {
   expanded: true,
   activeKey: "1"

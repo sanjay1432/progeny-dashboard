@@ -6,7 +6,7 @@ const Filter = forwardRef(
     ref
   ) => {
     const dataToFilter = []
-
+    console.log(filterData)
     if (filterData) {
       filterData.forEach(filter => {
         dataToFilter.push({
@@ -20,12 +20,13 @@ const Filter = forwardRef(
         value: "not available"
       })
     }
-    console.log("filterData", filterData)
     console.log("dataToFilter", dataToFilter)
 
     function onChangeSelection(e) {
       onUpdate(e)
     }
+
+    console.log("selected", selected)
     return (
       <>
         <ControlLabel>{filter.label}</ControlLabel>

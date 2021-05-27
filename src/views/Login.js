@@ -1,15 +1,12 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router-dom"
-import classnames from "classnames"
 import Form from "react-validation/build/form"
 import CheckButton from "react-validation/build/button"
-
-import { login, loginSSO } from "../redux/actions/auth.action"
+import { login } from "../redux/actions/auth.action"
 import logo from "assets/img/Progeny-logo/logoStyle02.png"
-import { IconButton, Icon, Loader } from "rsuite"
+import { Loader } from "rsuite"
 import { useHistory } from "react-router-dom"
-import { SSO_WEB_LOGIN } from "../constants/index"
 // reactstrap components
 import { Card, CardBody, Container } from "reactstrap"
 

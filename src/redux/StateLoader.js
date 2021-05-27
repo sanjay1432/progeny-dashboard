@@ -24,14 +24,6 @@ const InitializeState = {
     processLines: null,
     displayProcessLine: {},
     displayPeriods: []
-  },
-  modalDataReducer: { result: {} },
-  modalReducer: {
-    displayAsDate: null,
-    latestDate: null,
-    processLines: null,
-    displayProcessLine: {},
-    displayPeriods: []
   }
 }
 

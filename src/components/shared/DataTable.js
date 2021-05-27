@@ -35,7 +35,6 @@ let tableData = []
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
-  console.log(currentSubNavState)
   useEffect(() => {
     // tableData = []
     currentTableDataFields = []
@@ -47,7 +46,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
-  console.log("Table currentSubNavState", currentSubNavState)
+
   const tableDataFields = [
     {
       label: "Estate",
@@ -316,9 +315,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   const filterData = useSelector(state => state.filterReducer)
-
   if (dashboardData.result[active]) {
-    //console.log("TABLE DATA", dashboardData.result[active])
     tableData = dashboardData.result[active]
     const availableKeys = Object.keys(tableData[0])
 
@@ -392,7 +389,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
-    console.log(keys)
   }
 
   function filterTable(filters, data) {

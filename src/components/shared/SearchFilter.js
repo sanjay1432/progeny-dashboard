@@ -15,7 +15,6 @@ import { Drawer, Sidenav, Nav, Icon, FlexboxGrid } from "rsuite"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 let initialFilters = {}
 let currentFilters = []
-console.log("currentFilter", currentFilters)
 let filterData = {}
 let selectedFilterArray = []
 
@@ -29,14 +28,11 @@ const SearchFilter = forwardRef(
     const [selectedFilters, setFilters] = useState(initialFilters)
 
     const [selectedValue, setValues] = useState({})
-    console.log("currentItem", currentItem)
-    console.log("currentSubNavState", currentSubNavState)
 
     const { active } = currentSubNavState
 
     const dashboardData = useSelector(state => state.dashboardDataReducer)
 
-    console.log({ currentItem }, { active })
     const isDesktopOrLaptop = useMediaQuery({
       query: "(min-device-width: 1224px)"
     })
@@ -49,22 +45,21 @@ const SearchFilter = forwardRef(
     const filterList = currentItem.sublist.find(
       type => type.eventKey === active
     )
-    console.log("filterList", filterList)
 
     const filters = filterList.filters
 
     filters.forEach(filter => {
       currentFilters.push(filter)
     })
-    console.log("currentFilters", currentFilters)
 
     let mainPageFilters = currentFilters
     console.log("mainPageFilters", mainPageFilters)
 
-    console.log({ dashboardData })
     if (dashboardData.result[active]) {
       mainPageFilters.forEach(filter => {
+        //console.log("filter",filter)
         const filterName = filter.name
+
         if (filter.type === "select") {
           const filterdata = [
             ...new Set(dashboardData.result[active].map(res => res[filterName]))
@@ -72,10 +67,11 @@ const SearchFilter = forwardRef(
           filterData[filterName] = filterdata
         }
       })
+
+      //console.log("dashboardData.result[active]",dashboardData.result[active])
+      //console.log("dashboardData",dashboardData)
       console.log("filterData", { filterData })
     }
-
-    console.log("mainPageFilters", { mainPageFilters })
 
     const sidebarFilters = filters
 
@@ -214,7 +210,7 @@ const SearchFilter = forwardRef(
       console.log({ selectedFilters })
       dispatch(setFilter(selectedFilters))
     }
-
+    console.log("selectedFilters", selectedFilters)
     return (
       <>
         <Grid fluid>

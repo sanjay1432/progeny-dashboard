@@ -14,12 +14,9 @@ const FilterPanel = forwardRef(
     useEffect(() => {
       currentFilter = []
     })
-    console.log("data", data)
 
     let x = data[0].estate
 
-    console.log(x)
-    console.log("currentSubNavState", currentSubNavState)
     const [selectedFilter, setFilter] = useState(initialFilter)
 
     const { active } = currentSubNavState
@@ -28,15 +25,11 @@ const FilterPanel = forwardRef(
     const filterList = currentItem.sublist.find(
       type => type.eventKey === active
     )
-    console.log("currentItem", currentItem)
-    console.log("currentItem.sublist", currentItem.sublist)
-    console.log("filterList", filterList)
 
     const filters = filterList.filters
     filters.forEach(filter => {
       currentFilter.push(filter)
     })
-    console.log("filter", filters)
     if (data) {
       currentFilter.forEach(filter => {
         const filterName = filter.name

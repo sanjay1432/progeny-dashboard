@@ -1,6 +1,7 @@
 import { SET_MESSAGE, DASHBOARDDATA_FAIL, DASHBOARDDATA_SUCCESS } from "./types"
 import store from "../store"
 import DashboardDataService from "../../services/dashboarddata.service"
+
 export const getDashboardData = type => dispatch => {
   return DashboardDataService.getDashboardData(type).then(
     response => {

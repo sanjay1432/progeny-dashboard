@@ -3,7 +3,8 @@ import SearchFilter from "./SearchFilter"
 import DataTable from "./DataTable"
 import { useDispatch, useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import addNewUser from "components/user/userList/addNewUser"
+import AddNewUser from "../user/userList/AddNewUser"
+
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
   const { breadcrumb, option } = useSelector(
@@ -17,7 +18,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
     }
   })
 
-  console.log("currentSubNavState", currentSubNavState)
+  //console.log("currentSubNavState", currentSubNavState)
 
   function TabPanelSection() {
     const tabname = breadcrumb ? breadcrumb[0] : null
@@ -35,7 +36,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
       case "User List":
         return (
           <>
-            <addNewUser currentSubNavState={currentSubNavState} />
+            <AddNewUser />
           </>
         )
       default:
@@ -58,7 +59,6 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
     }
   }
 
-  console.log("option", option)
   return (
     <>
       {/* <main>
