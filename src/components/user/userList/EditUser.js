@@ -18,11 +18,10 @@ import {
 import axios from "axios"
 
 let selectionData = {}
-const intializeUserForm = { userId: "", username: "", position: "" }
-const AddNewUser = () => {
+const EditUser = ({ option }) => {
   const [data, setData] = useState()
   const [message, setMessage] = useState(null)
-  const [userForm, setUserForm] = useState(intializeUserForm)
+  const [userForm, setUserForm] = useState()
 
   const dispatch = useDispatch()
 
@@ -108,6 +107,7 @@ const AddNewUser = () => {
           <ControlLabel className="formLabel">User ID</ControlLabel>
           <FormControl
             id="userId"
+            value={option.userId}
             onChange={(value, e) => handleChange(e, value)}
             className="dataBox"
             name="userId"
@@ -119,6 +119,7 @@ const AddNewUser = () => {
           <ControlLabel className="formLabel">Username</ControlLabel>
           <FormControl
             id="username"
+            value={option.username}
             onChange={(value, e) => handleChange(e, value)}
             className="dataBox"
             name="username"
@@ -130,6 +131,7 @@ const AddNewUser = () => {
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
             id="position"
+            value={option.position}
             name="position"
             onChange={(value, e) => handleChange(e, value)}
             data={dataInSelection}
@@ -159,4 +161,4 @@ const AddNewUser = () => {
   )
 }
 
-export default AddNewUser
+export default EditUser

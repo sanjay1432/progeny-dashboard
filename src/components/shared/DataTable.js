@@ -410,6 +410,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 appearance="primary"
                 className="btnAddEstate"
                 onClick={OpenModal}
+                disabled
               >
                 Add Estate
               </Button>
@@ -583,7 +584,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
+              <Icon
+                icon="pencil"
+                size="md"
+                onClick={() =>
+                  handleActionExpand(["User List", "Edit User"], {
+                    userId: data.userId,
+                    username: data.username,
+                    position: data.position
+                  })
+                }
+              />
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )

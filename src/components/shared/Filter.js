@@ -20,7 +20,6 @@ const Filter = forwardRef(
         value: "not available"
       })
     }
-    console.log("dataToFilter", dataToFilter)
 
     function onChangeSelection(e) {
       onUpdate(e)

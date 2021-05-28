@@ -53,7 +53,6 @@ const SearchFilter = forwardRef(
     })
 
     let mainPageFilters = currentFilters
-    console.log("mainPageFilters", mainPageFilters)
 
     if (dashboardData.result[active]) {
       mainPageFilters.forEach(filter => {

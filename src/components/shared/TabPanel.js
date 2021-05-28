@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import SearchFilter from "./SearchFilter"
 import DataTable from "./DataTable"
 import { useDispatch, useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
 import AddNewUser from "../user/userList/AddNewUser"
+import EditUser from "../user/userList/EditUser"
+import { Breadcrumb } from "rsuite"
 
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
@@ -22,7 +24,9 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
 
   function TabPanelSection() {
     const tabname = breadcrumb ? breadcrumb[0] : null
+    const breadcrumbContent = ["User List", "Add New User"]
     console.log({ tabname })
+    console.log(option)
     switch (tabname) {
       case "Estate":
         return (
@@ -36,9 +40,10 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
       case "User List":
         return (
           <>
-            <AddNewUser />
+            <EditUser option={option} />
           </>
         )
+
       default:
         return (
           <>
