@@ -3,13 +3,6 @@ import StateLoader from "../redux/StateLoader"
 import axiosApiInstance from "../api/api"
 const stateLoader = new StateLoader()
 
-const getDashboardData = type => {
-  return axiosApiInstance
-    .get(`${API_URL}/v1/general/master-data/${type}`)
-    .then(response => {
-      return response.data
-    })
-}
 const getUpdatedEstateBlocks = () => {
   return axiosApiInstance
     .get(`${API_URL}/v1/general/master-data/estate/estate-blocks`)
@@ -17,7 +10,15 @@ const getUpdatedEstateBlocks = () => {
       return response.data
     })
 }
+
+const assignEstateBlocksToEstate = payload => {
+  return axiosApiInstance
+    .put(`${API_URL}/v1/general/master-data/estate/map-estate-blocks`, payload)
+    .then(response => {
+      return response.data
+    })
+}
 export default {
-  getDashboardData,
-  getUpdatedEstateBlocks
+  getUpdatedEstateBlocks,
+  assignEstateBlocksToEstate
 }

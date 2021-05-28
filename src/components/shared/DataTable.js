@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
 import AddEstateModal from "../../components/modal/AddEstateModal"
+import DeleteModal from "../../components/modal/DeleteModal"
 import {
   Table,
   FlexboxGrid,
@@ -16,7 +17,8 @@ import {
   Checkbox,
   CheckboxGroup,
   Pagination,
-  Modal
+  Modal,
+  Message
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
@@ -42,7 +44,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   })
 
   const searchFiltersRef = useRef()
+  const [successMessage, setSuccessMessage] = useState("")
   const [isModal, setModal] = useState(false)
+  const [isDeleteModal, setDeleteModal] = useState(false)
+  const [rowsToDelete, setRowsToDelete] = useState([])
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
@@ -488,7 +493,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       return (
         <Col sm={4} md={4} lg={3}>
           <FlexboxGrid.Item>
-            <Button className="btnDelete" disabled={disabled}>
+            <Button
+              className="btnDelete"
+              disabled={disabled}
+              onClick={onDelete}
+            >
               Delete
             </Button>
           </FlexboxGrid.Item>
@@ -619,6 +628,129 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     dispatch(setBreadcrumb({ breadcrumb, option }))
   }
 
+  function onDelete() {
+    console.log("checkStatus", checkStatus)
+    const rows = tableData.filter((r, i) => checkStatus.includes(i))
+    console.log("row", rows)
+    setRowsToDelete(rows)
+    setDeleteModal(true)
+  }
+
+  function handleDeleteRecords() {
+    console.log(rowsToDelete)
+    setTimeout(() => {
+      // Deleted successfully
+      // Close the modal
+      setDeleteModal(false)
+      //Display success message
+      setSuccessMessage(active)
+    }, 500)
+  }
+  function SuccessMessage({ activeNav }) {
+    console.log({ activeNav })
+    switch (activeNav) {
+      case "estate":
+        return (
+          <>
+            {rowsToDelete.length < 2 ? (
+              <Message
+                showIcon
+                type="success"
+                description={`Estate ${rowsToDelete[0].estate} has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            ) : (
+              <Message
+                showIcon
+                type="success"
+                description={`${rowsToDelete.length} Estates  has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            )}
+          </>
+        )
+
+      case "trial":
+        return (
+          <>
+            {rowsToDelete.length < 2 ? (
+              <Message
+                showIcon
+                type="success"
+                description={`Trial ${rowsToDelete[0].trialid} has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            ) : (
+              <Message
+                showIcon
+                type="success"
+                description={`${rowsToDelete.length} Trials  has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            )}
+          </>
+        )
+      case "plot":
+        return (
+          <>
+            {rowsToDelete.length < 2 ? (
+              <Message
+                showIcon
+                type="success"
+                description={`${rowsToDelete[0].plot} in replicate ${rowsToDelete[0].replicate} at trial ${rowsToDelete[0].trialid} has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            ) : (
+              <Message
+                showIcon
+                type="success"
+                description={`${rowsToDelete.length} Plots in their replicates at
+                the trial has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            )}
+          </>
+        )
+      case "progeny":
+        return (
+          <>
+            {rowsToDelete.length < 2 ? (
+              <Message
+                showIcon
+                type="success"
+                description={`Progeny ${rowsToDelete[0].progenyId} has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            ) : (
+              <Message
+                showIcon
+                type="success"
+                description={`${rowsToDelete.length} Progenies  has been successfuly been deleted.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            )}
+          </>
+        )
+      default:
+        return <></>
+    }
+  }
   return (
     <>
       <div>
@@ -645,6 +777,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddEstateModal show={isModal} hide={CloseModal} />
               <DeleteButton />
+              <DeleteModal
+                show={isDeleteModal}
+                hide={() => setDeleteModal(false)}
+                deleteRecord={handleDeleteRecords}
+                activeNav={active}
+                rows={rowsToDelete}
+              />
+              <SuccessMessage activeNav={successMessage} />
             </FlexboxGrid>
           </Row>
         </Grid>

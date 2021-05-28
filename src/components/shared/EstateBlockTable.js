@@ -18,6 +18,7 @@ import {
   Message
 } from "rsuite"
 import DashboardDataService from "../../services/dashboarddata.service"
+import EstateService from "../../services/estate.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -44,7 +45,8 @@ const EstateBlockTable = ({
   })
 
   const [isModal, setModal] = useState(false)
-  const [ebAdded, setebAdded] = useState(false)
+  const [ebAdded, setebAdded] = useState(null)
+  const [ebDeleted, setebDeleted] = useState(null)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
@@ -97,7 +99,7 @@ const EstateBlockTable = ({
 
   function getData(displaylength) {
     return tableData.filter((v, i) => {
-      v["rowNumber"] = i
+      // v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
@@ -114,6 +116,9 @@ const EstateBlockTable = ({
     const estatedata = data.find(estates => estates.estate === estate)
     const { estateblocks } = estatedata
     setEstateBlocks(estateblocks)
+    const keys = estateblocks.map(eb => (eb.assigned ? eb.estateblock : null))
+
+    setCheckStatusEstateBlock(keys.filter(key => key))
   }
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -162,7 +167,7 @@ const EstateBlockTable = ({
   }
 
   const handleCheckAll = (value, checked) => {
-    const keys = checked ? tableData.map(item => item.rowNumber) : []
+    const keys = checked ? tableData.map(item => item.estateblock) : []
     setCheckStatus(keys)
   }
 
@@ -191,13 +196,60 @@ const EstateBlockTable = ({
   }
 
   function onAddEB() {
-    console.log({ checkStatusEstateBlock })
+    estateBlocks.forEach(eb => {
+      if (checkStatusEstateBlock.includes(eb.estateblock)) {
+        eb.assigned = true
+      } else {
+        eb.assigned = false
+      }
+    })
+    const payload = {
+      estate: option.estate,
+      blocks: estateBlocks
+    }
     setModal(false)
-    setebAdded(true)
+    EstateService.assignEstateBlocksToEstate(payload).then(
+      data => {
+        setebAdded(true)
+      },
+      err => {
+        setebAdded(false)
+      }
+    )
+  }
+
+  function onDelete() {
+    console.log({ checkStatus }, { tableData })
+    const estateBlocks = tableData.map(eb => ({
+      estateblock: eb.estateblock,
+      assigned: true
+    }))
+
+    estateBlocks.forEach(eb => {
+      if (checkStatus.includes(eb.estateblock)) {
+        eb.assigned = false
+      } else {
+        eb.assigned = true
+      }
+    })
+
+    const payload = {
+      estate: option.estate,
+      blocks: estateBlocks
+    }
+    console.log({ estateBlocks })
+    EstateService.assignEstateBlocksToEstate(payload).then(
+      data => {
+        setebDeleted(true)
+      },
+      err => {
+        setebDeleted(false)
+      }
+    )
   }
 
   function SuccessMessage() {
-    if (ebAdded) {
+    if (ebAdded === true) {
       return (
         <>
           <Message
@@ -205,9 +257,40 @@ const EstateBlockTable = ({
             type="success"
             description="Estate Blocks have been added to the system."
             onClick={() => {
-              setebAdded(false)
+              setebAdded(null)
             }}
           />
+        </>
+      )
+    } else if (ebAdded === false) {
+      return (
+        <>
+          <h1>ERROR</h1>
+        </>
+      )
+    } else {
+      return <></>
+    }
+  }
+
+  function EbDeletionMessage() {
+    if (ebDeleted === true) {
+      return (
+        <>
+          <Message
+            showIcon
+            type="success"
+            description="Estate Blocks have been deleted from the system."
+            onClick={() => {
+              setebDeleted(null)
+            }}
+          />
+        </>
+      )
+    } else if (ebDeleted === false) {
+      return (
+        <>
+          <h1>ERROR</h1>
         </>
       )
     } else {
@@ -218,6 +301,7 @@ const EstateBlockTable = ({
   return (
     <>
       <div id="estateBlockTable">
+        {/* Add Estate Block MODAL STARTED */}
         <Modal show={isModal} onHide={close}>
           <Modal.Header>
             <Modal.Title>Add Estate Block</Modal.Title>
@@ -271,6 +355,9 @@ const EstateBlockTable = ({
             </Button>
           </Modal.Footer>
         </Modal>
+
+        {/* Add Estate Block MODAL ENDED */}
+
         <Grid fluid>
           <Row className="show-grid" id="tableOption">
             <Col sm={6} md={6} lg={6}>
@@ -304,7 +391,11 @@ const EstateBlockTable = ({
 
               <Col sm={4} md={4} lg={3}>
                 <FlexboxGrid.Item>
-                  <Button className="btnDelete" disabled={disabled}>
+                  <Button
+                    className="btnDelete"
+                    disabled={disabled}
+                    onClick={onDelete}
+                  >
                     Delete
                   </Button>
                 </FlexboxGrid.Item>
@@ -328,7 +419,7 @@ const EstateBlockTable = ({
               />
             </HeaderCell>
             <CheckCell
-              dataKey="rowNumber"
+              dataKey="estateblock"
               checkedKeys={checkStatus}
               onChange={handleCheck}
             />
@@ -350,6 +441,7 @@ const EstateBlockTable = ({
           </Column>
         </Table>
         <SuccessMessage />
+        <EbDeletionMessage />
         <div style={{ float: "right", padding: "1rem" }}>
           <Pagination
             {...pagination}
