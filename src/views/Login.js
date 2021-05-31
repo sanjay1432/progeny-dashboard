@@ -108,7 +108,9 @@ const Login = props => {
                     height={200}
                   />
                   <p className="title">
-                    Login to <b>Progeny Management System</b> Dashboard
+                    Login to{" "}
+                    <b className="title_name">Progeny Management System</b>{" "}
+                    Dashboard
                   </p>
                 </div>
                 <Form onSubmit={handleLogin} ref={form}>
@@ -131,7 +133,7 @@ const Login = props => {
 
                   <tr>
                     <td>
-                      <label className="login-label">Username</label>
+                      <label className="login-label">Password</label>
                     </td>
                     <td>
                       <input
