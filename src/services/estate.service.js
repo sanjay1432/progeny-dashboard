@@ -14,7 +14,8 @@ const getUpdatedEstateBlocks = () => {
 const assignEstateBlocksToEstate = payload => {
   return axiosApiInstance
     .put(`${API_URL}/v1/general/master-data/estate/map-estate-blocks`, payload)
-    .then(response => {
+    .then((response, err) => {
+      if (err) return err
       return response.data
     })
 }
