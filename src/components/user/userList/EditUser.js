@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import {
   getPosition,
   getPositionSuccess,
   addNewUser
-} from "../../../redux/actions/userManagement.action"
+} from "../../../redux/actions/user.action"
 import {
   SelectPicker,
   Button,
@@ -16,6 +16,7 @@ import {
   ButtonToolbar
 } from "rsuite"
 import axios from "axios"
+import UserService from "../../../services/user.service"
 
 let selectionData = {}
 const EditUser = ({ option }) => {
@@ -23,10 +24,8 @@ const EditUser = ({ option }) => {
   const [message, setMessage] = useState(null)
   const [userForm, setUserForm] = useState()
 
-  const dispatch = useDispatch()
-
-  const Position = useSelector(state => state.positionReducer)
-  console.log("position", Position)
+  //const Position = useSelector(state => state.positionReducer)
+  //console.log("position", Position)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,7 +93,13 @@ const EditUser = ({ option }) => {
     }
   }
 
-  function addUser() {
+  function editUser() {
+    const payload = {
+      data
+    }
+  }
+
+  function hello() {
     console.log(userForm)
   }
 
@@ -131,7 +136,7 @@ const EditUser = ({ option }) => {
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
             id="position"
-            value={option.position}
+            value={option.username}
             name="position"
             onChange={(value, e) => handleChange(e, value)}
             data={dataInSelection}
@@ -140,18 +145,10 @@ const EditUser = ({ option }) => {
 
         <FormGroup>
           <ButtonToolbar>
-            <Button
-              appearance="subtle"
-              className="btnCancel"
-              onClick={() => dispatch(getPosition())}
-            >
+            <Button appearance="subtle" className="btnCancel" onClick={hello}>
               Cancel
             </Button>
-            <Button
-              appearance="primary"
-              className="btnSave"
-              onClick={() => dispatch(addNewUser())}
-            >
+            <Button appearance="primary" className="btnSave" onClick={editUser}>
               Save
             </Button>
           </ButtonToolbar>

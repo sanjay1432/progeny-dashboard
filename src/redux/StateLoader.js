@@ -18,6 +18,7 @@ const InitializeState = {
   },
   authReducer: { isLoggedIn: false, user: null },
   dashboardDataReducer: { result: {} },
+  userReducer: { result: {} },
   dashboardReducer: {
     displayAsDate: null,
     latestDate: null,

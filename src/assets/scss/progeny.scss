@@ -1,5 +1,5 @@
 //Font Style(Roboto 400 - 700)
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 * {
     font-family: 'Roboto', sans-serif;
@@ -13,7 +13,7 @@ b {
 @import "../../../node_modules/bootstrap/scss/functions";
 
 // Theme Variables
-@import "opex-dashboard/variables";
+//@import "opex-dashboard/variables";
 @import "./variables";
 
 // Bootstrap Core

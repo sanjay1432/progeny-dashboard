@@ -205,6 +205,7 @@ const EstateBlockTable = ({
       estate: option.estate,
       blocks: estateBlocks
     }
+    console.log("payload", payload)
     setModal(false)
     EstateService.assignEstateBlocksToEstate(payload).then(
       data => {

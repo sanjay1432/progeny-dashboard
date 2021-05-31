@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import {
-  getPosition,
-  getPositionSuccess,
-  addNewUser
-} from "../../../redux/actions/userManagement.action"
-import {
   SelectPicker,
   Button,
   ControlLabel,
@@ -16,37 +11,34 @@ import {
   ButtonToolbar
 } from "rsuite"
 import axios from "axios"
-
+import UserService from "../../../services/user.service"
+import { getPositionList } from "../../../redux/actions/user.action"
 let selectionData = {}
 const intializeUserForm = { userId: "", username: "", position: "" }
 const AddNewUser = () => {
-  const [data, setData] = useState()
+  const [value, setValue] = useState()
+  const [userId, setUserId] = useState("")
+  const [username, setUsername] = useState("")
+  const [position, setPosition] = useState("position")
   const [message, setMessage] = useState(null)
   const [userForm, setUserForm] = useState(intializeUserForm)
-
   const dispatch = useDispatch()
 
-  const Position = useSelector(state => state.positionReducer)
-  console.log("position", Position)
+  const positionList = useSelector(state => state.positionListReducer)
+  const PositionList = positionList.result
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios(
-        "http://localhost:8000/api/v1/general/master-data/user-position"
-      )
-
-      setData(result.data.data)
-    }
-
-    fetchData()
+    dispatch(getPositionList())
   }, [])
 
   const selectionType = [{ name: "position" }]
 
-  if (data) {
+  if (PositionList) {
     selectionType.forEach(filter => {
       const selectionLabel = "position"
-      const selectiondata = [...new Set(data.map(res => res[selectionLabel]))]
+      const selectiondata = [
+        ...new Set(PositionList.map(res => res[selectionLabel]))
+      ]
       selectionData[selectionLabel] = selectiondata
     })
   }
@@ -96,7 +88,20 @@ const AddNewUser = () => {
   }
 
   function addUser() {
-    console.log(userForm)
+    const payload = {
+      userId: userId,
+      username: username,
+      position: position
+    }
+    console.log(payload)
+    UserService.addNewUser(payload).then(
+      data => {
+        setMessage(true)
+      },
+      error => {
+        setMessage(false)
+      }
+    )
   }
 
   return (
@@ -107,8 +112,9 @@ const AddNewUser = () => {
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">User ID</ControlLabel>
           <FormControl
-            id="userId"
+            //id="userId"
             onChange={(value, e) => handleChange(e, value)}
+            //value={userId}
             className="dataBox"
             name="userId"
             placeholder="User ID"
@@ -118,8 +124,9 @@ const AddNewUser = () => {
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">Username</ControlLabel>
           <FormControl
-            id="username"
+            //id="username"
             onChange={(value, e) => handleChange(e, value)}
+            //value={username}
             className="dataBox"
             name="username"
             placeholder="Username"
@@ -129,27 +136,19 @@ const AddNewUser = () => {
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
-            id="position"
+            //id="position"
             name="position"
-            onChange={(value, e) => handleChange(e, value)}
+            onChange={(e, value) => handleChange(value)}
             data={dataInSelection}
           />
         </FormGroup>
 
         <FormGroup>
           <ButtonToolbar>
-            <Button
-              appearance="subtle"
-              className="btnCancel"
-              onClick={() => dispatch(getPosition())}
-            >
+            <Button appearance="subtle" className="btnCancel">
               Cancel
             </Button>
-            <Button
-              appearance="primary"
-              className="btnSave"
-              onClick={() => dispatch(addNewUser())}
-            >
+            <Button appearance="primary" className="btnSave" onClick={addUser}>
               Save
             </Button>
           </ButtonToolbar>

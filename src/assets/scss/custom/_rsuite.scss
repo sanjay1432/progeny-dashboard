@@ -105,11 +105,12 @@
 
 //Checkbox
 .rs-checkbox-wrapper {
-    background-color: white;
+    //background-color: white;
+    left: 5px;
 }
 
 .rs-checkbox-checker {
-    padding-left: 100px;
+    //padding-left: 100px;
 }
 
 
@@ -212,7 +213,6 @@
     span {
         font-size: 16px;
         font-weight: 700;
-        color: $primary-green;
         margin-right: 10px;
     }
 }
@@ -339,6 +339,11 @@
 
     .rs-checkbox-wrapper {
         top: 5px;
+        left: 16px;
+    }
+
+    .rs-checkbox-wrapper::after {
+        left: 10px;
     }
 }
 
@@ -347,6 +352,7 @@
     font-size: 16px;
     font-weight: 700;
 }
+
 
 .rs-table-hover .rs-table-row-header:hover .rs-table-cell {
     background-color: $secondary-green;

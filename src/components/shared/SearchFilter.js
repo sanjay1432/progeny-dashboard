@@ -210,6 +210,7 @@ const SearchFilter = forwardRef(
       dispatch(setFilter(selectedFilters))
     }
     console.log("selectedFilters", selectedFilters)
+    //console.log("selectedFilters[filter.name]", selectedFilters[filter.name])
     return (
       <>
         <Grid fluid>

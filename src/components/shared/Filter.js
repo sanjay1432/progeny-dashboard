@@ -24,7 +24,7 @@ const Filter = forwardRef(
     function onChangeSelection(e) {
       onUpdate(e)
     }
-
+    console.log(filter.name)
     console.log("selected", selected)
     return (
       <>
