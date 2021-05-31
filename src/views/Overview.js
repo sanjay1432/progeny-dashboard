@@ -6,18 +6,7 @@ import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCi
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
 import logo from "assets/img/Progeny-logo/logoStyle02.png"
 // reactstrap components
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  TabContent,
-  TabPane,
-  NavLink,
-  NavItem,
-  Nav
-} from "reactstrap"
+import { Container } from "reactstrap"
 
 import {
   Loader,
@@ -42,7 +31,7 @@ import TabPanel from "../components/shared/TabPanel"
 import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
-import { Drawer, Button, IconButton, Sidenav } from "rsuite"
+import { Drawer, Sidenav } from "rsuite"
 
 const initialSidenavState = {
   expanded: true,

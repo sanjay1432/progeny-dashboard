@@ -118,6 +118,13 @@
     color: black;
 }
 
+//Message
+
+.rs-message-success .rs-message-icon-wrapper > .rs-icon, .rs-message-success .rs-message-btn-close {
+        color: white !important;
+}
+
+
 
 //Sidebar Drawer
 .rs-drawer-backdrop.in {
@@ -344,7 +351,9 @@
 
     .rs-checkbox-wrapper {
         top: 5px;
-        left: 16px;
+        left: 17px;
+        background-color: white;
+        border-radius: 5px;
     }
 
     .rs-checkbox-wrapper::after {

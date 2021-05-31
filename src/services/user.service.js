@@ -19,7 +19,7 @@ const addNewUser = payload => {
 
 const editUser = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/v1/general/master-data/user`, payload)
+    .post(`${API_URL}/v1/general/master-data/user`, payload)
     .then(response => {
       return response.data
     })

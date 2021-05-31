@@ -10,18 +10,15 @@ import {
   FormControl,
   ButtonToolbar
 } from "rsuite"
-import axios from "axios"
 import UserService from "../../../services/user.service"
 import { getPositionList } from "../../../redux/actions/user.action"
+import { setBreadcrumb } from "../../../redux/actions/app.action"
 let selectionData = {}
-const intializeUserForm = { userId: "", username: "", position: "" }
 const AddNewUser = () => {
-  const [value, setValue] = useState()
-  const [userId, setUserId] = useState("")
-  const [username, setUsername] = useState("")
-  const [position, setPosition] = useState("position")
+  const [userId, setUserId] = useState(null)
+  const [username, setUsername] = useState(null)
+  const [position, setPosition] = useState(null)
   const [message, setMessage] = useState(null)
-  const [userForm, setUserForm] = useState(intializeUserForm)
   const dispatch = useDispatch()
 
   const positionList = useSelector(state => state.positionListReducer)
@@ -30,6 +27,10 @@ const AddNewUser = () => {
   useEffect(() => {
     dispatch(getPositionList())
   }, [])
+
+  function handleActionExpand(breadcrumb, option) {
+    dispatch(setBreadcrumb({ breadcrumb, option }))
+  }
 
   const selectionType = [{ name: "position" }]
 
@@ -59,21 +60,13 @@ const AddNewUser = () => {
     })
   }
 
-  const handleChange = (e, value) => {
-    e.persist()
-    setUserForm(() => ({ ...userForm, [e.target.name]: value }))
-    console.log(userForm)
-  }
+  const popUpDescription = username + " has been added to the system."
 
   function PopUpMessage() {
     if (message === true) {
       return (
         <>
-          <Message
-            showIcon
-            type="success"
-            description="has been added to the system"
-          />
+          <Message showIcon type="success" description={popUpDescription} />
         </>
       )
     } else if (message === false) {
@@ -112,40 +105,42 @@ const AddNewUser = () => {
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">User ID</ControlLabel>
           <FormControl
-            //id="userId"
-            onChange={(value, e) => handleChange(e, value)}
-            //value={userId}
-            className="dataBox"
             name="userId"
+            value={userId}
+            className="dataBox"
             placeholder="User ID"
+            onChange={setUserId}
           />
         </FormGroup>
 
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">Username</ControlLabel>
           <FormControl
-            //id="username"
-            onChange={(value, e) => handleChange(e, value)}
-            //value={username}
-            className="dataBox"
             name="username"
+            value={username}
+            className="dataBox"
             placeholder="Username"
+            onChange={setUsername}
           />
         </FormGroup>
 
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
-            //id="position"
             name="position"
-            onChange={(e, value) => handleChange(value)}
+            value={position}
             data={dataInSelection}
+            onChange={setPosition}
           />
         </FormGroup>
 
         <FormGroup>
           <ButtonToolbar>
-            <Button appearance="subtle" className="btnCancel">
+            <Button
+              appearance="subtle"
+              className="btnCancel"
+              onClick={() => handleActionExpand()}
+            >
               Cancel
             </Button>
             <Button appearance="primary" className="btnSave" onClick={addUser}>

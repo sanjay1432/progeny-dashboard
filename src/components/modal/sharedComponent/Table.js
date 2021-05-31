@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { Table, Loader } from "rsuite"
-import Estate from "views/Estate"
+import { Table, Loader, Checkbox } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
 
 const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
@@ -20,6 +19,49 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
     })
   }
 
+  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
+    <Cell {...props} style={{ padding: 0 }}>
+      <div>
+        <Checkbox
+          value={rowData[dataKey]}
+          inline
+          onChange={onChange}
+          checked={checkedKeys.some(item => item === rowData[dataKey])}
+        />
+      </div>
+    </Cell>
+  )
+
+  let checked = false
+  let indeterminate = false
+  let disabled = true
+
+  if (checkStatus.length === 0) {
+    checked = false
+    indeterminate = false
+    disabled = true
+  } else if (checkStatus.length > 0 && checkStatus.length < data.length) {
+    checked = false
+    indeterminate = true
+    disabled = false
+  } else if (checkStatus.length === data.length) {
+    checked = true
+    indeterminate = false
+    disabled = false
+  }
+
+  const handleCheckAll = (value, checked) => {
+    const keys = checked ? data.map(item => item.rowNumber) : []
+    setCheckStatus(keys)
+  }
+
+  const handleCheck = (value, checked) => {
+    const keys = checked
+      ? [...checkStatus, value]
+      : checkStatus.filter(item => item !== value)
+    setCheckStatus(keys)
+  }
+
   return (
     <div>
       {columns && data ? (
@@ -32,11 +74,28 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
             expandedRowKeys={expandedCell}
             renderRowExpanded={renderExpandedCell}
           >
+            <Column>
+              <HeaderCell>
+                {" "}
+                <Checkbox
+                  checked={checked}
+                  indeterminate={indeterminate}
+                  onChange={handleCheckAll}
+                />
+              </HeaderCell>
+              <CheckCell
+                dataKey="rowNumber"
+                checkedKeys={checkStatus}
+                onChange={handleCheck}
+              />
+            </Column>
+
             {columns.map(col => {
-              const width = col.width ? col.width : 50
+              const width = col.width ? col.width : false
+              const flexgrow = col.flexgrow ? col.flexgrow : false
               const fixed = col.fixed ? col.fixed : false
               return (
-                <Column width={width} fixed={fixed}>
+                <Column width={width ? width : flexgrow} fixed={fixed}>
                   {col.name ? (
                     <HeaderCell>{col.name}</HeaderCell>
                   ) : (

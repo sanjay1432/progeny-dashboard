@@ -1,12 +1,9 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom"
-
 import "react-perfect-scrollbar/dist/css/styles.css"
 import "assets/vendor/nucleo/css/nucleo.css"
 import "assets/vendor/font-awesome/css/font-awesome.min.css"
-//import "assets/css/Progeny-CSS.css"
-//import "rsuite/dist/styles/rsuite-default.css"
 import "rsuite/lib/styles/index.less"
 import "assets/scss/progeny.scss?v1.1.0"
 import { BASE_NAME, DASHBOARD_VERSION } from "./constants/index"

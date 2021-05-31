@@ -1,11 +1,9 @@
 import Overview from "./views/Overview"
-import Overview from "./views/Overview"
 import Dashboard from "./views/pulp/Dashboard"
 import Lostcook from "./views/pulp/Lostcook"
 import CI from "./views/pulp/CI"
 import Benchmark from "./views/pulp/Benchmark"
 import { MODULE, BUSINESS_UNIT_LIST } from "./constants"
-import Blank from "./components/shared/Blank"
 import PowerDashboard from "./views/power/PowerDashboard"
 import SPC from "./views/pulp/SPC"
 const router = [

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
 import AddEstateModal from "../../components/modal/estateModal/AddEstate"
+import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import DeleteModal from "../../components/modal/DeleteModal"
 import {
   Table,
@@ -45,6 +46,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const searchFiltersRef = useRef()
   const [successMessage, setSuccessMessage] = useState("")
   const [isModal, setModal] = useState(false)
+  const [assignEstateModal, setAssignEstateModal] = useState(false)
   const [isDeleteModal, setDeleteModal] = useState(false)
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [pagination, setPagination] = useState(initialState)
@@ -419,6 +421,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               >
                 Add Estate
               </Button>
+
+              <AddEstateModal
+                show={isModal}
+                hide={CloseModal}
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+              />
             </FlexboxGrid.Item>
           </Col>
         )
@@ -600,7 +609,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   handleActionExpand(["User List", "Edit User"], {
                     userId: data.userId,
                     username: data.username,
-                    position: data.position
+                    position: data.position,
+                    status: data.status
                   })
                 }
               />
@@ -622,7 +632,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item>
-              <Icon icon="user-circle" size="md" />
+              <Icon
+                icon="user-circle"
+                size="md"
+                onClick={() => setAssignEstateModal(true)}
+              />
+              <AssignEstate
+                show={assignEstateModal}
+                hide={() => setAssignEstateModal(false)}
+              />
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
@@ -653,6 +671,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       setSuccessMessage(active)
     }, 500)
   }
+
   function SuccessMessage({ activeNav }) {
     console.log({ activeNav })
     switch (activeNav) {
@@ -782,12 +801,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddButton />
 
-              <AddEstateModal
-                show={isModal}
-                hide={CloseModal}
-                currentSubNavState={currentSubNavState}
-                currentItem={currentItem}
-              />
               <DeleteButton />
               <DeleteModal
                 show={isDeleteModal}

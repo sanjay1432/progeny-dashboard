@@ -3,7 +3,7 @@ import SearchFilter from "./SearchFilter"
 import DataTable from "./DataTable"
 import { useDispatch, useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import AddNewUser from "../user/userList/addNewUser"
+import AddNewUser from "../user/userList/AddNewUser"
 import EditUser from "../user/userList/EditUser"
 import { Breadcrumb } from "rsuite"
 

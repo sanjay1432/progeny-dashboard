@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
-import {
-  getPosition,
-  getPositionSuccess,
-  addNewUser
-} from "../../../redux/actions/user.action"
+import { useSelector, useDispatch } from "react-redux"
+import { getPositionList } from "../../../redux/actions/user.action"
+import { setBreadcrumb } from "../../../redux/actions/app.action"
 import {
   SelectPicker,
   Button,
@@ -15,36 +12,39 @@ import {
   FormControl,
   ButtonToolbar
 } from "rsuite"
-import axios from "axios"
 import UserService from "../../../services/user.service"
 
 let selectionData = {}
 const EditUser = ({ option }) => {
-  const [data, setData] = useState()
+  const [userId, setUserId] = useState(option.userId)
+  const [username, setUsername] = useState(option.username)
+  const [position, setPosition] = useState(option.position)
+  const [status, setStatus] = useState(option.status)
   const [message, setMessage] = useState(null)
-  const [userForm, setUserForm] = useState()
-
-  //const Position = useSelector(state => state.positionReducer)
-  //console.log("position", Position)
+  const dispatch = useDispatch()
+  const positionList = useSelector(state => state.positionListReducer)
+  const PositionList = positionList.result
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios(
-        "http://localhost:8000/api/v1/general/master-data/user-position"
-      )
-
-      setData(result.data.data)
-    }
-
-    fetchData()
+    dispatch(getPositionList())
   }, [])
+
+  useEffect(() => {
+    dispatch(getPositionList())
+  }, [])
+
+  function handleActionExpand(breadcrumb, option) {
+    dispatch(setBreadcrumb({ breadcrumb, option }))
+  }
 
   const selectionType = [{ name: "position" }]
 
-  if (data) {
+  if (PositionList) {
     selectionType.forEach(filter => {
       const selectionLabel = "position"
-      const selectiondata = [...new Set(data.map(res => res[selectionLabel]))]
+      const selectiondata = [
+        ...new Set(PositionList.map(res => res[selectionLabel]))
+      ]
       selectionData[selectionLabel] = selectiondata
     })
   }
@@ -65,21 +65,25 @@ const EditUser = ({ option }) => {
     })
   }
 
-  const handleChange = (e, value) => {
-    e.persist()
-    setUserForm(() => ({ ...userForm, [e.target.name]: value }))
-    console.log(userForm)
-  }
+  const statusData = [
+    {
+      label: "Active",
+      value: "Active"
+    },
+    {
+      label: "Inactive",
+      value: "Inactive"
+    }
+  ]
+
+  console.log(dataInSelection)
+  console.log(statusData)
 
   function PopUpMessage() {
     if (message === true) {
       return (
         <>
-          <Message
-            showIcon
-            type="success"
-            description="has been added to the system"
-          />
+          <Message showIcon type="success" description={popUpDescription} />
         </>
       )
     } else if (message === false) {
@@ -95,13 +99,23 @@ const EditUser = ({ option }) => {
 
   function editUser() {
     const payload = {
-      data
+      userId: userId,
+      username: username,
+      position: position,
+      status: status
     }
+    console.log(payload)
+    UserService.editUser(payload).then(
+      data => {
+        setMessage(true)
+      },
+      error => {
+        setMessage(false)
+      }
+    )
   }
 
-  function hello() {
-    console.log(userForm)
-  }
+  const popUpDescription = username + " has been edited to the system."
 
   return (
     <div id="addNewUser">
@@ -111,41 +125,52 @@ const EditUser = ({ option }) => {
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">User ID</ControlLabel>
           <FormControl
-            id="userId"
-            value={option.userId}
-            onChange={(value, e) => handleChange(e, value)}
-            className="dataBox"
             name="userId"
+            value={userId}
+            className="dataBox"
             placeholder="User ID"
+            onChange={popUpDescription}
           />
         </FormGroup>
 
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">Username</ControlLabel>
           <FormControl
-            id="username"
-            value={option.username}
-            onChange={(value, e) => handleChange(e, value)}
-            className="dataBox"
             name="username"
+            value={username}
+            className="dataBox"
             placeholder="Username"
+            onChange={setUsername}
           />
         </FormGroup>
 
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
-            id="position"
-            value={option.username}
             name="position"
-            onChange={(value, e) => handleChange(e, value)}
+            value={position}
             data={dataInSelection}
+            onChange={setPosition}
+          />
+        </FormGroup>
+
+        <FormGroup className="labelLayout">
+          <ControlLabel className="formLabel">Position</ControlLabel>
+          <SelectPicker
+            name="status"
+            value={status}
+            data={statusData}
+            onChange={setStatus}
           />
         </FormGroup>
 
         <FormGroup>
           <ButtonToolbar>
-            <Button appearance="subtle" className="btnCancel" onClick={hello}>
+            <Button
+              appearance="subtle"
+              className="btnCancel"
+              onClick={() => handleActionExpand()}
+            >
               Cancel
             </Button>
             <Button appearance="primary" className="btnSave" onClick={editUser}>
