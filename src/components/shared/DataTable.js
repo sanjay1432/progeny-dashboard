@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
 import AddEstateModal from "../../components/modal/estateModal/AddEstate"
@@ -6,18 +6,14 @@ import DeleteModal from "../../components/modal/DeleteModal"
 import {
   Table,
   FlexboxGrid,
-  Container,
   Button,
   Icon,
-  IconButton,
   InputPicker,
   Grid,
   Row,
   Col,
   Checkbox,
-  CheckboxGroup,
   Pagination,
-  Modal,
   Message
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
@@ -38,11 +34,9 @@ let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
   useEffect(() => {
-    // tableData = []
     currentTableDataFields = []
   })
 
-  const searchFiltersRef = useRef()
   const [successMessage, setSuccessMessage] = useState("")
   const [isModal, setModal] = useState(false)
   const [isDeleteModal, setDeleteModal] = useState(false)
@@ -81,7 +75,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     {
       label: "Trial ID",
       value: "trialid",
-      width: 200
+      width: 100
     },
     {
       label: "Trial",
@@ -758,6 +752,92 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return <></>
     }
   }
+
+  function reArrangeTableFields() {
+    switch (active) {
+      case "estate":
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "estate") currentTableDataFields[0] = field
+          if (field.value === "estatefullname")
+            currentTableDataFields[1] = field
+          if (field.value === "noofestateblock")
+            currentTableDataFields[2] = field
+          if (field.value === "nooftrails") currentTableDataFields[3] = field
+        })
+        return currentTableDataFields
+      case "trial":
+        const trialfields = []
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "trialid") trialfields[0] = field
+          if (field.value === "trial") trialfields[1] = field
+          if (field.value === "trialremark") trialfields[2] = field
+          if (field.value === "area") trialfields[3] = field
+          if (field.value === "planteddate") trialfields[4] = field
+          if (field.value === "nofprogeny") trialfields[5] = field
+          if (field.value === "estate") {
+            field.width = 100
+            trialfields[6] = field
+          }
+          if (field.value === "nofreplicate") trialfields[7] = field
+          if (field.value === "soiltype") trialfields[8] = field
+          if (field.value === "nofplot") trialfields[9] = field
+          if (field.value === "nofplot_subblock") trialfields[10] = field
+          if (field.value === "nofsubblock") trialfields[11] = field
+        })
+        return trialfields
+
+      case "plot":
+        const plotfields = []
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "trialid") {
+            plotfields[0] = field
+          }
+          if (field.value === "estate") {
+            field.width = 100
+            plotfields[1] = field
+          }
+          if (field.value === "replicate") plotfields[2] = field
+          if (field.value === "estateblock") plotfields[3] = field
+          if (field.value === "design") plotfields[4] = field
+          if (field.value === "density") plotfields[5] = field
+          if (field.value === "plot") plotfields[6] = field
+          if (field.value === "subblock") plotfields[7] = field
+          if (field.value === "progenyId") plotfields[8] = field
+          if (field.value === "progeny") plotfields[9] = field
+          if (field.value === "ortet") plotfields[10] = field
+          if (field.value === "fp") plotfields[11] = field
+          if (field.value === "mp") plotfields[12] = field
+          if (field.value === "noofPalm") plotfields[13] = field
+        })
+        return plotfields
+
+      case "palm":
+        const palmfields = []
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "trialid") {
+            palmfields[0] = field
+          }
+          if (field.value === "estate") {
+            field.width = 100
+            palmfields[1] = field
+          }
+          if (field.value === "replicate") palmfields[2] = field
+          if (field.value === "estateblock") {
+            field.width = 150
+            palmfields[3] = field
+          }
+          if (field.value === "plot") palmfields[4] = field
+          if (field.value === "noofPalm") palmfields[5] = field
+          if (field.value === "noofPalm") palmfields[6] = field
+        })
+        return palmfields
+
+      case "progeny":
+        return currentTableDataFields
+      default:
+        return currentTableDataFields
+    }
+  }
   return (
     <>
       <div>
@@ -822,7 +902,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             />
           </Column>
 
-          {currentTableDataFields.map((field, i) =>
+          {reArrangeTableFields().map((field, i) =>
             field.value === "status" ? (
               <Column width={field.width} align="center" key={i} fixed="right">
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
