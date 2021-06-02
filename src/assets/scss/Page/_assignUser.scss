@@ -4,6 +4,38 @@
         height: 703px;
     }
 
+    .rs-modal-body {
+        margin-top: 0px;
+    }
+
+    .rs-row{
+        margin-top: 0px;
+    }
+
+    a.rs-btn.rs-btn-default.rs-picker-toggle {
+        width: 130px;
+        height: 30px;
+        padding-top: 3px;
+    }
+
+    .rs-picker-default .rs-picker-toggle.rs-btn .rs-picker-toggle-caret {
+        top: 5px;
+    }
+
+    .btnApply {
+        width: 110px;
+        height: 30px;
+        padding: 5px 12px;
+        margin-top: 27px;
+    }
+
+    .btnResetFilter {
+        width: 110px;
+        height: 30px;
+        padding: 5px 12px;
+        margin-top: 27px;
+    }
+
     .title {
 
     }

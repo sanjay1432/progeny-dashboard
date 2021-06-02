@@ -9,7 +9,7 @@ const FilterPanel = forwardRef(({ labelName, data, dataType }, ref) => {
   console.log(data)
 
   return (
-    <>
+    <div id="FilterPanel">
       <Grid fluid>
         <Row>
           <Col md={7} lg={7}>
@@ -29,7 +29,7 @@ const FilterPanel = forwardRef(({ labelName, data, dataType }, ref) => {
           </Col>
         </Row>
       </Grid>
-    </>
+    </div>
   )
 })
 export default FilterPanel

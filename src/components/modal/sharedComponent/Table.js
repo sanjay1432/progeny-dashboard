@@ -60,6 +60,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
+    console.log(keys)
   }
 
   return (
