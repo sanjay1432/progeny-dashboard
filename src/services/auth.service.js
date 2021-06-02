@@ -1,5 +1,10 @@
 import axios from "axios"
-import { API_URL, REFRESH_TOKEN_NAME, TOKEN_NAME } from "../constants"
+import {
+  API_URL,
+  REFRESH_TOKEN_NAME,
+  TOKEN_NAME,
+  API_TOKEN
+} from "../constants"
 import StateLoader from "../redux/StateLoader"
 const stateLoader = new StateLoader()
 
@@ -25,8 +30,7 @@ const login = (username, password) =>
         firstName: "Aceras",
         lastName: "Admin",
         email: "aceresource@progeny.com",
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjZWFkbWluIiwiaWF0IjoxNjIyNTM2MDk5LCJleHAiOjE2MjUxMjgwOTl9.rRZ5ErGyOEExAahAS1krRRkDY-UtWgLUPY8qO-AoIxg"
+        token: API_TOKEN
       }
       localStorage.setItem("user", JSON.stringify(data))
       localStorage.setItem(TOKEN_NAME, data.token)
