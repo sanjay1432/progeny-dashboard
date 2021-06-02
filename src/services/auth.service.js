@@ -3,20 +3,38 @@ import { API_URL, REFRESH_TOKEN_NAME, TOKEN_NAME } from "../constants"
 import StateLoader from "../redux/StateLoader"
 const stateLoader = new StateLoader()
 
-const login = (username, password) => {
-  return axios
-    .post(`${API_URL}/v1/general/login/user-login`, {
-      username,
-      password
-    })
-    .then(response => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data))
-        localStorage.setItem(TOKEN_NAME, response.data.token)
+// const login = (username, password) => {
+//   return axios
+//     .post(`${API_URL}/v1/general/login/user-login`, {
+//       username,
+//       password
+//     })
+//     .then(response => {
+//       if (response.data.token) {
+//         localStorage.setItem("user", JSON.stringify(response.data))
+//         localStorage.setItem(TOKEN_NAME, response.data.token)
+//       }
+//       return response.data
+//     })
+// }
+const login = (username, password) =>
+  new Promise((resolve, reject) => {
+    if (username && password) {
+      const data = {
+        username: "aceadmin",
+        firstName: "Aceras",
+        lastName: "Admin",
+        email: "aceresource@progeny.com",
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjZWFkbWluIiwiaWF0IjoxNjIyNTM2MDk5LCJleHAiOjE2MjUxMjgwOTl9.rRZ5ErGyOEExAahAS1krRRkDY-UtWgLUPY8qO-AoIxg"
       }
-      return response.data
-    })
-}
+      localStorage.setItem("user", JSON.stringify(data))
+      localStorage.setItem(TOKEN_NAME, data.token)
+      resolve(data)
+    } else {
+      reject()
+    }
+  })
 // const loginSSO = ssoToken => {
 //   return axios
 //     .post(`${API_URL}/v1/general/login/sso-login`, {
