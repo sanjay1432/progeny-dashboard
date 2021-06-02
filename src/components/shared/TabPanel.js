@@ -3,10 +3,9 @@ import SearchFilter from "./SearchFilter"
 import DataTable from "./DataTable"
 import { useDispatch, useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import AddNewUser from "../user/userList/AddNewUser"
+import AddNewUser from "../user/userList/addNewUser"
 import EditUser from "../user/userList/EditUser"
-import { Breadcrumb } from "rsuite"
-
+import AddNewTrial from "../trial/AddNewTrial"
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
   const { breadcrumb, option } = useSelector(
@@ -29,6 +28,15 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
         return (
           <>
             <EstateBlockTable
+              currentSubNavState={currentSubNavState}
+              option={option}
+            />
+          </>
+        )
+      case "Trial and Replicate":
+        return (
+          <>
+            <AddNewTrial
               currentSubNavState={currentSubNavState}
               option={option}
             />

@@ -36,29 +36,29 @@ function loginErr(error, dispatch) {
   })
 }
 
-export const loginSSO = username => dispatch => {
-  return AuthService.loginSSO(username).then(
-    data => {
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: { user: data.response }
-      })
+// export const loginSSO = username => dispatch => {
+//   return AuthService.loginSSO(username).then(
+//     data => {
+//       dispatch({
+//         type: LOGIN_SUCCESS,
+//         payload: { user: data.response }
+//       })
 
-      return Promise.resolve()
-    },
-    error => {
-      if (error.response && error.response.status === 401) {
-        loginErr(
-          "SSO token is expired, please back to login page to get new token!",
-          dispatch
-        )
-      } else {
-        loginErr(error, dispatch)
-      }
-      return Promise.reject()
-    }
-  )
-}
+//       return Promise.resolve()
+//     },
+//     error => {
+//       if (error.response && error.response.status === 401) {
+//         loginErr(
+//           "SSO token is expired, please back to login page to get new token!",
+//           dispatch
+//         )
+//       } else {
+//         loginErr(error, dispatch)
+//       }
+//       return Promise.reject()
+//     }
+//   )
+// }
 
 export const logout = () => dispatch => {
   AuthService.logout()
