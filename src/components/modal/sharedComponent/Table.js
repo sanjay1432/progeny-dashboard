@@ -1,24 +1,30 @@
 import React, { useState } from "react"
+import { getDashboardData } from "redux/actions/dashboarddata.action"
 import { Table, Loader, Checkbox } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
 
+const currentTableDataFields = []
 const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [displayLength, setDisplayLength] = useState(10)
-  const [sortColumn, setSortColumn] = useState(null)
-  const [sortType, setSortType] = useState(null)
   const [checkStatus, setCheckStatus] = useState([])
-  //console.log(renderExpandedCell)
-  const getData = () => {
-    //setLoading(true)
+
+  const availableKeys = Object.keys(data[0])
+  console.log("availableKeys", availableKeys)
+  availableKeys.forEach(setKey => {
+    const field = columns.find(field => field.value === setKey)
+    if (field) {
+      currentTableDataFields.push(field)
+    }
+  })
+
+  function getData() {
     return data.filter((v, i) => {
-      const start = displayLength * (page - 1)
-      const end = start + displayLength
-      return i >= start && i < end
+      v["check"] = false
+      v["rowNumber"] = i
+      return i
     })
   }
-
+  console.log(data)
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
@@ -37,17 +43,11 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   let disabled = true
 
   if (checkStatus.length === 0) {
-    checked = false
-    indeterminate = false
     disabled = true
   } else if (checkStatus.length > 0 && checkStatus.length < data.length) {
-    checked = false
     indeterminate = true
-    disabled = false
   } else if (checkStatus.length === data.length) {
     checked = true
-    indeterminate = false
-    disabled = false
   }
 
   const handleCheckAll = (value, checked) => {
@@ -74,7 +74,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
             expandedRowKeys={expandedCell}
             renderRowExpanded={renderExpandedCell}
           >
-            <Column>
+            <Column width={80}>
               <HeaderCell>
                 {" "}
                 <Checkbox
@@ -92,10 +92,10 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
 
             {columns.map(col => {
               const width = col.width ? col.width : false
-              const flexgrow = col.flexgrow ? col.flexgrow : false
+              const flexGrow = col.flexGrow ? col.flexGrow : false
               const fixed = col.fixed ? col.fixed : false
               return (
-                <Column width={width ? width : flexgrow} fixed={fixed}>
+                <Column width={width ? width : flexGrow} fixed={fixed}>
                   {col.name ? (
                     <HeaderCell>{col.name}</HeaderCell>
                   ) : (

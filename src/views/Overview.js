@@ -241,6 +241,11 @@ const listItems = [
         eventKey: "userlist",
         filters: [
           {
+            name: "username",
+            label: "Username",
+            type: "text"
+          },
+          {
             name: "position",
             label: "Position",
             type: "select"
@@ -256,6 +261,12 @@ const listItems = [
             name: "estate",
             label: "Estate",
             type: "select"
+          },
+          {
+            name: "estatefullname",
+            label: "Estate Full Name",
+            type: "select",
+            disable: false
           }
         ],
         search: true
@@ -264,6 +275,11 @@ const listItems = [
         name: "User Assignment",
         eventKey: "userAssignment",
         filters: [
+          {
+            name: "username",
+            label: "Username",
+            type: "text"
+          },
           {
             name: "estate",
             label: "Estate",

@@ -64,6 +64,10 @@
     background-color: $secondary-green;
 }
 
+.rs-flex-box-grid-space-between {
+    padding: 0px 15px;
+}
+
 @media screen and (min-width: 1600px) {
     #tableOption {
         color: black;
