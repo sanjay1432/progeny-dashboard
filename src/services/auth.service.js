@@ -17,23 +17,23 @@ const login = (username, password) => {
       return response.data
     })
 }
-const loginSSO = ssoToken => {
-  return axios
-    .post(`${API_URL}/v1/general/login/sso-login`, {
-      ssoToken: ssoToken
-    })
-    .then(response => {
-      if (response.data.response) {
-        localStorage.setItem("user", JSON.stringify(response.data.response))
-        localStorage.setItem(TOKEN_NAME, response.data.response.token)
-        localStorage.setItem(
-          REFRESH_TOKEN_NAME,
-          response.data.response.refresh_token
-        )
-      }
-      return response.data
-    })
-}
+// const loginSSO = ssoToken => {
+//   return axios
+//     .post(`${API_URL}/v1/general/login/sso-login`, {
+//       ssoToken: ssoToken
+//     })
+//     .then(response => {
+//       if (response.data.response) {
+//         localStorage.setItem("user", JSON.stringify(response.data.response))
+//         localStorage.setItem(TOKEN_NAME, response.data.response.token)
+//         localStorage.setItem(
+//           REFRESH_TOKEN_NAME,
+//           response.data.response.refresh_token
+//         )
+//       }
+//       return response.data
+//     })
+// }
 
 const refreshToken = () => {
   const refresh_token = localStorage.getItem(REFRESH_TOKEN_NAME)
@@ -53,6 +53,6 @@ const logout = () => {
 export default {
   login,
   logout,
-  loginSSO,
+  // loginSSO,
   refreshToken
 }

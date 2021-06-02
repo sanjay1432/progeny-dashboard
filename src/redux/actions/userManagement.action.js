@@ -9,7 +9,7 @@ import axios from "axios"
 export const getPosition = () => {
   return dispatch => {
     axios
-      .get("http://localhost:8000/api/v1/general/master-data/user-position")
+      .get("http://localhost:8000/admin/user-position")
       .then(response => {
         return response.data
         //const result = response.data

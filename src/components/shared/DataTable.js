@@ -429,7 +429,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <Col sm={5} md={5} lg={3}>
             <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddTrial">
+              <Button
+                appearance="primary"
+                className="btnAddTrial"
+                onClick={() =>
+                  handleAddNewTrial(
+                    ["Trial and Replicate", `Add New Trial & Replicate`],
+                    {
+                      trial: null
+                    }
+                  )
+                }
+              >
                 Add New Trial
               </Button>
             </FlexboxGrid.Item>
@@ -646,7 +657,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function handleActionExpand(breadcrumb, option) {
     dispatch(setBreadcrumb({ breadcrumb, option }))
   }
-
+  function handleAddNewTrial(breadcrumb, option) {
+    console.log({ breadcrumb }, { option })
+    dispatch(setBreadcrumb({ breadcrumb, option }))
+  }
   function onDelete() {
     console.log("checkStatus", checkStatus)
     const rows = tableData.filter((r, i) => checkStatus.includes(i))

@@ -5,7 +5,7 @@ const stateLoader = new StateLoader()
 
 const getUpdatedEstateBlocks = () => {
   return axiosApiInstance
-    .get(`${API_URL}/v1/general/master-data/estate/estate-blocks`)
+    .get(`${API_URL}/estate/estate-blocks`)
     .then(response => {
       return response.data
     })
@@ -13,7 +13,7 @@ const getUpdatedEstateBlocks = () => {
 
 const assignEstateBlocksToEstate = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/v1/general/master-data/estate/map-estate-blocks`, payload)
+    .put(`${API_URL}/estate/map-estate-blocks`, payload)
     .then((response, err) => {
       if (err) return err
       return response.data
