@@ -1,6 +1,6 @@
 #addNewUser {
-    min-height: 1000px;
-    
+    margin-top: 50px;
+  
     .formLayout {
         margin: 30px 15px;
     }
@@ -16,7 +16,7 @@
 
     .formLabel {
         font-size: 16px;
-        font-weight: 500;
+        font-weight: 700;
         padding-top: 10px;
     }
 
@@ -36,7 +36,6 @@
     .btnCancel {
         width: 145px;
         height: 40px;
-        color: $primary-green;
     }
 
     .btnSave {

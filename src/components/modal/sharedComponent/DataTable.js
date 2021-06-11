@@ -1,15 +1,23 @@
 import React, { useState } from "react"
-import { getDashboardData } from "redux/actions/dashboarddata.action"
+import { useSelector } from "react-redux"
 import { Table, Loader, Checkbox } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
 
 const currentTableDataFields = []
-const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
+const DataTable = ({
+  columns,
+  data,
+  expandedCell,
+  renderExpandedCell,
+  selectedItem,
+  ...props
+}) => {
   const [loading, setLoading] = useState(false)
   const [checkStatus, setCheckStatus] = useState([])
 
+  const filterData = useSelector(state => state.filterReducer)
+
   const availableKeys = Object.keys(data[0])
-  console.log("availableKeys", availableKeys)
   availableKeys.forEach(setKey => {
     const field = columns.find(field => field.value === setKey)
     if (field) {
@@ -18,13 +26,21 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   })
 
   function getData() {
-    return data.filter((v, i) => {
-      v["check"] = false
-      v["rowNumber"] = i
-      return i
+    if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
+      data = filterTable(filterData.filter, data)
+    }
+    return data
+  }
+
+  function filterTable(filters, data) {
+    var filterKeys = Object.keys(filters)
+    return data.filter(function (eachObj) {
+      return filterKeys.every(function (eachKey) {
+        return eachObj[eachKey] === filters[eachKey]
+      })
     })
   }
-  console.log(data)
+
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
@@ -43,24 +59,30 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   let disabled = true
 
   if (checkStatus.length === 0) {
+    checked = false
+    indeterminate = false
     disabled = true
   } else if (checkStatus.length > 0 && checkStatus.length < data.length) {
+    checked = false
     indeterminate = true
+    disabled = false
   } else if (checkStatus.length === data.length) {
     checked = true
+    indeterminate = false
+    disabled = false
   }
 
   const handleCheckAll = (value, checked) => {
-    const keys = checked ? data.map(item => item.rowNumber) : []
+    const keys = checked ? data.map(item => item.userId) : []
     setCheckStatus(keys)
   }
 
-  const handleCheck = (value, checked) => {
+  const handleCheck = (value, checked, e) => {
     const keys = checked
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
-    console.log(keys)
+    props.onChange(keys)
   }
 
   return (
@@ -69,7 +91,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
         <div>
           <Table
             data={getData()}
-            height={400}
+            height={380}
             bordered
             loading={loading}
             expandedRowKeys={expandedCell}
@@ -85,7 +107,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
                 />
               </HeaderCell>
               <CheckCell
-                dataKey="rowNumber"
+                dataKey={columns[0].dataKey}
                 checkedKeys={checkStatus}
                 onChange={handleCheck}
               />
@@ -96,7 +118,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
               const flexGrow = col.flexGrow ? col.flexGrow : false
               const fixed = col.fixed ? col.fixed : false
               return (
-                <Column width={width ? width : flexGrow} fixed={fixed}>
+                <Column width={width} flexGrow={flexGrow} fixed={fixed}>
                   {col.name ? (
                     <HeaderCell>{col.name}</HeaderCell>
                   ) : (

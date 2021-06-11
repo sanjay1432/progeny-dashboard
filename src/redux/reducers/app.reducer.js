@@ -13,7 +13,9 @@ const AppReducer = (
         breadcrumb: action.breadcrumb
       }
     case CLEAR_BREADCRUMB:
-      return { breadcrumb: {} }
+      return {
+        breadcrumb: {}
+      }
     default:
       return state
   }

@@ -6,7 +6,7 @@ const Filter = forwardRef(
     ref
   ) => {
     const dataToFilter = []
-    console.log(filterData)
+
     if (filterData) {
       filterData.forEach(filter => {
         dataToFilter.push({
@@ -21,11 +21,14 @@ const Filter = forwardRef(
       })
     }
 
-    function onChangeSelection(e) {
+    function onChangeSelection(e, value) {
       onUpdate(e)
+      //console.log("value",value) it is null
+      console.log(e)
     }
-    console.log(filter.name)
-    console.log("selected", selected)
+    //console.log("filter",filter)
+    //console.log("selected", selected)
+
     return (
       <>
         <ControlLabel>{filter.label}</ControlLabel>

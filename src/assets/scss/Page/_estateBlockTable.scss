@@ -1,4 +1,6 @@
 #estateBlockTable {
+    margin-top: 20px;
+
     .paginationOption {
         float: right;
     }
@@ -6,5 +8,24 @@
     .btnAddEstateBlock {
         width: 150px;
         float: right;
+    }
+
+    //Modal
+
+}
+
+#estateBlockModal {
+    .rs-modal-title {
+        color: $primary-green;
+        font-weight: 700;
+    }
+    .rs-modal-body {
+        margin-top: 8px;
+
+        .lastUpdate,
+        .estateName,
+        .totalEstateBlock {
+            margin-bottom: 8px;
+        }
     }
 }

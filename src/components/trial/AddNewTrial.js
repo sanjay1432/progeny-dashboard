@@ -28,8 +28,7 @@ import {
   RadioGroup,
   SelectPicker
 } from "rsuite"
-import "./AddNewTrial.css"
-const styles = { width: 280, display: "block", marginBottom: 10 }
+const styles = { width: 2100, display: "block", marginBottom: 10 }
 const data = [
   {
     label: "Eugenia",
@@ -125,7 +124,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     console.log(trial)
   }
   return (
-    <>
+    <div id="addNewTrial">
       {/* STEP 1 GENERATE TABLE */}
       <div style={{ padding: "1rem" }}>
         <h4>
@@ -136,10 +135,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       <Grid fluid>
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Trail ID</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in Trial ID"
               className="formField"
@@ -149,10 +148,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Trail</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in Trial "
               className="formField"
@@ -162,15 +161,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Trial Remarks</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               componentClass="textarea"
               rows={3}
               placeholder="Key In Trial Remarks"
-              className="formField"
+              className="formField trialRemark"
               name="trialremark"
               onChange={(value, e) => onInput(e)}
             />
@@ -178,10 +177,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Area (ha)</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in Area"
               className="formField"
@@ -192,13 +191,14 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Planted Date</p>
           </Col>
-          <Col xs={6}>
+          <Col md={5} lg={5}>
             {" "}
             <DatePicker
               size="lg"
+              className="datePicker"
               placeholder="Enter Date"
               format="MM/YYYY"
               style={styles}
@@ -211,10 +211,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>No. of Progeny</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in No.of Progeny"
               className="formField"
@@ -225,23 +225,23 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               No. of Subblock and No.of Plot/Subblock
             </p>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             <Input
               placeholder="No. of Subblock"
-              className="formField"
+              className="formField noOfSubBlock"
               name="nofsubblock"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             <Input
               placeholder="No. of Plot/Subblock "
-              className="formField"
+              className="formField noOfPlot"
               name="nofplot_subblock"
               onChange={(value, e) => onInput(e)}
             />
@@ -249,32 +249,32 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               This Trial will be in the same Estate?
             </p>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             {" "}
             <RadioGroup name="radioList" inline style={{ color: "#353131f2" }}>
               <Radio value="A">Yes</Radio>
               <Radio value="B">No</Radio>
             </RadioGroup>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             <SelectPicker
+              className="estatePicker"
               data={data}
-              style={{ width: 224 }}
               placeholder="Select Estate"
             />{" "}
           </Col>
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>No. of Replicates</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Enter Number of Replicate for this Trial"
               className="formField"
@@ -285,31 +285,35 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               Do all replicates have the same density?
             </p>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             {" "}
             <RadioGroup name="radioList" inline style={{ color: "#353131f2" }}>
               <Radio value="A">Yes</Radio>
               <Radio value="B">No</Radio>
             </RadioGroup>
           </Col>
-          <Col xs={3}>
-            <Input className="formField" />
+          <Col md={5} lg={5}>
+            <Input className="formField duplicateDensity" />
           </Col>
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               What is the design for the replicates ?
             </p>
           </Col>
-          <Col xs={6}>
-            <SelectPicker data={data} placeholder="Choose Design" />{" "}
+          <Col md={10} lg={10}>
+            <SelectPicker
+              className="designPicker"
+              data={data}
+              placeholder="Choose Design"
+            />{" "}
           </Col>
         </Row>
       </Grid>
@@ -323,7 +327,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           <Icon icon="table" /> Generate Table
         </Button>
       </div>
-    </>
+    </div>
   )
 }
 export default AddNewTrial

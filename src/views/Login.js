@@ -7,6 +7,7 @@ import { login } from "../redux/actions/auth.action"
 import logo from "assets/img/Progeny-logo/logoStyle02.png"
 import { Loader } from "rsuite"
 import { useHistory } from "react-router-dom"
+import { Input } from "rsuite"
 // reactstrap components
 import { Card, CardBody, Container } from "reactstrap"
 
@@ -73,7 +74,6 @@ const Login = props => {
     if (checkBtn.current.context._errors.length === 0) {
       dispatch(login(username, password))
         .then(() => {
-          // props.history.push("/overview")
           props.history.push("/overview")
         })
         .catch(() => {
@@ -119,12 +119,12 @@ const Login = props => {
                       <label className="login-label">Username</label>
                     </td>
                     <td>
-                      <input
+                      <Input
                         className="form-login"
                         name="username"
                         type="text"
                         placeholder="Username"
-                        onChange={onChangeUsername}
+                        onChange={(value, e) => onChangeUsername(e)}
                         value={username}
                         validations={[required]}
                       />
@@ -136,13 +136,13 @@ const Login = props => {
                       <label className="login-label">Password</label>
                     </td>
                     <td>
-                      <input
+                      <Input
                         className="form-login"
                         name="password"
                         type="password"
                         placeholder="Password"
                         value={password}
-                        onChange={onChangePassword}
+                        onChange={(value, e) => onChangePassword(e)}
                         validations={[required]}
                       />
                     </td>
@@ -150,7 +150,7 @@ const Login = props => {
 
                   <div className="form-group">
                     <button
-                      className="btn btn-primary btn-block btn-lg login"
+                      className="btn btn-block btn-lg login"
                       disabled={loading}
                     >
                       {loading && (

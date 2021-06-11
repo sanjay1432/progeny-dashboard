@@ -1,13 +1,29 @@
 import React, { useState, useEffect, useRef } from "react"
 import SearchFilter from "./SearchFilter"
+import {
+  Table,
+  FlexboxGrid,
+  Button,
+  InputPicker,
+  Grid,
+  Row,
+  Col,
+  Checkbox,
+  Pagination,
+  Message
+} from "rsuite"
 import DataTable from "./DataTable"
 import { useDispatch, useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import AddNewUser from "../user/userList/addNewUser"
+import AddNewUser from "../user/userList/AddNewUser"
 import EditUser from "../user/userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
+import EstateInformation from "components/user/estateAssignment/EstateInformation"
+import AddNewProgeny from "components/progeny/AddNewProgeny"
+import EditProgeny from "components/progeny/EditProgeny"
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
+  //useDispatch
   const { breadcrumb, option } = useSelector(
     state => state.appReducer.breadcrumb
   )
@@ -42,11 +58,26 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             />
           </>
         )
+
+      case "Progeny":
+        if (breadcrumb[1] === "Add New Progeny") {
+          return (
+            <>
+              <AddNewProgeny />
+            </>
+          )
+        } else if (breadcrumb[1] === "Edit Progeny") {
+          return (
+            <>
+              <EditProgeny option={option} />
+            </>
+          )
+        }
       case "User List":
         if (breadcrumb[1] === "Add New User") {
           return (
             <>
-              <AddNewUser />
+              <AddNewUser option={option} />
             </>
           )
         } else if (breadcrumb[1] === "Edit User") {
@@ -56,23 +87,22 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             </>
           )
         }
-
+      case "Estate Assignment":
+        return <EstateInformation option={option} />
       default:
         return (
-          <>
-            <main>
-              <SearchFilter
-                id="searchFilter"
-                currentSubNavState={currentSubNavState}
-                currentItem={currentItem}
-                ref={searchFiltersRef}
-              />
-              <DataTable
-                currentSubNavState={currentSubNavState}
-                currentItem={currentItem}
-              />
-            </main>
-          </>
+          <main>
+            <SearchFilter
+              id="searchFilter"
+              currentSubNavState={currentSubNavState}
+              currentItem={currentItem}
+              ref={searchFiltersRef}
+            />
+            <DataTable
+              currentSubNavState={currentSubNavState}
+              currentItem={currentItem}
+            />
+          </main>
         )
     }
   }

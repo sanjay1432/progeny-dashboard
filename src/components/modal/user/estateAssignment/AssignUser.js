@@ -1,15 +1,21 @@
 import FilterPanel from "components/modal/sharedComponent/FilterPanel"
-import Table from "components/modal/sharedComponent/Table"
+import Table from "components/modal/sharedComponent/DataTable"
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import UserService from "../../../../services/user.service"
-import axios from "axios"
-import { Modal, Button } from "rsuite"
+import { Modal, Button, Message } from "rsuite"
+import { setMessage } from "redux/actions/message.action"
 
-const AssignUser = ({ show, hide, estate }) => {
+const AssignUser = ({
+  show,
+  hide,
+  estate,
+  selectedItem,
+  assignUserToEstate,
+  ...props
+}) => {
   const [userList, setUserList] = useState([])
   const [positionList, setPositionList] = useState([])
-  const dispatch = useDispatch()
 
   useEffect(() => {
     UserService.getUserList().then(response => {
@@ -37,32 +43,45 @@ const AssignUser = ({ show, hide, estate }) => {
     {
       name: "Position",
       dataKey: "position",
-      width: 150
+      flexGrow: 1
     }
   ]
 
   return (
-    <Modal id="assignUserModal" show={show} onHide={hide}>
-      <Modal.Header>
-        <b className="title">Assign Estate</b>
-        <p className="description">
-          Assign Estate to <b>{estate}</b>
-        </p>
-      </Modal.Header>
-      <Modal.Body>
-        <FilterPanel
-          labelName="Position"
-          data={positionList}
-          dataType="position"
-        />
-        <p className="total_item">List of Estates({userList.length})</p>
-        <Table columns={columns} data={userList} />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={hide}>Cancel</Button>
-        <Button appearance="primary">Save Assignment</Button>
-      </Modal.Footer>
-    </Modal>
+    <>
+      <Modal id="assignUserModal" show={show} onHide={hide}>
+        <Modal.Header>
+          <b className="title">Assign Estate</b>
+          <div className="description">
+            <p>
+              Assign User to <b>{estate}</b>
+            </p>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <FilterPanel
+            labelName="Position"
+            data={positionList}
+            dataType="position"
+          />
+          <p className="total_item">List of Estates({userList.length})</p>
+          <Table
+            columns={columns}
+            data={userList}
+            selectedItem={selectedItem ? selectedItem : null}
+            onChange={keys => props.setSelectedItem(keys)}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button appearance="subtle" onClick={hide}>
+            Cancel
+          </Button>
+          <Button appearance="primary" onClick={assignUserToEstate}>
+            Save Assignment
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   )
 }
 
