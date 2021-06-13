@@ -8,6 +8,7 @@ const initialForm = {
   progenyId: "",
   popvar: "",
   origin: "",
+  progenyremark: "",
   progeny: "",
   generation: "",
   ortet: "",
@@ -21,7 +22,7 @@ const initialForm = {
   crossType: ""
 }
 const AddNewProgeny = () => {
-  const [formData, setFormData] = useState([initialForm])
+  const [formData, setFormData] = useState(initialForm)
   const dispatch = useDispatch()
 
   const ProgenyData = useSelector(

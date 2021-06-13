@@ -581,6 +581,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   progenyId: data.progenyId,
                   popvar: data.popvar,
                   origin: data.origin,
+                  progenyremark: data.progenyremark,
                   progeny: data.progeny,
                   generation: data.generation,
                   ortet: data.ortet,
@@ -1233,8 +1234,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.value === "status" ? (
               <Column
                 width={field.width ? field.width : null}
-                flexGrow={field.flexGrow ? field.flexGrow : null}
-                minWidth={field.minWidth ? field.minWidth : null}
                 align="center"
                 key={i}
                 fixed="right"
