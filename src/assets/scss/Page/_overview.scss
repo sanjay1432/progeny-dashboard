@@ -7,7 +7,7 @@
       .headNav {
           background-color: $white;
           box-shadow: 0px 0px 5px 0px #ccc;  
-          z-index: 5;
+          z-index: 10;
           position: fixed;
           min-width: 100%; 
       }
@@ -54,7 +54,7 @@
       .subNav {
         margin-top: 70px;
         background-color: white;
-        z-index: 4;
+        z-index: 9;
         position: fixed;
         min-width: 100%; 
         float: left;

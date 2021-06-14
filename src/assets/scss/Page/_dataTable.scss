@@ -68,6 +68,24 @@
     padding: 0px 12px;
 }
 
+.editStatusActionBtn {
+  padding: 0px 25px;
+
+  .tick {
+    color: $primary-green;
+  }
+
+  .cancel {
+    color: $primary-red;
+  }
+}
+
+.paginationLayout {
+  float: right;
+  padding: 1rem;
+}
+
+
 @media screen and (min-width: 1600px) {
     #tableOption {
         color: black;

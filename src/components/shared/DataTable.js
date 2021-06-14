@@ -16,14 +16,17 @@ import {
   Col,
   Checkbox,
   Pagination,
-  Message
+  Message,
+  Input,
+  InputGroup
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
 import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
-import { setMessage } from "redux/actions/message.action"
+import CheckCircle from "../../assets/img/icons/check_circle_24px.svg"
+import Cancel from "../../assets/img/icons/cancel_24px.svg"
 
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -55,6 +58,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
+  const [editStatus, setEditStatus] = useState(false)
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
 
@@ -366,6 +370,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     })
   }
 
+  const EditCell = ({ rowData, dataKey, onChange, ...props }) => {
+    return (
+      <Cell {...props}>
+        <Input defaultValue={rowData[dataKey]} />
+      </Cell>
+    )
+  }
+
   function AddButton() {
     switch (active) {
       case "estate":
@@ -567,9 +579,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "palm":
         return (
-          <span>
-            <img src={CreateIcon} />
-          </span>
+          <>
+            {editStatus ? (
+              <FlexboxGrid
+                className="editStatusActionBtn"
+                justify="space-between"
+              >
+                <FlexboxGrid.Item>
+                  <img className="tick" src={CheckCircle} />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <img
+                    className="cancel"
+                    src={Cancel}
+                    onClick={() => setEditStatus(false)}
+                  />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            ) : (
+              <span>
+                <img src={CreateIcon} onClick={() => setEditStatus(true)} />
+              </span>
+            )}
+          </>
         )
       case "progeny":
         return (
@@ -1248,20 +1280,24 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             ) : (
               <Column width={field.width} align="left" key={i}>
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                <Cell dataKey={field.value} />
+                {editStatus ? (
+                  <EditCell dataKey={field.value} />
+                ) : (
+                  <Cell dataKey={field.value} />
+                )}
               </Column>
             )
           )}
 
           <Column width={130} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
-            <Cell align="center">
+            <Cell align="center" {...props}>
               {rowData => <ActionButtons data={rowData} />}
             </Cell>
           </Column>
         </Table>
 
-        <div style={{ float: "right", padding: "1rem" }}>
+        <div className="paginationLayout">
           <Pagination
             {...pagination}
             pages={getNoPages()}

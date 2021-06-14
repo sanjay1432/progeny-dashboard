@@ -392,6 +392,10 @@
 
 .rs-table-row-header{
     background-color: $secondary-green;
+
+    div {
+      background-color: $secondary-green;
+    }
 }
 
 .rs-table-row-header .rs-table-cell {
@@ -399,11 +403,7 @@
     color: white;
     font-size: 16px;
     font-weight: 700;
-
-    &:hover {
-      background-color: unset;
-    }
-
+    
     .rs-checkbox-wrapper {
         top: 5px;
         left: 17px;
