@@ -15,7 +15,7 @@ import {
 import DataTable from "./DataTable"
 import { useDispatch, useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import AddNewUser from "../user/userList/AddNewUser"
+import AddNewUser from "../user/userList/addNewUser"
 import EditUser from "../user/userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
 import EstateInformation from "components/user/estateAssignment/EstateInformation"

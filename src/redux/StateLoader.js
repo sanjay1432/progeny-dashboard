@@ -25,10 +25,11 @@ const InitializeState = {
     processLines: null,
     displayProcessLine: {},
     displayPeriods: []
-  }
+  },
+  trialReducer: {}
 }
 
-const KEY = "opex-app-state"
+const KEY = "progeny-app-state"
 class StateLoader {
   loadState() {
     try {

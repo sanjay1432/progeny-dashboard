@@ -6,6 +6,8 @@ import AddEstateModal from "../modal/masterData/estate/AddEstate"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
+import SuccessModal from "../modal/masterData/success/success"
+import { progenySubject } from "../../services/pubsub.service"
 import {
   Table,
   FlexboxGrid,
@@ -39,16 +41,20 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-let tableData = []
+// let tableData = []
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     currentTableDataFields = []
+    // SET TABLE DATA
+    setCurrentTableData()
   })
 
   const [successMessage, setSuccessMessage] = useState(false)
   const [isModal, setModal] = useState(false)
+  const [isSuccessModal, setSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState(null)
   const [assignUserModal, setAssignUserModal] = useState(false)
   const [estate, setEstate] = useState("")
   const [selectedItem, setSelectedItem] = useState([])
@@ -61,7 +67,28 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [editStatus, setEditStatus] = useState(false)
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
+  const [tableData, setTableData] = useState([])
 
+  useEffect(() => {
+    function subscribedData(data) {
+      itemSaved(data)
+    }
+    progenySubject.subscribe(data => {
+      subscribedData(data)
+    })
+  }, [])
+
+  function itemSaved(payload) {
+    if (payload && payload.type === "TRIAL") {
+      console.log(payload)
+      setSuccessData(payload)
+      setSuccessModal(true)
+    }
+  }
+
+  function CloseSuccessModal() {
+    setSuccessModal(false)
+  }
   const tableDataFields = [
     {
       label: "Estate",
@@ -281,26 +308,32 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const { displaylength } = pagination
     return Math.ceil(tableData.length / displaylength)
   }
-  console.log(currentSubNavState)
-  const dashboardData = useSelector(state => state.dashboardDataReducer)
+
   const filterData = useSelector(state => state.filterReducer)
 
-  if (dashboardData.result[active]) {
-    tableData = dashboardData.result[active]
-    const availableKeys = Object.keys(tableData[0])
-    availableKeys.forEach(key => {
-      const field = tableDataFields.find(field => field.value === key)
-      if (field) {
-        currentTableDataFields.push(field)
-      }
-    })
+  const dashboardData = useSelector(state => state.dashboardDataReducer)
+  function setCurrentTableData() {
+    if (dashboardData.result[active]) {
+      setTableData(dashboardData.result[active])
+      const firstRow = dashboardData.result[active][0]
+      // tableData = dashboardData.result[active]
+      const availableKeys = Object.keys(firstRow)
+
+      availableKeys.forEach(key => {
+        const field = tableDataFields.find(field => field.value === key)
+        if (field) {
+          currentTableDataFields.push(field)
+        }
+      })
+    }
   }
 
   function getData(displaylength) {
+    let currentTableData = [...tableData]
     if (Object.keys(filterData).length > 0 && filterData.filter != "") {
-      tableData = filterTable(filterData.filter, tableData)
+      currentTableData = filterTable(filterData.filter, currentTableData)
     }
-    return tableData.filter((v, i) => {
+    return currentTableData.filter((v, i) => {
       v["check"] = false
       v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
@@ -1219,7 +1252,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 rows={rowsToDelete}
               />
               <SuccessMessage activeNav={successMessage} />
-
+              <SuccessModal
+                show={isSuccessModal}
+                hide={CloseSuccessModal}
+                data={successData}
+              />
               <AssignUser
                 estate={estate}
                 selectedItem={selectedItem}
