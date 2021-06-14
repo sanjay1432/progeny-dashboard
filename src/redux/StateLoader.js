@@ -29,7 +29,7 @@ const InitializeState = {
   trialReducer: {}
 }
 
-const KEY = "opex-app-state"
+const KEY = "progeny-app-state"
 class StateLoader {
   loadState() {
     try {

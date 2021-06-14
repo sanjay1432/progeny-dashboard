@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { useSelector } from "react-redux"
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded"
-import CancelRoundedIcon from "@material-ui/icons/CancelRounded"
-import axios from "axios"
 import { Modal, Table, Button, Checkbox } from "rsuite"
-import CommonTable from "../sharedComponent/Table"
-import FilterPanel from "../sharedComponent/FilterPanel"
+import CommonTable from "../../sharedComponent/DataTable"
+import FilterPanel from "../../sharedComponent/FilterPanel"
 const { Column, HeaderCell, Cell } = Table
 
 let originalData = []

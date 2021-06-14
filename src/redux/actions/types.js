@@ -21,3 +21,6 @@ export const ADDNEWUSER_FAIL = "ADDNEWUSER_FAIL"
 
 export const SET_TRIAL = "SET_TRIAL"
 export const CLEAR_TRIAL = "CLEAR_TRIAL"
+
+export const SET_SAVED_DATA = "SET_SAVED_DATA"
+export const CLEAR_SAVED_DATA = "CLEAR_SAVED_DATA"

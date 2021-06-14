@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb } from "../../redux/actions/app.action"
-import AddEstateModal from "../../components/modal/estateModal/AddEstate"
+import { setBreadcrumb, clearBreadcrumb } from "../../redux/actions/app.action"
+import UserService from "../../services/user.service"
+import AddEstateModal from "../modal/masterData/estate/AddEstate"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
+import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
-import { mainSubject } from "../../services/pubsub.service"
+import SuccessModal from "../modal/masterData/success/success"
+import { progenySubject } from "../../services/pubsub.service"
 import {
   Table,
   FlexboxGrid,
   Button,
-  Icon,
   InputPicker,
   Grid,
   Row,
@@ -20,6 +22,11 @@ import {
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
+import CreateIcon from "../../assets/img/icons/create_24px.svg"
+import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
+import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
+import { setMessage } from "redux/actions/message.action"
+
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -39,16 +46,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     currentTableDataFields = []
     // SET TABLE DATA
     setCurrentTableData()
-    mainSubject.subscribe(data => {
-      // const trial =  data.trial;
-      // setTableData([...tableData, trial])
-      console.log("SUBSCRIBED DATA:", data)
-    })
   })
 
-  const [successMessage, setSuccessMessage] = useState("")
+  const [successMessage, setSuccessMessage] = useState(false)
   const [isModal, setModal] = useState(false)
+  const [isSuccessModal, setSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState(null)
+  const [assignUserModal, setAssignUserModal] = useState(false)
+  const [estate, setEstate] = useState("")
+  const [selectedItem, setSelectedItem] = useState([])
   const [assignEstateModal, setAssignEstateModal] = useState(false)
+  const [username, setUsername] = useState("")
   const [isDeleteModal, setDeleteModal] = useState(false)
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [pagination, setPagination] = useState(initialState)
@@ -57,243 +65,210 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const { active } = currentSubNavState
   const [tableData, setTableData] = useState([])
 
-  const trialStateData = useSelector(state => state.trialReducer)
+  useEffect(() => {
+    function subscribedData(data) {
+      itemSaved(data)
+    }
+    progenySubject.subscribe(data => {
+      subscribedData(data)
+    })
+  }, [])
 
-  // if(trialStateData){
-  //   //add trial to data Table
-  //   const trial =  trialStateData.trial;
-  //   setTableData([...tableData, trial])
-  // }
+  function itemSaved(payload) {
+    if (payload && payload.type === "TRIAL") {
+      console.log(payload)
+      setSuccessData(payload)
+      setSuccessModal(true)
+    }
+  }
+
+  function CloseSuccessModal() {
+    setSuccessModal(false)
+  }
   const tableDataFields = [
     {
       label: "Estate",
-      value: "estate",
-      width: 300
+      value: "estate"
     },
     {
       label: "Estate Full Name",
-      value: "estatefullname",
-      width: 300
+      value: "estatefullname"
     },
     {
       label: "No of Estate Block",
-      value: "noofestateblock",
-      width: 300
+      value: "noofestateblock"
     },
     {
       label: "No. Trials on this Estate",
-      value: "nooftrails",
-      width: 300
+      value: "nooftrails"
     },
     {
       label: "No. Trials on this Estate",
-      value: "nooftrails",
-      width: 200
+      value: "nooftrails"
     },
     {
       label: "Trial ID",
-      value: "trialid",
-      width: 100
+      value: "trialid"
     },
     {
       label: "Trial",
-      value: "trial",
-      width: 200
+      value: "trial"
     },
     {
       label: "Trial Remarks",
-      value: "trialremark",
-      width: 300
+      value: "trialremark"
     },
     {
       label: "Area (ha)",
-      value: "area",
-      width: 100
+      value: "area"
     },
     {
       label: "Planted Date",
-      value: "planteddate",
-      width: 100
+      value: "planteddate"
     },
     {
       label: "n Progeny",
-      value: "nofprogeny",
-      width: 100
+      value: "nofprogeny"
     },
     {
       label: "n Of Replicate",
-      value: "nofreplicate",
-      width: 200
+      value: "nofreplicate"
     },
     {
       label: "Soil Type",
-      value: "soiltype",
-      width: 200
+      value: "soiltype"
     },
     {
       label: "n Of Plot",
-      value: "nofplot",
-      width: 100
+      value: "nofplot"
     },
     {
       label: "n Of Subblock/Rep",
-      value: "nofsubblock",
-      width: 200
+      value: "nofsubblock"
     },
     {
       label: "n Of Plot/subblock",
-      value: "nofplot_subblock",
-      width: 200
+      value: "nofplot_subblock"
     },
     {
       label: "Status",
-      value: "status",
-      width: 100
+      value: "status"
     },
     {
       label: "Replicate",
-      value: "replicate",
-      width: 100
+      value: "replicate"
     },
     {
       label: "Estate Block",
-      value: "estateblock",
-      width: 100
+      value: "estateblock"
     },
     {
       label: "Design",
-      value: "design",
-      width: 100
+      value: "design"
     },
     {
       label: "Density",
-      value: "density",
-      width: 100
+      value: "density"
     },
     {
       label: "Plot",
-      value: "plot",
-      width: 100
+      value: "plot"
     },
     {
       label: "Subblock",
-      value: "subblock",
-      width: 100
+      value: "subblock"
     },
     {
       label: "Progeny ID",
-      value: "progenyId",
-      width: 100
+      value: "progenyId"
     },
     {
       label: "Progeny",
-      value: "progeny",
-      width: 100
+      value: "progeny"
     },
     {
       label: "Ortet",
-      value: "ortet",
-      width: 100
+      value: "ortet"
     },
     {
       label: "FP",
-      value: "fp",
-      width: 100
+      value: "fp"
     },
     {
       label: "MP",
-      value: "mp",
-      width: 100
+      value: "mp"
     },
     {
       label: "nPalm",
-      value: "noofPalm",
-      width: 100
+      value: "noofPalm"
     },
     {
       label: "Palm No",
-      value: "palmno",
-      width: 100
+      value: "palmno"
     },
     {
       label: "Palm Name",
-      value: "palmname",
-      width: 100
+      value: "palmname"
     },
     {
       label: "Progeny ID",
-      value: "progenyId",
-      width: 100
+      value: "progenyId"
     },
     {
       label: "Pop Var",
-      value: "popvar",
-      width: 100
+      value: "popvar"
     },
     {
       label: "Origin",
-      value: "origin",
-      width: 100
+      value: "origin"
     },
     {
       label: "Progeny Remark",
-      value: "progenyremark",
-      width: 100
+      value: "progenyremark"
     },
     {
       label: "Progeny Remark",
-      value: "progenyremark",
-      width: 100
+      value: "progenyremark"
     },
     {
       label: "Generation",
-      value: "generation",
-      width: 100
+      value: "generation"
     },
     {
       label: "FP Fam",
-      value: "fpFam",
-      width: 100
+      value: "fpFam"
     },
     {
       label: "FP Var",
-      value: "fpVar",
-      width: 100
+      value: "fpVar"
     },
     {
       label: "MP Fam",
-      value: "mpFam",
-      width: 100
+      value: "mpFam"
     },
     {
       label: "MP Var",
-      value: "mpVar",
-      width: 100
+      value: "mpVar"
     },
     {
       label: "Cross",
-      value: "cross",
-      width: 100
+      value: "cross"
     },
     {
       label: "Cross Type",
-      value: "crossType",
-      width: 100
+      value: "crossType"
     },
     {
       label: "User ID",
-      value: "userId",
-      width: 100
+      value: "userId"
     },
     {
       label: "Username",
-      value: "username",
-      width: 100
+      value: "username"
     },
     {
       label: "Position",
-      value: "position",
-      width: 100
+      value: "position"
     }
   ]
 
@@ -412,8 +387,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
+    console.log("keys", keys)
   }
-
+  console.log("checkStatus", checkStatus)
   function filterTable(filters, data) {
     var filterKeys = Object.keys(filters)
     return data.filter(function (eachObj) {
@@ -484,22 +460,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <Col sm={5} md={5} lg={4}>
             <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddProgeny">
+              <Button
+                appearance="primary"
+                className="btnAddProgeny"
+                onClick={() =>
+                  handleAddNewTrial(["Progeny", `Add New Progeny`], {})
+                }
+              >
                 Add New Progeny
               </Button>
             </FlexboxGrid.Item>
           </Col>
         )
       case "userlist":
+        function openPage() {
+          handleActionExpand(["User List", "Add New User"], { addNewUser })
+        }
         return (
           <Col sm={5} md={5} lg={3}>
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="btnAddUser"
-                onClick={() =>
-                  handleActionExpand(["User List", "Add New User"], {})
-                }
+                onClick={openPage}
               >
                 Add New User
               </Button>
@@ -518,6 +501,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function DeleteButton() {
     if (
       active === "palm" ||
+      active === "userlist" ||
       active === "estateAssignment" ||
       active === "userAssignment"
     ) {
@@ -547,6 +531,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             Active
           </Button>
         )
+      case "inactive":
+        return (
+          <Button color="red" appearance="ghost">
+            Inactive
+          </Button>
+        )
       case "canceled":
         return (
           <Button color="red" appearance="ghost">
@@ -559,6 +549,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             finished
           </Button>
         )
+
       default:
         return null
     }
@@ -586,22 +577,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <img src={OpenNew} />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
+              <img src={CreateIcon} />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
               <img src={LinkIcon} />
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
-
       case "plot":
         return (
           <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item>
-              <Icon icon="qrcode" size="md" />
+              <img src={QrCodeScanner} />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
+              <img src={CreateIcon} />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
               <img src={LinkIcon} />
@@ -610,79 +600,171 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "palm":
         return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
+          <span>
+            <img src={CreateIcon} />
+          </span>
         )
       case "progeny":
         return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon icon="pencil" size="md" />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
+          <span>
+            <img
+              src={CreateIcon}
+              onClick={() =>
+                handleActionExpand(["Progeny", "Edit Progeny"], {
+                  progenyId: data.progenyId,
+                  popvar: data.popvar,
+                  origin: data.origin,
+                  progeny: data.progeny,
+                  generation: data.generation,
+                  ortet: data.ortet,
+                  fp: data.fp,
+                  fpVar: data.fpVar,
+                  fpFam: data.fpFam,
+                  mp: data.mp,
+                  mpFam: data.mpFam,
+                  mpVar: data.mpVar,
+                  cross: data.cross,
+                  crossType: data.crossType
+                })
+              }
+            />
+          </span>
         )
-
       case "userlist":
+        return (
+          <span>
+            <img
+              src={CreateIcon}
+              onClick={() =>
+                handleActionExpand(["User List", "Edit User"], {
+                  userId: data.userId,
+                  username: data.username,
+                  position: data.position,
+                  status: data.status,
+                  editCurrentUser
+                })
+              }
+            />
+          </span>
+        )
+      case "estateAssignment":
+        function openAssignUserModal(data) {
+          setAssignUserModal(true)
+          setEstate(data)
+          console.log(estate)
+        }
+
         return (
           <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item>
-              <Icon
-                icon="pencil"
-                size="md"
+              <img
+                src={OpenNew}
                 onClick={() =>
-                  handleActionExpand(["User List", "Edit User"], {
-                    userId: data.userId,
-                    username: data.username,
-                    position: data.position,
-                    status: data.status
-                  })
+                  handleActionExpand(
+                    ["Estate Assignment", `Estate ${data.estate}`],
+                    {
+                      estate: data.estate
+                    }
+                  )
                 }
               />
             </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "estateAssignment":
-        return (
-          <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item>
-              <img src={OpenNew} />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <Icon icon="user-circle" size="md" />
+              <img
+                src={AccountCircle}
+                onClick={() => openAssignUserModal(data.estate)}
+              />
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
       case "userAssignment":
         return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <Icon
-                icon="user-circle"
-                size="md"
-                onClick={() => setAssignEstateModal(true)}
-              />
-              <AssignEstate
-                show={assignEstateModal}
-                hide={() => setAssignEstateModal(false)}
-              />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
+          <span>
+            <img
+              src={AccountCircle}
+              onClick={() => openAssignEstateModal(data.username)}
+            />
+          </span>
         )
       default:
         return null
     }
   }
 
+  function addNewUser() {
+    const payload = {}
+    UserService.addNewUser(payload).then(data => {
+      console.log(payload, "has been added to the system.")
+      dispatch(clearBreadcrumb())
+      setSuccessMessage(active)
+      console.log(successMessage)
+    })
+  }
+
+  function editCurrentUser() {
+    const payload = {}
+    console.log(payload)
+    UserService.editUser(payload).then(
+      data => {
+        console.log(payload, "has not been edited to the system.")
+        dispatch(clearBreadcrumb())
+        setSuccessMessage(active)
+      },
+      error => {
+        console.log(payload, "has not been edited to the system.")
+      }
+    )
+  }
+
+  const assignUserToEstate = () => {
+    const payload = {
+      estate: estate,
+      userId: selectedItem
+    }
+    UserService.assignUserToEstate(payload).then(
+      data => {
+        console.log(payload, " successfully transfer to backend")
+        setSuccessMessage(active)
+        setAssignUserModal(false)
+      },
+      error => {
+        console.log(payload, " was not successfully transfer to backend.")
+      }
+    )
+  }
+
+  const assignEstateToUser = () => {
+    const payload = {
+      username: username,
+      estate: selectedItem
+    }
+    UserService.assignEstateToUser(payload).then(
+      data => {
+        console.log(payload, " successfully transfer to backend")
+        setSuccessMessage(active)
+        setAssignEstateModal(false)
+      },
+      error => {
+        console.log(payload, " was not successfully transfer to backend.")
+      }
+    )
+  }
+
   function handleActionExpand(breadcrumb, option) {
     dispatch(setBreadcrumb({ breadcrumb, option }))
   }
+
+  function openAssignEstateModal(data) {
+    setAssignEstateModal(true)
+    setUsername(data)
+    console.log(username)
+  }
+
   function handleAddNewTrial(breadcrumb, option) {
     console.log({ breadcrumb }, { option })
     dispatch(setBreadcrumb({ breadcrumb, option }))
   }
+
   function onDelete() {
     console.log("checkStatus", checkStatus)
     const rows = tableData.filter((r, i) => checkStatus.includes(i))
@@ -803,6 +885,45 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             )}
           </>
         )
+      case "userlist":
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description={`has been added to the system.`}
+              onClick={() => {
+                setSuccessMessage("")
+              }}
+            />
+          </>
+        )
+      case "estateAssignment":
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description={`Users have been assigned to the estate.`}
+              onClick={() => {
+                setSuccessMessage("")
+              }}
+            />
+          </>
+        )
+      case "userAssignment":
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description={`Estate have been assigned to the users.`}
+              onClick={() => {
+                setSuccessMessage("")
+              }}
+            />
+          </>
+        )
       default:
         return <></>
     }
@@ -812,33 +933,80 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (active) {
       case "estate":
         currentTableDataFields.forEach((field, i) => {
-          if (field.value === "estate") currentTableDataFields[0] = field
-          if (field.value === "estatefullname")
+          if (field.value === "estate") {
+            field.width = 320
+            currentTableDataFields[0] = field
+          }
+          if (field.value === "estatefullname") {
+            field.width = 320
             currentTableDataFields[1] = field
-          if (field.value === "noofestateblock")
+          }
+          if (field.value === "noofestateblock") {
+            field.width = 320
             currentTableDataFields[2] = field
-          if (field.value === "nooftrails") currentTableDataFields[3] = field
+          }
+          if (field.value === "nooftrails") {
+            field.width = 1000
+            currentTableDataFields[3] = field
+          }
         })
         return currentTableDataFields
+
       case "trial":
         const trialfields = []
         currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialid") trialfields[0] = field
-          if (field.value === "trial") trialfields[1] = field
-          if (field.value === "trialremark") trialfields[2] = field
-          if (field.value === "area") trialfields[3] = field
-          if (field.value === "planteddate") trialfields[4] = field
-          if (field.value === "nofprogeny") trialfields[5] = field
+          if (field.value === "trialid") {
+            field.width = 120
+            trialfields[0] = field
+          }
+          if (field.value === "trial") {
+            field.width = 200
+            trialfields[1] = field
+          }
+          if (field.value === "trialremark") {
+            field.width = 500
+            trialfields[2] = field
+          }
+          if (field.value === "area") {
+            field.width = 120
+            trialfields[3] = field
+          }
+          if (field.value === "planteddate") {
+            field.width = 120
+            trialfields[4] = field
+          }
+          if (field.value === "nofprogeny") {
+            field.width = 120
+            trialfields[5] = field
+          }
           if (field.value === "estate") {
-            field.width = 100
+            field.width = 120
             trialfields[6] = field
           }
-          if (field.value === "nofreplicate") trialfields[7] = field
-          if (field.value === "soiltype") trialfields[8] = field
-          if (field.value === "nofplot") trialfields[9] = field
-          if (field.value === "nofplot_subblock") trialfields[10] = field
-          if (field.value === "nofsubblock") trialfields[11] = field
-          if (field.value === "status") trialfields[12] = field
+          if (field.value === "nofreplicate") {
+            field.width = 140
+            trialfields[7] = field
+          }
+          if (field.value === "soiltype") {
+            field.width = 120
+            trialfields[8] = field
+          }
+          if (field.value === "nofplot") {
+            field.width = 120
+            trialfields[9] = field
+          }
+          if (field.value === "nofplot_subblock") {
+            field.width = 170
+            trialfields[10] = field
+          }
+          if (field.value === "nofsubblock") {
+            field.width = 170
+            trialfields[11] = field
+          }
+          if (field.value === "status") {
+            field.width = 130
+            trialfields[12] = field
+          }
         })
         return trialfields
 
@@ -846,24 +1014,61 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const plotfields = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialid") {
+            field.width = 120
             plotfields[0] = field
           }
           if (field.value === "estate") {
-            field.width = 100
+            field.width = 120
             plotfields[1] = field
           }
-          if (field.value === "replicate") plotfields[2] = field
-          if (field.value === "estateblock") plotfields[3] = field
-          if (field.value === "design") plotfields[4] = field
-          if (field.value === "density") plotfields[5] = field
-          if (field.value === "plot") plotfields[6] = field
-          if (field.value === "subblock") plotfields[7] = field
-          if (field.value === "progenyId") plotfields[8] = field
-          if (field.value === "progeny") plotfields[9] = field
-          if (field.value === "ortet") plotfields[10] = field
-          if (field.value === "fp") plotfields[11] = field
-          if (field.value === "mp") plotfields[12] = field
-          if (field.value === "noofPalm") plotfields[13] = field
+          if (field.value === "replicate") {
+            field.width = 120
+            plotfields[2] = field
+          }
+          if (field.value === "estateblock") {
+            field.width = 120
+            plotfields[3] = field
+          }
+          if (field.value === "design") {
+            field.width = 120
+            plotfields[4] = field
+          }
+          if (field.value === "density") {
+            field.width = 120
+            plotfields[5] = field
+          }
+          if (field.value === "plot") {
+            field.width = 120
+            plotfields[6] = field
+          }
+          if (field.value === "subblock") {
+            field.width = 120
+            plotfields[7] = field
+          }
+          if (field.value === "progenyId") {
+            field.width = 120
+            plotfields[8] = field
+          }
+          if (field.value === "progeny") {
+            field.width = 120
+            plotfields[9] = field
+          }
+          if (field.value === "ortet") {
+            field.width = 120
+            plotfields[10] = field
+          }
+          if (field.value === "fp") {
+            field.width = 120
+            plotfields[11] = field
+          }
+          if (field.value === "mp") {
+            field.width = 120
+            plotfields[12] = field
+          }
+          if (field.value === "noofPalm") {
+            field.width = 120
+            plotfields[13] = field
+          }
         })
         return plotfields
 
@@ -871,25 +1076,112 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const palmfields = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialid") {
+            field.width = 270
             palmfields[0] = field
           }
           if (field.value === "estate") {
-            field.width = 100
+            field.width = 270
             palmfields[1] = field
           }
-          if (field.value === "replicate") palmfields[2] = field
+          if (field.value === "replicate") {
+            field.width = 270
+            palmfields[2] = field
+          }
           if (field.value === "estateblock") {
-            field.width = 150
+            field.width = 270
             palmfields[3] = field
           }
-          if (field.value === "plot") palmfields[4] = field
-          if (field.value === "noofPalm") palmfields[5] = field
-          if (field.value === "noofPalm") palmfields[6] = field
+          if (field.value === "plot") {
+            field.width = 1000
+            palmfields[4] = field
+          }
         })
         return palmfields
 
       case "progeny":
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "progenyId") {
+            field.width = 150
+            currentTableDataFields[0] = field
+          }
+          if (field.value === "popvar") {
+            field.width = 120
+            currentTableDataFields[1] = field
+          }
+          if (field.value === "origin") {
+            field.width = 150
+            currentTableDataFields[2] = field
+          }
+          if (field.value === "progenyremark") {
+            field.width = 150
+            currentTableDataFields[3] = field
+          }
+          if (field.value === "progeny") {
+            field.width = 100
+            currentTableDataFields[4] = field
+          }
+          if (field.value === "generation") {
+            field.width = 120
+            currentTableDataFields[5] = field
+          }
+          if (field.value === "ortet") {
+            field.width = 120
+            currentTableDataFields[6] = field
+          }
+          if (field.value === "fp") {
+            field.width = 100
+            currentTableDataFields[7] = field
+          }
+          if (field.value === "fpFam") {
+            field.width = 100
+            currentTableDataFields[8] = field
+          }
+          if (field.value === "fpVar") {
+            field.width = 100
+            currentTableDataFields[9] = field
+          }
+          if (field.value === "mp") {
+            field.width = 100
+            currentTableDataFields[10] = field
+          }
+          if (field.value === "mpFam") {
+            field.width = 100
+            currentTableDataFields[11] = field
+          }
+          if (field.value === "mpVar") {
+            field.width = 100
+            currentTableDataFields[12] = field
+          }
+          if (field.value === "cross") {
+            field.width = 180
+            currentTableDataFields[13] = field
+          }
+          if (field.value === "crossType") {
+            field.width = 100
+            currentTableDataFields[14] = field
+          }
+        })
         return currentTableDataFields
+
+      case "userlist":
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "userId") {
+            field.width = 180
+            currentTableDataFields[0] = field
+          }
+          if (field.value === "username") {
+            field.width = 180
+            currentTableDataFields[1] = field
+          }
+          if (field.value === "position") {
+            field.width = 1200
+            currentTableDataFields[2] = field
+          }
+          if (field.value === "status") {
+            field.width = 130
+            currentTableDataFields[3] = field
+          }
+        })
       default:
         return currentTableDataFields
     }
@@ -927,6 +1219,28 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 rows={rowsToDelete}
               />
               <SuccessMessage activeNav={successMessage} />
+              <SuccessModal
+                show={isSuccessModal}
+                hide={CloseSuccessModal}
+                data={successData}
+              />
+              <AssignUser
+                estate={estate}
+                selectedItem={selectedItem}
+                show={assignUserModal}
+                hide={() => setAssignUserModal(false)}
+                setSelectedItem={setSelectedItem}
+                assignUserToEstate={assignUserToEstate}
+              />
+
+              <AssignEstate
+                username={username}
+                selectedItem={selectedItem}
+                show={assignEstateModal}
+                hide={() => setAssignEstateModal(false)}
+                setSelectedItem={setSelectedItem}
+                assignEstateToUser={assignEstateToUser}
+              />
             </FlexboxGrid>
           </Row>
         </Grid>
@@ -954,7 +1268,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
           {reArrangeTableFields().map((field, i) =>
             field.value === "status" ? (
-              <Column width={field.width} align="center" key={i} fixed="right">
+              <Column
+                width={field.width ? field.width : null}
+                flexGrow={field.flexGrow ? field.flexGrow : null}
+                minWidth={field.minWidth ? field.minWidth : null}
+                align="center"
+                key={i}
+                fixed="right"
+              >
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
                 <Cell align="center">
                   {rowData => {
@@ -977,6 +1298,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </Cell>
           </Column>
         </Table>
+
         <div style={{ float: "right", padding: "1rem" }}>
           <Pagination
             {...pagination}

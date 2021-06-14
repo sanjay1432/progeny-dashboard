@@ -305,13 +305,13 @@ const EstateBlockTable = ({
     <>
       <div id="estateBlockTable">
         {/* Add Estate Block MODAL STARTED */}
-        <Modal show={isModal} onHide={close}>
+        <Modal id="estateBlockModal" show={isModal} onHide={close}>
           <Modal.Header>
             <Modal.Title>Add Estate Block</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div style={{ color: "black" }}>
-              <div>
+              <div className="lastUpdate">
                 Last updated on :{" "}
                 <b>
                   {new Date(updateDate).toLocaleDateString("en-US", {
@@ -322,10 +322,12 @@ const EstateBlockTable = ({
                   })}
                 </b>
               </div>
-              <div>
+              <div className="estateName">
                 Estate: <b>{option.estate}</b>
               </div>
-              <div>List of Estate Blocks({estateBlocks.length})</div>
+              <div className="totalEstateBlock">
+                List of Estate Blocks({estateBlocks.length})
+              </div>
             </div>
             <Table wordWrap data={estateBlocks}>
               <Column width={70} align="center" fixed>

@@ -21,6 +21,7 @@ b {
 
 @import "./custom/rsuite";
 
+//Shared Component
 @import "./Page/login";
 
 @import "./Page/_overview";
@@ -33,8 +34,26 @@ b {
 
 @import "./Page/dataTable";
 
+//Estate(Master-Data) 
 @import "./Page/estateBlockTable";
-
 @import "./Page/addEstateModal";
 
-@import "./Page/addNewUser"
+//Trial(Master-Data)
+@import "./Page/addNewTrial";
+
+//Progeny(Master-Data)
+@import "./Page//addNewProgeny"; //*Same Layout on addNewProgeny && editProgeny
+
+//UserList(UserManagement)
+@import "./Page/addNewUser";
+@import "./Page/assignUser";
+
+@import "./Page/assignEstate";
+
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  background-color: $body-color;
+}

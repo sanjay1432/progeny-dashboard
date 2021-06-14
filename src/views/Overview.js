@@ -25,7 +25,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb, clearBreadcrumb } from "../redux/actions/app.action"
 import { getDashboardData } from "../redux/actions/dashboarddata.action"
 import axios from "axios"
-import BreadcrumbProgeny from "../components/nav/BreadcrumbProgeny"
 import ProgenySubNavBar from "../components/nav/ProgenySubNavBar"
 import TabPanel from "../components/shared/TabPanel"
 import { useHistory } from "react-router-dom"
@@ -241,6 +240,11 @@ const listItems = [
         eventKey: "userlist",
         filters: [
           {
+            name: "username",
+            label: "Username",
+            type: "text"
+          },
+          {
             name: "position",
             label: "Position",
             type: "select"
@@ -256,6 +260,12 @@ const listItems = [
             name: "estate",
             label: "Estate",
             type: "select"
+          },
+          {
+            name: "estatefullname",
+            label: "Estate Full Name",
+            type: "select",
+            disable: false
           }
         ],
         search: true
@@ -264,6 +274,11 @@ const listItems = [
         name: "User Assignment",
         eventKey: "userAssignment",
         filters: [
+          {
+            name: "username",
+            label: "Username",
+            type: "text"
+          },
           {
             name: "estate",
             label: "Estate",
@@ -403,11 +418,6 @@ const Overview = props => {
                   </div>
                 </Navbar.Body>
               </Navbar>
-            </Header>
-          </div>
-
-          <Content>
-            <main id="content-section">
               <div className="subNav">
                 <ProgenySubNavBar
                   className="progenySubNavBar"
@@ -416,6 +426,11 @@ const Overview = props => {
                   currentItem={currentSideItem}
                 />
               </div>
+            </Header>
+          </div>
+
+          <Content>
+            <main id="content-section">
               <div className="content">
                 <section id="overview">
                   {isLoading ? (

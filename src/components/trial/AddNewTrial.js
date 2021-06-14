@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
-import { setTrialState } from "../../redux/actions/trial.action"
 import {
   Table,
   FlexboxGrid,
@@ -18,7 +17,6 @@ import {
   RadioGroup,
   SelectPicker
 } from "rsuite"
-import "./AddNewTrial.css"
 import EstateService from "../../services/estate.service"
 
 import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24px.svg"
@@ -372,38 +370,38 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function onSaveTrial() {
-    // console.log(tableData)
     trial["replicates"] = tableData
     console.log(trial)
     TrialService.saveTrial(trial).then(
       data => {
-        dispatch(setTrialState(data.data))
+        const savedData = {
+          type: "TRIAL",
+          data: trial,
+          action: "CREATED"
+        }
         dispatch(clearBreadcrumb())
+        publish(savedData)
       },
       err => console.log(err)
     )
   }
-  // function onPublish(){
-  //   publish(true)
-  //   dispatch(clearBreadcrumb())
-  // }
+
   return (
-    <>
+    <div id="addNewTrial">
       {/* STEP 1 GENERATE TABLE START*/}
       <div style={{ padding: "1rem" }}>
         <h4>
           <span style={{ color: "#009D57" }}>Step 1:</span>{" "}
           <span style={{ color: "#353131f2" }}>Generate Table</span>
-          {/* <button onClick = {onPublish}>publish</button> */}
         </h4>
       </div>
 
       <Grid fluid>
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Trail ID</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in Trial ID"
               className="formField"
@@ -413,10 +411,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Trail</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in Trial "
               className="formField"
@@ -426,15 +424,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Trial Remarks</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               componentClass="textarea"
               rows={3}
               placeholder="Key In Trial Remarks"
-              className="formField"
+              className="formField trialRemark"
               name="trialremark"
               onChange={(value, e) => onInput(e)}
             />
@@ -442,10 +440,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Area (ha)</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in Area"
               className="formField"
@@ -456,13 +454,14 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>Planted Date</p>
           </Col>
-          <Col xs={6}>
+          <Col md={5} lg={5}>
             {" "}
             <DatePicker
               size="lg"
+              className="datePicker"
               placeholder="Enter Date"
               format="MM/YYYY"
               style={styles}
@@ -475,10 +474,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>No. of Progeny</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <Input
               placeholder="Key in No.of Progeny"
               className="formField"
@@ -489,23 +488,23 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               No. of Subblock and No.of Plot/Subblock
             </p>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             <Input
               placeholder="No. of Subblock"
-              className="formField"
+              className="formField noOfSubBlock"
               name="nofsubblock"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             <Input
               placeholder="No. of Plot/Subblock "
-              className="formField"
+              className="formField noOfPlot"
               name="nofplot_subblock"
               onChange={(value, e) => onInput(e)}
             />
@@ -523,12 +522,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               This Trial will be in the same Estate?
             </p>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             {" "}
             <RadioGroup
               name="radioList"
@@ -637,12 +636,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )}
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               Do all replicates have the same density?
             </p>
           </Col>
-          <Col xs={3}>
+          <Col md={5} lg={5}>
             {" "}
             <RadioGroup
               name="radioList"
@@ -672,7 +671,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid">
-          <Col xs={6}>
+          <Col md={6} lg={6}>
             <p style={{ color: "#353131f2" }}>
               What is the design for the replicates ?
             </p>
@@ -868,6 +867,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                   className="btnAddTrial"
                   appearance="primary"
                   onClick={onSaveTrial}
+                  type="button"
                 >
                   Save
                 </Button>
@@ -877,7 +877,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
       </Grid>
       {/* STEP 2 CUSTOMISE TABLE END*/}
-    </>
+    </div>
   )
 }
 export default AddNewTrial

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { getPositionList } from "../../../redux/actions/user.action"
-import { setBreadcrumb } from "../../../redux/actions/app.action"
+import {
+  setBreadcrumb,
+  clearBreadcrumb
+} from "../../../redux/actions/app.action"
 import {
   SelectPicker,
   Button,
@@ -16,11 +19,11 @@ import UserService from "../../../services/user.service"
 
 let selectionData = {}
 const EditUser = ({ option }) => {
+  console.log(option)
   const [userId, setUserId] = useState(option.userId)
   const [username, setUsername] = useState(option.username)
   const [position, setPosition] = useState(option.position)
   const [status, setStatus] = useState(option.status)
-  const [message, setMessage] = useState(null)
   const dispatch = useDispatch()
   const positionList = useSelector(state => state.positionListReducer)
   const PositionList = positionList.result
@@ -68,58 +71,40 @@ const EditUser = ({ option }) => {
   const statusData = [
     {
       label: "Active",
-      value: "Active"
+      value: "active"
     },
     {
       label: "Inactive",
-      value: "Inactive"
+      value: "inactive"
     }
   ]
 
   console.log(dataInSelection)
   console.log(statusData)
 
-  function PopUpMessage() {
-    if (message === true) {
-      return (
-        <>
-          <Message showIcon type="success" description={popUpDescription} />
-        </>
-      )
-    } else if (message === false) {
-      return (
-        <>
-          <Message showIcon type="error" description="System error" />
-        </>
-      )
-    } else {
-      return <></>
-    }
-  }
-
-  function editUser() {
-    const payload = {
-      userId: userId,
-      username: username,
-      position: position,
-      status: status
-    }
-    console.log(payload)
-    UserService.editUser(payload).then(
-      data => {
-        setMessage(true)
-      },
-      error => {
-        setMessage(false)
-      }
-    )
-  }
+  // function PopUpMessage() {
+  //   if (message === true) {
+  //     return (
+  //       <>
+  //         <Message showIcon type="success" description={popUpDescription} />
+  //       </>
+  //     )
+  //   } else if (message === false) {
+  //     return (
+  //       <>
+  //         <Message showIcon type="error" description="System error" />
+  //       </>
+  //     )
+  //   } else {
+  //     return <></>
+  //   }
+  // }
 
   const popUpDescription = username + " has been edited to the system."
 
   return (
     <div id="addNewUser">
-      <PopUpMessage />
+      {/* <PopUpMessage /> */}
 
       <Form className="formLayout">
         <FormGroup className="labelLayout">
@@ -130,6 +115,7 @@ const EditUser = ({ option }) => {
             className="dataBox"
             placeholder="User ID"
             onChange={popUpDescription}
+            onChange={setUserId}
           />
         </FormGroup>
 
@@ -161,6 +147,7 @@ const EditUser = ({ option }) => {
             value={status}
             data={statusData}
             onChange={setStatus}
+            searchable={false}
           />
         </FormGroup>
 
@@ -173,7 +160,11 @@ const EditUser = ({ option }) => {
             >
               Cancel
             </Button>
-            <Button appearance="primary" className="btnSave" onClick={editUser}>
+            <Button
+              appearance="primary"
+              className="btnSave"
+              onClick={option.editCurrentUser}
+            >
               Save
             </Button>
           </ButtonToolbar>

@@ -23,10 +23,11 @@ const SearchFilter = forwardRef(
     useEffect(() => {
       currentFilters = []
     })
+    console.log("currentFilters", currentFilters)
     const dispatch = useDispatch()
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
-
+    console.log("selectedFilters", selectedFilters)
     const [selectedValue, setValues] = useState({})
 
     const { active } = currentSubNavState
@@ -206,10 +207,9 @@ const SearchFilter = forwardRef(
     }
 
     function onApply() {
-      console.log({ selectedFilters })
       dispatch(setFilter(selectedFilters))
     }
-    console.log("selectedFilters", selectedFilters)
+
     //console.log("selectedFilters[filter.name]", selectedFilters[filter.name])
     return (
       <>

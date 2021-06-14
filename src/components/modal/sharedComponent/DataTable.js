@@ -1,21 +1,43 @@
 import React, { useState } from "react"
+import { useSelector } from "react-redux"
 import { Table, Loader, Checkbox } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
 
-const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
+const currentTableDataFields = []
+const DataTable = ({
+  columns,
+  data,
+  expandedCell,
+  renderExpandedCell,
+  selectedItem,
+  ...props
+}) => {
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [displayLength, setDisplayLength] = useState(10)
-  const [sortColumn, setSortColumn] = useState(null)
-  const [sortType, setSortType] = useState(null)
   const [checkStatus, setCheckStatus] = useState([])
-  //console.log(renderExpandedCell)
-  const getData = () => {
-    //setLoading(true)
-    return data.filter((v, i) => {
-      const start = displayLength * (page - 1)
-      const end = start + displayLength
-      return i >= start && i < end
+
+  const filterData = useSelector(state => state.filterReducer)
+
+  const availableKeys = Object.keys(data[0])
+  availableKeys.forEach(setKey => {
+    const field = columns.find(field => field.value === setKey)
+    if (field) {
+      currentTableDataFields.push(field)
+    }
+  })
+
+  function getData() {
+    if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
+      data = filterTable(filterData.filter, data)
+    }
+    return data
+  }
+
+  function filterTable(filters, data) {
+    var filterKeys = Object.keys(filters)
+    return data.filter(function (eachObj) {
+      return filterKeys.every(function (eachKey) {
+        return eachObj[eachKey] === filters[eachKey]
+      })
     })
   }
 
@@ -51,15 +73,16 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
   }
 
   const handleCheckAll = (value, checked) => {
-    const keys = checked ? data.map(item => item.rowNumber) : []
+    const keys = checked ? data.map(item => item.userId) : []
     setCheckStatus(keys)
   }
 
-  const handleCheck = (value, checked) => {
+  const handleCheck = (value, checked, e) => {
     const keys = checked
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
+    props.onChange(keys)
   }
 
   return (
@@ -68,13 +91,13 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
         <div>
           <Table
             data={getData()}
-            height={400}
+            height={380}
             bordered
             loading={loading}
             expandedRowKeys={expandedCell}
             renderRowExpanded={renderExpandedCell}
           >
-            <Column>
+            <Column width={80}>
               <HeaderCell>
                 {" "}
                 <Checkbox
@@ -84,7 +107,7 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
                 />
               </HeaderCell>
               <CheckCell
-                dataKey="rowNumber"
+                dataKey={columns[0].dataKey}
                 checkedKeys={checkStatus}
                 onChange={handleCheck}
               />
@@ -92,10 +115,10 @@ const DataTable = ({ columns, data, expandedCell, renderExpandedCell }) => {
 
             {columns.map(col => {
               const width = col.width ? col.width : false
-              const flexgrow = col.flexgrow ? col.flexgrow : false
+              const flexGrow = col.flexGrow ? col.flexGrow : false
               const fixed = col.fixed ? col.fixed : false
               return (
-                <Column width={width ? width : flexgrow} fixed={fixed}>
+                <Column width={width} flexGrow={flexGrow} fixed={fixed}>
                   {col.name ? (
                     <HeaderCell>{col.name}</HeaderCell>
                   ) : (
