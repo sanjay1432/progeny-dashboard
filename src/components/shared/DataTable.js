@@ -4,6 +4,7 @@ import { setBreadcrumb } from "../../redux/actions/app.action"
 import AddEstateModal from "../../components/modal/estateModal/AddEstate"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import DeleteModal from "../../components/modal/DeleteModal"
+import { mainSubject } from "../../services/pubsub.service"
 import {
   Table,
   FlexboxGrid,
@@ -30,12 +31,19 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-let tableData = []
+// let tableData = []
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     currentTableDataFields = []
+    // SET TABLE DATA
+    setCurrentTableData()
+    mainSubject.subscribe(data => {
+      // const trial =  data.trial;
+      // setTableData([...tableData, trial])
+      console.log("SUBSCRIBED DATA:", data)
+    })
   })
 
   const [successMessage, setSuccessMessage] = useState("")
@@ -47,7 +55,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [checkStatus, setCheckStatus] = useState([])
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
+  const [tableData, setTableData] = useState([])
 
+  const trialStateData = useSelector(state => state.trialReducer)
+
+  // if(trialStateData){
+  //   //add trial to data Table
+  //   const trial =  trialStateData.trial;
+  //   setTableData([...tableData, trial])
+  // }
   const tableDataFields = [
     {
       label: "Estate",
@@ -314,25 +330,31 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     return Math.ceil(tableData.length / displaylength)
   }
 
-  const dashboardData = useSelector(state => state.dashboardDataReducer)
   const filterData = useSelector(state => state.filterReducer)
-  if (dashboardData.result[active]) {
-    tableData = dashboardData.result[active]
-    const availableKeys = Object.keys(tableData[0])
 
-    availableKeys.forEach(key => {
-      const field = tableDataFields.find(field => field.value === key)
-      if (field) {
-        currentTableDataFields.push(field)
-      }
-    })
+  const dashboardData = useSelector(state => state.dashboardDataReducer)
+  function setCurrentTableData() {
+    if (dashboardData.result[active]) {
+      setTableData(dashboardData.result[active])
+      const firstRow = dashboardData.result[active][0]
+      // tableData = dashboardData.result[active]
+      const availableKeys = Object.keys(firstRow)
+
+      availableKeys.forEach(key => {
+        const field = tableDataFields.find(field => field.value === key)
+        if (field) {
+          currentTableDataFields.push(field)
+        }
+      })
+    }
   }
 
   function getData(displaylength) {
+    let currentTableData = [...tableData]
     if (Object.keys(filterData).length > 0 && filterData.filter != "") {
-      tableData = filterTable(filterData.filter, tableData)
+      currentTableData = filterTable(filterData.filter, currentTableData)
     }
-    return tableData.filter((v, i) => {
+    return currentTableData.filter((v, i) => {
       v["check"] = false
       v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
@@ -816,6 +838,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           if (field.value === "nofplot") trialfields[9] = field
           if (field.value === "nofplot_subblock") trialfields[10] = field
           if (field.value === "nofsubblock") trialfields[11] = field
+          if (field.value === "status") trialfields[12] = field
         })
         return trialfields
 

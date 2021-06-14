@@ -11,6 +11,12 @@ const getUpdatedEstateBlocks = () => {
     })
 }
 
+const getDesigns = () => {
+  return axiosApiInstance.get(`${API_URL}/design`).then(response => {
+    return response.data
+  })
+}
+
 const assignEstateBlocksToEstate = payload => {
   return axiosApiInstance
     .put(`${API_URL}/estate/map-estate-blocks`, payload)
@@ -21,5 +27,6 @@ const assignEstateBlocksToEstate = payload => {
 }
 export default {
   getUpdatedEstateBlocks,
-  assignEstateBlocksToEstate
+  assignEstateBlocksToEstate,
+  getDesigns
 }

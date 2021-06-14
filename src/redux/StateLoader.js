@@ -25,7 +25,8 @@ const InitializeState = {
     processLines: null,
     displayProcessLine: {},
     displayPeriods: []
-  }
+  },
+  trialReducer: {}
 }
 
 const KEY = "opex-app-state"

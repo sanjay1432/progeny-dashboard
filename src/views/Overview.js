@@ -310,8 +310,10 @@ const Overview = props => {
     setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }))
     if (eventKey === "2") {
       setSubnavState(() => ({ ...subnavState, active: "userlist" }))
+      handleSelect("userlist")
     } else {
       setSubnavState(() => ({ ...subnavState, active: "estate" }))
+      handleSelect("estate")
     }
 
     close()
