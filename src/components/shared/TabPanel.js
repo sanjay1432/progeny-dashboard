@@ -18,6 +18,7 @@ import EstateBlockTable from "./EstateBlockTable"
 import AddNewUser from "../user/userList/addNewUser"
 import EditUser from "../user/userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
+import TrialEstateBlocks from "../trial/TrialEstateBlocks"
 import EstateInformation from "components/user/estateAssignment/EstateInformation"
 import AddNewProgeny from "components/progeny/AddNewProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
@@ -50,14 +51,26 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
           </>
         )
       case "Trial and Replicate":
-        return (
-          <>
-            <AddNewTrial
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
-          </>
-        )
+        if (!option.trial) {
+          return (
+            <>
+              <AddNewTrial
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
+        if (option.trial) {
+          return (
+            <>
+              <TrialEstateBlocks
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
 
       case "Progeny":
         if (breadcrumb[1] === "Add New Progeny") {

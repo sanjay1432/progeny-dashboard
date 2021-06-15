@@ -75,7 +75,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }, [])
 
   function itemSaved(payload) {
-    if (payload && payload.type === "TRIAL") {
+    if (payload) {
       console.log(payload)
       setSuccessData(payload)
       setSuccessModal(true)
@@ -134,10 +134,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       label: "n Of Replicate",
       value: "nofreplicate"
     },
-    {
-      label: "Soil Type",
-      value: "soiltype"
-    },
+    // {
+    //   label: "Soil Type",
+    //   value: "soiltype"
+    // },
     {
       label: "n Of Plot",
       value: "nofplot"
@@ -574,7 +574,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item>
-              <img src={OpenNew} />
+              <img
+                src={OpenNew}
+                onClick={() =>
+                  handleActionExpand(
+                    [
+                      "Trial and Replicate",
+                      `Trial ${data.trialid}/Estate ${data.estate}`
+                    ],
+                    {
+                      trial: data.trialid,
+                      estate: data.estate
+                    }
+                  )
+                }
+              />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
               <img src={CreateIcon} />
@@ -987,10 +1001,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.width = 140
             trialfields[7] = field
           }
-          if (field.value === "soiltype") {
-            field.width = 120
-            trialfields[8] = field
-          }
+          // if (field.value === "soiltype") {
+          //   field.width = 120
+          //   trialfields[8] = field
+          // }
           if (field.value === "nofplot") {
             field.width = 120
             trialfields[9] = field

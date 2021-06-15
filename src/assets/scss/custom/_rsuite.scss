@@ -422,25 +422,27 @@
       font-weight: 700;
   }
 
-  .rs-table-cell-wrap {
-    .rs-btn-green {
-      width: 80px;
-      height: 30px;
-      padding: 0px;
-    }
+// This part of css is commeneted as it's causing issue with table cell icons
 
-    .rs-btn-yellow {
-      width: 85px;
-      height: 30px;
-      padding: 0px;
-    }
+//   .rs-table-cell-wrap {
+//     .rs-btn-green {
+//       width: 80px;
+//       height: 30px;
+//       padding: 0px;
+//     }
 
-    .rs-btn-red {
-      width: 90px;
-      height: 30px;
-      padding: 0px;
-    }
-  }
+//     .rs-btn-yellow {
+//       width: 85px;
+//       height: 30px;
+//       padding: 0px;
+//     }
+
+//     .rs-btn-red {
+//       width: 90px;
+//       height: 30px;
+//       padding: 0px;
+//     }
+//   }
 
 
   .rs-table-hover .rs-table-row-header:hover .rs-table-cell {

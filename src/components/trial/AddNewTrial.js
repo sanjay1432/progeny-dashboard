@@ -15,7 +15,8 @@ import {
   DatePicker,
   Radio,
   RadioGroup,
-  SelectPicker
+  SelectPicker,
+  Modal
 } from "rsuite"
 import EstateService from "../../services/estate.service"
 
@@ -62,7 +63,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disbaledANR, setDisbaledANR] = useState(true)
   const [disbaledANRV, setDisbaledANRV] = useState(true)
   const [disbaledRD, setDisbaledRD] = useState(true)
-
+  const [show, setShow] = useState(false)
   useEffect(() => {
     fetchEstates()
     fetchDesigns()
@@ -386,6 +387,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     )
   }
 
+  function hide() {
+    setShow(false)
+  }
   return (
     <div id="addNewTrial">
       {/* STEP 1 GENERATE TABLE START*/}
@@ -866,7 +870,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 <Button
                   className="btnAddTrial"
                   appearance="primary"
-                  onClick={onSaveTrial}
+                  onClick={() => setShow(true)}
                   type="button"
                 >
                   Save
@@ -877,6 +881,35 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
       </Grid>
       {/* STEP 2 CUSTOMISE TABLE END*/}
+
+      {/* CONFIRMATION MODEL START */}
+      <Modal show={show} onHide={hide}>
+        <Modal.Header>
+          <Modal.Title style={{ color: "#009D57" }}>Saving Trial</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: "#444444" }}>
+          Are you sure you want to save this{" "}
+          <span
+            style={{
+              fontWeight: "bold",
+              textDecorationLine: "underline",
+              fontSize: "16px"
+            }}
+          >
+            Trial {trial.trialid}
+          </span>{" "}
+          ? This Trial and it’s replicate will be created inside the system.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={hide} appearance="subtle">
+            No
+          </Button>
+          <Button onClick={onSaveTrial} appearance="primary">
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {/* CONFIRMATION MODEL END */}
     </div>
   )
 }

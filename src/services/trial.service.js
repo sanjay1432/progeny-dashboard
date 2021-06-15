@@ -8,7 +8,14 @@ const saveTrial = payload => {
     return response.data
   })
 }
-
+const getTrialReplicates = trialId => {
+  return axiosApiInstance
+    .get(`${API_URL}/trial/replicates/${trialId}`)
+    .then(response => {
+      return response.data
+    })
+}
 export default {
-  saveTrial
+  saveTrial,
+  getTrialReplicates
 }
