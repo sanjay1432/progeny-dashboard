@@ -84,6 +84,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       setSuccessData(payload)
       setSuccessModal(true)
     }
+    if (payload && payload.type === "USERLIST_ADD") {
+      setSuccessData(payload)
+      setSuccessMessage(active)
+    }
+    if (payload && payload.type === "USERLIST_EDIT") {
+      setSuccessData(payload)
+      setSuccessMessage(active)
+    }
   }
 
   function CloseSuccessModal() {
@@ -403,14 +411,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     })
   }
 
-  const EditCell = ({ rowData, dataKey, onChange, ...props }) => {
-    return (
-      <Cell {...props}>
-        <Input defaultValue={rowData[dataKey]} />
-      </Cell>
-    )
-  }
-
   function AddButton() {
     switch (active) {
       case "estate":
@@ -486,7 +486,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "userlist":
         function openPage() {
-          handleActionExpand(["User List", "Add New User"], { addNewUser })
+          handleActionExpand(["User List", "Add New User"], {})
         }
         return (
           <Col sm={5} md={5} lg={3}>
@@ -611,6 +611,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </FlexboxGrid>
         )
       case "palm":
+        function handleEditStatus() {
+          setEditStatus(true)
+        }
+
         return (
           <>
             {editStatus ? (
@@ -631,7 +635,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               </FlexboxGrid>
             ) : (
               <span>
-                <img src={CreateIcon} onClick={() => setEditStatus(true)} />
+                <img src={CreateIcon} onClick={handleEditStatus} />
               </span>
             )}
           </>
@@ -673,8 +677,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   userId: data.userId,
                   username: data.username,
                   position: data.position,
-                  status: data.status,
-                  editCurrentUser
+                  status: data.status
                 })
               }
             />
@@ -722,31 +725,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       default:
         return null
     }
-  }
-
-  function addNewUser() {
-    const payload = {}
-    UserService.addNewUser(payload).then(data => {
-      console.log(payload, "has been added to the system.")
-      dispatch(clearBreadcrumb())
-      setSuccessMessage(active)
-      console.log(successMessage)
-    })
-  }
-
-  function editCurrentUser() {
-    const payload = {}
-    console.log(payload)
-    UserService.editUser(payload).then(
-      data => {
-        console.log(payload, "has not been edited to the system.")
-        dispatch(clearBreadcrumb())
-        setSuccessMessage(active)
-      },
-      error => {
-        console.log(payload, "has not been edited to the system.")
-      }
-    )
   }
 
   const assignUserToEstate = () => {
@@ -844,7 +822,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             )}
           </>
         )
-
       case "trial":
         return (
           <>
@@ -1284,21 +1261,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           onRowClick={data1 => {}}
           autoHeight
         >
-          <Column width={70} align="center" fixed>
-            <HeaderCell className="tableHeader">
-              <Checkbox
-                checked={checked}
-                indeterminate={indeterminate}
-                onChange={handleCheckAll}
+          {currentItem.name === "User Management" ? null : (
+            <Column width={70} align="center" fixed>
+              <HeaderCell className="tableHeader">
+                <Checkbox
+                  checked={checked}
+                  indeterminate={indeterminate}
+                  onChange={handleCheckAll}
+                />
+              </HeaderCell>
+              <CheckCell
+                dataKey="rowNumber"
+                checkedKeys={checkStatus}
+                onChange={handleCheck}
               />
-            </HeaderCell>
-            <CheckCell
-              dataKey="rowNumber"
-              checkedKeys={checkStatus}
-              onChange={handleCheck}
-            />
-          </Column>
-
+            </Column>
+          )}
           {reArrangeTableFields().map((field, i) =>
             field.value === "status" ? (
               <Column
@@ -1318,7 +1296,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <Column width={field.width} align="left" key={i}>
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
                 {editStatus ? (
-                  <EditCell dataKey={field.value} />
+                  <Cell dataKey={field.value}>
+                    {rowData => <Input defaultValue={rowData[field.value]} />}
+                  </Cell>
                 ) : (
                   <Cell dataKey={field.value} />
                 )}

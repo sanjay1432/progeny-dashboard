@@ -1,5 +1,5 @@
 import React from "react"
-import { SelectPicker } from "rsuite"
+import { InputPicker } from "rsuite"
 
 const SelectionData = {}
 const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
@@ -31,7 +31,7 @@ const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
 
   return (
     <>
-      <SelectPicker
+      <InputPicker
         name={dataType}
         data={DataInPicker}
         value={dataValue}

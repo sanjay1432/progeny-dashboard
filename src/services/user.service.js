@@ -34,11 +34,9 @@ const addNewUser = payload => {
 }
 
 const editUser = payload => {
-  return axiosApiInstance
-    .put(`${API_URL}/user-edit`, payload)
-    .then(response => {
-      return response.data
-    })
+  return axiosApiInstance.put(`${API_URL}/user`, payload).then(response => {
+    return response.data
+  })
 }
 
 const assignUserToEstate = payload => {

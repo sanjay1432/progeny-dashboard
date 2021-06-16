@@ -10,14 +10,19 @@ import {
   ButtonToolbar
 } from "rsuite"
 import { getPositionList } from "../../../redux/actions/user.action"
+import UserService from "../../../services/user.service"
 import { clearBreadcrumb } from "../../../redux/actions/app.action"
+import { publish } from "../../../services/pubsub.service"
 
 let selectionData = {}
-const AddNewUser = ({ option, ...props }) => {
-  const [userId, setUserId] = useState(null)
-  const [username, setUsername] = useState(null)
-  const [position, setPosition] = useState(null)
-  const userForm = { userId: userId, username: username, position: position }
+
+const AddNewUser = () => {
+  const initialForm = {
+    userId: "",
+    username: "",
+    position: ""
+  }
+  const [formData, setFormData] = useState(initialForm)
   const dispatch = useDispatch()
 
   const PositionList = useSelector(state => state.positionListReducer.result)
@@ -30,7 +35,6 @@ const AddNewUser = ({ option, ...props }) => {
 
   if (PositionList) {
     selectionType.forEach(filter => {
-      console.log(filter)
       const selectionLabel = "position"
       const selectiondata = [
         ...new Set(PositionList.map(res => res[selectionLabel]))
@@ -58,6 +62,29 @@ const AddNewUser = ({ option, ...props }) => {
     })
   }
 
+  function handleChange(e) {
+    e.persist()
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  function addNewUser() {
+    UserService.addNewUser(formData).then(
+      data => {
+        console.log(formData, "has been added to the system.")
+        const savedData = {
+          type: "USERLIST_ADD",
+          data: formData,
+          action: "CREATED"
+        }
+        dispatch(clearBreadcrumb())
+        publish(savedData)
+      },
+      error => {
+        console.log(error.message)
+      }
+    )
+  }
+
   return (
     <div id="addNewUser">
       <Form className="formLayout">
@@ -65,10 +92,9 @@ const AddNewUser = ({ option, ...props }) => {
           <ControlLabel className="formLabel">User ID</ControlLabel>
           <FormControl
             name="userId"
-            value={userId}
             className="dataBox"
             placeholder="User ID"
-            onChange={setUserId}
+            onChange={(value, e) => handleChange(e)}
           />
         </FormGroup>
 
@@ -76,10 +102,9 @@ const AddNewUser = ({ option, ...props }) => {
           <ControlLabel className="formLabel">Username</ControlLabel>
           <FormControl
             name="username"
-            value={username}
             className="dataBox"
             placeholder="Username"
-            onChange={setUsername}
+            onChange={(value, e) => handleChange(e)}
           />
         </FormGroup>
 
@@ -87,9 +112,10 @@ const AddNewUser = ({ option, ...props }) => {
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
             name="position"
-            value={position}
             data={dataInSelection}
-            onChange={setPosition}
+            onChange={value =>
+              setFormData(() => ({ ...formData, ["position"]: value }))
+            }
           />
         </FormGroup>
 
@@ -106,7 +132,7 @@ const AddNewUser = ({ option, ...props }) => {
             <Button
               appearance="primary"
               className="btnSave"
-              onClick={option.addNewUser}
+              onClick={addNewUser}
             >
               Save
             </Button>
