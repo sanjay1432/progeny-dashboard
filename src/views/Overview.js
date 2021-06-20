@@ -22,7 +22,6 @@ import {
   FlexboxGrid
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb, clearBreadcrumb } from "../redux/actions/app.action"
 import { getDashboardData } from "../redux/actions/dashboarddata.action"
 import axios from "axios"
 import ProgenySubNavBar from "../components/nav/ProgenySubNavBar"
@@ -157,31 +156,6 @@ const listItems = [
         name: "Progeny",
         eventKey: "progeny",
         filters: [
-          // {
-          //   name:"popvar",
-          //   label:"Pop Var",
-          //   type: "select"
-          // },
-          // {
-          //   name:"generation",
-          //   label:"Generation",
-          //   type: "select"
-          // },
-          // {
-          //   name:"crosstype",
-          //   label:"Cross Type",
-          //   type: "select"
-          // },
-          // {
-          //   name:"fpvar",
-          //   label:"FP Var",
-          //   type: "select"
-          // },
-          // {
-          //   name:"mpvar",
-          //   label:"MP Var",
-          //   type: "select"
-          // },
           {
             name: "progenyId",
             label: "Progeny ID",
@@ -212,12 +186,6 @@ const listItems = [
             label: "MP Fam",
             type: "text"
           },
-
-          // {
-          //   name:"progenyremark",
-          //   label:"Progeny Remark",
-          //   type: "text"
-          // },
           {
             name: "orlet",
             label: "Orlet",
@@ -372,65 +340,55 @@ const Overview = props => {
   return (
     <>
       {isLoggedIn && (
-        <ContainerRS id="main-page">
-          <div id="Header">
-            <Header>
-              <Navbar className="headNav">
-                <Navbar.Header style={{ height: 70 }}>
-                  <div className="headNav-left">
-                    <MenuRoundedIcon
-                      className="headNav-toggle"
-                      onClick={() => toggleDrawer()}
-                    />
-                    <img
-                      className="headNav-img"
-                      alt="Progeny Management System"
-                      src={logo}
-                    />
+        <ContainerRS>
+          <Header>
+            <Navbar>
+              <Navbar.Header id="header">
+                <div className="headerLayout">
+                  <MenuRoundedIcon
+                    className="toggle"
+                    onClick={() => toggleDrawer()}
+                  />
+                  <img
+                    className="progenyLogo"
+                    alt="Progeny Management System"
+                    src={logo}
+                  />
 
-                    <p className="headNav-title">Progeny Management System</p>
-                  </div>
-                </Navbar.Header>
-                <Navbar.Body>
-                  {/* <NavRS>
-                        <BreadcrumbProgeny />
-                      </NavRS> */}
-                  <div>
-                    <NavRS pullRight className="headNav-logout">
-                      <Dropdown
-                        icon={
-                          <AccountCircleRoundedIcon className="headNav-profileLogo" />
-                        }
-                        title={GeneralHelper.buildDisplayName(
-                          user.firstName,
-                          user.lastName,
-                          user.username
-                        )}
+                  <p className="title">Progeny Management System</p>
+
+                  <NavRS pullRight className="logoutToggle">
+                    <Dropdown
+                      icon={<AccountCircleRoundedIcon className="logoutLogo" />}
+                      title={GeneralHelper.buildDisplayName(
+                        user.firstName,
+                        user.lastName,
+                        user.username
+                      )}
+                    >
+                      <Dropdown.Item
+                        icon={<Icon icon="sign-out" />}
+                        onClick={() => dispatch(logout())}
                       >
-                        <Dropdown.Item
-                          icon={<Icon icon="sign-out" />}
-                          onClick={() => dispatch(logout())}
-                        >
-                          Logout
-                        </Dropdown.Item>
-                      </Dropdown>
-                    </NavRS>
-                  </div>
-                </Navbar.Body>
-              </Navbar>
-              <div className="subNav">
-                <ProgenySubNavBar
-                  className="progenySubNavBar"
-                  active={active}
-                  onSelect={handleSelect}
-                  currentItem={currentSideItem}
-                />
-              </div>
-            </Header>
-          </div>
+                        Logout
+                      </Dropdown.Item>
+                    </Dropdown>
+                  </NavRS>
+                </div>
+              </Navbar.Header>
+            </Navbar>
+
+            <div id="subNavigation">
+              <ProgenySubNavBar
+                active={active}
+                onSelect={handleSelect}
+                currentItem={currentSideItem}
+              />
+            </div>
+          </Header>
 
           <Content>
-            <main id="content-section">
+            <main id="contentSection">
               <div className="content">
                 <section id="overview">
                   {isLoading ? (
@@ -451,20 +409,21 @@ const Overview = props => {
           </Content>
 
           <Drawer
+            id="sideNavigation"
             size="xs"
             placement="left"
             backdrop
             show={isDrawer}
             onHide={close}
           >
-            <Drawer.Header id="drawer">
-              <img src={logo} className="drawer-img" />
-              <div className="drawer-title">
-                <div className="drawer-title-content">Progeny</div>
-                <div className="drawer-title-content">Management System</div>
+            <Drawer.Header>
+              <img src={logo} className="progenyLogo" />
+              <div className="title">
+                <b className="titleContent">Progeny</b>
+                <b className="titleContent">Management System</b>
               </div>
             </Drawer.Header>
-            <Drawer.Body style={{ margin: "30px 0px" }}>
+            <Drawer.Body>
               <Sidenav
                 expanded={expanded}
                 activeKey={activeKey}
@@ -476,13 +435,10 @@ const Overview = props => {
                       <NavRS.Item
                         eventKey={item.eventKey}
                         icon={
-                          <item.customIcon
-                            className="drawer-content-icon"
-                            key={i}
-                          />
+                          <item.customIcon className="contentIcon" key={i} />
                         }
                       >
-                        {item.name}
+                        <p className="contentText">{item.name}</p>
                       </NavRS.Item>
                     ))}
                   </NavRS>

@@ -1,0 +1,47 @@
+#addNewTrial {
+  .newTrialFormLayout {
+    margin-bottom: 20px;
+  }
+
+  .formField {
+      width: 100%;
+  }
+
+  .trialRemark {
+      height: 120px;
+  }
+
+  .noOfSubBlock {
+      width: 95%;
+
+  }
+
+  .noOfPlot {
+    width: 95%;
+    margin-left: auto;
+}
+
+  .datePicker {
+      .rs-picker-toggle {
+          width: 95%;
+      }
+  }
+
+  .estatePicker{
+    margin-left: auto;
+      .rs-picker-toggle {
+          width: 95%;
+      }
+  }
+
+  .duplicateDensity {
+      width: 100%;
+  }
+
+  .designPicker {
+      .rs-picker-toggle {
+          width: 100%;
+      }
+  }
+  
+}

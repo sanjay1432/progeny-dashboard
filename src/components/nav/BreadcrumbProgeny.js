@@ -11,7 +11,10 @@ const BreadcrumbProgeny = () => {
   }
   return (
     <>
-      <Breadcrumb separator={<Icon icon="angle-right" />}>
+      <Breadcrumb
+        classname="breadcrumbLayout"
+        separator={<Icon icon="angle-right" />}
+      >
         {breadcrumb &&
           breadcrumb.map((item, index) => {
             return (

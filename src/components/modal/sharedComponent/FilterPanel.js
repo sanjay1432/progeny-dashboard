@@ -34,11 +34,13 @@ const FilterPanel = forwardRef(({ labelName, data, dataType }, ref) => {
   }
 
   return (
-    <div id="FilterPanel">
+    <div id="modalFilterPanel">
       <Grid fluid>
         <Row>
           <Col md={7} lg={7}>
-            <ControlLabel>{labelName}</ControlLabel>
+            <ControlLabel className="modalLabelFilter">
+              {labelName}
+            </ControlLabel>
             <SelectFilter
               data={data}
               dataType={dataType}
@@ -47,7 +49,11 @@ const FilterPanel = forwardRef(({ labelName, data, dataType }, ref) => {
             />
           </Col>
           <Col md={6} lg={6}>
-            <Button appearance="primary" className="btnApply" onClick={onApply}>
+            <Button
+              appearance="primary"
+              className="applyButton"
+              onClick={onApply}
+            >
               Apply
             </Button>
           </Col>

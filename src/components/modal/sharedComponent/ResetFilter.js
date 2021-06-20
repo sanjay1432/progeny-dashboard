@@ -18,11 +18,7 @@ const ResetFilter = ({ initialFilter, selectedFilterArray }) => {
   }
 
   return (
-    <Button
-      appearance="subtle"
-      className="btnResetFilter"
-      onClick={resetFilter}
-    >
+    <Button appearance="subtle" className="resetButton" onClick={resetFilter}>
       Reset Filter
     </Button>
   )

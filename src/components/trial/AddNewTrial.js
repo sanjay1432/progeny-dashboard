@@ -42,17 +42,15 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable, getValue] = useState(
-    true
-  )
+  const [disabledGenerateTable, setDisabledGenerateTable, getValue] =
+    useState(true)
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState(
-    "yes"
-  )
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
+    useState("yes")
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
     { estate: "", estatenofreplicate: "" }
@@ -278,8 +276,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function getEstateBlocks(estate) {
-    const estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
-      .estateblocks
+    const estateBlocks = estatesWithBlocks.find(
+      row => row.estate === estate
+    ).estateblocks
     setEstateblocks(estateBlocks)
     const mappedEstateBlocks = []
     for (let item in estateBlocks) {
@@ -307,8 +306,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )
       ]
 
-      const soilType = estateBlocks.find(eb => eb.estateblock === block)
-        .soiltype
+      const soilType = estateBlocks.find(
+        eb => eb.estateblock === block
+      ).soiltype
       const data = [...tableData]
       data[rowIndex].estateblock = block
       data[rowIndex].soiltype = soilType
@@ -393,7 +393,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   return (
     <div id="addNewTrial">
       {/* STEP 1 GENERATE TABLE START*/}
-      <div style={{ padding: "1rem" }}>
+      <div>
         <h4>
           <span style={{ color: "#009D57" }}>Step 1:</span>{" "}
           <span style={{ color: "#353131f2" }}>Generate Table</span>
@@ -401,8 +401,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       </div>
 
       <Grid fluid>
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>Trail ID</p>
           </Col>
           <Col md={10} lg={10}>
@@ -414,8 +414,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>Trail</p>
           </Col>
           <Col md={10} lg={10}>
@@ -427,8 +427,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>Trial Remarks</p>
           </Col>
           <Col md={10} lg={10}>
@@ -443,8 +443,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>Area (ha)</p>
           </Col>
           <Col md={10} lg={10}>
@@ -457,8 +457,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>Planted Date</p>
           </Col>
           <Col md={5} lg={5}>
@@ -477,8 +477,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>No. of Progeny</p>
           </Col>
           <Col md={10} lg={10}>
@@ -491,8 +491,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>
               No. of Subblock and No.of Plot/Subblock
             </p>
@@ -525,8 +525,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>
               This Trial will be in the same Estate?
             </p>
@@ -560,12 +560,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           )}
         </Row>
         {radioInputForTrialInEState === "no" ? (
-          <Row className="show-grid">
+          <Row className="show-grid newTrialFormLayout">
             {inputListForTrialInEState.map((input, i) => (
               <>
                 <div key={i}>
                   <Col xs={12} style={{ width: "100%" }}>
-                    <Col xs={6}>
+                    <Col xs={8}>
                       {i < 1 ? (
                         <p style={{ color: "#353131f2" }}>
                           No. of Replicates in Each Estate
@@ -622,11 +622,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           ""
         )}
         {radioInputForTrialInEState === "yes" ? (
-          <Row className="show-grid">
-            <Col xs={6}>
+          <Row className="show-grid newTrialFormLayout">
+            <Col md={8} lg={6}>
               <p style={{ color: "#353131f2" }}>No. of Replicates</p>
             </Col>
-            <Col xs={6}>
+            <Col md={6} lg={6}>
               <Input
                 placeholder="Enter Number of Replicate for this Trial"
                 className="formField"
@@ -639,8 +639,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           ""
         )}
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>
               Do all replicates have the same density?
             </p>
@@ -674,8 +674,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           )}
         </Row>
 
-        <Row className="show-grid">
-          <Col md={6} lg={6}>
+        <Row className="show-grid newTrialFormLayout">
+          <Col md={8} lg={6}>
             <p style={{ color: "#353131f2" }}>
               What is the design for the replicates ?
             </p>
@@ -716,7 +716,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       </div>
 
       <Grid fluid>
-        <Row className="show-grid" id="tableOption">
+        <Row className="show-grid newTrialFormLayout">
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={3}>
               <FlexboxGrid.Item>
@@ -856,7 +856,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       </Table>
 
       <Grid fluid>
-        <Row className="show-grid" id="tableOption">
+        <Row className="show-grid newTrialFormLayout" id="tableOption">
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={3}>
               <FlexboxGrid.Item>

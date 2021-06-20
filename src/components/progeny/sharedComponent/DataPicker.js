@@ -33,6 +33,7 @@ const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
     <>
       <InputPicker
         name={dataType}
+        className="progenyDataPicker"
         data={DataInPicker}
         value={dataValue}
         onChange={(value, e) => handleChange(value)}

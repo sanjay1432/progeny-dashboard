@@ -1,4 +1,4 @@
-#ProgenyActionPage {
+#ProgenyAction {
   margin: 50px 0px;
 
   .rs-row {
@@ -8,6 +8,14 @@
   .labelName {
     color: $primary-black;
     font-weight: 700;
+  }
+
+  .rs-input {
+    width: 444px;
+  }
+
+  .progenyDataPicker {
+    width: 444px;
   }
 
   .rs-input-group {
@@ -25,21 +33,12 @@
     }
   }
 
-  .rs-input {
-    width: 444px;
-  }
-
-  .rs-picker-default .rs-picker-toggle.rs-btn {
-    width: 444px;
-    padding-top: 9px;
-  }
-
-  .rs-btn-primary {
+  .saveButton {
     width: 170px;
     height: 42px;
   }
 
-  .rs-btn-subtle {
+  .cancelButton {
     width: 170px;
     height: 42px;
   }

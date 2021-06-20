@@ -49,7 +49,7 @@ const AssignUser = ({
 
   return (
     <>
-      <Modal id="assignUserModal" show={show} onHide={hide}>
+      <Modal id="UserModal" show={show} onHide={hide}>
         <Modal.Header>
           <b className="title">Assign Estate</b>
           <div className="description">
@@ -64,7 +64,7 @@ const AssignUser = ({
             data={positionList}
             dataType="position"
           />
-          <p className="total_item">List of Estates({userList.length})</p>
+          <p className="totalItem">List of Estates({userList.length})</p>
           <Table
             columns={columns}
             data={userList}

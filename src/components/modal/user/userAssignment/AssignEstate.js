@@ -30,7 +30,7 @@ const AssignEstate = ({
   ]
 
   return (
-    <Modal id="assignEstateModal" show={show} onHide={hide}>
+    <Modal id="UserModal" show={show} onHide={hide}>
       <Modal.Header>
         <b className="title">Assign Estate</b>
         <div className="description">
@@ -41,7 +41,7 @@ const AssignEstate = ({
       </Modal.Header>
       <Modal.Body>
         <FilterPanel labelName="Estate" data={estateList} dataType="estate" />
-        <p className="total_item">List of Estates({estateList.length})</p>
+        <p className="totalItem">List of Estates({estateList.length})</p>
         <Table
           columns={columns}
           data={estateList}
@@ -53,11 +53,7 @@ const AssignEstate = ({
         <Button onClick={hide} appearance="subtle">
           Cancel
         </Button>
-        <Button
-          appearance="primary"
-          appearance="primary"
-          onClick={assignEstateToUser}
-        >
+        <Button appearance="primary" onClick={assignEstateToUser}>
           Save Assignment
         </Button>
       </Modal.Footer>

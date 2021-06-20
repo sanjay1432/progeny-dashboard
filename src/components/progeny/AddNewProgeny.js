@@ -27,7 +27,6 @@ const AddNewProgeny = () => {
     crossType: ""
   }
   const [formData, setFormData] = useState(initialForm)
-
   const dispatch = useDispatch()
 
   const ProgenyData = useSelector(
@@ -48,7 +47,19 @@ const AddNewProgeny = () => {
 
   function handleChange(e) {
     e.persist()
-    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }))
+    setFormData(() => ({
+      ...formData,
+      [e.target.name]: e.target.value,
+      ["cross"]:
+        formData.fpFam +
+        "." +
+        formData.fp +
+        " x " +
+        formData.mpFam +
+        "." +
+        formData.mp
+    }))
+    //setFormData(() => ({ ...formData, ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp }))
     console.log(formData)
   }
 
@@ -64,7 +75,7 @@ const AddNewProgeny = () => {
     setManipulate(true)
   }
 
-  function onSaveProgeny() {
+  function addProgeny() {
     console.log(formData)
     ProgenyService.addNewProgeny(formData).then(
       data => {
@@ -83,7 +94,7 @@ const AddNewProgeny = () => {
   }
 
   return (
-    <div id="ProgenyActionPage">
+    <div id="ProgenyAction">
       <Grid fluid>
         <Row>
           <Col md={5} lg={5}>
@@ -247,23 +258,25 @@ const AddNewProgeny = () => {
             <p className="labelName">Cross</p>
           </Col>
           <Col>
-            {manipulate ? (
-              <Input
-                name="cross"
-                value={
-                  formData.fpFam +
-                  "." +
-                  formData.fp +
-                  " x " +
-                  formData.mpFam +
-                  "." +
-                  formData.mp
-                }
-                disabled
-              />
-            ) : (
-              <Input disabled />
-            )}
+            <Input
+              name="cross"
+              value={
+                formData.fpFam +
+                "." +
+                formData.fp +
+                " x " +
+                formData.mpFam +
+                "." +
+                formData.mp
+              }
+              // onChange={(value =>
+              //   setFormData(() => ({
+              //     ...formData,
+              //     ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp
+              //   })))
+              // }
+              disabled
+            />
           </Col>
         </Row>
         <Row>
@@ -294,16 +307,21 @@ const AddNewProgeny = () => {
           </Col>
         </Row>
         <Row>
-          <Col md={3} mdOffset={18} lg={3} lgOffset={18}>
+          <Col md={4} mdOffset={16} lg={4} lgOffset={16}>
             <Button
+              className="cancelButton"
               appearance="subtle"
               onClick={() => dispatch(clearBreadcrumb())}
             >
               Cancel
             </Button>
           </Col>
-          <Col md={3} lg={3}>
-            <Button appearance="primary" onClick={onSaveProgeny}>
+          <Col md={4} lg={4}>
+            <Button
+              className="saveButton"
+              appearance="primary"
+              onClick={addProgeny}
+            >
               Save
             </Button>
           </Col>

@@ -1,0 +1,95 @@
+#UserModal {
+  .rs-modal-content {
+    width: 540px;
+    height: 700px;
+
+
+    .rs-modal-header {
+      .title {
+        font-size: 18px;
+      }
+      
+      .description {
+          display: flex;
+          flex-direction: row;
+          color: black;
+          margin: 5px 0px;
+          width: 100%;
+        
+        p {
+          font-size: 18px;
+          margin-bottom: 0px;
+        }  
+      }
+    }
+
+    .rs-modal-body {
+      margin-top: 10px;
+      padding-bottom: 35px;
+      max-height: 600px !important;
+
+      #modalFilterPanel {
+        .modalLabelFilter {
+
+        }
+
+        .modalSelectFilter {
+          .rs-picker-toggle {
+            width: 130px;
+            height: 32px;
+            padding-top: 5px;
+          }
+
+          .rs-picker-toggle-caret {
+            top: 5px;
+          }
+        }
+
+        .applyButton {
+          width: 110px;
+          height: 32px;
+          padding: 5px 12px;
+          margin-top: 28px;
+        }
+      
+        .resetButton {
+            width: 110px;
+            height: 32px;
+            padding: 5px 12px;
+            margin-top: 28px;
+        }
+      }
+
+      .totalItem {
+        color: black;
+        margin-top: 10px;
+      }
+
+      #modalTable {
+        .rs-table-row-header {
+          .rs-table-cell-content {
+            font-size: 16px;
+            padding: 5px 10px 10px 10px;
+            
+      
+            .rs-checkbox-wrapper {
+              left: 20px;
+              border-radius: 6px;
+              background-color: white;
+            }
+          }
+        }
+      
+        .rs-body-row-header {
+          .rs-table-cell-content {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    .rs-modal-footer {
+
+    }
+  }  
+}

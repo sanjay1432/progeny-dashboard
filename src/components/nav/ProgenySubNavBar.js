@@ -11,17 +11,16 @@ const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
   console.log("IS BREADCRUMB SETTED::::", breadcrumb)
   return (
     <>
-      <Header>
-        <Navbar {...props} id="navbar">
-          <Navbar.Body style={{ textAlign: "left" }}>
+      <Header className="navigationList">
+        <Navbar {...props} className="navigationBackground">
+          <Navbar.Body>
             <Nav
-              className="breadcrumb"
               {...props}
               appearance="subtle"
               activeKey={active}
               onSelect={onSelect}
             >
-              <b className="masterData">{currentItem.name}</b>
+              <b className="title">{currentItem.name}</b>
               <b className="symbol">|</b>
               {breadcrumb ? (
                 <BreadcrumbProgeny />
@@ -29,7 +28,7 @@ const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
                 listItems.map((item, i) => (
                   <Nav.Item eventKey={item.eventKey} key={i}>
                     {" "}
-                    {item.name}
+                    <p>{item.name}</p>
                   </Nav.Item>
                 ))
               )}

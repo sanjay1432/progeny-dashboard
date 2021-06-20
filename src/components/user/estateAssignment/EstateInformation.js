@@ -110,7 +110,12 @@ const EstateInformation = ({ option }) => {
     if (rowData[dataKey] === "active") {
       return (
         <Cell {...props}>
-          <Button dataKey={rowData[dataKey]} color="green" appearance="ghost">
+          <Button
+            className="activeStatusButton"
+            dataKey={rowData[dataKey]}
+            color="green"
+            appearance="ghost"
+          >
             Active
           </Button>
         </Cell>
@@ -118,7 +123,12 @@ const EstateInformation = ({ option }) => {
     } else if (rowData[dataKey] === "canceled") {
       return (
         <Cell {...props}>
-          <Button dataKey={rowData[dataKey]} color="red" appearance="ghost">
+          <Button
+            className="canceledStatusButton"
+            dataKey={rowData[dataKey]}
+            color="red"
+            appearance="ghost"
+          >
             CANCELED
           </Button>
         </Cell>
@@ -126,7 +136,12 @@ const EstateInformation = ({ option }) => {
     } else if (rowData[dataKey] === "finished") {
       return (
         <Cell {...props}>
-          <Button dataKey={rowData[dataKey]} color="yellow" appearance="ghost">
+          <Button
+            className="finishedStatusButton"
+            dataKey={rowData[dataKey]}
+            color="yellow"
+            appearance="ghost"
+          >
             FINISHED
           </Button>
         </Cell>
@@ -290,11 +305,12 @@ const EstateInformation = ({ option }) => {
 
   return (
     <>
-      <Grid fluid>
+      <Grid fluid id="dashboardFilterPanel">
         <Row>
           <Col md={4} lg={3}>
-            <ControlLabel>Trial ID</ControlLabel>
+            <ControlLabel className="labelFilter">Trial ID</ControlLabel>
             <SelectPicker
+              className="dashboardSelectFilter"
               data={dataInSelection01}
               value={selectedFilters ? selectedFilters.value : null}
               onChange={(value, e) =>
@@ -304,8 +320,11 @@ const EstateInformation = ({ option }) => {
           </Col>
 
           <Col md={4} lg={3}>
-            <ControlLabel>Planted Date (Year)</ControlLabel>
+            <ControlLabel className="labelFilter">
+              Planted Date (Year)
+            </ControlLabel>
             <SelectPicker
+              className="dashboardSelectFilter"
               data={dataInSelection02}
               value={selectedFilters ? selectedFilters.value : null}
               onChange={(value, e) =>
@@ -316,8 +335,12 @@ const EstateInformation = ({ option }) => {
             />
           </Col>
 
-          <Col md={4} lg={3} style={{ padding: "25px 0px 0px 0px" }}>
-            <Button appearance="primary" className="btnApply" onClick={onApply}>
+          <Col md={4} lg={3}>
+            <Button
+              appearance="primary"
+              className="applyButton"
+              onClick={onApply}
+            >
               Apply
             </Button>
           </Col>
@@ -325,7 +348,7 @@ const EstateInformation = ({ option }) => {
           <Col md={4} lg={3}>
             <Button
               appearance="subtle"
-              className="btnResetFilter"
+              className="resetButton"
               onClick={resetFilter}
             >
               Reset Filter
@@ -335,30 +358,33 @@ const EstateInformation = ({ option }) => {
       </Grid>
 
       <Grid fluid>
-        <Row className="show-grid" id="tableOption">
-          <Col sm={6} md={6} lg={6}>
-            <b className="totalRecord">
-              Total records ({trialList ? trialList.length : "undefined"})
-            </b>
+        <Row className="show-grid" id="dashboardTableSetting">
+          <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+            <b>Total records ({trialList ? trialList.length : "undefined"})</b>
           </Col>
 
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={3}>
-              <FlexboxGrid.Item className="paginationOption">
+              <FlexboxGrid.Item className="selectPage">
                 <InputPicker
-                  className="Option"
+                  className="option"
                   data={perPage}
                   defaultValue={"10"}
                   onChange={handleChangeLength}
                 />{" "}
-                <b className="Page">per page</b>
+                <b className="page">per page</b>
               </FlexboxGrid.Item>
             </Col>
           </FlexboxGrid>
         </Row>
       </Grid>
 
-      <Table data={getData(displaylength)} wordWrap autoHeight>
+      <Table
+        id="dashboardTable"
+        data={getData(displaylength)}
+        wordWrap
+        autoHeight
+      >
         {columns.map(col => {
           return (
             <Column

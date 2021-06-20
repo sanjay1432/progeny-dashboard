@@ -1,0 +1,74 @@
+#dashboardFilterPanel {
+  padding: 0px 0px 40px 0px;
+
+  .multiFilterButton {
+    width: 120px;
+    height: 40px;
+    margin-top: 28px;
+    margin-left: 15px;
+  }
+  
+  .applyButton {
+    width: 135px;
+    height: 40px;
+    margin-top: 28px;
+  }
+  
+  .resetButton {
+    width: 100px;
+    height: 40px;
+    margin-top: 28px;
+  }
+}
+
+#filterDrawer {
+
+  .rs-drawer-header {
+    margin: 30px 40px;
+
+    .rs-drawer-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: $primary-green;
+    }
+  }
+
+  .rs-drawer-body {
+    height: 70% !important;
+    margin: 30px 40px;  
+
+    .rs-flex-box-grid-item.rs-flex-box-grid-item-12 {
+      width: 100%;
+      margin-bottom: 30px;
+
+      .rs-control-label {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .rs-input {
+        width: 100%;
+      }
+
+      .rs-picker-toggle {
+        width: 100%;
+      }
+    }
+  }
+
+  .rs-drawer-footer {
+    height: 15% !important;
+
+    .rs-btn-primary {
+      width: 100%;
+      height: 40px;
+      margin: 10px 0px;
+    }
+
+    .rs-btn-subtle {
+      width: 100%;
+      height: 40px;
+      margin: 10px 0px;
+    }
+  }
+}

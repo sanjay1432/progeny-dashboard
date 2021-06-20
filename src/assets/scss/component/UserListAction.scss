@@ -1,0 +1,41 @@
+#addNewUser {
+  margin-top: 50px;
+
+  .labelLayout {
+      display: flex;
+      flex-direction: row;
+  }
+
+  .rs-btn-toolbar {
+      float: right;
+  }
+
+  .formLabel {
+      font-size: 16px;
+      font-weight: 700;
+      padding-top: 10px;
+  }
+
+  .dataBox {
+      width: 444px;
+      height: 40px;
+  }
+      
+  .rs-picker-default .rs-picker-toggle.rs-btn {
+      width: 444px;
+  }
+
+  .rs-picker-toggle-clean {
+      display: none;
+  }
+
+  .btnCancel {
+      width: 145px;
+      height: 40px;
+  }
+
+  .btnSave {
+      width: 145px;
+      height: 40px;
+  }
+}

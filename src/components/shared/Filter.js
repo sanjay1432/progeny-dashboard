@@ -23,18 +23,16 @@ const Filter = forwardRef(
 
     function onChangeSelection(e, value) {
       onUpdate(e)
-      //console.log("value",value) it is null
       console.log(e)
     }
-    //console.log("filter",filter)
-    //console.log("selected", selected)
 
     return (
       <>
-        <ControlLabel>{filter.label}</ControlLabel>
+        <ControlLabel className="labelFilter">{filter.label}</ControlLabel>
         {filter.type === "select" ? (
           <SelectPicker
             id={filter.name}
+            className="dashboardSelectFilter"
             data={dataToFilter}
             value={selected ? selected.value : null}
             style={{ width: "100%" }}
@@ -46,6 +44,7 @@ const Filter = forwardRef(
         ) : (
           <Input
             id={filter.name}
+            className="dashboardInputFilter"
             name={filter.name}
             placeholder={` Enter ${filter.label}`}
             onChange={(value, e) =>
