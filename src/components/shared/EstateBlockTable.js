@@ -107,8 +107,10 @@ const EstateBlockTable = ({
   }
 
   async function getEstateData() {
-    const { data, updatedDate } =
-      await DashboardDataService.getUpdatedEstateBlocks()
+    const {
+      data,
+      updatedDate
+    } = await DashboardDataService.getUpdatedEstateBlocks()
     setUpdateDate(updatedDate)
     const { estate } = option
     const estatedata = data.find(estates => estates.estate === estate)

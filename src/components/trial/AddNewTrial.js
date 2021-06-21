@@ -42,15 +42,17 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable, getValue] =
-    useState(true)
+  const [disabledGenerateTable, setDisabledGenerateTable, getValue] = useState(
+    true
+  )
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
-    useState("yes")
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState(
+    "yes"
+  )
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
     { estate: "", estatenofreplicate: "" }
@@ -276,10 +278,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function getEstateBlocks(estate) {
-    const estateBlocks = estatesWithBlocks.find(
-      row => row.estate === estate
-    ).estateblocks
-    setEstateblocks(estateBlocks)
+    let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
+    if (estateBlocks) {
+      estateBlocks = estateBlocks.estateblocks
+      setEstateblocks(estateBlocks)
+    }
     const mappedEstateBlocks = []
     for (let item in estateBlocks) {
       mappedEstateBlocks.push({
@@ -306,9 +309,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )
       ]
 
-      const soilType = estateBlocks.find(
-        eb => eb.estateblock === block
-      ).soiltype
+      const soilType = estateBlocks.find(eb => eb.estateblock === block)
+        .soiltype
       const data = [...tableData]
       data[rowIndex].estateblock = block
       data[rowIndex].soiltype = soilType

@@ -8,6 +8,11 @@ const saveTrial = payload => {
     return response.data
   })
 }
+const editTrial = payload => {
+  return axiosApiInstance.put(`${API_URL}/trial`, payload).then(response => {
+    return response.data
+  })
+}
 const getTrialReplicates = trialId => {
   return axiosApiInstance
     .get(`${API_URL}/trial/replicates/${trialId}`)
@@ -17,5 +22,6 @@ const getTrialReplicates = trialId => {
 }
 export default {
   saveTrial,
+  editTrial,
   getTrialReplicates
 }

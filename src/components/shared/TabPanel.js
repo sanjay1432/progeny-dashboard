@@ -6,6 +6,7 @@ import EstateBlockTable from "./EstateBlockTable"
 import AddNewUser from "../user/userList/AddNewUser"
 import EditUser from "../user/userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
+import EditTrial from "../trial/EditTrial"
 import TrialEstateBlocks from "../trial/TrialEstateBlocks"
 import EstateInformation from "components/user/estateAssignment/EstateInformation"
 import AddNewProgeny from "components/progeny/AddNewProgeny"
@@ -40,7 +41,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
           </>
         )
       case "Trial and Replicate":
-        if (!option.trial) {
+        if (option.type == "create") {
           return (
             <>
               <AddNewTrial
@@ -50,7 +51,17 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             </>
           )
         }
-        if (option.trial) {
+        if (option.type == "edit") {
+          return (
+            <>
+              <EditTrial
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
+        if (option.type == "expand") {
           return (
             <>
               <TrialEstateBlocks
