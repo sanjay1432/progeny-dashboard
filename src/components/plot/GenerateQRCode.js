@@ -1,9 +1,10 @@
 import React from "react"
+import QRCode from "qrcode.react"
 
-const GenerationQRCode = ({}) => {
+const GenerationQRCode = ({ option }) => {
   return (
     <>
-      <p>hihi</p>
+      <QRCode value="http://facebook.github.io/react/" />
     </>
   )
 }

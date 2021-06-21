@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Redirect } from "react-router-dom"
+import { Redirect, useHistory } from "react-router-dom"
 import Form from "react-validation/build/form"
 import CheckButton from "react-validation/build/button"
 import { login } from "../redux/actions/auth.action"
 import logo from "assets/img/Progeny-logo/logoStyle02.png"
 import { Loader } from "rsuite"
-import { useHistory } from "react-router-dom"
-import { Input } from "rsuite"
+import { Input, Grid, Row, Col } from "rsuite"
 // reactstrap components
 import { Card, CardBody, Container } from "reactstrap"
 
@@ -109,53 +108,52 @@ const Login = props => {
                   />
                   <p className="title">
                     Login to{" "}
-                    <b className="title_name">Progeny Management System</b>{" "}
+                    <b className="titleName">Progeny Management System</b>{" "}
                     Dashboard
                   </p>
                 </div>
-                <Form onSubmit={handleLogin} ref={form}>
-                  <tr>
-                    <td>
-                      <label className="labelForm">Username</label>
-                    </td>
-                    <td>
-                      <Input
-                        className="inputForm"
-                        name="username"
-                        type="text"
-                        placeholder="Username"
-                        onChange={(value, e) => onChangeUsername(e)}
-                        value={username}
-                        validations={[required]}
-                      />
-                    </td>
-                  </tr>
+                <Form className="loginForm" onSubmit={handleLogin} ref={form}>
+                  <Grid fluid>
+                    <Row className="formLayout">
+                      <Col mdOffset={6} md={3} lg={3}>
+                        <label className="labelForm">Username</label>
+                      </Col>
+                      <Col md={8}>
+                        <Input
+                          className="inputForm"
+                          name="username"
+                          type="text"
+                          placeholder="Username"
+                          onChange={(value, e) => onChangeUsername(e)}
+                          value={username}
+                          validations={[required]}
+                        />
+                      </Col>
+                    </Row>
+                    <Row className="formLayout">
+                      <Col mdOffset={6} md={3}>
+                        <label className="labelForm">Password</label>
+                      </Col>
+                      <Col md={8}>
+                        <Input
+                          className="inputForm"
+                          name="password"
+                          type="password"
+                          placeholder="Password"
+                          value={password}
+                          onChange={(value, e) => onChangePassword(e)}
+                          validations={[required]}
+                        />
+                      </Col>
+                    </Row>
 
-                  <tr>
-                    <td>
-                      <label className="labelForm">Password</label>
-                    </td>
-                    <td>
-                      <Input
-                        className="inputForm"
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(value, e) => onChangePassword(e)}
-                        validations={[required]}
-                      />
-                    </td>
-                  </tr>
-
-                  <div className="form-group">
                     <button className="loginButton" disabled={loading}>
                       {loading && (
                         <span className="spinner-border spinner-border-sm" />
                       )}
                       <span>Login</span>
                     </button>
-                  </div>
+                  </Grid>
 
                   {message && (
                     <div className="form-group">
@@ -180,7 +178,7 @@ const Login = props => {
               )}
             </p>
           </Container>
-          <p className="footer-text">
+          <p className="companyName">
             2021 Ace Resource Advisory Services Sdn. Bhd.
           </p>
         </section>
