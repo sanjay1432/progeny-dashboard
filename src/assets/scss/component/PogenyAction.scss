@@ -1,0 +1,45 @@
+#ProgenyAction {
+  margin: 50px 0px;
+
+  .rs-row {
+    margin: 0px 0px 25px 0px;
+  }
+
+  .labelName {
+    color: $primary-black;
+    font-weight: 700;
+  }
+
+  .rs-input {
+    width: 444px;
+  }
+
+  .progenyDataPicker {
+    width: 444px;
+  }
+
+  .rs-input-group {
+    width: 444px;
+
+    .rs-input-group-addon {
+      width: 50px;
+    }
+
+    .rs-picker-default .rs-picker-toggle.rs-btn {
+      width: 394px;
+      padding-top: 9px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+  }
+
+  .saveButton {
+    width: 170px;
+    height: 42px;
+  }
+
+  .cancelButton {
+    width: 170px;
+    height: 42px;
+  }
+}

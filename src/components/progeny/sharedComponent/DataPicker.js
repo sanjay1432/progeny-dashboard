@@ -1,8 +1,8 @@
 import React from "react"
-import { SelectPicker } from "rsuite"
+import { InputPicker } from "rsuite"
 
 const SelectionData = {}
-const DataPicker = ({ OriginalData, dataType, ...props }) => {
+const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
   const Picker01 = [dataType]
   Picker01.forEach(obj => {
     const data = [...new Set(OriginalData.map(res => res[obj]))]
@@ -31,9 +31,11 @@ const DataPicker = ({ OriginalData, dataType, ...props }) => {
 
   return (
     <>
-      <SelectPicker
+      <InputPicker
         name={dataType}
+        className="progenyDataPicker"
         data={DataInPicker}
+        value={dataValue}
         onChange={(value, e) => handleChange(value)}
       />
     </>

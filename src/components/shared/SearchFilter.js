@@ -131,8 +131,7 @@ const SearchFilter = forwardRef(
             <div className="show-col">
               <Button
                 appearance="ghost"
-                className="btnMoreFilter"
-                //style={{ width: "100%" }}
+                className="multiFilterButton"
                 onClick={() => toggleDrawer()}
               >
                 More Filters
@@ -213,7 +212,7 @@ const SearchFilter = forwardRef(
     //console.log("selectedFilters[filter.name]", selectedFilters[filter.name])
     return (
       <>
-        <Grid fluid>
+        <Grid fluid id="dashboardFilterPanel">
           <Row>
             {/* <SearchBox /> */}
             {mainPageFilters.map((filter, i) => (
@@ -235,9 +234,9 @@ const SearchFilter = forwardRef(
             ))}
             <MoreFilter />
             <Col sm={5} md={4} lg={3}>
-              <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
+              <div className="show-col">
                 <Button
-                  className="btnApply"
+                  className="applyButton"
                   appearance="primary"
                   onClick={onApply}
                 >
@@ -248,7 +247,7 @@ const SearchFilter = forwardRef(
             <Col sm={3} md={4} lg={3}>
               <div className="show-col">
                 <Button
-                  className="btnResetFilter"
+                  className="resetButton"
                   appearance="subtle"
                   onClick={onReset}
                 >
@@ -259,7 +258,7 @@ const SearchFilter = forwardRef(
           </Row>
         </Grid>
         <Drawer
-          id="moreFilterDrawer"
+          id="filterDrawer"
           placement="right"
           size="xs"
           show={isDrawer}

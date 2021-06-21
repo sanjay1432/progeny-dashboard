@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react"
 import SearchFilter from "./SearchFilter"
 import DataTable from "./DataTable"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import AddNewUser from "../user/userList/addNewUser"
+import AddNewUser from "../user/userList/AddNewUser"
 import EditUser from "../user/userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
 import EditTrial from "../trial/EditTrial"
@@ -11,6 +11,7 @@ import TrialEstateBlocks from "../trial/TrialEstateBlocks"
 import EstateInformation from "components/user/estateAssignment/EstateInformation"
 import AddNewProgeny from "components/progeny/AddNewProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
+import GenerateQRCode from "components/plot/GenerateQRCode"
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
   //useDispatch
@@ -70,7 +71,14 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             </>
           )
         }
-
+      case "Plot":
+        if (breadcrumb[1] === "Generate QR Code") {
+          return (
+            <>
+              <GenerateQRCode />
+            </>
+          )
+        }
       case "Progeny":
         if (breadcrumb[1] === "Add New Progeny") {
           return (

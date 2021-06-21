@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { getPositionList } from "../../../redux/actions/user.action"
-import {
-  setBreadcrumb,
-  clearBreadcrumb
-} from "../../../redux/actions/app.action"
 import {
   SelectPicker,
   Button,
   ControlLabel,
-  Message,
   Form,
   FormGroup,
   FormControl,
   ButtonToolbar
 } from "rsuite"
+import { getPositionList } from "../../../redux/actions/user.action"
 import UserService from "../../../services/user.service"
+import {
+  setBreadcrumb,
+  clearBreadcrumb
+} from "../../../redux/actions/app.action"
+import { publish } from "../../../services/pubsub.service"
 
 let selectionData = {}
 const EditUser = ({ option }) => {
@@ -79,33 +79,33 @@ const EditUser = ({ option }) => {
     }
   ]
 
-  console.log(dataInSelection)
-  console.log(statusData)
-
-  // function PopUpMessage() {
-  //   if (message === true) {
-  //     return (
-  //       <>
-  //         <Message showIcon type="success" description={popUpDescription} />
-  //       </>
-  //     )
-  //   } else if (message === false) {
-  //     return (
-  //       <>
-  //         <Message showIcon type="error" description="System error" />
-  //       </>
-  //     )
-  //   } else {
-  //     return <></>
-  //   }
-  // }
-
-  const popUpDescription = username + " has been edited to the system."
+  function editUser() {
+    const payload = {
+      userId: userId,
+      username: username,
+      position: position,
+      status: status
+    }
+    UserService.editUser(payload).then(
+      data => {
+        console.log(payload, "has not been edited to the system.")
+        dispatch(clearBreadcrumb())
+        const savedData = {
+          type: "USERLIST_EDIT",
+          data: payload,
+          action: "CREATED"
+        }
+        dispatch(clearBreadcrumb())
+        publish(savedData)
+      },
+      error => {
+        console.log(error.message)
+      }
+    )
+  }
 
   return (
     <div id="addNewUser">
-      {/* <PopUpMessage /> */}
-
       <Form className="formLayout">
         <FormGroup className="labelLayout">
           <ControlLabel className="formLabel">User ID</ControlLabel>
@@ -114,7 +114,6 @@ const EditUser = ({ option }) => {
             value={userId}
             className="dataBox"
             placeholder="User ID"
-            onChange={popUpDescription}
             onChange={setUserId}
           />
         </FormGroup>
@@ -160,11 +159,7 @@ const EditUser = ({ option }) => {
             >
               Cancel
             </Button>
-            <Button
-              appearance="primary"
-              className="btnSave"
-              onClick={option.editCurrentUser}
-            >
+            <Button appearance="primary" className="btnSave" onClick={editUser}>
               Save
             </Button>
           </ButtonToolbar>

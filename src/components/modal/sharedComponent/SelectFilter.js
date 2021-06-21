@@ -36,7 +36,7 @@ const SelectFilter = ({ data, dataType, selectedData, onUpdate }) => {
 
   return (
     <SelectPicker
-      className="filter"
+      className="modalSelectFilter"
       data={dataInSelection}
       value={selectedData ? selectedData.value : null}
       onChange={(value, e) =>

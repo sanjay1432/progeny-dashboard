@@ -97,7 +97,7 @@ const Login = props => {
   return (
     <>
       <main>
-        <section id="login">
+        <section id="LoginPage">
           <Container>
             <Card className="bg-transparent border-0">
               <CardBody>
@@ -116,11 +116,11 @@ const Login = props => {
                 <Form onSubmit={handleLogin} ref={form}>
                   <tr>
                     <td>
-                      <label className="login-label">Username</label>
+                      <label className="labelForm">Username</label>
                     </td>
                     <td>
                       <Input
-                        className="form-login"
+                        className="inputForm"
                         name="username"
                         type="text"
                         placeholder="Username"
@@ -133,11 +133,11 @@ const Login = props => {
 
                   <tr>
                     <td>
-                      <label className="login-label">Password</label>
+                      <label className="labelForm">Password</label>
                     </td>
                     <td>
                       <Input
-                        className="form-login"
+                        className="inputForm"
                         name="password"
                         type="password"
                         placeholder="Password"
@@ -149,10 +149,7 @@ const Login = props => {
                   </tr>
 
                   <div className="form-group">
-                    <button
-                      className="btn btn-block btn-lg login"
-                      disabled={loading}
-                    >
+                    <button className="loginButton" disabled={loading}>
                       {loading && (
                         <span className="spinner-border spinner-border-sm" />
                       )}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb, clearBreadcrumb } from "../../redux/actions/app.action"
 import UserService from "../../services/user.service"
-import AddEstateModal from "../modal/masterData/estate/AddEstate"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
@@ -18,14 +17,21 @@ import {
   Col,
   Checkbox,
   Pagination,
-  Message
+  Message,
+  Input,
+  IconButton,
+  Icon,
+  SelectPicker
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
 import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
-import { setMessage } from "redux/actions/message.action"
+import CheckCircle from "../../assets/img/icons/check_circle_24px.svg"
+import Cancel from "../../assets/img/icons/cancel_24px.svg"
+import PlotConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
+import PalmConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
 
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -49,7 +55,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   })
 
   const [successMessage, setSuccessMessage] = useState(false)
-  const [isModal, setModal] = useState(false)
+  const [confirmationModal, setConfirmationModal] = useState(false)
+  const [confirmationData, setConfirmationData] = useState("")
   const [isSuccessModal, setSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState(null)
   const [assignUserModal, setAssignUserModal] = useState(false)
@@ -75,10 +82,26 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }, [])
 
   function itemSaved(payload) {
-    if (payload) {
+    if (payload && payload.type === "TRIAL") {
       console.log(payload)
       setSuccessData(payload)
       setSuccessModal(true)
+    }
+    if (payload && payload.type === "PROGENY_ADD") {
+      setSuccessData(payload)
+      setSuccessMessage(active)
+    }
+    if (payload && payload.type === "PROGENY_EDIT") {
+      setSuccessData(payload)
+      setSuccessMessage(active)
+    }
+    if (payload && payload.type === "USERLIST_ADD") {
+      setSuccessData(payload)
+      setSuccessMessage(active)
+    }
+    if (payload && payload.type === "USERLIST_EDIT") {
+      setSuccessData(payload)
+      setSuccessMessage(active)
     }
   }
 
@@ -134,10 +157,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       label: "n Of Replicate",
       value: "nofreplicate"
     },
-    // {
-    //   label: "Soil Type",
-    //   value: "soiltype"
-    // },
     {
       label: "n Of Plot",
       value: "nofplot"
@@ -338,14 +357,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     })
   }
 
-  function OpenModal() {
-    setModal(!isModal)
-  }
-
-  function CloseModal() {
-    setModal(!isModal)
-  }
-
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
@@ -387,9 +398,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
-    console.log("keys", keys)
   }
-  console.log("checkStatus", checkStatus)
+
+  function openPalmConfirmation(rowData) {
+    setConfirmationModal(true)
+    setConfirmationData(rowData)
+  }
+
   function filterTable(filters, data) {
     var filterKeys = Object.keys(filters)
     return data.filter(function (eachObj) {
@@ -401,35 +416,27 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function AddButton() {
     switch (active) {
-      case "estate":
-        return (
-          <Col sm={5} md={5} lg={3}>
-            <FlexboxGrid.Item>
-              <Button
-                appearance="primary"
-                className="btnAddEstate"
-                onClick={OpenModal}
-                disabled
-              >
-                Add Estate
-              </Button>
-
-              <AddEstateModal
-                show={isModal}
-                hide={CloseModal}
-                currentSubNavState={currentSubNavState}
-                currentItem={currentItem}
-              />
-            </FlexboxGrid.Item>
-          </Col>
-        )
+      // case "estate":
+      //   return (
+      //     <Col sm={5} md={5} lg={4}>
+      //       <FlexboxGrid.Item>
+      //         <Button
+      //           appearance="primary"
+      //           className="addEstateButton"
+      //           disabled
+      //         >
+      //           Add Estate
+      //         </Button>
+      //       </FlexboxGrid.Item>
+      //     </Col>
+      //   )
       case "trial":
         return (
-          <Col sm={5} md={5} lg={3}>
+          <Col sm={5} md={5} lg={4}>
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
-                className="btnAddTrial"
+                className="addTrialButton"
                 onClick={() =>
                   handleAddNewTrial(
                     ["Trial and Replicate", `Add New Trial & Replicate`],
@@ -447,9 +454,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "plot":
         return (
-          <Col sm={5} md={6} lg={4}>
+          <Col sm={5} md={5} lg={4}>
             <FlexboxGrid.Item>
-              <Button appearance="primary" className="btnAddPlot">
+              <Button appearance="primary" className="attachProgeniesButton">
                 Attach Progenies
               </Button>
             </FlexboxGrid.Item>
@@ -459,11 +466,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return null
       case "progeny":
         return (
-          <Col sm={5} md={5} lg={4}>
+          <Col sm={5} md={5} lg={5}>
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
-                className="btnAddProgeny"
+                className="addProgenyButton"
                 onClick={() =>
                   handleAddNewTrial(["Progeny", `Add New Progeny`], {})
                 }
@@ -475,14 +482,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "userlist":
         function openPage() {
-          handleActionExpand(["User List", "Add New User"], { addNewUser })
+          handleActionExpand(["User List", "Add New User"], {})
         }
         return (
-          <Col sm={5} md={5} lg={3}>
+          <Col sm={5} md={5} lg={4}>
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
-                className="btnAddUser"
+                className="addUserButton"
                 onClick={openPage}
               >
                 Add New User
@@ -509,15 +516,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       return null
     } else {
       return (
-        <Col sm={4} md={4} lg={3}>
+        <Col sm={4} md={4} lg={4}>
           <FlexboxGrid.Item>
-            <Button
-              className="btnDelete"
-              disabled={disabled}
-              onClick={onDelete}
-            >
-              Delete
-            </Button>
+            <div className="deleteButtonLayout">
+              <Button
+                className="deleteButton"
+                disabled={disabled}
+                onClick={onDelete}
+              >
+                Delete
+              </Button>
+            </div>
           </FlexboxGrid.Item>
         </Col>
       )
@@ -528,25 +537,41 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (status) {
       case "active":
         return (
-          <Button color="green" appearance="ghost">
+          <Button
+            color="green"
+            appearance="ghost"
+            className="activeStatusButton"
+          >
             Active
           </Button>
         )
       case "inactive":
         return (
-          <Button color="red" appearance="ghost">
+          <Button
+            color="red"
+            appearance="ghost"
+            className="inavtiveStatusButton"
+          >
             Inactive
           </Button>
         )
       case "canceled":
         return (
-          <Button color="red" appearance="ghost">
+          <Button
+            color="red"
+            appearance="ghost"
+            className="canceledStatusButton"
+          >
             canceled
           </Button>
         )
       case "finished":
         return (
-          <Button color="yellow" appearance="ghost">
+          <Button
+            color="yellow"
+            appearance="ghost"
+            className="finishedStatusButton"
+          >
             finished
           </Button>
         )
@@ -554,6 +579,182 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       default:
         return null
     }
+  }
+
+  const EditableCell = ({ rowData, dataKey, onChange, ...props }) => {
+    const editing = rowData.status === true
+    switch (active) {
+      case "plot":
+        return (
+          <Cell {...props}>
+            {editing ? (
+              // {dataKey === "progenyId" ? (
+              //   <SelectPicker />
+              // ) : (
+              //   <Input
+              //   defaultValue={rowData[dataKey]}
+              //   disabled={["trialid", "estate", "replicate", "estateblock", "design", "density", "progeny", "ortet", "fp", "mp","noofPalm"].includes(dataKey)}
+              //   onChange={value => handlePalmEditChange(rowData.trialid,dataKey, value)}
+              // />
+              // )}
+              <Input
+                defaultValue={rowData[dataKey]}
+                disabled={[
+                  "trialid",
+                  "estate",
+                  "replicate",
+                  "estateblock",
+                  "design",
+                  "density",
+                  "progeny",
+                  "ortet",
+                  "fp",
+                  "mp",
+                  "noofPalm"
+                ].includes(dataKey)}
+                onChange={value =>
+                  handlePalmEditChange(rowData.trialid, dataKey, value)
+                }
+              />
+            ) : (
+              <span>{rowData[dataKey]}</span>
+            )}
+          </Cell>
+        )
+      case "palm":
+        return (
+          <Cell {...props}>
+            {editing ? (
+              <Input
+                defaultValue={rowData[dataKey]}
+                disabled={[
+                  "trialid",
+                  "estate",
+                  "replicate",
+                  "estateblock",
+                  "plot"
+                ].includes(dataKey)}
+                onChange={value =>
+                  handlePalmEditChange(rowData.trialid, dataKey, value)
+                }
+              />
+            ) : (
+              <span>{rowData[dataKey]}</span>
+            )}
+          </Cell>
+        )
+      default:
+        return null
+    }
+  }
+
+  const handlePalmEditChange = (trialid, key, value) => {
+    const nextData = Object.assign([], tableData)
+    nextData.find(item => item.trialid === trialid)[key] = value
+    setTableData(nextData)
+  }
+
+  const EditDataCell = ({ rowData, dataKey, onClick, ...props }) => {
+    switch (active) {
+      case "plot":
+        return (
+          <Cell {...props}>
+            {rowData.status ? (
+              <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="green"
+                    size="xs"
+                    icon={<Icon icon="check" />}
+                    onClick={() => openPalmConfirmation(rowData)}
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="red"
+                    size="xs"
+                    icon={<Icon icon="close" />}
+                    onClick={() => handlePalmEditStatus()}
+                  />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            ) : (
+              <FlexboxGrid justify="space-between">
+                <FlexboxGrid.Item>
+                  <img
+                    src={QrCodeScanner}
+                    onClick={() =>
+                      handleActionExpand(["Plot", "Generate QR Code"], {})
+                    }
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <img
+                    src={CreateIcon}
+                    onClick={() => handlePalmEditStatus(rowData.trialid)}
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <img src={LinkIcon} />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            )}
+          </Cell>
+        )
+      case "palm":
+        return (
+          <Cell {...props}>
+            {rowData.status ? (
+              <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="green"
+                    size="xs"
+                    icon={<Icon icon="check" />}
+                    onClick={() => openPalmConfirmation(rowData)}
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="red"
+                    size="xs"
+                    icon={<Icon icon="close" />}
+                    onClick={() => handlePalmEditStatus()}
+                  />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            ) : (
+              <img
+                src={CreateIcon}
+                onClick={() => handlePalmEditStatus(rowData.trialid)}
+              />
+            )}
+          </Cell>
+        )
+      default:
+        return null
+    }
+  }
+
+  function handlePalmEditStatus(trialid) {
+    const nextData = Object.assign([], tableData)
+    const activeItem = nextData.find(item => item.trialid === trialid)
+    activeItem.status = activeItem.status ? null : true
+    setTableData(nextData)
+  }
+
+  function savePalmData(trialid) {
+    const nextData = Object.assign([], tableData)
+    const activeItem = nextData.find(item => item.trialid === trialid)
+    activeItem.status = activeItem.status ? null : true
+    setTableData(nextData)
+    setConfirmationModal(false)
+    setSuccessMessage(active)
+    setSuccessData(confirmationData)
   }
 
   function ActionButtons({ data }) {
@@ -573,7 +774,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "trial":
         return (
-          <FlexboxGrid justify="space-between">
+          <FlexboxGrid className="spaceBetweenThree" justify="space-between">
             <FlexboxGrid.Item>
               <img
                 src={OpenNew}
@@ -612,26 +813,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
-      case "plot":
-        return (
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item>
-              <img src={QrCodeScanner} />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <img src={CreateIcon} />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <img src={LinkIcon} />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "palm":
-        return (
-          <span>
-            <img src={CreateIcon} />
-          </span>
-        )
       case "progeny":
         return (
           <span>
@@ -642,6 +823,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   progenyId: data.progenyId,
                   popvar: data.popvar,
                   origin: data.origin,
+                  progenyremark: data.progenyremark,
                   progeny: data.progeny,
                   generation: data.generation,
                   ortet: data.ortet,
@@ -668,8 +850,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   userId: data.userId,
                   username: data.username,
                   position: data.position,
-                  status: data.status,
-                  editCurrentUser
+                  status: data.status
                 })
               }
             />
@@ -679,11 +860,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         function openAssignUserModal(data) {
           setAssignUserModal(true)
           setEstate(data)
-          console.log(estate)
         }
 
         return (
-          <FlexboxGrid justify="space-between">
+          <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
             <FlexboxGrid.Item>
               <img
                 src={OpenNew}
@@ -717,31 +897,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       default:
         return null
     }
-  }
-
-  function addNewUser() {
-    const payload = {}
-    UserService.addNewUser(payload).then(data => {
-      console.log(payload, "has been added to the system.")
-      dispatch(clearBreadcrumb())
-      setSuccessMessage(active)
-      console.log(successMessage)
-    })
-  }
-
-  function editCurrentUser() {
-    const payload = {}
-    console.log(payload)
-    UserService.editUser(payload).then(
-      data => {
-        console.log(payload, "has not been edited to the system.")
-        dispatch(clearBreadcrumb())
-        setSuccessMessage(active)
-      },
-      error => {
-        console.log(payload, "has not been edited to the system.")
-      }
-    )
   }
 
   const assignUserToEstate = () => {
@@ -785,7 +940,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function openAssignEstateModal(data) {
     setAssignEstateModal(true)
     setUsername(data)
-    console.log(username)
   }
 
   function handleAddNewTrial(breadcrumb, option) {
@@ -812,7 +966,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }, 500)
   }
 
-  function SuccessMessage({ activeNav }) {
+  function SuccessMessage({ activeNav, successData }) {
     console.log({ activeNav })
     switch (activeNav) {
       case "estate":
@@ -839,7 +993,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             )}
           </>
         )
-
       case "trial":
         return (
           <>
@@ -865,61 +1018,119 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </>
         )
       case "plot":
+        if (successData != undefined) {
+          return (
+            <>
+              <Message
+                showIcon
+                type="success"
+                description={`${successData.plot} for
+                            Replicate ${successData.replicate} for 
+                            Trial ${successData.trialid} has been successfully edited.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            </>
+          )
+        } else {
+          return (
+            <>
+              {rowsToDelete.length < 2 ? (
+                <Message
+                  showIcon
+                  type="success"
+                  description={`${rowsToDelete[0].plot} in replicate ${rowsToDelete[0].replicate} at trial ${rowsToDelete[0].trialid} has been successfuly been deleted.`}
+                  onClick={() => {
+                    setSuccessMessage("")
+                  }}
+                />
+              ) : (
+                <Message
+                  showIcon
+                  type="success"
+                  description={`${rowsToDelete.length} Plots in their replicates at
+                the trial has been successfuly been deleted.`}
+                  onClick={() => {
+                    setSuccessMessage("")
+                  }}
+                />
+              )}
+            </>
+          )
+        }
+
+      case "palm":
         return (
           <>
-            {rowsToDelete.length < 2 ? (
-              <Message
-                showIcon
-                type="success"
-                description={`${rowsToDelete[0].plot} in replicate ${rowsToDelete[0].replicate} at trial ${rowsToDelete[0].trialid} has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            ) : (
-              <Message
-                showIcon
-                type="success"
-                description={`${rowsToDelete.length} Plots in their replicates at
-                the trial has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            )}
+            <Message
+              showIcon
+              type="success"
+              description={`Palm ${successData.palmno} in 
+                              ${successData.plot} in 
+                              Replicate ${successData.replicate} in 
+                              Trial ${successData.trialid} has been successfully edited.`}
+              onClick={() => {
+                setSuccessMessage("")
+              }}
+            />
           </>
         )
       case "progeny":
-        return (
-          <>
-            {rowsToDelete.length < 2 ? (
-              <Message
-                showIcon
-                type="success"
-                description={`Progeny ${rowsToDelete[0].progenyId} has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            ) : (
-              <Message
-                showIcon
-                type="success"
-                description={`${rowsToDelete.length} Progenies  has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            )}
-          </>
-        )
+        if (successData === null) {
+          return (
+            <>
+              {rowsToDelete.length < 2 ? (
+                <Message
+                  showIcon
+                  type="success"
+                  description={`Progeny ${rowsToDelete[0].progenyId} has been successfuly been deleted.`}
+                  onClick={() => {
+                    setSuccessMessage("")
+                  }}
+                />
+              ) : (
+                <Message
+                  showIcon
+                  type="success"
+                  description={`${rowsToDelete.length} Progenies  has been successfuly been deleted.`}
+                  onClick={() => {
+                    setSuccessMessage("")
+                  }}
+                />
+              )}
+            </>
+          )
+        } else if (successData.type === "PROGENY_ADD") {
+          return (
+            <Message
+              showIcon
+              type="success"
+              description={`Progeny ${successData.data.progenyId} has been successfuly been added.`}
+              onClick={() => {
+                setSuccessMessage("")
+              }}
+            />
+          )
+        } else if (successData.type === "PROGENY_EDIT") {
+          return (
+            <Message
+              showIcon
+              type="success"
+              description={`Progeny ${successData.data.progenyId} has been successfuly been edited.`}
+              onClick={() => {
+                setSuccessMessage("")
+              }}
+            />
+          )
+        }
       case "userlist":
         return (
           <>
             <Message
               showIcon
               type="success"
-              description={`has been added to the system.`}
+              description="{`has been added to the system.`}"
               onClick={() => {
                 setSuccessMessage("")
               }}
@@ -1104,24 +1315,32 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const palmfields = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialid") {
-            field.width = 270
+            field.width = 200
             palmfields[0] = field
           }
           if (field.value === "estate") {
-            field.width = 270
+            field.width = 200
             palmfields[1] = field
           }
           if (field.value === "replicate") {
-            field.width = 270
+            field.width = 200
             palmfields[2] = field
           }
           if (field.value === "estateblock") {
-            field.width = 270
+            field.width = 200
             palmfields[3] = field
           }
           if (field.value === "plot") {
-            field.width = 1000
+            field.width = 200
             palmfields[4] = field
+          }
+          if (field.value === "palmno") {
+            field.width = 200
+            palmfields[5] = field
+          }
+          if (field.value === "palmname") {
+            field.width = 200
+            palmfields[6] = field
           }
         })
         return palmfields
@@ -1214,25 +1433,26 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return currentTableDataFields
     }
   }
+
   return (
     <>
       <div>
         <Grid fluid>
-          <Row className="show-grid" id="tableOption">
-            <Col sm={6} md={6} lg={6}>
-              <b className="totalRecord">Total records ({tableData.length})</b>
+          <Row className="show-grid" id="dashboardTableSetting">
+            <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+              <b>Total records ({tableData.length})</b>
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={3}>
-                <FlexboxGrid.Item className="paginationOption">
+              <Col sm={5} md={5} lg={5}>
+                <FlexboxGrid.Item className="selectPage">
                   <InputPicker
-                    className="Option"
+                    className="option"
                     data={perpage}
                     defaultValue={"10"}
                     onChange={handleChangeLength}
                   />{" "}
-                  <b className="Page">per page</b>
+                  <b className="page">per page</b>
                 </FlexboxGrid.Item>
               </Col>
 
@@ -1246,7 +1466,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 activeNav={active}
                 rows={rowsToDelete}
               />
-              <SuccessMessage activeNav={successMessage} />
+              <SuccessMessage
+                activeNav={successMessage}
+                successData={successData}
+              />
               <SuccessModal
                 show={isSuccessModal}
                 hide={CloseSuccessModal}
@@ -1269,37 +1492,46 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 setSelectedItem={setSelectedItem}
                 assignEstateToUser={assignEstateToUser}
               />
+
+              <PalmConfirmationModal
+                show={confirmationModal}
+                hide={() => setConfirmationModal(false)}
+                data={confirmationData}
+                save={savePalmData}
+                currentPage={active}
+              />
             </FlexboxGrid>
           </Row>
         </Grid>
 
         <Table
+          id="dashboardTable"
           wordWrap
           data={getData(displaylength)}
           onRowClick={data1 => {}}
           autoHeight
         >
-          <Column width={70} align="center" fixed>
-            <HeaderCell className="tableHeader">
-              <Checkbox
-                checked={checked}
-                indeterminate={indeterminate}
-                onChange={handleCheckAll}
+          {active === "palm" ||
+          currentItem.name === "User Management" ? null : (
+            <Column width={70} align="center" fixed>
+              <HeaderCell className="tableHeader">
+                <Checkbox
+                  checked={checked}
+                  indeterminate={indeterminate}
+                  onChange={handleCheckAll}
+                />
+              </HeaderCell>
+              <CheckCell
+                dataKey="rowNumber"
+                checkedKeys={checkStatus}
+                onChange={handleCheck}
               />
-            </HeaderCell>
-            <CheckCell
-              dataKey="rowNumber"
-              checkedKeys={checkStatus}
-              onChange={handleCheck}
-            />
-          </Column>
-
+            </Column>
+          )}
           {reArrangeTableFields().map((field, i) =>
             field.value === "status" ? (
               <Column
                 width={field.width ? field.width : null}
-                flexGrow={field.flexGrow ? field.flexGrow : null}
-                minWidth={field.minWidth ? field.minWidth : null}
                 align="center"
                 key={i}
                 fixed="right"
@@ -1314,20 +1546,28 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             ) : (
               <Column width={field.width} align="left" key={i}>
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                <Cell dataKey={field.value} />
+                {active === "plot" || active === "palm" ? (
+                  <EditableCell dataKey={field.value} />
+                ) : (
+                  <Cell dataKey={field.value} />
+                )}
               </Column>
             )
           )}
 
           <Column width={130} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
-            <Cell align="center">
-              {rowData => <ActionButtons data={rowData} />}
-            </Cell>
+            {active === "plot" || active === "palm" ? (
+              <EditDataCell dataKey="trialid" />
+            ) : (
+              <Cell align="center" {...props}>
+                {rowData => <ActionButtons data={rowData} />}
+              </Cell>
+            )}
           </Column>
         </Table>
 
-        <div style={{ float: "right", padding: "1rem" }}>
+        <div className="pagination">
           <Pagination
             {...pagination}
             pages={getNoPages()}

@@ -1,0 +1,20 @@
+#confirmationModal {
+
+  .rs-modal-body {
+    .targetName {
+      text-decoration: underline;
+    }
+  }
+
+  .rs-modal-footer {
+    .noButton {
+      width: 142px;
+      height: 40px;
+    }
+
+    .yesButton {
+      width: 142px;
+      height: 40px;
+    }
+  }
+}

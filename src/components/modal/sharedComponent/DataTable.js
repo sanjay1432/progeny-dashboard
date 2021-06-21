@@ -90,8 +90,9 @@ const DataTable = ({
       {columns && data ? (
         <div>
           <Table
+            id="modalTable"
             data={getData()}
-            height={380}
+            height={390}
             bordered
             loading={loading}
             expandedRowKeys={expandedCell}

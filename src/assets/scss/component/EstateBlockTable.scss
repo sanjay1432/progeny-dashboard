@@ -1,0 +1,21 @@
+//table will follow as dashboardTable(DataTable.scss)
+#EstateBlockTable {
+  margin-top: 20px;
+
+  #estateBlockModal {
+    .rs-modal-title {
+        color: $primary-green;
+        font-weight: 700;
+    }
+    .rs-modal-body {
+        margin-top: 8px;
+
+        .lastUpdate,
+        .estateName,
+        .totalEstateBlock {
+            margin-bottom: 8px;
+        }
+    }
+  }
+
+}  

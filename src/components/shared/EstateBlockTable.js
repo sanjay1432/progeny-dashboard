@@ -303,7 +303,7 @@ const EstateBlockTable = ({
 
   return (
     <>
-      <div id="estateBlockTable">
+      <div id="EstateBlockTable">
         {/* Add Estate Block MODAL STARTED */}
         <Modal id="estateBlockModal" show={isModal} onHide={close}>
           <Modal.Header>
@@ -364,21 +364,21 @@ const EstateBlockTable = ({
         {/* Add Estate Block MODAL ENDED */}
 
         <Grid fluid>
-          <Row className="show-grid" id="tableOption">
-            <Col sm={6} md={6} lg={6}>
-              <b className="totalRecord">Total records ({tableData.length})</b>
+          <Row className="show-grid" id="dashboardTableSetting">
+            <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+              <b>Total records ({tableData.length})</b>
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={3}>
-                <FlexboxGrid.Item className="paginationOption">
+              <Col sm={5} md={6} lg={4}>
+                <FlexboxGrid.Item className="selectPage">
                   <InputPicker
-                    className="Option"
+                    className="option"
                     data={perpage}
                     defaultValue={"10"}
                     onChange={handleChangeLength}
                   />{" "}
-                  <b className="Page">per page</b>
+                  <b className="page">per page</b>
                 </FlexboxGrid.Item>
               </Col>
 
@@ -386,7 +386,7 @@ const EstateBlockTable = ({
                 <FlexboxGrid.Item>
                   <Button
                     appearance="primary"
-                    className="btnAddEstateBlock"
+                    className="addEstateBlockButton"
                     onClick={open}
                   >
                     Add Estate Block
@@ -396,13 +396,15 @@ const EstateBlockTable = ({
 
               <Col sm={4} md={4} lg={3}>
                 <FlexboxGrid.Item>
-                  <Button
-                    className="btnDelete"
-                    disabled={disabled}
-                    onClick={onDelete}
-                  >
-                    Delete
-                  </Button>
+                  <div className="deleteButtonLayout">
+                    <Button
+                      className="deleteButton"
+                      disabled={disabled}
+                      onClick={onDelete}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </FlexboxGrid.Item>
               </Col>
             </FlexboxGrid>
@@ -410,6 +412,7 @@ const EstateBlockTable = ({
         </Grid>
 
         <Table
+          id="dashboardTable"
           wordWrap
           data={getData(displaylength)}
           onRowClick={data1 => {}}

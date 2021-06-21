@@ -346,20 +346,20 @@ const TrialEstateBlocks = ({
             </Col>
           </Row>
           <Row className="show-grid" id="tableOption">
-            <Col sm={6} md={6} lg={6}>
-              <b className="totalRecord">Total records ({tableData.length})</b>
+            <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+              <b>Total records ({tableData.length})</b>
             </Col>
 
             <FlexboxGrid justify="end">
               <Col sm={5} md={5} lg={3}>
                 <FlexboxGrid.Item className="paginationOption">
                   <InputPicker
-                    className="Option"
+                    className="option"
                     data={perpage}
                     defaultValue={"10"}
                     onChange={handleChangeLength}
                   />{" "}
-                  <b className="Page">per page</b>
+                  <b className="page">per page</b>
                 </FlexboxGrid.Item>
               </Col>
             </FlexboxGrid>

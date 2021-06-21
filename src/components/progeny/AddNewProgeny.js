@@ -1,41 +1,100 @@
 import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
-import { Grid, Row, Col, Input, Button } from "rsuite"
+import { Grid, Row, Col, InputGroup, Input, Button } from "rsuite"
 import DataPicker from "./sharedComponent/DataPicker"
+import ProgenyService from "../../services/progeny.service"
+import { publish } from "../../services/pubsub.service"
 
-const initialForm = {
-  progenyId: "",
-  popvar: "",
-  origin: "",
-  progeny: "",
-  generation: "",
-  ortet: "",
-  fp: "",
-  fpVar: "",
-  fpFam: "",
-  mp: "",
-  mpFam: "",
-  mpVar: "",
-  cross: "",
-  crossType: ""
-}
 const AddNewProgeny = () => {
-  const [formData, setFormData] = useState([initialForm])
+  const [manipulate, setManipulate] = useState(false)
+
+  const initialForm = {
+    progenyId: "",
+    popvar: "",
+    origin: "",
+    progenyremark: "",
+    progeny: "",
+    generation: "",
+    ortet: "",
+    fpFam: "",
+    fp: "",
+    fpVar: "",
+    mpFam: "",
+    mp: "",
+    mpVar: "",
+    cross: "",
+    crossType: ""
+  }
+  const [formData, setFormData] = useState(initialForm)
   const dispatch = useDispatch()
 
   const ProgenyData = useSelector(
     state => state.dashboardDataReducer.result.progeny
   )
 
+  const crossTypeData = [
+    {
+      crossType: "sibbing"
+    },
+    {
+      crossType: "selfing"
+    },
+    {
+      crossType: "intercross"
+    }
+  ]
+
   function handleChange(e) {
     e.persist()
-    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }))
+    setFormData(() => ({
+      ...formData,
+      [e.target.name]: e.target.value,
+      ["cross"]:
+        formData.fpFam +
+        "." +
+        formData.fp +
+        " x " +
+        formData.mpFam +
+        "." +
+        formData.mp
+    }))
+    //setFormData(() => ({ ...formData, ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp }))
     console.log(formData)
   }
 
+  function handleSelectFpFam(fpFam) {
+    setFormData(() => ({ ...formData, fpFam }))
+    console.log(formData)
+    setManipulate(true)
+  }
+
+  function handleSelectMpFam(mpFam) {
+    setFormData(() => ({ ...formData, mpFam }))
+    console.log(formData)
+    setManipulate(true)
+  }
+
+  function addProgeny() {
+    console.log(formData)
+    ProgenyService.addNewProgeny(formData).then(
+      data => {
+        const savedData = {
+          type: "PROGENY_ADD",
+          data: formData,
+          action: "CREATED"
+        }
+        dispatch(clearBreadcrumb())
+        publish(savedData)
+      },
+      error => {
+        console.log(error.message)
+      }
+    )
+  }
+
   return (
-    <div id="ProgenyActionPage">
+    <div id="ProgenyAction">
       <Grid fluid>
         <Row>
           <Col md={5} lg={5}>
@@ -110,18 +169,33 @@ const AddNewProgeny = () => {
         </Row>
         <Row>
           <Col md={5} lg={5}>
-            <p className="labelName">FP</p>
+            <p className="labelName">FP Fam</p>
           </Col>
           <Col>
-            <Input name="fp" onChange={(value, e) => handleChange(e)} />
+            <DataPicker
+              dataType="fpFam"
+              OriginalData={ProgenyData}
+              // onChange={value =>
+              //   setFormData(() => ({ ...formData, ["fpFam"]: value }))
+              // }
+              onChange={fpFam => handleSelectFpFam(fpFam)}
+            />
           </Col>
         </Row>
         <Row>
           <Col md={5} lg={5}>
-            <p className="labelName">FP Fam</p>
+            <p className="labelName">FP</p>
           </Col>
           <Col>
-            <Input name="fpFam" onChange={(value, e) => handleChange(e)} />
+            <InputGroup>
+              {manipulate ? (
+                <InputGroup.Addon>{formData.fpFam}</InputGroup.Addon>
+              ) : (
+                <InputGroup.Addon />
+              )}
+
+              <Input name="fp" onChange={(value, e) => handleChange(e)} />
+            </InputGroup>
           </Col>
         </Row>
         <Row>
@@ -133,8 +207,20 @@ const AddNewProgeny = () => {
               dataType="fpVar"
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["mpVar"]: value }))
+                setFormData(() => ({ ...formData, ["fpVar"]: value }))
               }
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">MP Fam</p>
+          </Col>
+          <Col>
+            <DataPicker
+              dataType="mpFam"
+              OriginalData={ProgenyData}
+              onChange={mpFam => handleSelectMpFam(mpFam)}
             />
           </Col>
         </Row>
@@ -143,15 +229,14 @@ const AddNewProgeny = () => {
             <p className="labelName">MP</p>
           </Col>
           <Col>
-            <Input name="mp" onChange={(value, e) => handleChange(e)} />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={5} lg={5}>
-            <p className="labelName">MP Fam</p>
-          </Col>
-          <Col>
-            <Input name="mpFam" onChange={(value, e) => handleChange(e)} />
+            <InputGroup>
+              {manipulate ? (
+                <InputGroup.Addon>{formData.mpFam}</InputGroup.Addon>
+              ) : (
+                <InputGroup.Addon />
+              )}
+              <Input name="mp" onChange={(value, e) => handleChange(e)} />
+            </InputGroup>
           </Col>
         </Row>
         <Row>
@@ -173,7 +258,25 @@ const AddNewProgeny = () => {
             <p className="labelName">Cross</p>
           </Col>
           <Col>
-            <Input name="cross" onChange={(value, e) => handleChange(e)} />
+            <Input
+              name="cross"
+              value={
+                formData.fpFam +
+                "." +
+                formData.fp +
+                " x " +
+                formData.mpFam +
+                "." +
+                formData.mp
+              }
+              // onChange={(value =>
+              //   setFormData(() => ({
+              //     ...formData,
+              //     ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp
+              //   })))
+              // }
+              disabled
+            />
           </Col>
         </Row>
         <Row>
@@ -181,20 +284,46 @@ const AddNewProgeny = () => {
             <p className="labelName">Cross Type</p>
           </Col>
           <Col>
-            <Input name="crossType" onChange={(value, e) => handleChange(e)} />
+            <InputGroup>
+              {manipulate ? (
+                <InputGroup.Addon>
+                  {formData.fpVar + "X" + formData.mpVar}
+                </InputGroup.Addon>
+              ) : (
+                <InputGroup.Addon></InputGroup.Addon>
+              )}
+              <DataPicker
+                dataType="crossType"
+                OriginalData={crossTypeData}
+                onChange={value =>
+                  setFormData(() => ({
+                    ...formData,
+                    ["crossType"]:
+                      formData.fpVar + "X" + formData.mpVar + " " + value
+                  }))
+                }
+              />
+            </InputGroup>
           </Col>
         </Row>
         <Row>
-          <Col md={3} mdOffset={18} lg={3} lgOffset={18}>
+          <Col md={4} mdOffset={16} lg={4} lgOffset={16}>
             <Button
+              className="cancelButton"
               appearance="subtle"
               onClick={() => dispatch(clearBreadcrumb())}
             >
               Cancel
             </Button>
           </Col>
-          <Col md={3} lg={3}>
-            <Button appearance="primary">Save</Button>
+          <Col md={4} lg={4}>
+            <Button
+              className="saveButton"
+              appearance="primary"
+              onClick={addProgeny}
+            >
+              Save
+            </Button>
           </Col>
         </Row>
       </Grid>

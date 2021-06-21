@@ -1,0 +1,127 @@
+//Opacity
+.fade:not(.show) {
+  opacity: 1;
+}
+
+.rs-drawer-backdrop.in {
+  opacity: .3;
+}
+
+.rs-modal-backdrop.fade.in {
+  opacity: .3;
+}
+
+//Button
+.rs-btn {
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.rs-btn-subtle {
+  color: $primary-green;
+
+  &:hover {
+    color: $primary-green;
+    background-color: white;
+  }
+
+  &:active {
+    color: $primary-green;
+    background-color: white;
+  }
+
+  &:focus {
+    color: $primary-green;
+    background-color: white;
+  }
+}
+
+//SelectPicker
+.rs-picker-toggle {
+  .rs-picker-toggle-value {
+    font-size: 700;
+    color: black !important;
+  }
+  .rs-picker-toggle-clean {
+    display: none;
+  }
+}
+
+//Breadcrumb
+.rs-breadcrumb {
+  .rs-breadcrumb-item {
+    span, i {
+      font-size: 18px;
+      font-weight: 700;
+    }
+  }
+}
+
+.rs-breadcrumb-item-active:nth-child(n+1) {
+  color: black;
+}
+.rs-breadcrumb-item-active:nth-child(n+2) {
+  color: $primary-green;
+}
+
+//Table
+.rs-table {
+  border-radius: 10px;
+
+  .rs-table-row-header {
+    color: $secondary-green;
+    background-color: $secondary-green;
+
+    .rs-table-cell-content {
+      font-weight: 700;
+      color: white;
+      background-color: $secondary-green;
+    }
+  }
+
+  .rs-table-cell-wrap {
+    color: black;
+  }
+
+  .rs-table-body-row-wrapper {
+    .rs-table-cell-content {
+      color: black;
+    }
+  }
+}
+
+//Message
+.rs-message .rs-message-icon-wrapper {
+  top: 0px;
+}
+
+
+.rs-message-success{
+  background-color: #35795b;
+  color: #fff;
+  width: 35%;
+  margin: 0 35%;
+  bottom: 5rem;
+  position: fixed;
+  z-index: 1;
+}
+
+.rs-message-error {
+  width: 35%;
+  margin: 25% 35%;
+  position: fixed;
+  z-index: 1;
+}
+
+.rs-message-success .rs-message-icon-wrapper > .rs-icon, .rs-message-success .rs-message-btn-close {
+  color: white !important;
+      
+}
+
+.rs-message .rs-message-icon-wrapper .rs-icon {
+  font-size: 37.5px;
+}
+
+.rs-message-content {
+  margin-left: 30px;
+}
