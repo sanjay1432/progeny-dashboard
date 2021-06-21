@@ -66,9 +66,6 @@ const TrialEstateBlocks = ({
     getEstateBlocks()
   }, [])
 
-  console.log(tableData)
-  console.log(filteredTableData)
-
   async function getEstateBlocks() {
     const { data } = await EstateService.getUpdatedEstateBlocks()
     console.log(data)
