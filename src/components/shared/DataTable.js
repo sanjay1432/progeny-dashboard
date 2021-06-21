@@ -434,7 +434,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   handleAddNewTrial(
                     ["Trial and Replicate", `Add New Trial & Replicate`],
                     {
-                      trial: null
+                      trial: null,
+                      type: "create"
                     }
                   )
                 }
@@ -584,14 +585,27 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     ],
                     {
                       trial: data.trialid,
-                      estate: data.estate
+                      estate: data.estate,
+                      type: "expand"
                     }
                   )
                 }
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <img src={CreateIcon} />
+              <img
+                src={CreateIcon}
+                onClick={() =>
+                  handleActionExpand(
+                    ["Trial and Replicate", `Edit Trial and Replicate`],
+                    {
+                      trial: data.trialid,
+                      estate: data.estate,
+                      type: "edit"
+                    }
+                  )
+                }
+              />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
               <img src={LinkIcon} />

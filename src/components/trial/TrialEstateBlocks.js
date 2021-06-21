@@ -5,14 +5,14 @@ import {
   FlexboxGrid,
   Button,
   InputPicker,
+  SelectPicker,
   Grid,
   Row,
   Col,
   Checkbox,
   Pagination,
-  Modal,
+  ControlLabel,
   Message,
-  SelectPicker,
   IconButton,
   Icon
 } from "rsuite"
@@ -43,24 +43,36 @@ const TrialEstateBlocks = ({
   const [tableData, setTableData] = useState([])
   const [filteredTableData, setFilteredTableData] = useState([])
   const [ebAdded, setebAdded] = useState(null)
-  const [ebDeleted, setebDeleted] = useState(null)
+  const [selectedSoilType, setSelectedSoilType] = useState(null)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
   const [estateBlocks, setEstateBlocks] = useState([])
-
+  const [soilTypeFilterData, setSoilTypeFilterData] = useState([])
   useEffect(() => {
     async function fetchData() {
       // You can await here
       const data = await TrialService.getTrialReplicates(option.trial)
-      setTableData(data)
-      data.filter((v, i) => {
+      const replicates = data.replicates
+      setTableData(replicates)
+      replicates.filter((v, i) => {
         const start = displaylength * (activePage - 1)
         const end = start + displaylength
         return i >= start && i < end
       })
 
-      setFilteredTableData(data)
+      setFilteredTableData(replicates)
+
+      const soilTypes = [...new Set(replicates.map(row => row.soiltype))]
+      const types = []
+      for (let type in soilTypes) {
+        types.push({
+          label: soilTypes[type],
+          value: soilTypes[type]
+        })
+      }
+
+      setSoilTypeFilterData(types)
     }
     fetchData()
     getEstateBlocks()
@@ -248,12 +260,6 @@ const TrialEstateBlocks = ({
   const ActionCell = ({ rowData, dataKey, onClick, ...props }) => {
     return (
       <Cell {...props} style={{ padding: "6px 0" }}>
-        {/* <Button
-          appearance="link"
-          onClick={() => {
-            onClick && onClick(rowData.replicate)
-          }}
-        > */}
         {rowData.status === "EDIT" ? (
           <>
             <IconButton
@@ -289,10 +295,56 @@ const TrialEstateBlocks = ({
     )
   }
 
+  function onReset() {
+    setSelectedSoilType(null)
+    setFilteredTableData(tableData)
+  }
+  function onApply() {
+    console.log(selectedSoilType)
+    const filteredData = tableData.filter(
+      row => row.soiltype === selectedSoilType
+    )
+    setFilteredTableData(filteredData)
+  }
   return (
     <>
       <div>
         <Grid fluid>
+          <Row className="show-grid">
+            <Col sm={6} md={6} lg={3}>
+              <ControlLabel>Soil Type</ControlLabel>
+              <br />
+              <SelectPicker
+                data={soilTypeFilterData}
+                value={selectedSoilType}
+                onChange={(value, e) => setSelectedSoilType(value)}
+                style={{ width: 180 }}
+              />
+            </Col>
+            <Col sm={5} md={4} lg={2}>
+              <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
+                <Button
+                  className="btnApply"
+                  appearance="primary"
+                  onClick={onApply}
+                >
+                  Apply
+                </Button>
+              </div>
+            </Col>
+
+            <Col sm={3} md={4} lg={2}>
+              <div className="show-col">
+                <Button
+                  className="btnResetFilter"
+                  appearance="subtle"
+                  onClick={onReset}
+                >
+                  Reset Filter
+                </Button>
+              </div>
+            </Col>
+          </Row>
           <Row className="show-grid" id="tableOption">
             <Col sm={6} md={6} lg={6}>
               <b className="totalRecord">Total records ({tableData.length})</b>

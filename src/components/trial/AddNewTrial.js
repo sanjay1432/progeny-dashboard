@@ -278,9 +278,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function getEstateBlocks(estate) {
-    const estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
-      .estateblocks
-    setEstateblocks(estateBlocks)
+    let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
+    if (estateBlocks) {
+      estateBlocks = estateBlocks.estateblocks
+      setEstateblocks(estateBlocks)
+    }
     const mappedEstateBlocks = []
     for (let item in estateBlocks) {
       mappedEstateBlocks.push({
