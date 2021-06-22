@@ -42,17 +42,15 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable, getValue] = useState(
-    true
-  )
+  const [disabledGenerateTable, setDisabledGenerateTable, getValue] =
+    useState(true)
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState(
-    "yes"
-  )
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
+    useState("yes")
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
     { estate: "", estatenofreplicate: "" }
@@ -309,8 +307,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )
       ]
 
-      const soilType = estateBlocks.find(eb => eb.estateblock === block)
-        .soiltype
+      const soilType = estateBlocks.find(
+        eb => eb.estateblock === block
+      ).soiltype
       const data = [...tableData]
       data[rowIndex].estateblock = block
       data[rowIndex].soiltype = soilType
@@ -393,19 +392,19 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setShow(false)
   }
   return (
-    <div id="addNewTrial">
+    <div id="AddNewTrial">
       {/* STEP 1 GENERATE TABLE START*/}
       <div>
-        <h4>
-          <span style={{ color: "#009D57" }}>Step 1:</span>{" "}
-          <span style={{ color: "#353131f2" }}>Generate Table</span>
+        <h4 className="title">
+          <span className="desc">Step 1:</span>{" "}
+          <span className="purpose">Generate Table</span>
         </h4>
       </div>
 
       <Grid fluid>
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>Trail ID</p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">Trail ID</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -417,8 +416,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>Trail</p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">Trail</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -430,8 +429,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>Trial Remarks</p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">Trial Remarks</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -446,8 +445,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>Area (ha)</p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">Area (ha)</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -460,8 +459,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>Planted Date</p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">Planted Date</p>
           </Col>
           <Col md={5} lg={5}>
             {" "}
@@ -480,8 +479,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>No. of Progeny</p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">No. of Progeny</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -494,15 +493,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>
-              No. of Subblock and No.of Plot/Subblock
-            </p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">No. of Subblock and No.of Plot/Subblock</p>
           </Col>
           <Col md={5} lg={5}>
             <Input
               placeholder="No. of Subblock"
-              className="formField noOfSubBlock"
+              className="subPlotInput"
               name="nofsubblock"
               onChange={(value, e) => onInput(e)}
             />
@@ -510,7 +507,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           <Col md={5} lg={5}>
             <Input
               placeholder="No. of Plot/Subblock "
-              className="formField noOfPlot"
+              className="plotInput"
               name="nofplot_subblock"
               onChange={(value, e) => onInput(e)}
             />
@@ -528,10 +525,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>
-              This Trial will be in the same Estate?
-            </p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">This Trial will be in the same Estate?</p>
           </Col>
           <Col md={5} lg={5}>
             {" "}
@@ -542,19 +537,20 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 onRadioInputTrialInEState(value)
               }}
               inline
-              style={{ color: "#353131f2" }}
             >
               <Radio value="yes">Yes</Radio>
               <Radio value="no">No</Radio>
             </RadioGroup>
           </Col>
           {radioInputForTrialInEState === "yes" ? (
-            <Col xs={3}>
+            <Col md={5} lg={5}>
               <SelectPicker
+                id="estate"
+                className="estatePicker"
                 data={estates}
-                style={{ width: 224 }}
                 placeholder="Select Estate"
                 onSelect={estate => onSelectEstate(estate)}
+                block
               />{" "}
             </Col>
           ) : (
@@ -567,17 +563,18 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               <>
                 <div key={i}>
                   <Col xs={12} style={{ width: "100%" }}>
-                    <Col xs={8}>
+                    <Col md={9} lg={8}>
                       {i < 1 ? (
-                        <p style={{ color: "#353131f2" }}>
+                        <p className="labelForm">
                           No. of Replicates in Each Estate
                         </p>
                       ) : (
                         ""
                       )}
                     </Col>
-                    <Col xs={3} style={{ "margin-bottom": "12px" }}>
+                    <Col md={5} lg={5}>
                       <SelectPicker
+                        className="estatePickerwithNo"
                         data={estates}
                         placeholder="Select Estate"
                         onChange={(value, event) =>
@@ -586,10 +583,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                         block
                       />
                     </Col>
-                    <Col xs={3}>
+                    <Col md={5} lg={5}>
                       <Input
                         placeholder="Select No of Replicate"
-                        className="formField"
+                        className="replicateInput"
                         name="estatenofreplicate"
                         onChange={(value, e) =>
                           handleTrialInEStateInputChange(e, i, "input")
@@ -625,10 +622,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )}
         {radioInputForTrialInEState === "yes" ? (
           <Row className="show-grid newTrialFormLayout">
-            <Col md={8} lg={6}>
-              <p style={{ color: "#353131f2" }}>No. of Replicates</p>
+            <Col md={9} lg={8}>
+              <p className="labelForm">No. of Replicates</p>
             </Col>
-            <Col md={6} lg={6}>
+            <Col md={10} lg={10}>
               <Input
                 placeholder="Enter Number of Replicate for this Trial"
                 className="formField"
@@ -642,8 +639,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )}
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>
+          <Col md={9} lg={8}>
+            <p className="labelForm">
               Do all replicates have the same density?
             </p>
           </Col>
@@ -656,18 +653,17 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 onRadioInputSameDensity(value)
               }}
               inline
-              style={{ color: "#353131f2" }}
             >
               <Radio value="yes">Yes</Radio>
               <Radio value="no">No</Radio>
             </RadioGroup>
           </Col>
           {radioInputForSameDensity === "yes" ? (
-            <Col xs={3}>
+            <Col md={5} lg={5}>
               <Input
                 placeholder="Enter Density"
                 name="density"
-                className="formField"
+                className="densityInput"
                 onChange={(value, e) => onInput(e)}
               />
             </Col>
@@ -677,14 +673,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
 
         <Row className="show-grid newTrialFormLayout">
-          <Col md={8} lg={6}>
-            <p style={{ color: "#353131f2" }}>
-              What is the design for the replicates ?
-            </p>
+          <Col md={9} lg={8}>
+            <p className="labelForm">What is the design for the replicates ?</p>
           </Col>
-          <Col xs={6}>
+          <Col md={10} lg={10}>
             <SelectPicker
               id="design"
+              className="designPicker"
               data={designs}
               onSelect={design => onSelectDesign(design)}
               placeholder="Choose Design"
@@ -694,10 +689,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
       </Grid>
 
-      <div style={{ float: "right" }}>
+      <div className="buttonLayout">
         <Button
           appearance="primary"
-          className="btnAddTrial"
+          className="generateTableButton"
           onClick={onGenerateTable}
           disabled={disabledGenerateTable}
         >
@@ -710,57 +705,62 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       />
 
       {/* STEP 2 CUSTOMISE TABLE START*/}
-      <div style={{ padding: "1rem" }}>
-        <h4>
-          <span style={{ color: "#009D57" }}>Step 2:</span>{" "}
-          <span style={{ color: "#353131f2" }}>Customise Table</span>
+      <div>
+        <h4 className="title">
+          <span className="desc">Step 2:</span>{" "}
+          <span className="purpose">Customise Table</span>
         </h4>
       </div>
 
       <Grid fluid>
         <Row className="show-grid newTrialFormLayout">
           <FlexboxGrid justify="end">
-            <Col sm={5} md={5} lg={3}>
+            <Col md={5} lg={4}>
               <FlexboxGrid.Item>
-                <Button
-                  appearance="primary"
-                  className="btnAddTrial"
-                  onClick={onAddingNewReplicate}
-                  disabled={disbaledANR}
-                >
-                  Add New Replicate
-                </Button>
+                <div className="buttonLayout">
+                  <Button
+                    appearance="primary"
+                    className="replicateButton"
+                    onClick={onAddingNewReplicate}
+                    disabled={disbaledANR}
+                  >
+                    Add New Replicate
+                  </Button>
+                </div>
               </FlexboxGrid.Item>
             </Col>
-            <Col sm={5} md={5} lg={3}>
+            <Col md={5} lg={4}>
               <FlexboxGrid.Item>
-                <Button
-                  appearance="primary"
-                  className="variant"
-                  style={{ width: "158px" }}
-                  onClick={onAddingNewReplicateVarient}
-                  disabled={disbaledANRV}
-                >
-                  Add Replicate Variant
-                </Button>
+                <div className="buttonLayout">
+                  <Button
+                    appearance="primary"
+                    className="variant variantButton"
+                    onClick={onAddingNewReplicateVarient}
+                    disabled={disbaledANRV}
+                  >
+                    Add Replicate Variant
+                  </Button>
+                </div>
               </FlexboxGrid.Item>
             </Col>
-            <Col sm={5} md={5} lg={3}>
+            <Col md={4} lg={3}>
               <FlexboxGrid.Item>
-                <Button
-                  className="btnDelete"
-                  onClick={deleteReplicate}
-                  disabled={disbaledRD}
-                >
-                  Delete
-                </Button>
+                <div className="buttonLayout">
+                  <Button
+                    className="deleteButton"
+                    onClick={deleteReplicate}
+                    disabled={disbaledRD}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </FlexboxGrid.Item>
             </Col>
           </FlexboxGrid>
         </Row>
       </Grid>
 
-      <Table wordWrap data={tableData} autoHeight>
+      <Table id="dashboardTable" wordWrap data={tableData} autoHeight>
         <Column width={70} align="center" fixed>
           <HeaderCell className="tableHeader">
             <Checkbox
@@ -857,20 +857,20 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Column>
       </Table>
 
-      <Grid fluid>
-        <Row className="show-grid newTrialFormLayout" id="tableOption">
+      <Grid fluid className="footerLayout">
+        <Row className="show-grid">
           <FlexboxGrid justify="end">
-            <Col sm={5} md={5} lg={3}>
+            <Col md={5} lg={4}>
               <FlexboxGrid.Item>
-                <Button appearance="subtle" className="btnAddTrial">
+                <Button appearance="subtle" className="cancelButton">
                   Cancel
                 </Button>
               </FlexboxGrid.Item>
             </Col>
-            <Col sm={5} md={5} lg={3}>
+            <Col md={5} lg={4}>
               <FlexboxGrid.Item>
                 <Button
-                  className="btnAddTrial"
+                  className="saveButton"
                   appearance="primary"
                   onClick={() => setShow(true)}
                   type="button"
@@ -885,9 +885,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       {/* STEP 2 CUSTOMISE TABLE END*/}
 
       {/* CONFIRMATION MODEL START */}
-      <Modal show={show} onHide={hide}>
+      <Modal id="SaveTrialModal" show={show} onHide={hide}>
         <Modal.Header>
-          <Modal.Title style={{ color: "#009D57" }}>Saving Trial</Modal.Title>
+          <Modal.Title className="title">Saving Trial</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ color: "#444444" }}>
           Are you sure you want to save this{" "}

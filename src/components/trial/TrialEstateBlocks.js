@@ -259,36 +259,41 @@ const TrialEstateBlocks = ({
 
   const ActionCell = ({ rowData, dataKey, onClick, ...props }) => {
     return (
-      <Cell {...props} style={{ padding: "6px 0" }}>
+      <Cell align="center" {...props}>
         {rowData.status === "EDIT" ? (
-          <>
-            <IconButton
-              icon={<Icon icon="check" />}
-              circle
-              color="green"
-              size="xs"
-              onClick={() => {
-                onClick && onClick(rowData.replicate)
-              }}
-            />
-            &nbsp;
-            <IconButton
-              icon={<Icon icon="close" />}
-              circle
-              color="red"
-              size="xs"
-              onClick={() => {
-                onClick && onClick(rowData.replicate)
-              }}
-            />
-          </>
+          <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
+            <FlexboxGrid.Item>
+              <IconButton
+                icon={<Icon icon="check" />}
+                circle
+                color="green"
+                size="xs"
+                onClick={() => {
+                  onClick && onClick(rowData.replicate)
+                }}
+              />
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              <IconButton
+                icon={<Icon icon="close" />}
+                circle
+                color="red"
+                size="xs"
+                onClick={() => {
+                  onClick && onClick(rowData.replicate)
+                }}
+              />
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
         ) : (
-          <img
-            src={CreateIcon}
-            onClick={() => {
-              onClick && onClick(rowData.replicate)
-            }}
-          />
+          <span>
+            <img
+              src={CreateIcon}
+              onClick={() => {
+                onClick && onClick(rowData.replicate)
+              }}
+            />
+          </span>
         )}
         {/* </Button> */}
       </Cell>
@@ -309,22 +314,23 @@ const TrialEstateBlocks = ({
   return (
     <>
       <div>
-        <Grid fluid>
+        <Grid fluid id="dashboardFilterPanel" className="modifyPadding">
           <Row className="show-grid">
-            <Col sm={6} md={6} lg={3}>
-              <ControlLabel>Soil Type</ControlLabel>
+            <Col sm={6} md={4} lg={3}>
+              <ControlLabel className="labelFilter">Soil Type</ControlLabel>
               <br />
               <SelectPicker
+                className="dashboardSelectFilter"
                 data={soilTypeFilterData}
                 value={selectedSoilType}
                 onChange={(value, e) => setSelectedSoilType(value)}
                 style={{ width: 180 }}
               />
             </Col>
-            <Col sm={5} md={4} lg={2}>
-              <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
+            <Col sm={5} md={4} lg={3}>
+              <div className="show-col">
                 <Button
-                  className="btnApply"
+                  className="applyButton"
                   appearance="primary"
                   onClick={onApply}
                 >
@@ -333,10 +339,10 @@ const TrialEstateBlocks = ({
               </div>
             </Col>
 
-            <Col sm={3} md={4} lg={2}>
+            <Col sm={3} md={4} lg={3}>
               <div className="show-col">
                 <Button
-                  className="btnResetFilter"
+                  className="resetButton"
                   appearance="subtle"
                   onClick={onReset}
                 >
@@ -345,14 +351,14 @@ const TrialEstateBlocks = ({
               </div>
             </Col>
           </Row>
-          <Row className="show-grid" id="tableOption">
+          <Row className="show-grid" id="dashboardTableSetting">
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({tableData.length})</b>
+              <b>Total records ({tableData ? tableData.length : null})</b>
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={3}>
-                <FlexboxGrid.Item className="paginationOption">
+              <Col sm={5} md={5} lg={4}>
+                <FlexboxGrid.Item className="selectPage">
                   <InputPicker
                     className="option"
                     data={perpage}
@@ -366,7 +372,7 @@ const TrialEstateBlocks = ({
           </Row>
         </Grid>
 
-        <Table wordWrap data={filteredTableData} autoHeight>
+        <Table wordWrap data={filteredTableData} autoHeight id="dashboardTable">
           <Column width={70} align="center" fixed>
             <HeaderCell className="tableHeader">
               <Checkbox
@@ -392,27 +398,29 @@ const TrialEstateBlocks = ({
             <EditCell dataKey="estateblock" onChange={handleChange} />
           </Column>
 
-          <Column width={300}>
+          <Column width={250}>
             <HeaderCell className="tableHeader">Density</HeaderCell>
             <EditCell dataKey="density" onChange={handleChange} />
           </Column>
 
-          <Column width={300}>
+          <Column width={250}>
             <HeaderCell className="tableHeader">Design</HeaderCell>
             <EditCell dataKey="design" onChange={handleChange} />
           </Column>
 
-          <Column width={300}>
+          <Column width={250}>
             <HeaderCell className="tableHeader">Soil Type</HeaderCell>
             <EditCell dataKey="soiltype" onChange={handleChange} />
           </Column>
 
-          <Column flexGrow={1}>
-            <HeaderCell className="tableHeader">Action</HeaderCell>
+          <Column width={130} fixed="right">
+            <HeaderCell className="tableHeader" align="center">
+              Action
+            </HeaderCell>
             <ActionCell dataKey="replicate" onClick={handleEditState} />
           </Column>
         </Table>
-        <div style={{ float: "right", padding: "1rem" }}>
+        <div className="pagination">
           <Pagination
             {...pagination}
             pages={getNoPages()}

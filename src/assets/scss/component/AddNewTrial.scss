@@ -1,4 +1,22 @@
-#addNewTrial {
+#AddNewTrial {
+  padding: 11px 22px;
+
+  .title {
+    margin-bottom: 20px;
+    .desc {
+      color: $primary-green;
+    }
+
+    .purpose {
+      color: $primary-black;
+    }
+  }
+
+  .labelForm {
+    font-weight: 700;
+    color: $primary-black;
+  }
+
   .newTrialFormLayout {
     margin-bottom: 20px;
   }
@@ -11,37 +29,88 @@
       height: 120px;
   }
 
-  .noOfSubBlock {
-      width: 95%;
-
+  .subPlotInput {
+    width: 95%;
   }
 
-  .noOfPlot {
+  .plotInput {
     width: 95%;
-    margin-left: auto;
+    float: right;
+  }
+
+  .datePicker > .rs-picker-toggle {
+    width: 95%;
+  }
+
+  .estatePicker > .rs-picker-toggle {
+    width: 95%;
+    float: right;
+  }
+
+  .estatePickerwithNo > .rs-picker-toggle {
+    width: 95%;
+  }
+
+  .replicateInput {
+    width: 95%;
+    float: right;
+  }
+
+  .densityInput {
+    width: 95%;
+    float: right;
+  }
+
+  .designPicker > .rs-picker-toggle {
+    width: 100%;
+  }
+
+  .buttonLayout {
+    float: right;
+
+    .generateTableButton {
+      width: 150px;
+    }
+
+    .replicateButton {
+      width: 157px;
+    }
+
+    .variantButton {
+      width: 175px;
+    }
+
+    .deleteButton {
+      width: 116px;
+      color: white;
+      background-color: $primary-red;
+    }
+
+    .rs-btn-disabled {
+      color: $primary-grey;
+      background-color: $secondary-grey;
+    }
+  }
+
+  .footerLayout {
+    margin: 30px 0px 20px;
+    
+    .saveButton {
+      width: 170px;
+      height: 42px;
+      float: right;
+    }
+
+    .cancelButton {
+      width: 170px;
+      height: 42px;
+      float: right;
+    }
+  }
 }
 
-  .datePicker {
-      .rs-picker-toggle {
-          width: 95%;
-      }
+#SaveTrialModal {
+  .title {
+    color: $primary-green;
   }
-
-  .estatePicker{
-    margin-left: auto;
-      .rs-picker-toggle {
-          width: 95%;
-      }
-  }
-
-  .duplicateDensity {
-      width: 100%;
-  }
-
-  .designPicker {
-      .rs-picker-toggle {
-          width: 100%;
-      }
-  }
-  
 }

@@ -1,7 +1,14 @@
 import React from "react"
 import { Modal, Button } from "rsuite"
 
-const ConfirmationModal = ({ currentPage, show, hide, data, save }) => {
+const ConfirmationModal = ({
+  currentPage,
+  show,
+  hide,
+  data,
+  savePlotData,
+  savePalmData
+}) => {
   switch (currentPage) {
     case "plot":
       return (
@@ -27,7 +34,7 @@ const ConfirmationModal = ({ currentPage, show, hide, data, save }) => {
               </Button>
               <Button
                 className="yesButton"
-                onClick={() => save(data.trialid)}
+                onClick={() => savePlotData(data.trialid)}
                 appearance="primary"
               >
                 Yes
@@ -61,7 +68,7 @@ const ConfirmationModal = ({ currentPage, show, hide, data, save }) => {
               </Button>
               <Button
                 className="yesButton"
-                onClick={() => save(data.trialid)}
+                onClick={() => savePalmData(data.trialid)}
                 appearance="primary"
               >
                 Yes

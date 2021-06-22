@@ -55,7 +55,7 @@ const EditProgeny = ({ option, ...props }) => {
     setFormData(() => ({
       ...formData,
       [e.target.name]: e.target.value,
-      ["cross"]:
+      cross:
         formData.fpFam +
         "." +
         formData.fp +
@@ -122,7 +122,7 @@ const EditProgeny = ({ option, ...props }) => {
               dataValue={formData.popvar}
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["popvar"]: value }))
+                setFormData(() => ({ ...formData, popvar: value }))
               }
             />
           </Col>
@@ -173,7 +173,7 @@ const EditProgeny = ({ option, ...props }) => {
               dataValue={formData.generation}
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["generation"]: value }))
+                setFormData(() => ({ ...formData, generation: value }))
               }
             />
           </Col>
@@ -231,7 +231,7 @@ const EditProgeny = ({ option, ...props }) => {
               dataValue={formData.fpVar}
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["fpVar"]: value }))
+                setFormData(() => ({ ...formData, fpVar: value }))
               }
             />
           </Col>
@@ -274,7 +274,7 @@ const EditProgeny = ({ option, ...props }) => {
               dataValue={formData.mpVar}
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["mpVar"]: value }))
+                setFormData(() => ({ ...formData, mpVar: value }))
               }
             />
           </Col>
@@ -325,7 +325,7 @@ const EditProgeny = ({ option, ...props }) => {
                 onChange={value =>
                   setFormData(() => ({
                     ...formData,
-                    ["crossType"]:
+                    crossType:
                       formData.fpVar + "X" + formData.mpVar + " " + value
                   }))
                 }

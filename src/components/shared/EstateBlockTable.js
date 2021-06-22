@@ -107,10 +107,8 @@ const EstateBlockTable = ({
   }
 
   async function getEstateData() {
-    const {
-      data,
-      updatedDate
-    } = await DashboardDataService.getUpdatedEstateBlocks()
+    const { data, updatedDate } =
+      await DashboardDataService.getUpdatedEstateBlocks()
     setUpdateDate(updatedDate)
     const { estate } = option
     const estatedata = data.find(estates => estates.estate === estate)
@@ -307,11 +305,11 @@ const EstateBlockTable = ({
         {/* Add Estate Block MODAL STARTED */}
         <Modal id="estateBlockModal" show={isModal} onHide={close}>
           <Modal.Header>
-            <Modal.Title>Add Estate Block</Modal.Title>
+            <Modal.Title className="title">Add Estate Block</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <div style={{ color: "black" }}>
-              <div className="lastUpdate">
+          <Modal.Body className="body">
+            <div>
+              <p className="lastUpdate">
                 Last updated on :{" "}
                 <b>
                   {new Date(updateDate).toLocaleDateString("en-US", {
@@ -321,15 +319,14 @@ const EstateBlockTable = ({
                     day: "numeric"
                   })}
                 </b>
-              </div>
-              <div className="estateName">
+              </p>
+
+              <p>
                 Estate: <b>{option.estate}</b>
-              </div>
-              <div className="totalEstateBlock">
-                List of Estate Blocks({estateBlocks.length})
-              </div>
+              </p>
+              <p>List of Estate Blocks ({estateBlocks.length})</p>
             </div>
-            <Table wordWrap data={estateBlocks}>
+            <Table wordWrap data={estateBlocks} id="modalTable">
               <Column width={70} align="center" fixed>
                 <HeaderCell className="tableHeader">
                   <Checkbox
@@ -370,7 +367,7 @@ const EstateBlockTable = ({
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={6} lg={4}>
+              <Col sm={5} md={5} lg={4}>
                 <FlexboxGrid.Item className="selectPage">
                   <InputPicker
                     className="option"
@@ -383,7 +380,7 @@ const EstateBlockTable = ({
               </Col>
 
               <Col sm={5} md={5} lg={4}>
-                <FlexboxGrid.Item>
+                <FlexboxGrid.Item className="estateBlockButtonLayout">
                   <Button
                     appearance="primary"
                     className="addEstateBlockButton"

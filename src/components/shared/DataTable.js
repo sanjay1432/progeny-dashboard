@@ -28,10 +28,9 @@ import LinkIcon from "../../assets/img/icons/link_24px.svg"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
 import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
-import CheckCircle from "../../assets/img/icons/check_circle_24px.svg"
-import Cancel from "../../assets/img/icons/cancel_24px.svg"
-import PlotConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
-import PalmConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
+import ConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
+import PalmService from "services/palm.service"
+import PlotService from "services/plot.service"
 
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -55,10 +54,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   })
 
   const [successMessage, setSuccessMessage] = useState(false)
+  const [successData, setSuccessData] = useState(null)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [errorData, setErrorData] = useState("")
   const [confirmationModal, setConfirmationModal] = useState(false)
   const [confirmationData, setConfirmationData] = useState("")
   const [isSuccessModal, setSuccessModal] = useState(false)
-  const [successData, setSuccessData] = useState(null)
   const [assignUserModal, setAssignUserModal] = useState(false)
   const [estate, setEstate] = useState("")
   const [selectedItem, setSelectedItem] = useState([])
@@ -400,9 +401,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setCheckStatus(keys)
   }
 
-  function openPalmConfirmation(rowData) {
+  function openConfirmationModal(rowData) {
     setConfirmationModal(true)
     setConfirmationData(rowData)
+  }
+
+  function closeConfirmationModal() {
+    setConfirmationModal(false)
+    setErrorMessage("")
   }
 
   function filterTable(filters, data) {
@@ -667,7 +673,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="green"
                     size="xs"
                     icon={<Icon icon="check" />}
-                    onClick={() => openPalmConfirmation(rowData)}
+                    onClick={() => openConfirmationModal(rowData)}
                   />
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
@@ -676,7 +682,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="red"
                     size="xs"
                     icon={<Icon icon="close" />}
-                    onClick={() => handlePalmEditStatus()}
+                    onClick={() => handlePlotEditStatus()}
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
@@ -696,7 +702,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <FlexboxGrid.Item>
                   <img
                     src={CreateIcon}
-                    onClick={() => handlePalmEditStatus(rowData.trialid)}
+                    onClick={() => handlePlotEditStatus(rowData.trialid)}
                   />
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
@@ -717,7 +723,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="green"
                     size="xs"
                     icon={<Icon icon="check" />}
-                    onClick={() => openPalmConfirmation(rowData)}
+                    onClick={() => openConfirmationModal(rowData)}
                   />
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
@@ -726,7 +732,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="red"
                     size="xs"
                     icon={<Icon icon="close" />}
-                    onClick={() => handlePalmEditStatus()}
+                    onClick={() => cancelPalmData(rowData.trialid)}
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
@@ -743,6 +749,31 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
+  function handlePlotEditStatus(trialid) {
+    const nextData = Object.assign([], tableData)
+    const activeItem = nextData.find(item => item.trialid === trialid)
+    activeItem.status = activeItem.status ? null : true
+    setTableData(nextData)
+  }
+
+  function savePlotData(trialid) {
+    const nextData = Object.assign([], tableData)
+    const activeItem = nextData.find(item => item.trialid === trialid)
+    activeItem.status = activeItem.status ? null : true
+    PlotService.editPlot(confirmationData).then(
+      data => {
+        setTableData(nextData)
+        setConfirmationModal(false)
+        setSuccessMessage(active)
+        setSuccessData(confirmationData)
+      },
+      error => {
+        setErrorMessage(active)
+        setErrorData(error.message)
+      }
+    )
+  }
+
   function handlePalmEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
@@ -750,14 +781,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setTableData(nextData)
   }
 
+  function cancelPalmData(trialid) {
+    const nextData = Object.assign([], tableData)
+    const activeItem = nextData.find(item => item.trialid === trialid)
+    activeItem.status = activeItem.status === null
+    setTableData(nextData)
+  }
+
   function savePalmData(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
-    setTableData(nextData)
-    setConfirmationModal(false)
-    setSuccessMessage(active)
-    setSuccessData(confirmationData)
+    PalmService.editPalm(confirmationData).then(
+      data => {
+        setTableData(nextData)
+        setConfirmationModal(false)
+        setSuccessMessage(active)
+        setSuccessData(confirmationData)
+      },
+      error => {
+        setErrorMessage(active)
+        setErrorData(error.message)
+      }
+    )
   }
 
   function ActionButtons({ data }) {
@@ -1021,7 +1067,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </>
         )
       case "plot":
-        if (successData != undefined) {
+        if (successData !== null) {
           return (
             <>
               <Message
@@ -1036,6 +1082,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </>
           )
+        } else if (successData !== null) {
+          return <></>
         } else {
           return (
             <>
@@ -1062,23 +1110,26 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </>
           )
         }
-
       case "palm":
-        return (
-          <>
-            <Message
-              showIcon
-              type="success"
-              description={`Palm ${successData.palmno} in 
-                              ${successData.plot} in 
-                              Replicate ${successData.replicate} in 
-                              Trial ${successData.trialid} has been successfully edited.`}
-              onClick={() => {
-                setSuccessMessage("")
-              }}
-            />
-          </>
-        )
+        if (successData !== null) {
+          return (
+            <>
+              <Message
+                showIcon
+                type="success"
+                description={`Palm ${successData.palmno} in 
+                                ${successData.plot} in 
+                                Replicate ${successData.replicate} in 
+                                Trial ${successData.trialid} has been successfully edited.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            </>
+          )
+        } else if (successData === null) {
+          return <></>
+        }
       case "progeny":
         if (successData === null) {
           return (
@@ -1166,6 +1217,43 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             />
           </>
         )
+      default:
+        return <></>
+    }
+  }
+
+  function ErrorMessage({ activeNav, errorData }) {
+    switch (activeNav) {
+      case "plot":
+        if (errorData !== undefined) {
+          return (
+            <>
+              <Message
+                showIcon
+                type="error"
+                description={`${errorData}`}
+                onClick={() => {
+                  setErrorMessage("")
+                }}
+              />
+            </>
+          )
+        }
+      case "palm":
+        if (errorData !== undefined) {
+          return (
+            <>
+              <Message
+                showIcon
+                type="error"
+                description={`${errorData}`}
+                onClick={() => {
+                  setErrorMessage("")
+                }}
+              />
+            </>
+          )
+        }
       default:
         return <></>
     }
@@ -1473,6 +1561,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 activeNav={successMessage}
                 successData={successData}
               />
+
+              <ErrorMessage activeNav={errorMessage} errorData={errorData} />
+
               <SuccessModal
                 show={isSuccessModal}
                 hide={CloseSuccessModal}
@@ -1496,11 +1587,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 assignEstateToUser={assignEstateToUser}
               />
 
-              <PalmConfirmationModal
+              <ConfirmationModal
                 show={confirmationModal}
-                hide={() => setConfirmationModal(false)}
+                hide={closeConfirmationModal}
                 data={confirmationData}
-                save={savePalmData}
+                savePlotData={savePlotData}
+                savePalmData={savePalmData}
                 currentPage={active}
               />
             </FlexboxGrid>

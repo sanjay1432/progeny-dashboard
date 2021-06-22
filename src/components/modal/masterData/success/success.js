@@ -1,7 +1,5 @@
-import { functions } from "lodash"
-import React, { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
-import { Modal, Table, Button, Checkbox } from "rsuite"
+import React from "react"
+import { Modal, Button } from "rsuite"
 const SuccessModal = ({ show, hide, data, ...props }) => {
   function attachProgeny() {}
 

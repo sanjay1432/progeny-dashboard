@@ -47,8 +47,8 @@ const DataTable = ({
         <Checkbox
           value={rowData[dataKey]}
           inline
-          onChange={onChange}
-          checked={checkedKeys.some(item => item === rowData[dataKey])}
+          onChange={onChange} //onChange = handleCheck
+          checked={checkedKeys.some(item => item === rowData[dataKey])} //checkedKeys === checkStatus
         />
       </div>
     </Cell>
@@ -56,20 +56,16 @@ const DataTable = ({
 
   let checked = false
   let indeterminate = false
-  let disabled = true
 
   if (checkStatus.length === 0) {
     checked = false
     indeterminate = false
-    disabled = true
   } else if (checkStatus.length > 0 && checkStatus.length < data.length) {
     checked = false
     indeterminate = true
-    disabled = false
   } else if (checkStatus.length === data.length) {
     checked = true
     indeterminate = false
-    disabled = false
   }
 
   const handleCheckAll = (value, checked) => {
@@ -78,11 +74,13 @@ const DataTable = ({
   }
 
   const handleCheck = (value, checked, e) => {
+    console.log(value, checked)
     const keys = checked
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
     props.onChange(keys)
+    console.log(checkStatus)
   }
 
   return (
@@ -96,7 +94,6 @@ const DataTable = ({
             bordered
             loading={loading}
             expandedRowKeys={expandedCell}
-            renderRowExpanded={renderExpandedCell}
           >
             <Column width={80}>
               <HeaderCell>
@@ -108,7 +105,7 @@ const DataTable = ({
                 />
               </HeaderCell>
               <CheckCell
-                dataKey={columns[0].dataKey}
+                dataKey={columns[0].dataKey} //Primary key of table
                 checkedKeys={checkStatus}
                 onChange={handleCheck}
               />
@@ -120,11 +117,7 @@ const DataTable = ({
               const fixed = col.fixed ? col.fixed : false
               return (
                 <Column width={width} flexGrow={flexGrow} fixed={fixed}>
-                  {col.name ? (
-                    <HeaderCell>{col.name}</HeaderCell>
-                  ) : (
-                    <HeaderCell>{col.name}</HeaderCell>
-                  )}
+                  <HeaderCell>{col.name}</HeaderCell>
 
                   {col.customCell ? (
                     <col.customCell dataKey={col.dataKey} />

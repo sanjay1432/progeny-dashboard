@@ -1,0 +1,97 @@
+#GenerationQRCode {
+
+  .qrFunctionSetting {
+    margin: 20px 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    
+    .trial {
+      margin-top: 6px;
+      .trialData {
+        color: $primary-green;
+      }
+    }
+  
+    .plot {
+      margin-top: 6px;
+      .plotData {
+        color: $primary-green;
+      }
+    }
+  
+  
+  
+    .selectAll {
+      display: flex;
+      flex-direction: row;
+  
+      .selectBox {
+  
+      }
+  
+      .selectDesc {
+        font-weight: 700;
+        color: $primary-green;
+        margin-top: 6px;
+      }
+    }
+
+    .rs-btn-disabled {
+      width: 116px;
+      color: $primary-grey;
+      background-color: $secondary-grey;
+    }
+  
+    .qrPrintButton {
+      width: 127px;
+      float: right;
+    }
+  }
+
+  .QRCodeLayout {
+    width: 20%;
+    text-align: center;
+  }
+
+  .selectPalmLayout {
+    display: flex;
+    flex-direction: row;
+    padding-left: 10%;
+
+    .palm {
+      margin-top: 6px;
+      .palmData {
+        color: $primary-green;
+      }
+    }
+  }
+
+}
+
+#QrCodeModal {
+  .rs-modal-dialog > .rs-modal-content {
+    width: 412px;
+    height: 429px;
+    padding: 61px;
+
+    .rs-modal-body {
+      margin-top: 0px;
+      padding-bottom: 0px;
+
+      .QRCode {
+        border-radius: 15px;
+      }
+
+      .palm {
+        font-size: 20px;
+        text-align: center;
+        margin-top: 5px;
+
+        .palmData {
+          color: $primary-green;
+        }
+      }
+    }
+  }
+
+}

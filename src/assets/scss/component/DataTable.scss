@@ -80,11 +80,17 @@
       .rs-checkbox-wrapper {
         background-color: white;
         border-radius: 6px;
+        top: 6px;
       }
     }
   }
 
+  .rs-table-body-info {
+    color: black;
+  }
+
   .rs-table-body-wheel-area > .rs-table-row {
+
     .rs-table-cell-content {
       padding-left: 20px;
     }

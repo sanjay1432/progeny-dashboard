@@ -2,19 +2,37 @@
 #EstateBlockTable {
   margin-top: 20px;
 
-  #estateBlockModal {
-    .rs-modal-title {
-        color: $primary-green;
-        font-weight: 700;
-    }
-    .rs-modal-body {
-        margin-top: 8px;
+  .estateBlockButtonLayout {
+    text-align: center;
 
-        .lastUpdate,
-        .estateName,
-        .totalEstateBlock {
-            margin-bottom: 8px;
+    .addEstateBlockButton {
+      width: 145px;
+    }
+  }
+
+  #estateBlockModal {
+    .rs-modal-dialog > .rs-modal-content {
+      .rs-modal-header {
+        .rs-modal-header-close {
+          display: none;
         }
+        
+        .title {
+          font-size: 18px;
+          font-weight: 700;
+          color: $primary-green;
+        }
+      }
+  
+  
+      .body {
+          margin-top: 8px;
+  
+          .lastUpdate, .estateName, .totalEstateBlock {
+              color: black;
+              margin-bottom: 8px;
+          }
+      }
     }
   }
 

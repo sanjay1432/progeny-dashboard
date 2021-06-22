@@ -9,27 +9,33 @@ import {
   FormControl,
   ButtonToolbar
 } from "rsuite"
-import { getPositionList } from "../../../redux/actions/user.action"
-import UserService from "../../../services/user.service"
-import { clearBreadcrumb } from "../../../redux/actions/app.action"
-import { publish } from "../../../services/pubsub.service"
+import { getPositionList } from "../../redux/actions/user.action"
+import UserService from "../../services/user.service"
+import { setBreadcrumb, clearBreadcrumb } from "../../redux/actions/app.action"
+import { publish } from "../../services/pubsub.service"
 
 let selectionData = {}
-
-const AddNewUser = () => {
-  const initialForm = {
-    userId: "",
-    username: "",
-    position: ""
-  }
-  const [formData, setFormData] = useState(initialForm)
+const EditUser = ({ option }) => {
+  console.log(option)
+  const [userId, setUserId] = useState(option.userId)
+  const [username, setUsername] = useState(option.username)
+  const [position, setPosition] = useState(option.position)
+  const [status, setStatus] = useState(option.status)
   const dispatch = useDispatch()
-
-  const PositionList = useSelector(state => state.positionListReducer.result)
+  const positionList = useSelector(state => state.positionListReducer)
+  const PositionList = positionList.result
 
   useEffect(() => {
     dispatch(getPositionList())
   }, [])
+
+  useEffect(() => {
+    dispatch(getPositionList())
+  }, [])
+
+  function handleActionExpand(breadcrumb, option) {
+    dispatch(setBreadcrumb({ breadcrumb, option }))
+  }
 
   const selectionType = [{ name: "position" }]
 
@@ -39,15 +45,12 @@ const AddNewUser = () => {
       const selectiondata = [
         ...new Set(PositionList.map(res => res[selectionLabel]))
       ]
-
       selectionData[selectionLabel] = selectiondata
     })
   }
 
   let dataInSelection = []
-
   const finalData = selectionData["position"]
-
   if (finalData) {
     finalData.forEach(data => {
       dataInSelection.push({
@@ -62,18 +65,31 @@ const AddNewUser = () => {
     })
   }
 
-  function handleChange(e) {
-    e.persist()
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const statusData = [
+    {
+      label: "Active",
+      value: "active"
+    },
+    {
+      label: "Inactive",
+      value: "inactive"
+    }
+  ]
 
-  function addNewUser() {
-    UserService.addNewUser(formData).then(
+  function editUser() {
+    const payload = {
+      userId: userId,
+      username: username,
+      position: position,
+      status: status
+    }
+    UserService.editUser(payload).then(
       data => {
-        console.log(formData, "has been added to the system.")
+        console.log(payload, "has not been edited to the system.")
+        dispatch(clearBreadcrumb())
         const savedData = {
-          type: "USERLIST_ADD",
-          data: formData,
+          type: "USERLIST_EDIT",
+          data: payload,
           action: "CREATED"
         }
         dispatch(clearBreadcrumb())
@@ -92,9 +108,10 @@ const AddNewUser = () => {
           <ControlLabel className="formLabel">User ID</ControlLabel>
           <FormControl
             name="userId"
+            value={userId}
             className="dataBox"
             placeholder="User ID"
-            onChange={(value, e) => handleChange(e)}
+            onChange={setUserId}
           />
         </FormGroup>
 
@@ -102,9 +119,10 @@ const AddNewUser = () => {
           <ControlLabel className="formLabel">Username</ControlLabel>
           <FormControl
             name="username"
+            value={username}
             className="dataBox"
             placeholder="Username"
-            onChange={(value, e) => handleChange(e)}
+            onChange={setUsername}
           />
         </FormGroup>
 
@@ -112,10 +130,20 @@ const AddNewUser = () => {
           <ControlLabel className="formLabel">Position</ControlLabel>
           <SelectPicker
             name="position"
+            value={position}
             data={dataInSelection}
-            onChange={value =>
-              setFormData(() => ({ ...formData, ["position"]: value }))
-            }
+            onChange={setPosition}
+          />
+        </FormGroup>
+
+        <FormGroup className="labelLayout">
+          <ControlLabel className="formLabel">Position</ControlLabel>
+          <SelectPicker
+            name="status"
+            value={status}
+            data={statusData}
+            onChange={setStatus}
+            searchable={false}
           />
         </FormGroup>
 
@@ -124,16 +152,11 @@ const AddNewUser = () => {
             <Button
               appearance="subtle"
               className="btnCancel"
-              onClick={() => dispatch(clearBreadcrumb())}
+              onClick={() => handleActionExpand()}
             >
               Cancel
             </Button>
-
-            <Button
-              appearance="primary"
-              className="btnSave"
-              onClick={addNewUser}
-            >
+            <Button appearance="primary" className="btnSave" onClick={editUser}>
               Save
             </Button>
           </ButtonToolbar>
@@ -143,4 +166,4 @@ const AddNewUser = () => {
   )
 }
 
-export default AddNewUser
+export default EditUser
