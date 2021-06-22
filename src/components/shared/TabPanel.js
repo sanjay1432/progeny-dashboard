@@ -86,7 +86,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
         if (breadcrumb[1] === "Generate QR Code") {
           return (
             <>
-              <GenerateQRCode />
+              <GenerateQRCode option={option} />
             </>
           )
         }

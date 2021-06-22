@@ -1,27 +1,54 @@
 #LoginPage {
-  .title {
-    font-size: 16px;
-    font-weight: 400;
-    color: $primary-green;
+  .text-center {
+    margin-top: 70px;
+
+    .title {
+      margin: 20px 0px;
+      font-size: 18px;
+      font-weight: 400;
+      color: $primary-green;
+
+      .titleName {
+        color: $primary-green;
+      }
+    }
   }
 
-  .labelForm {
-    font-size: 16px;
-    font-weight: 500;
+  .loginForm{
+    text-align: center;
+
+    .formLayout {
+      margin: 13px 0px;
+
+      .labelForm {
+        font-size: 16px;
+        font-weight: 500;
+        padding-top: 8px;
+        margin-right: 18%;
+      }
+    
+      .inputForm {
+        width: 110%;
+        height: 40px;
+        border: 1px solid $secondary-grey;
+    
+      }
+    }
+
+    .loginButton {
+      width: 47%;
+      height: 41px;
+      color: white;
+      border-radius: 9px;
+      margin-top: 15px;
+      background-color: $primary-green;
+    }
   }
 
-  .inputForm {
-    width: 327px;
-    height: 40px;
-    border: 1px solid $secondary-grey;
-
-  }
-
-  .loginButton {
-    width: 400px;
-    height: 41px;
-    color: white;
-    border-radius: 9px;
-    background-color: $primary-green;
+  .companyName {
+    color: $secondary-grey;
+    text-align: center;
+    margin-top: 230px;
+    
   }
 }

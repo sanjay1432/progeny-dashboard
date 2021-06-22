@@ -686,7 +686,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={QrCodeScanner}
                     onClick={() =>
-                      handleActionExpand(["Plot", "Generate QR Code"], {})
+                      handleActionExpand(["Plot", "Generate QR Code"], {
+                        trialid: rowData.trialid,
+                        plot: rowData.plot
+                      })
                     }
                   />
                 </FlexboxGrid.Item>
