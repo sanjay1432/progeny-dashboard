@@ -6,7 +6,15 @@ const getQrCodeDataList = trialid => {
     return response.data
   })
 }
+const getTrialPlots = trialid => {
+  return axiosApiInstance
+    .get(`${API_URL}/trial/replicates/plots/${trialid}`)
+    .then(response => {
+      return response.data
+    })
+}
 
 export default {
-  getQrCodeDataList
+  getQrCodeDataList,
+  getTrialPlots
 }
