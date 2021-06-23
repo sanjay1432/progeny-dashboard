@@ -17,10 +17,10 @@ const SelectFilter = ({ data, dataType, selectedData, onUpdate }) => {
   const filterData = selectionData[dataType]
 
   if (filterData) {
-    filterData.forEach(data => {
+    filterData.forEach(SelectData => {
       dataInSelection.push({
-        label: data,
-        value: data
+        label: SelectData,
+        value: SelectData
       })
     })
   } else {

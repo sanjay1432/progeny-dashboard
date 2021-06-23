@@ -4,22 +4,14 @@ import { Table, Loader, Checkbox } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
 
 const currentTableDataFields = []
-const DataTable = ({
-  columns,
-  data,
-  expandedCell,
-  renderExpandedCell,
-  selectedItem,
-  ...props
-}) => {
-  const [loading, setLoading] = useState(false)
+const DataTable = ({ columns, data, selectedItem, ...props }) => {
   const [checkStatus, setCheckStatus] = useState([])
 
   const filterData = useSelector(state => state.filterReducer)
 
   const availableKeys = Object.keys(data[0])
   availableKeys.forEach(setKey => {
-    const field = columns.find(field => field.value === setKey)
+    const field = columns.find(columnField => columnField.value === setKey)
     if (field) {
       currentTableDataFields.push(field)
     }
@@ -41,8 +33,14 @@ const DataTable = ({
     })
   }
 
-  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
-    <Cell {...props} style={{ padding: 0 }}>
+  const CheckCell = ({
+    rowData,
+    onChange,
+    checkedKeys,
+    dataKey,
+    ...checkProps
+  }) => (
+    <Cell {...checkProps} style={{ padding: 0 }}>
       <div>
         <Checkbox
           value={rowData[dataKey]}
@@ -57,15 +55,10 @@ const DataTable = ({
   let checked = false
   let indeterminate = false
 
-  if (checkStatus.length === 0) {
-    checked = false
-    indeterminate = false
-  } else if (checkStatus.length > 0 && checkStatus.length < data.length) {
-    checked = false
+  if (checkStatus.length > 0 && checkStatus.length < data.length) {
     indeterminate = true
   } else if (checkStatus.length === data.length) {
     checked = true
-    indeterminate = false
   }
 
   const handleCheckAll = (value, checked) => {
@@ -87,14 +80,7 @@ const DataTable = ({
     <div>
       {columns && data ? (
         <div>
-          <Table
-            id="modalTable"
-            data={getData()}
-            height={390}
-            bordered
-            loading={loading}
-            expandedRowKeys={expandedCell}
-          >
+          <Table id="modalTable" data={getData()} height={390} bordered>
             <Column width={80}>
               <HeaderCell>
                 {" "}
