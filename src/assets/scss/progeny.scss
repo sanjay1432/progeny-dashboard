@@ -25,8 +25,11 @@
 @import "./component/DataTable.scss";
 @import "./component/EstateBlockTable.scss";
 @import "./component/AddNewTrial.scss";
+@import "./component/TrialEstateBlocks.scss";
+@import "./component/EditTrial.scss";
 @import "./component/PogenyAction.scss"; //For AddNewProgeny && EditProgeny
 @import "./component/UserListAction.scss"; //For AddNewUser && EditUser
+@import "./component/GenerateQRCode.scss";
 @import "./component/EstateInformation.scss";
 @import "./component/UserModal.scss"; //For AssignUser && AssignEstate
 @import "./component/ConfirmationModal.scss"

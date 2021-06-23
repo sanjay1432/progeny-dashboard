@@ -1,6 +1,5 @@
 import React from "react"
-import { Container, Row, Col } from "reactstrap"
-import { Input, InputGroup, Icon, ControlLabel, AutoComplete } from "rsuite"
+import { InputGroup, Icon, ControlLabel, AutoComplete } from "rsuite"
 const Search = ({ currentSubNavState, ...props }) => {
   const styles = {
     width: 140,

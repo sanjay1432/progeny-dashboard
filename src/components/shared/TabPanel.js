@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import SearchFilter from "./SearchFilter"
 import DataTable from "./DataTable"
 import { useSelector } from "react-redux"
 import EstateBlockTable from "./EstateBlockTable"
-import AddNewUser from "../user/userList/AddNewUser"
-import EditUser from "../user/userList/EditUser"
+import AddNewUser from "../userList/AddNewUser"
+import EditUser from "../userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
 import EditTrial from "../trial/EditTrial"
 import TrialEstateBlocks from "../trial/TrialEstateBlocks"
-import EstateInformation from "components/user/estateAssignment/EstateInformation"
+import EstateInformation from "components/estateAssignment/EstateInformation"
 import AddNewProgeny from "components/progeny/AddNewProgeny"
 import AttachProgeny from "components/progeny/AttachProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
@@ -42,7 +42,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
           </>
         )
       case "Trial and Replicate":
-        if (option.type == "create") {
+        if (option.type === "create") {
           return (
             <>
               <AddNewTrial
@@ -52,7 +52,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             </>
           )
         }
-        if (option.type == "edit") {
+        if (option.type === "edit") {
           return (
             <>
               <EditTrial
@@ -62,7 +62,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             </>
           )
         }
-        if (option.type == "expand") {
+        if (option.type === "expand") {
           return (
             <>
               <TrialEstateBlocks

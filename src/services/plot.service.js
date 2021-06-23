@@ -2,7 +2,16 @@ import { API_URL } from "../constants"
 import axiosApiInstance from "../api/api"
 
 const getQrCodeDataList = trialid => {
-  return axiosApiInstance.get(`${API_URL}/plot/qrcode/001`).then(response => {
+  return axiosApiInstance
+    .get(`${API_URL}/plot/qrcode/${trialid}`)
+    .then(response => {
+      console.log(response.data)
+      return response.data
+    })
+}
+
+const editPlot = payload => {
+  return axiosApiInstance.put(`${API_URL}/plot`, payload).then(response => {
     return response.data
   })
 }
@@ -16,5 +25,6 @@ const getTrialPlots = trialid => {
 
 export default {
   getQrCodeDataList,
-  getTrialPlots
+  getTrialPlots,
+  editPlot
 }

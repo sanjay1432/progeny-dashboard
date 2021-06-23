@@ -285,7 +285,7 @@ const AttachProgeny = ({
             <br />
             <SelectPicker
               data={trialIds}
-              value={filters.trial}
+              value={filters.trialId}
               onChange={(value, e) => setFilterData(value, "trialId")}
               style={{ width: 180 }}
             />

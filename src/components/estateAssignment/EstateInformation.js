@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import UserService from "../../../services/user.service"
-import { setFilter, clearFilter } from "../../../redux/actions/filter.action"
+import UserService from "../../services/user.service"
+import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 import {
   Table,
   FlexboxGrid,
@@ -364,7 +364,7 @@ const EstateInformation = ({ option }) => {
           </Col>
 
           <FlexboxGrid justify="end">
-            <Col sm={5} md={5} lg={3}>
+            <Col sm={5} md={5} lg={4}>
               <FlexboxGrid.Item className="selectPage">
                 <InputPicker
                   className="option"

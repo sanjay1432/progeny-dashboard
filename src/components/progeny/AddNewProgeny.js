@@ -7,8 +7,6 @@ import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
 
 const AddNewProgeny = () => {
-  const [manipulate, setManipulate] = useState(false)
-
   const initialForm = {
     progenyId: "",
     popvar: "",
@@ -50,7 +48,7 @@ const AddNewProgeny = () => {
     setFormData(() => ({
       ...formData,
       [e.target.name]: e.target.value,
-      ["cross"]:
+      cross:
         formData.fpFam +
         "." +
         formData.fp +
@@ -66,13 +64,11 @@ const AddNewProgeny = () => {
   function handleSelectFpFam(fpFam) {
     setFormData(() => ({ ...formData, fpFam }))
     console.log(formData)
-    setManipulate(true)
   }
 
   function handleSelectMpFam(mpFam) {
     setFormData(() => ({ ...formData, mpFam }))
     console.log(formData)
-    setManipulate(true)
   }
 
   function addProgeny() {
@@ -113,7 +109,7 @@ const AddNewProgeny = () => {
               dataType="popvar"
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["popvar"]: value }))
+                setFormData(() => ({ ...formData, popvar: value }))
               }
             />
           </Col>
@@ -154,7 +150,7 @@ const AddNewProgeny = () => {
               dataType="generation"
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["generation"]: value }))
+                setFormData(() => ({ ...formData, generation: value }))
               }
             />
           </Col>
@@ -188,12 +184,7 @@ const AddNewProgeny = () => {
           </Col>
           <Col>
             <InputGroup>
-              {manipulate ? (
-                <InputGroup.Addon>{formData.fpFam}</InputGroup.Addon>
-              ) : (
-                <InputGroup.Addon />
-              )}
-
+              <InputGroup.Addon>{formData.fpFam}</InputGroup.Addon>
               <Input name="fp" onChange={(value, e) => handleChange(e)} />
             </InputGroup>
           </Col>
@@ -207,7 +198,7 @@ const AddNewProgeny = () => {
               dataType="fpVar"
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["fpVar"]: value }))
+                setFormData(() => ({ ...formData, fpVar: value }))
               }
             />
           </Col>
@@ -230,11 +221,7 @@ const AddNewProgeny = () => {
           </Col>
           <Col>
             <InputGroup>
-              {manipulate ? (
-                <InputGroup.Addon>{formData.mpFam}</InputGroup.Addon>
-              ) : (
-                <InputGroup.Addon />
-              )}
+              <InputGroup.Addon>{formData.mpFam}</InputGroup.Addon>
               <Input name="mp" onChange={(value, e) => handleChange(e)} />
             </InputGroup>
           </Col>
@@ -248,7 +235,7 @@ const AddNewProgeny = () => {
               dataType="mpVar"
               OriginalData={ProgenyData}
               onChange={value =>
-                setFormData(() => ({ ...formData, ["mpVar"]: value }))
+                setFormData(() => ({ ...formData, mpVar: value }))
               }
             />
           </Col>
@@ -258,25 +245,32 @@ const AddNewProgeny = () => {
             <p className="labelName">Cross</p>
           </Col>
           <Col>
-            <Input
-              name="cross"
-              value={
-                formData.fpFam +
-                "." +
-                formData.fp +
-                " x " +
-                formData.mpFam +
-                "." +
-                formData.mp
-              }
-              // onChange={(value =>
-              //   setFormData(() => ({
-              //     ...formData,
-              //     ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp
-              //   })))
-              // }
-              disabled
-            />
+            {formData.fpFam === "" ||
+            formData.fp === "" ||
+            formData.mpFam === "" ||
+            formData.mp === "" ? (
+              <Input disabled />
+            ) : (
+              <Input
+                name="cross"
+                value={
+                  formData.fpFam +
+                  "." +
+                  formData.fp +
+                  " x " +
+                  formData.mpFam +
+                  "." +
+                  formData.mp
+                }
+                // onChange={(value =>
+                //   setFormData(() => ({
+                //     ...formData,
+                //     ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp
+                //   })))
+                // }
+                disabled
+              />
+            )}
           </Col>
         </Row>
         <Row>
@@ -285,12 +279,12 @@ const AddNewProgeny = () => {
           </Col>
           <Col>
             <InputGroup>
-              {manipulate ? (
+              {formData.fpVar === "" || formData.mpVar === "" ? (
+                <InputGroup.Addon></InputGroup.Addon>
+              ) : (
                 <InputGroup.Addon>
                   {formData.fpVar + "X" + formData.mpVar}
                 </InputGroup.Addon>
-              ) : (
-                <InputGroup.Addon></InputGroup.Addon>
               )}
               <DataPicker
                 dataType="crossType"
@@ -298,7 +292,7 @@ const AddNewProgeny = () => {
                 onChange={value =>
                   setFormData(() => ({
                     ...formData,
-                    ["crossType"]:
+                    crossType:
                       formData.fpVar + "X" + formData.mpVar + " " + value
                   }))
                 }
