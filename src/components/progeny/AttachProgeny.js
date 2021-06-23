@@ -48,6 +48,9 @@ const AttachProgeny = ({
   const [pagination, setPagination] = useState(initialState)
   const [show, setShow] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
+  const [replicateSelectorDisable, setReplicateSelectorDisable] = useState(
+    false
+  )
   const [nPalm, setnPalm] = useState(16)
   const [trialIds, setTrialIds] = useState([])
   const [estates, setEstates] = useState([])
@@ -91,6 +94,11 @@ const AttachProgeny = ({
     setTrials()
     setPlots()
     setProgeny()
+    if (filters.replicate != "All") {
+      setReplicateSelectorDisable(true)
+    } else {
+      setReplicateSelectorDisable(false)
+    }
   }
   function setTrials() {
     const selectorTrialIds = []
@@ -411,7 +419,7 @@ const AttachProgeny = ({
                   style={{ width: 224 }}
                   placeholder="-"
                   value={rowData.replicate}
-                  disabled={filters.replicate != "All"}
+                  disabled={replicateSelectorDisable}
                   onChange={(value, event) =>
                     handleReplicateChange(value, rowData.replicate, i)
                   }
