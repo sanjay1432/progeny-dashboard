@@ -10,6 +10,7 @@ import EditTrial from "../trial/EditTrial"
 import TrialEstateBlocks from "../trial/TrialEstateBlocks"
 import EstateInformation from "components/estateAssignment/EstateInformation"
 import AddNewProgeny from "components/progeny/AddNewProgeny"
+import AttachProgeny from "components/progeny/AttachProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
 import GenerateQRCode from "components/plot/GenerateQRCode"
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {

@@ -877,7 +877,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <img src={LinkIcon} alt="" />
+              <img
+                src={LinkIcon}
+                onClick={() =>
+                  handleActionExpand(
+                    ["Trial and Replicate", `Attach Progenies`],
+                    {
+                      trial: data.trialid,
+                      estate: data.estate,
+                      type: "attach"
+                    }
+                  )
+                }
+              />
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )

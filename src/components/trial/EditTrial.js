@@ -276,12 +276,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         )
       ]
 
-      const soilType = estateBlocks.find(
-        eb => eb.estateblock === block
-      ).soiltype
+      const foundedBlock = estateBlocks.find(eb => eb.estateblock === block)
       const data = [...existingReplicatesInEstate]
-      data[rowIndex].estateblock = block
-      data[rowIndex].soiltype = soilType
+      // data[rowIndex].estateblock = block
+      data[rowIndex].blockId = foundedBlock.id
+      data[rowIndex].soiltype = foundedBlock.soiltype
       setExistingReplicatesInEstate(data)
     } else {
       const data = [...existingReplicatesInEstate]
