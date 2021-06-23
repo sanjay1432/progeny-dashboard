@@ -1,9 +1,4 @@
-import {
-  POSITIONLIST_SUCCESS,
-  POSITIONLIST_FAIL,
-  ADDNEWUSER_SUCCESS,
-  ADDNEWUSER_FAIL
-} from "../actions/types"
+import { POSITIONLIST_SUCCESS, POSITIONLIST_FAIL } from "../actions/types"
 
 const initialState = {
   result: {}

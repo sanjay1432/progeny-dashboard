@@ -105,24 +105,28 @@
       width: 80px;
       height: 30px;
       padding: 0px;
+      color: #2AC769;
     }
   
     .inavtiveStatusButton{
       width: 90px;
       height: 30px;
       padding: 0px;
+      color: #FB4E4E;
     }
   
     .canceledStatusButton {
       width: 90px;
       height: 30px;
       padding: 0px;
+      color: #FB4E4E;
     }
   
     .finishedStatusButton {
       width: 85px;
       height: 30px;
       padding: 0px;
+      color: #F6A609;
     }
   }
 
@@ -155,5 +159,17 @@
   .rs-pagination > li.rs-pagination-btn-active > a{
       color: #fff;
       background-color: #008f53;
+  }
+}
+
+@media screen and(min-width: 1500px) {
+  #dashboardTableSetting {
+    .rs-col-lg-5 {
+      width: 16%;
+    }
+
+    .rs-col-lg-4 {
+      width: 13%;
+    }
   }
 }

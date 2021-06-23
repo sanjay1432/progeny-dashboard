@@ -1,4 +1,4 @@
-#AddNewTrial {
+#TrialAction {
   padding: 11px 22px;
 
   .title {
@@ -17,7 +17,7 @@
     color: $primary-black;
   }
 
-  .newTrialFormLayout {
+  .TrialFormLayout {
     margin-bottom: 20px;
   }
 
@@ -40,6 +40,10 @@
 
   .datePicker > .rs-picker-toggle {
     width: 95%;
+  }
+
+  .statusSelection {
+    display: flex;
   }
 
   .estatePicker > .rs-picker-toggle {
@@ -95,13 +99,13 @@
   .footerLayout {
     margin: 30px 0px 20px;
     
-    .saveButton {
+    .saveButton, .yesButton {
       width: 170px;
       height: 42px;
       float: right;
     }
 
-    .cancelButton {
+    .cancelButton, .noButton {
       width: 170px;
       height: 42px;
       float: right;
@@ -112,5 +116,25 @@
 #SaveTrialModal {
   .title {
     color: $primary-green;
+  }
+
+  .body {
+    color: black;
+
+    .description {
+      font-size: 16px;
+    }
+  }
+
+  .rs-modal-footer {
+    .noButton {
+      width: 142px;
+      height: 40px;
+    }
+
+    .yesButton {
+      width: 142px;
+      height: 40px;
+    }
   }
 }

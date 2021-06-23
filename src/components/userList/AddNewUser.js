@@ -114,7 +114,7 @@ const AddNewUser = () => {
             name="position"
             data={dataInSelection}
             onChange={value =>
-              setFormData(() => ({ ...formData, ["position"]: value }))
+              setFormData(() => ({ ...formData, position: value }))
             }
           />
         </FormGroup>

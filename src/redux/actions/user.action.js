@@ -1,9 +1,4 @@
-import {
-  POSITIONLIST_SUCCESS,
-  POSITIONLIST_FAIL,
-  ADDNEWUSER_SUCCESS,
-  ADDNEWUSER_FAIL
-} from "./types"
+import { POSITIONLIST_SUCCESS, POSITIONLIST_FAIL } from "./types"
 import UserService from "../../services/user.service"
 
 export const getPositionList = () => dispatch => {

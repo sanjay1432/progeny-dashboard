@@ -1,10 +1,6 @@
 import React from "react"
 import { InputGroup, Icon, ControlLabel, AutoComplete } from "rsuite"
 const Search = ({ currentSubNavState, ...props }) => {
-  const styles = {
-    width: 140,
-    marginRight: 5
-  }
   const data = [
     "HYPER Advertiser",
     "HYPER Web Analytics",

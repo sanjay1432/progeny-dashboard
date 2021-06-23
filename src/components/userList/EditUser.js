@@ -11,7 +11,7 @@ import {
 } from "rsuite"
 import { getPositionList } from "../../redux/actions/user.action"
 import UserService from "../../services/user.service"
-import { setBreadcrumb, clearBreadcrumb } from "../../redux/actions/app.action"
+import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { publish } from "../../services/pubsub.service"
 
 let selectionData = {}
@@ -28,14 +28,6 @@ const EditUser = ({ option }) => {
   useEffect(() => {
     dispatch(getPositionList())
   }, [])
-
-  useEffect(() => {
-    dispatch(getPositionList())
-  }, [])
-
-  function handleActionExpand(breadcrumb, option) {
-    dispatch(setBreadcrumb({ breadcrumb, option }))
-  }
 
   const selectionType = [{ name: "position" }]
 
@@ -152,7 +144,7 @@ const EditUser = ({ option }) => {
             <Button
               appearance="subtle"
               className="btnCancel"
-              onClick={() => handleActionExpand()}
+              onClick={dispatch(clearBreadcrumb())}
             >
               Cancel
             </Button>

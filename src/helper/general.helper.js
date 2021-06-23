@@ -1,22 +1,7 @@
-import {
-  CANCEL_REQUEST,
-  KPI_CATEGORIES,
-  PATTERN_COLORS,
-  PRODUCTION_TYPES
-} from "../constants/index"
+import { PATTERN_COLORS } from "../constants/index"
 import moment from "moment"
 import React from "react"
-import {
-  Alert,
-  Col,
-  Grid,
-  Icon,
-  IconButton,
-  Loader,
-  Placeholder,
-  Row,
-  Table
-} from "rsuite"
+import { Icon, IconButton, Loader, Table } from "rsuite"
 // import GeneralService from "../services/general.service"
 import classnames from "classnames"
 const { Cell } = Table

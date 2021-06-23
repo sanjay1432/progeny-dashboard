@@ -72,9 +72,11 @@ const logout = () => {
   stateLoader.initializeState()
 }
 
-export default {
+const AuthService = {
   login,
   logout,
   // loginSSO,
   refreshToken
 }
+
+export default AuthService

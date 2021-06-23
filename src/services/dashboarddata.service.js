@@ -13,7 +13,9 @@ const getUpdatedEstateBlocks = () => {
       return response.data
     })
 }
-export default {
+const DashboarddataService = {
   getDashboardData,
   getUpdatedEstateBlocks
 }
+
+export default DashboarddataService

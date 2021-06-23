@@ -7,6 +7,8 @@ const editPalm = payload => {
   })
 }
 
-export default {
+const PalmService = {
   editPalm
 }
+
+export default PalmService

@@ -1,17 +1,14 @@
 import React, {
   useState,
   useEffect,
-  useRef,
   forwardRef,
   useImperativeHandle
 } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Grid, Row, Col } from "rsuite"
-import { Button, IconButton, ButtonGroup, ButtonToolbar } from "rsuite"
+import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
 import Search from "../shared/Search"
 import Filter from "../shared/Filter"
-import { Drawer, Sidenav, Nav, Icon, FlexboxGrid } from "rsuite"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 let initialFilters = {}
 let currentFilters = []
@@ -23,12 +20,10 @@ const SearchFilter = forwardRef(
     useEffect(() => {
       currentFilters = []
     })
-    console.log("currentFilters", currentFilters)
+
     const dispatch = useDispatch()
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
-    console.log("selectedFilters", selectedFilters)
-    const [selectedValue, setValues] = useState({})
 
     const { active } = currentSubNavState
 
@@ -67,13 +62,7 @@ const SearchFilter = forwardRef(
           filterData[filterName] = filterdata
         }
       })
-
-      //console.log("dashboardData.result[active]",dashboardData.result[active])
-      //console.log("dashboardData",dashboardData)
-      console.log("filterData", { filterData })
     }
-
-    const sidebarFilters = filters
 
     let showMoreFiltersButton = false
     if (isTabletOrMobile | filters | isTabletOrMobileDevice) {
@@ -110,19 +99,19 @@ const SearchFilter = forwardRef(
     function close() {
       setDrawer(false)
     }
-    function SearchBox() {
-      if (filterList.search) {
-        return (
-          <Col sm={5} md={4} lg={3}>
-            <div className="show-col">
-              {" "}
-              <Search />
-            </div>
-          </Col>
-        )
-      }
-      return <></>
-    }
+    // function SearchBox() {
+    //   if (filterList.search) {
+    //     return (
+    //       <Col sm={5} md={4} lg={3}>
+    //         <div className="show-col">
+    //           {" "}
+    //           <Search />
+    //         </div>
+    //       </Col>
+    //     )
+    //   }
+    //   return <></>
+    // }
     function MoreFilter() {
       // const {show} = show;
       if (showMoreFiltersButton) {

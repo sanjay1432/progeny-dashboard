@@ -1,10 +1,4 @@
-import {
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT,
-  DASHBOARDDATA_FAIL,
-  DASHBOARDDATA_SUCCESS
-} from "../actions/types"
+import { DASHBOARDDATA_FAIL, DASHBOARDDATA_SUCCESS } from "../actions/types"
 import StateLoader from "../StateLoader"
 const stateLoader = new StateLoader()
 

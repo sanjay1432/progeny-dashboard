@@ -26,7 +26,8 @@
     }
 
     .rs-picker-default .rs-picker-toggle.rs-btn {
-      width: 394px;
+      width: 390px;
+      border: none;
       padding-top: 9px;
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
@@ -36,10 +37,12 @@
   .saveButton {
     width: 170px;
     height: 42px;
+    float: right;
   }
 
   .cancelButton {
     width: 170px;
     height: 42px;
+    float: right;
   }
 }

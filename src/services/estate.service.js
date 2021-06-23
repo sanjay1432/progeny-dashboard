@@ -1,7 +1,5 @@
 import { API_URL } from "../constants"
-import StateLoader from "../redux/StateLoader"
 import axiosApiInstance from "../api/api"
-const stateLoader = new StateLoader()
 
 const getUpdatedEstateBlocks = () => {
   return axiosApiInstance
@@ -25,8 +23,10 @@ const assignEstateBlocksToEstate = payload => {
       return response.data
     })
 }
-export default {
+const EstateService = {
   getUpdatedEstateBlocks,
   assignEstateBlocksToEstate,
   getDesigns
 }
+
+export default EstateService

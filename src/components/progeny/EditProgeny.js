@@ -7,8 +7,6 @@ import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
 
 const EditProgeny = ({ option, ...props }) => {
-  const [manipulate, setManipulate] = useState(false)
-
   var string = option.fp.split(".")
   console.log(string[0])
 
@@ -71,13 +69,11 @@ const EditProgeny = ({ option, ...props }) => {
   function handleSelectFpFam(fpFam) {
     setFormData(() => ({ ...formData, fpFam }))
     console.log(formData)
-    setManipulate(true)
   }
 
   function handleSelectMpFam(mpFam) {
     setFormData(() => ({ ...formData, mpFam }))
     console.log(formData)
-    setManipulate(true)
   }
   function editProgeny() {
     console.log(formData)
@@ -199,9 +195,6 @@ const EditProgeny = ({ option, ...props }) => {
               dataType="fpFam"
               dataValue={formData.fpFam}
               OriginalData={ProgenyData}
-              // onChange={value =>
-              //   setFormData(() => ({ ...formData, ["fpFam"]: value }))
-              // }
               onChange={fpFam => handleSelectFpFam(fpFam)}
             />
           </Col>
@@ -284,23 +277,19 @@ const EditProgeny = ({ option, ...props }) => {
             <p className="labelName">Cross</p>
           </Col>
           <Col>
-            {manipulate ? (
-              <Input
-                name="cross"
-                value={
-                  formData.fpFam +
-                  "." +
-                  formData.fp +
-                  " x " +
-                  formData.mpFam +
-                  "." +
-                  formData.mp
-                }
-                disabled
-              />
-            ) : (
-              <Input value={formData.cross} disabled />
-            )}
+            <Input
+              name="cross"
+              value={
+                formData.fpFam +
+                "." +
+                formData.fp +
+                " x " +
+                formData.mpFam +
+                "." +
+                formData.mp
+              }
+              disabled
+            />
           </Col>
         </Row>
         <Row>
@@ -309,15 +298,9 @@ const EditProgeny = ({ option, ...props }) => {
           </Col>
           <Col>
             <InputGroup>
-              {manipulate ? (
-                <InputGroup.Addon>
-                  {formData.fpVar + "X" + formData.mpVar}
-                </InputGroup.Addon>
-              ) : (
-                <InputGroup.Addon>
-                  {formData.fpVar + "X" + formData.mpVar}
-                </InputGroup.Addon>
-              )}
+              <InputGroup.Addon>
+                {formData.fpVar + "X" + formData.mpVar}
+              </InputGroup.Addon>
               <DataPicker
                 dataType="crossType"
                 dataValue={formData.crossType.slice(4)}

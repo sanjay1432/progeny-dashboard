@@ -1,10 +1,8 @@
 import FilterPanel from "components/modal/sharedComponent/FilterPanel"
 import Table from "components/modal/sharedComponent/DataTable"
 import React, { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
 import UserService from "../../../../services/user.service"
-import { Modal, Button, Message } from "rsuite"
-import { setMessage } from "redux/actions/message.action"
+import { Modal, Button } from "rsuite"
 
 const AssignUser = ({
   show,

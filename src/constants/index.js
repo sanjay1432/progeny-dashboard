@@ -175,7 +175,6 @@ export const CONFIG_TYPE = {
   annual: "annual"
 }
 
-//TODO
 export const MILL_LIST = [
   {
     millId: 1,
@@ -236,8 +235,7 @@ export const VIEW_TYPE = {
 }
 
 export const FILE_TYPE = {
-  xls:
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+  xls: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
   pdf: "pdf",
   csv: "text/csv;charset=utf-8"
 }

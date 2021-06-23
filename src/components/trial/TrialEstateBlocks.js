@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React, { useState, useEffect } from "react"
 import {
   Table,
   FlexboxGrid,
@@ -14,9 +13,9 @@ import {
   ControlLabel,
   Message,
   IconButton,
-  Icon
+  Icon,
+  Input
 } from "rsuite"
-import DashboardDataService from "../../services/dashboarddata.service"
 import EstateService from "../../services/estate.service"
 import TrialService from "../../services/trial.service"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
@@ -38,8 +37,6 @@ const TrialEstateBlocks = ({
   option,
   ...props
 }) => {
-  const dispatch = useDispatch()
-
   const [tableData, setTableData] = useState([])
   const [filteredTableData, setFilteredTableData] = useState([])
   const [ebAdded, setebAdded] = useState(null)
@@ -95,7 +92,7 @@ const TrialEstateBlocks = ({
     setEstateBlocks(blocks)
   }
   const { activePage, displaylength } = pagination
-  const { active } = currentSubNavState
+  //const { active } = currentSubNavState
 
   const perpage = [
     {
@@ -157,23 +154,19 @@ const TrialEstateBlocks = ({
 
   let checked = false
   let indeterminate = false
-  let disabled = true
 
   if (checkStatus.length === 0) {
     checked = false
     indeterminate = false
-    disabled = true
   } else if (
     checkStatus.length > 0 &&
     checkStatus.length < filteredTableData.length
   ) {
     checked = false
     indeterminate = true
-    disabled = false
   } else if (checkStatus.length === filteredTableData.length) {
     checked = true
     indeterminate = false
-    disabled = false
   }
 
   const handleCheckAll = (value, checked) => {
@@ -230,9 +223,8 @@ const TrialEstateBlocks = ({
     const editing = rowData.status === "EDIT"
     return (
       <Cell {...props} className={editing ? "table-content-editing" : ""}>
-        {editing && dataKey != "estateblock" ? (
-          <input
-            className="rs-input"
+        {editing && dataKey !== "estateblock" ? (
+          <Input
             defaultValue={rowData[dataKey]}
             disabled={["replicate", "design", "soiltype"].includes(dataKey)}
             onChange={event => {
@@ -289,6 +281,7 @@ const TrialEstateBlocks = ({
           <span>
             <img
               src={CreateIcon}
+              alt=""
               onClick={() => {
                 onClick && onClick(rowData.replicate)
               }}

@@ -55,7 +55,7 @@ const assignEstateToUser = payload => {
     })
 }
 
-export default {
+const UserService = {
   getPositionList,
   getUserList,
   getEstateList,
@@ -65,3 +65,5 @@ export default {
   assignUserToEstate,
   assignEstateToUser
 }
+
+export default UserService

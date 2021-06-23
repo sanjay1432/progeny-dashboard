@@ -13,7 +13,9 @@ const editProgeny = payload => {
   })
 }
 
-export default {
+const ProgenyService = {
   addNewProgeny,
   editProgeny
 }
+
+export default ProgenyService

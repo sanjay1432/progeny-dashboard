@@ -1,7 +1,7 @@
 import React from "react"
 import { Icon, Breadcrumb } from "rsuite"
 import { useSelector, useDispatch } from "react-redux"
-import { setBreadcrumb, clearBreadcrumb } from "../../redux/actions/app.action"
+import { clearBreadcrumb } from "../../redux/actions/app.action"
 const BreadcrumbProgeny = () => {
   const dispatch = useDispatch()
   const { breadcrumb } = useSelector(state => state.appReducer.breadcrumb)

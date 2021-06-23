@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import {
   Table,
@@ -115,7 +115,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       //UPDATE THE number of Replicare in Trial
       const currentnoOfRep =
-        trial.nofreplicate != "" ? parseInt(trial.nofreplicate) : 0
+        trial.nofreplicate !== "" ? parseInt(trial.nofreplicate) : 0
       const updatednoOfRep = currentnoOfRep + parseInt(e.target.value)
       setTrial(() => ({ ...trial, nofreplicate: updatednoOfRep.toString() }))
     }
@@ -333,7 +333,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     }
     data[data.length] = newRep
     const currentnoOfRep =
-      trial.nofreplicate != "" ? parseInt(trial.nofreplicate) : 0
+      trial.nofreplicate !== "" ? parseInt(trial.nofreplicate) : 0
     const updatednoOfRep = currentnoOfRep + 1
     setTrial(() => ({ ...trial, nofreplicate: updatednoOfRep.toString() }))
     setTableData(data)
@@ -392,7 +392,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setShow(false)
   }
   return (
-    <div id="AddNewTrial">
+    <div id="TrialAction">
       {/* STEP 1 GENERATE TABLE START*/}
       <div>
         <h4 className="title">
@@ -402,7 +402,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       </div>
 
       <Grid fluid>
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Trail ID</p>
           </Col>
@@ -415,7 +415,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Trail</p>
           </Col>
@@ -428,7 +428,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Trial Remarks</p>
           </Col>
@@ -444,7 +444,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Area (ha)</p>
           </Col>
@@ -458,7 +458,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Planted Date</p>
           </Col>
@@ -478,7 +478,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">No. of Progeny</p>
           </Col>
@@ -492,7 +492,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">No. of Subblock and No.of Plot/Subblock</p>
           </Col>
@@ -524,7 +524,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           </Col>
         </Row>
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">This Trial will be in the same Estate?</p>
           </Col>
@@ -558,7 +558,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           )}
         </Row>
         {radioInputForTrialInEState === "no" ? (
-          <Row className="show-grid newTrialFormLayout">
+          <Row className="show-grid TrialFormLayout">
             {inputListForTrialInEState.map((input, i) => (
               <>
                 <div key={i}>
@@ -621,7 +621,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           ""
         )}
         {radioInputForTrialInEState === "yes" ? (
-          <Row className="show-grid newTrialFormLayout">
+          <Row className="show-grid TrialFormLayout">
             <Col md={9} lg={8}>
               <p className="labelForm">No. of Replicates</p>
             </Col>
@@ -638,7 +638,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           ""
         )}
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">
               Do all replicates have the same density?
@@ -672,7 +672,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           )}
         </Row>
 
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">What is the design for the replicates ?</p>
           </Col>
@@ -713,7 +713,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       </div>
 
       <Grid fluid>
-        <Row className="show-grid newTrialFormLayout">
+        <Row className="show-grid TrialFormLayout">
           <FlexboxGrid justify="end">
             <Col md={5} lg={4}>
               <FlexboxGrid.Item>
@@ -889,24 +889,20 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Modal.Header>
           <Modal.Title className="title">Saving Trial</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ color: "#444444" }}>
+        <Modal.Body className="body">
           Are you sure you want to save this{" "}
-          <span
-            style={{
-              fontWeight: "bold",
-              textDecorationLine: "underline",
-              fontSize: "16px"
-            }}
-          >
-            Trial {trial.trialid}
-          </span>{" "}
-          ? This Trial and it’s replicate will be created inside the system.
+          <span className="description">Trial {trial.trialid}</span> ? This
+          Trial and it’s replicate will be created inside the system.
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={hide} appearance="subtle">
+          <Button onClick={hide} className="yesButton" appearance="subtle">
             No
           </Button>
-          <Button onClick={onSaveTrial} appearance="primary">
+          <Button
+            onClick={onSaveTrial}
+            className="noButton"
+            appearance="primary"
+          >
             Yes
           </Button>
         </Modal.Footer>

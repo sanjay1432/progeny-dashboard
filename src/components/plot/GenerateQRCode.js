@@ -2,20 +2,19 @@ import React, { useState, useEffect } from "react"
 import QRCode from "qrcode.react"
 import PlotService from "../../services/plot.service"
 import { Panel, Grid, Row, Col, Button, Checkbox, Modal } from "rsuite"
-import axios from "axios"
 
 const GenerationQRCode = ({ option }) => {
   const [qrData, setQrData] = useState([])
   const [zoomInQR, setZoomInQR] = useState(false)
-  const [zoomInData, setZoomInData] = useState("yolo")
+  const [zoomInData, setZoomInData] = useState("")
   const [checkStatus, setCheckStatus] = useState([])
 
   useEffect(() => {
-    PlotService.getQrCodeDataList(option.trialid).then(response => {
-      const data = response.data
+    async function fetchData() {
+      const data = await PlotService.getQrCodeDataList(option.trialid)
       setQrData(data)
-      console.log(data)
-    })
+    }
+    fetchData()
   }, [])
 
   const CheckCell = ({ onChange, checkedKeys, data }) => {
@@ -53,7 +52,6 @@ const GenerationQRCode = ({ option }) => {
   }
 
   function handleCheck(value, checked) {
-    console.log(value, checked)
     const keys = checked
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
@@ -100,31 +98,35 @@ const GenerationQRCode = ({ option }) => {
       </Grid>
 
       <Row>
-        {/* {qrData.map(data => {
-              function ZoomInQRCode(value, e) {
-                console.log(e)
-                setZoomInQR(true)
-                //setZoomInData(e.target.value)
-                console.log(zoomInData)
-              }
-              return(
-                <Col className="QRCodeLayout" md={4} lg={4}>
-                  <Panel shaded>
-                  <QRCode size={113} value={data.palmno} onClick={(value, e) => ZoomInQRCode(value, e)} />
-                  </Panel>
+        {qrData.map(data => {
+          function ZoomInQRCode(value, e) {
+            console.log(value, e)
+          }
+          return (
+            <Col className="QRCodeLayout" md={4} lg={4}>
+              <Panel shaded className="QrCodePanel">
+                <QRCode
+                  size={113}
+                  value={data.palmno}
+                  onClick={(value, e) => ZoomInQRCode(value, e)}
+                  renderAs={"svg"}
+                />
+              </Panel>
 
-                  <div className="selectPalmLayout">
-                  <CheckCell
-                    className="selectPalm"
-                    data={data.palmno} //Primary key of table
-                    checkedKeys={checkStatus}
-                    onChange={handleCheck}
-                  />
-                    <p className="palm">Palm : <b className="palmData">{data.palmno}</b></p>
-                  </div>
-                </Col>
-              )
-            })} */}
+              <div className="selectPalmLayout">
+                <CheckCell
+                  className="selectPalm"
+                  data={data.palmno} //Primary key of table
+                  checkedKeys={checkStatus}
+                  onChange={handleCheck}
+                />
+                <p className="palm">
+                  Palm : <b className="palmData">{data.palmno}</b>
+                </p>
+              </div>
+            </Col>
+          )
+        })}
       </Row>
 
       <Modal

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { CANCEL_REQUEST, FREQUENCY_SELECT_OPTS } from "../constants"
+import { CANCEL_REQUEST } from "../constants"
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
 import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
 import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
@@ -10,7 +10,6 @@ import { Container } from "reactstrap"
 
 import {
   Loader,
-  Alert,
   Header,
   Navbar,
   Icon,
@@ -18,8 +17,8 @@ import {
   Nav as NavRS,
   Container as ContainerRS,
   Dropdown,
-  InputPicker,
-  FlexboxGrid
+  Drawer,
+  Sidenav
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
 import { getDashboardData } from "../redux/actions/dashboarddata.action"
@@ -29,7 +28,6 @@ import TabPanel from "../components/shared/TabPanel"
 import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
-import { Drawer, Sidenav } from "rsuite"
 
 const initialSidenavState = {
   expanded: true,
@@ -265,7 +263,7 @@ const listItems = [
 ]
 
 const Overview = props => {
-  const [activeTab, setActiveTab] = useState(null)
+  //const [activeTab, setActiveTab] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isDrawer, setDrawer] = useState(false)
   const [sidenavState, setSidenavState] = useState(initialSidenavState)
@@ -282,10 +280,10 @@ const Overview = props => {
   console.log("currentSideItem", currentSideItem)
 
   // console.log({ currentSideItem }, sidenavState)
-  const toggleNavs = (e, index) => {
-    e.preventDefault()
-    setActiveTab(index)
-  }
+  // const toggleNavs = (e, index) => {
+  //   e.preventDefault()
+  //   setActiveTab(index)
+  // }
   function toggleDrawer() {
     setDrawer(true)
   }

@@ -1,5 +1,5 @@
 import React from "react"
-import { Icon, Breadcrumb, Header, Navbar, Nav } from "rsuite"
+import { Header, Navbar, Nav } from "rsuite"
 //import '../../assets/scss/ProgenySubNavBar.scss'
 import { useSelector } from "react-redux"
 import BreadcrumbProgeny from "./BreadcrumbProgeny"

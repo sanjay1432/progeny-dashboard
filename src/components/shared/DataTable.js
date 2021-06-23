@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb, clearBreadcrumb } from "../../redux/actions/app.action"
+import { setBreadcrumb } from "../../redux/actions/app.action"
 import UserService from "../../services/user.service"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
 import SuccessModal from "../modal/masterData/success/success"
 import { progenySubject } from "../../services/pubsub.service"
+import DataPicker from "components/progeny/sharedComponent/DataPicker"
 import {
   Table,
   FlexboxGrid,
@@ -20,8 +21,7 @@ import {
   Message,
   Input,
   IconButton,
-  Icon,
-  SelectPicker
+  Icon
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
@@ -109,6 +109,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function CloseSuccessModal() {
     setSuccessModal(false)
   }
+
   const tableDataFields = [
     {
       label: "Estate",
@@ -346,7 +347,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function getData(displaylength) {
     let currentTableData = [...tableData]
-    if (Object.keys(filterData).length > 0 && filterData.filter != "") {
+    if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
       currentTableData = filterTable(filterData.filter, currentTableData)
     }
     return currentTableData.filter((v, i) => {
@@ -478,7 +479,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 appearance="primary"
                 className="addProgenyButton"
                 onClick={() =>
-                  handleAddNewTrial(["Progeny", `Add New Progeny`], {})
+                  handleAddNewTrial(["Progeny", `Add New Progeny`], {
+                    type: "add"
+                  })
                 }
               >
                 Add New Progeny
@@ -593,16 +596,16 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "plot":
         return (
           <Cell {...props}>
-            {editing ? (
-              // {dataKey === "progenyId" ? (
-              //   <SelectPicker />
-              // ) : (
-              //   <Input
-              //   defaultValue={rowData[dataKey]}
-              //   disabled={["trialid", "estate", "replicate", "estateblock", "design", "density", "progeny", "ortet", "fp", "mp","noofPalm"].includes(dataKey)}
-              //   onChange={value => handlePalmEditChange(rowData.trialid,dataKey, value)}
-              // />
-              // )}
+            {editing && dataKey === "progenyId" ? (
+              <DataPicker
+                dataType="progenyId"
+                OriginalData={dashboardData.result.plot}
+                dataValue={rowData[dataKey]}
+                onChange={value =>
+                  handlePlotEditChange(rowData.trialid, dataKey, value)
+                }
+              />
+            ) : editing && dataKey !== "progenyId" ? (
               <Input
                 defaultValue={rowData[dataKey]}
                 disabled={[
@@ -619,7 +622,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   "noofPalm"
                 ].includes(dataKey)}
                 onChange={value =>
-                  handlePalmEditChange(rowData.trialid, dataKey, value)
+                  handlePlotEditChange(rowData.trialid, dataKey, value)
                 }
               />
             ) : (
@@ -652,6 +655,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       default:
         return null
     }
+  }
+
+  const handlePlotEditChange = (trialid, key, value) => {
+    const nextData = Object.assign([], tableData)
+    nextData.find(item => item.trialid === trialid)[key] = value
+    setTableData(nextData)
   }
 
   const handlePalmEditChange = (trialid, key, value) => {
@@ -691,8 +700,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <FlexboxGrid.Item>
                   <img
                     src={QrCodeScanner}
+                    alt=""
                     onClick={() =>
                       handleActionExpand(["Plot", "Generate QR Code"], {
+                        type: "generate QR",
                         trialid: rowData.trialid,
                         plot: rowData.plot
                       })
@@ -702,11 +713,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <FlexboxGrid.Item>
                   <img
                     src={CreateIcon}
+                    alt=""
                     onClick={() => handlePlotEditStatus(rowData.trialid)}
                   />
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
-                  <img src={LinkIcon} />
+                  <img src={LinkIcon} alt="" />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
             )}
@@ -739,6 +751,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             ) : (
               <img
                 src={CreateIcon}
+                alt=""
                 onClick={() => handlePalmEditStatus(rowData.trialid)}
               />
             )}
@@ -784,7 +797,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function cancelPalmData(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
+
     activeItem.status = activeItem.status === null
+    console.log(activeItem)
     setTableData(nextData)
   }
 
@@ -813,8 +828,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <span>
             <img
               src={OpenNew}
+              alt=""
               onClick={() =>
                 handleActionExpand(["Estate", `Estate ${data.estate}`], {
+                  type: "add",
                   estate: data.estate
                 })
               }
@@ -827,6 +844,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <FlexboxGrid.Item>
               <img
                 src={OpenNew}
+                alt=""
                 onClick={() =>
                   handleActionExpand(
                     [
@@ -845,6 +863,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <FlexboxGrid.Item>
               <img
                 src={CreateIcon}
+                alt=""
                 onClick={() =>
                   handleActionExpand(
                     ["Trial and Replicate", `Edit Trial and Replicate`],
@@ -858,7 +877,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <img src={LinkIcon} />
+              <img src={LinkIcon} alt="" />
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
@@ -867,8 +886,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <span>
             <img
               src={CreateIcon}
+              alt=""
               onClick={() =>
                 handleActionExpand(["Progeny", "Edit Progeny"], {
+                  type: "edit",
                   progenyId: data.progenyId,
                   popvar: data.popvar,
                   origin: data.origin,
@@ -894,6 +915,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <span>
             <img
               src={CreateIcon}
+              alt=""
               onClick={() =>
                 handleActionExpand(["User List", "Edit User"], {
                   userId: data.userId,
@@ -916,10 +938,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <FlexboxGrid.Item>
               <img
                 src={OpenNew}
+                alt=""
                 onClick={() =>
                   handleActionExpand(
                     ["Estate Assignment", `Estate ${data.estate}`],
                     {
+                      type: "check",
                       estate: data.estate
                     }
                   )
@@ -929,6 +953,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <FlexboxGrid.Item>
               <img
                 src={AccountCircle}
+                alt=""
                 onClick={() => openAssignUserModal(data.estate)}
               />
             </FlexboxGrid.Item>
@@ -939,6 +964,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <span>
             <img
               src={AccountCircle}
+              alt=""
               onClick={() => openAssignEstateModal(data.username)}
             />
           </span>
@@ -1082,7 +1108,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </>
           )
-        } else if (successData !== null) {
+        } else if (successData === null) {
           return <></>
         } else {
           return (
@@ -1223,37 +1249,33 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function ErrorMessage({ activeNav, errorData }) {
-    switch (activeNav) {
-      case "plot":
-        if (errorData !== undefined) {
-          return (
-            <>
-              <Message
-                showIcon
-                type="error"
-                description={`${errorData}`}
-                onClick={() => {
-                  setErrorMessage("")
-                }}
-              />
-            </>
-          )
-        }
-      case "palm":
-        if (errorData !== undefined) {
-          return (
-            <>
-              <Message
-                showIcon
-                type="error"
-                description={`${errorData}`}
-                onClick={() => {
-                  setErrorMessage("")
-                }}
-              />
-            </>
-          )
-        }
+    switch (activeNav && errorData) {
+      case "plot" && errorData !== undefined:
+        return (
+          <>
+            <Message
+              showIcon
+              type="error"
+              description={`${errorData} is the problem unable to edit plot`}
+              onClick={() => {
+                setErrorMessage("")
+              }}
+            />
+          </>
+        )
+      case "palm" && errorData !== undefined:
+        return (
+          <>
+            <Message
+              showIcon
+              type="error"
+              description={`${errorData} is the problem unable to edit palm.`}
+              onClick={() => {
+                setErrorMessage("")
+              }}
+            />
+          </>
+        )
       default:
         return <></>
     }
@@ -1344,59 +1366,59 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const plotfields = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialid") {
-            field.width = 120
+            field.width = 140
             plotfields[0] = field
           }
           if (field.value === "estate") {
-            field.width = 120
+            field.width = 140
             plotfields[1] = field
           }
           if (field.value === "replicate") {
-            field.width = 120
+            field.width = 140
             plotfields[2] = field
           }
           if (field.value === "estateblock") {
-            field.width = 120
+            field.width = 140
             plotfields[3] = field
           }
           if (field.value === "design") {
-            field.width = 120
+            field.width = 140
             plotfields[4] = field
           }
           if (field.value === "density") {
-            field.width = 120
+            field.width = 140
             plotfields[5] = field
           }
           if (field.value === "plot") {
-            field.width = 120
+            field.width = 140
             plotfields[6] = field
           }
           if (field.value === "subblock") {
-            field.width = 120
+            field.width = 140
             plotfields[7] = field
           }
           if (field.value === "progenyId") {
-            field.width = 120
+            field.width = 140
             plotfields[8] = field
           }
           if (field.value === "progeny") {
-            field.width = 120
+            field.width = 140
             plotfields[9] = field
           }
           if (field.value === "ortet") {
-            field.width = 120
+            field.width = 140
             plotfields[10] = field
           }
           if (field.value === "fp") {
-            field.width = 120
+            field.width = 140
             plotfields[11] = field
           }
           if (field.value === "mp") {
-            field.width = 120
+            field.width = 140
             plotfields[12] = field
           }
           if (field.value === "noofPalm") {
-            field.width = 120
+            field.width = 140
             plotfields[13] = field
           }
         })
@@ -1520,6 +1542,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             currentTableDataFields[3] = field
           }
         })
+        return currentTableDataFields
+
       default:
         return currentTableDataFields
     }
