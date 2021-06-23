@@ -526,7 +526,7 @@ const AttachProgeny = ({
         </Column>
       </Table>
 
-      <div>
+      <div className="pagination">
         <Pagination
           {...pagination}
           pages={getNoPages()}
