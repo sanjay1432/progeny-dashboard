@@ -13,6 +13,8 @@ import AddNewProgeny from "components/progeny/AddNewProgeny"
 import AttachProgeny from "components/progeny/AttachProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
 import GenerateQRCode from "components/plot/GenerateQRCode"
+import EditPalmInformation from "components/plot/EditPalmInformation"
+
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
   //useDispatch
@@ -31,8 +33,8 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
 
   function TabPanelSection() {
     const tabname = breadcrumb ? breadcrumb[0] : null
-    switch (tabname && option.type) {
-      case "Estate" && "add":
+    switch (tabname) {
+      case "Estate":
         return (
           <>
             <EstateBlockTable
@@ -41,82 +43,91 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             />
           </>
         )
-      case "Trial and Replicate" && "create":
-        return (
-          <>
-            <AddNewTrial
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
-          </>
-        )
-      case "Trial and Replicate" && "edit":
-        return (
-          <>
-            <EditTrial
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
-          </>
-        )
-      case "Trial and Replicate" && "expand":
-        return (
-          <>
-            <TrialEstateBlocks
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
-            <AttachProgeny
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
-          </>
-        )
-      case "Trial and Replicate" && "attach":
-        return (
-          <>
-            <AttachProgeny
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
-          </>
-        )
-      case "Plot" && "generate QR":
-        return (
-          <>
-            <GenerateQRCode option={option} />
-          </>
-        )
-      case "Progeny" && "add":
-        return (
-          <>
-            <AddNewProgeny />
-          </>
-        )
-      case "Progeny" && "edit":
-        return (
-          <>
-            <EditProgeny option={option} />
-          </>
-        )
-      case "User List" && "add":
-        return (
-          <>
-            <AddNewUser option={option} />
-          </>
-        )
-      case "User List" && "edit":
-        return (
-          <>
-            <EditUser option={option} />
-          </>
-        )
-      case "Estate Assignment" && "check":
-        return (
-          <>
-            <EstateInformation option={option} />
-          </>
-        )
+      case "Trial and Replicate":
+        if (option.type === "create") {
+          return (
+            <>
+              <AddNewTrial
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
+        if (option.type === "edit") {
+          return (
+            <>
+              <EditTrial
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
+        if (option.type === "expand") {
+          return (
+            <>
+              <TrialEstateBlocks
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
+        if (option.type == "attach") {
+          return (
+            <>
+              <AttachProgeny
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
+        }
+      case "Plot":
+        if (breadcrumb[1] === "Generate QR Code") {
+          return (
+            <>
+              <GenerateQRCode option={option} />
+            </>
+          )
+        } else if (option.type == "edit") {
+          return (
+            <>
+              <EditPalmInformation option={option} />
+            </>
+          )
+        }
+      case "Progeny":
+        if (breadcrumb[1] === "Add New Progeny") {
+          return (
+            <>
+              <AddNewProgeny />
+            </>
+          )
+        } else if (breadcrumb[1] === "Edit Progeny") {
+          return (
+            <>
+              <EditProgeny option={option} />
+            </>
+          )
+        }
+      case "User List":
+        if (breadcrumb[1] === "Add New User") {
+          return (
+            <>
+              <AddNewUser option={option} />
+            </>
+          )
+        } else if (breadcrumb[1] === "Edit User") {
+          return (
+            <>
+              <EditUser option={option} />
+            </>
+          )
+        }
+      case "Estate Assignment":
+        return <EstateInformation option={option} />
       default:
         return (
           <main>

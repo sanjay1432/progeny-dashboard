@@ -72,6 +72,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
   const [tableData, setTableData] = useState([])
+  const [originalData, setOriginalData] = useState([])
 
   useEffect(() => {
     function subscribedData(data) {
@@ -87,20 +88,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       console.log(payload)
       setSuccessData(payload)
       setSuccessModal(true)
-    }
-    if (payload && payload.type === "PROGENY_ADD") {
-      setSuccessData(payload)
-      setSuccessMessage(active)
-    }
-    if (payload && payload.type === "PROGENY_EDIT") {
-      setSuccessData(payload)
-      setSuccessMessage(active)
-    }
-    if (payload && payload.type === "USERLIST_ADD") {
-      setSuccessData(payload)
-      setSuccessMessage(active)
-    }
-    if (payload && payload.type === "USERLIST_EDIT") {
+    } else if (
+      (payload && payload.type === "PROGENY_ADD") ||
+      payload.type === "PROGENY_EDIT" ||
+      payload.type === "USERLIST_ADD" ||
+      payload.type === "USERLIST_EDIT"
+    ) {
       setSuccessData(payload)
       setSuccessMessage(active)
     }
@@ -377,16 +370,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   let disabled = true
 
   if (checkStatus.length === 0) {
-    checked = false
-    indeterminate = false
     disabled = true
   } else if (checkStatus.length > 0 && checkStatus.length < tableData.length) {
-    checked = false
     indeterminate = true
     disabled = false
   } else if (checkStatus.length === tableData.length) {
     checked = true
-    indeterminate = false
     disabled = false
   }
 
@@ -516,12 +505,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function DeleteButton() {
-    if (
-      active === "palm" ||
-      active === "userlist" ||
-      active === "estateAssignment" ||
-      active === "userAssignment"
-    ) {
+    if (active === "palm" || currentItem.name === "User Management") {
       return null
     } else {
       return (
@@ -590,12 +574,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  const EditableCell = ({ rowData, dataKey, onChange, ...props }) => {
+  const EditableCell = ({ rowData, dataKey, onChange, ...cellProps }) => {
     const editing = rowData.status === true
     switch (active) {
       case "plot":
         return (
-          <Cell {...props}>
+          <Cell {...cellProps}>
             {editing && dataKey === "progenyId" ? (
               <DataPicker
                 dataType="progenyId"
@@ -632,8 +616,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "palm":
         return (
-          <Cell {...props}>
-            {editing ? (
+          <Cell {...cellProps}>
+            {rowData.status === true ? (
               <Input
                 defaultValue={rowData[dataKey]}
                 disabled={[
@@ -643,8 +627,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   "estateblock",
                   "plot"
                 ].includes(dataKey)}
-                onChange={value =>
-                  handlePalmEditChange(rowData.trialid, dataKey, value)
+                onChange={(value, e) =>
+                  handlePalmEditChange(rowData.trialid, dataKey, e.target.value)
                 }
               />
             ) : (
@@ -718,7 +702,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   />
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
-                  <img src={LinkIcon} alt="" />
+                  <img
+                    src={LinkIcon}
+                    alt=""
+                    onClick={() =>
+                      handleActionExpand(["Plot", "Edit Palms Information"], {
+                        type: "edit",
+                        trialid: rowData.trialid,
+                        estate: rowData.estate,
+                        replicate: rowData.replicate,
+                        plot: rowData.plot
+                      })
+                    }
+                  />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
             )}
@@ -790,22 +786,28 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function handlePalmEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
+    activeItem.status = activeItem.status ? false : true
     setTableData(nextData)
   }
 
+  useEffect(() => {
+    PalmService.getPalmData().then(response => {
+      const originalPalmData = response.data
+      setOriginalData(originalPalmData)
+    })
+  }, [])
+
   function cancelPalmData(trialid) {
     const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-
-    activeItem.status = activeItem.status === null
-    console.log(activeItem)
+    const activeItem = originalData.find(item => item.trialid === trialid)
+    activeItem.status = activeItem.status ? false : true
     setTableData(nextData)
   }
 
   function savePalmData(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
+    console.log(activeItem)
     activeItem.status = activeItem.status ? null : true
     PalmService.editPalm(confirmationData).then(
       data => {
@@ -1639,7 +1641,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           id="dashboardTable"
           wordWrap
           data={getData(displaylength)}
-          onRowClick={data1 => {}}
           autoHeight
         >
           {active === "palm" ||

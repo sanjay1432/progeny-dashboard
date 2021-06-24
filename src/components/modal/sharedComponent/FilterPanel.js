@@ -58,7 +58,10 @@ const FilterPanel = forwardRef(({ labelName, data, dataType }, ref) => {
             </Button>
           </Col>
           <Col md={5} lg={5}>
-            <ResetFilter initialFilter={initialFilters} />
+            <ResetFilter
+              initialFilters={initialFilters}
+              setFilter={setFilter}
+            />
           </Col>
         </Row>
       </Grid>

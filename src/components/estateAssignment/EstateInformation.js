@@ -46,7 +46,7 @@ const EstateInformation = ({ option }) => {
     })
   }, [])
 
-  function getData(displaylength) {
+  function getData(itemlength) {
     //return trialList
     if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
       trialList = filterTable(filterData.filter, trialList)
@@ -54,8 +54,8 @@ const EstateInformation = ({ option }) => {
     return trialList.filter((v, i) => {
       v["check"] = false
       v["rowNumber"] = i
-      const start = displaylength * (activePage - 1)
-      const end = start + displaylength
+      const start = itemlength * (activePage - 1)
+      const end = start + itemlength
       return i >= start && i < end
     })
   }
@@ -102,8 +102,8 @@ const EstateInformation = ({ option }) => {
   }
 
   function getNoPages() {
-    const { displaylength } = pagination
-    return Math.ceil(trialList.length / displaylength)
+    const { selectedLength } = pagination
+    return Math.ceil(trialList.length / selectedLength)
   }
 
   const StatusCell = ({ rowData, dataKey, ...props }) => {

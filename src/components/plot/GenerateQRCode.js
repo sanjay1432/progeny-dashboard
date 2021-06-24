@@ -32,27 +32,21 @@ const GenerationQRCode = ({ option }) => {
   let checked = false
   let disabled = true
 
-  if (checkStatus.length === 0) {
-    indeterminate = false
-    checked = false
-    disabled = true
-  } else if (checkStatus.length > 0 && checkStatus.length < qrData.length) {
+  if (checkStatus.length > 0 && checkStatus.length < qrData.length) {
     indeterminate = true
-    checked = false
     disabled = false
   } else if (checkStatus.length === qrData.length) {
-    indeterminate = false
     checked = true
     disabled = false
   }
 
-  function handleCheckAll(value, checked) {
-    const keys = checked ? qrData.map(item => item.palmno) : []
+  function handleCheckAll(value, checkedAllItem) {
+    const keys = checkedAllItem ? qrData.map(item => item.palmno) : []
     setCheckStatus(keys)
   }
 
-  function handleCheck(value, checked) {
-    const keys = checked
+  function handleCheck(value, checkedItem) {
+    const keys = checkedItem
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
@@ -105,12 +99,7 @@ const GenerationQRCode = ({ option }) => {
           return (
             <Col className="QRCodeLayout" md={4} lg={4}>
               <Panel shaded className="QrCodePanel">
-                <QRCode
-                  size={113}
-                  value={data.palmno}
-                  onClick={(value, e) => ZoomInQRCode(value, e)}
-                  renderAs={"svg"}
-                />
+                <QRCode size={113} value={data.palmno} onClick={ZoomInQRCode} />
               </Panel>
 
               <div className="selectPalmLayout">

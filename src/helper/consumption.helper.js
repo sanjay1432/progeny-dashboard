@@ -12,7 +12,6 @@ const transform = (
 
   let diff = 0
   if (betterPerformance === 0 && Array.isArray(compareValue)) {
-    diff = 0
     if (compareValue.length === 1) {
       compareValue.push(compareValue[0])
     }
@@ -35,7 +34,6 @@ const transform = (
   ) {
     return <span>{showData ? data : ""}</span>
   }
-  //if (typeof diff === 'undefined') { diff = +oriValue; }
 
   if (betterPerformance === 0) {
     if (Array.isArray(compareValue)) {

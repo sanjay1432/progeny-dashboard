@@ -3,9 +3,7 @@ import { useDispatch } from "react-redux"
 import { clearFilter } from "../../../redux/actions/filter.action"
 import { Button } from "rsuite"
 
-const ResetFilter = ({ initialFilter, selectedFilterArray }) => {
-  const [selectedFilter, setFilter] = useState(initialFilter)
-
+const ResetFilter = ({ setFilter }) => {
   const dispatch = useDispatch()
 
   function resetFilter() {
@@ -13,7 +11,6 @@ const ResetFilter = ({ initialFilter, selectedFilterArray }) => {
       input => input.value === ""
     )
     setFilter(null)
-    selectedFilterArray = []
     dispatch(clearFilter())
   }
 

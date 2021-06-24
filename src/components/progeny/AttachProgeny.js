@@ -279,18 +279,19 @@ const AttachProgeny = ({
     <div id="attachProgeny">
       {/* STEP 1 GENERATE TABLE START*/}
       <div>
-        <h4>
-          <span style={{ color: "#009D57" }}>Step 1:</span>{" "}
-          <span style={{ color: "#353131f2" }}>Search Plots</span>
+        <h4 className="title">
+          <span className="desc">Step 1:</span>{" "}
+          <span className="purpose">Search Plots</span>
         </h4>
       </div>
 
-      <Grid fluid>
+      <Grid fluid id="dashboardFilterPanel">
         <Row className="show-grid">
           <Col sm={6} md={6} lg={3}>
-            <ControlLabel>Trial ID</ControlLabel>
+            <ControlLabel className="labelFilter">Trial ID</ControlLabel>
             <br />
             <SelectPicker
+              className="dashboardSelectFilter"
               data={trialIds}
               value={filters.trialId}
               onChange={(value, e) => setFilterData(value, "trialId")}
@@ -298,9 +299,10 @@ const AttachProgeny = ({
             />
           </Col>
           <Col sm={6} md={6} lg={3}>
-            <ControlLabel>Estate</ControlLabel>
+            <ControlLabel className="labelFilter">Estate</ControlLabel>
             <br />
             <SelectPicker
+              className="dashboardSelectFilter"
               data={estates}
               value={filters.estate}
               onChange={(value, e) => setFilterData(value, "estate")}
@@ -308,9 +310,10 @@ const AttachProgeny = ({
             />
           </Col>
           <Col sm={6} md={6} lg={3}>
-            <ControlLabel>Replicate</ControlLabel>
+            <ControlLabel className="labelFilter">Replicate</ControlLabel>
             <br />
             <SelectPicker
+              className="dashboardSelectFilter"
               data={replicates}
               value={filters.replicate}
               disabled={!option.estate}
@@ -321,7 +324,7 @@ const AttachProgeny = ({
           <Col sm={5} md={4} lg={2}>
             <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
               <Button
-                className="btnApply"
+                className="applyButton"
                 appearance="primary"
                 onClick={onApply}
               >
@@ -333,7 +336,7 @@ const AttachProgeny = ({
           <Col sm={3} md={4} lg={2}>
             <div className="show-col">
               <Button
-                className="btnResetFilter"
+                className="resetButton"
                 appearance="subtle"
                 //   onClick={onReset}
               >
@@ -350,9 +353,9 @@ const AttachProgeny = ({
 
       {/* STEP 2 CUSTOMISE TABLE START*/}
       <div>
-        <h4>
-          <span style={{ color: "#009D57" }}>Step 2:</span>{" "}
-          <span style={{ color: "#353131f2" }}>Attach Progenies</span>
+        <h4 className="title">
+          <span className="desc">Step 2:</span>{" "}
+          <span className="purpose">Attach Progenies</span>
         </h4>
       </div>
 

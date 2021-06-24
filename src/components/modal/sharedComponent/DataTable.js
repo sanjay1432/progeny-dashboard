@@ -24,9 +24,9 @@ const DataTable = ({ columns, data, selectedItem, ...props }) => {
     return data
   }
 
-  function filterTable(filters, data) {
+  function filterTable(filters, tableData) {
     var filterKeys = Object.keys(filters)
-    return data.filter(function (eachObj) {
+    return tableData.filter(function (eachObj) {
       return filterKeys.every(function (eachKey) {
         return eachObj[eachKey] === filters[eachKey]
       })
@@ -61,14 +61,13 @@ const DataTable = ({ columns, data, selectedItem, ...props }) => {
     checked = true
   }
 
-  const handleCheckAll = (value, checked) => {
-    const keys = checked ? data.map(item => item.userId) : []
+  const handleCheckAll = (value, checkedAllItem) => {
+    const keys = checkedAllItem ? data.map(item => item.userId) : []
     setCheckStatus(keys)
   }
 
-  const handleCheck = (value, checked, e) => {
-    console.log(value, checked)
-    const keys = checked
+  const handleCheck = (value, checkedItem, e) => {
+    const keys = checkedItem
       ? [...checkStatus, value]
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)

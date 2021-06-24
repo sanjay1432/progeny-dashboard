@@ -7,8 +7,15 @@ const editPalm = payload => {
   })
 }
 
+const getPalmData = () => {
+  return axiosApiInstance.get(`${API_URL}/palm`).then(response => {
+    return response.data
+  })
+}
+
 const PalmService = {
-  editPalm
+  editPalm,
+  getPalmData
 }
 
 export default PalmService
