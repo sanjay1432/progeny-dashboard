@@ -29,24 +29,24 @@
     }
   }
 
+  .alignButtonCenter {
+    text-align: center;
+  }
+
   .addEstateButton {
     width: 116px;
-    float: right;
   }
 
   .addTrialButton {
     width: 123px;
-    float: right;
   }
 
   .attachProgeniesButton {
     width: 138px;
-    float: right;
   }
 
   .addProgenyButton {
     width: 142px;
-    float: right;
   }
 
   .addUserButton {
@@ -159,17 +159,5 @@
   .rs-pagination > li.rs-pagination-btn-active > a{
       color: #fff;
       background-color: #008f53;
-  }
-}
-
-@media screen and(min-width: 1500px) {
-  #dashboardTableSetting {
-    .rs-col-lg-5 {
-      width: 16%;
-    }
-
-    .rs-col-lg-4 {
-      width: 13%;
-    }
   }
 }

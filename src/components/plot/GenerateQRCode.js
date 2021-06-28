@@ -93,13 +93,17 @@ const GenerationQRCode = ({ option }) => {
 
       <Row>
         {qrData.map(data => {
-          function ZoomInQRCode(value, e) {
-            console.log(value, e)
+          function ZoomInQRCode(e) {
+            console.log(e.target.value)
           }
           return (
             <Col className="QRCodeLayout" md={4} lg={4}>
               <Panel shaded className="QrCodePanel">
-                <QRCode size={113} value={data.palmno} onClick={ZoomInQRCode} />
+                <QRCode
+                  size={113}
+                  value={data.palmno}
+                  onClick={(e, value) => ZoomInQRCode(e)}
+                />
               </Panel>
 
               <div className="selectPalmLayout">

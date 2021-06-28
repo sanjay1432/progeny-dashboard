@@ -287,62 +287,64 @@ const AttachProgeny = ({
 
       <Grid fluid id="dashboardFilterPanel">
         <Row className="show-grid">
-          <Col sm={6} md={6} lg={3}>
-            <ControlLabel className="labelFilter">Trial ID</ControlLabel>
-            <br />
-            <SelectPicker
-              className="dashboardSelectFilter"
-              data={trialIds}
-              value={filters.trialId}
-              onChange={(value, e) => setFilterData(value, "trialId")}
-              style={{ width: 180 }}
-            />
-          </Col>
-          <Col sm={6} md={6} lg={3}>
-            <ControlLabel className="labelFilter">Estate</ControlLabel>
-            <br />
-            <SelectPicker
-              className="dashboardSelectFilter"
-              data={estates}
-              value={filters.estate}
-              onChange={(value, e) => setFilterData(value, "estate")}
-              style={{ width: 180 }}
-            />
-          </Col>
-          <Col sm={6} md={6} lg={3}>
-            <ControlLabel className="labelFilter">Replicate</ControlLabel>
-            <br />
-            <SelectPicker
-              className="dashboardSelectFilter"
-              data={replicates}
-              value={filters.replicate}
-              disabled={!option.estate}
-              onChange={(value, e) => setFilterData(value, "replicate")}
-              style={{ width: 180 }}
-            />
-          </Col>
+          <div>
+            <Col md={4} lg={3}>
+              <div className="show-col">
+                <ControlLabel className="labelFilter">Trial ID</ControlLabel>
+                <SelectPicker
+                  className="dashboardSelectFilter"
+                  data={trialIds}
+                  value={filters.trialId}
+                  onChange={(value, e) => setFilterData(value, "trialId")}
+                />
+              </div>
+            </Col>
+          </div>
+          <div>
+            <Col md={4} lg={3}>
+              <div className="show-col">
+                <ControlLabel className="labelFilter">Estate</ControlLabel>
+                <SelectPicker
+                  className="dashboardSelectFilter"
+                  data={estates}
+                  value={filters.estate}
+                  onChange={(value, e) => setFilterData(value, "estate")}
+                />
+              </div>
+            </Col>
+          </div>
+          <div>
+            <Col md={4} lg={3}>
+              <div className="show-col">
+                <ControlLabel className="labelFilter">Replicate</ControlLabel>
+                <SelectPicker
+                  className="dashboardSelectFilter"
+                  data={replicates}
+                  value={filters.replicate}
+                  disabled={!option.estate}
+                  onChange={(value, e) => setFilterData(value, "replicate")}
+                />
+              </div>
+            </Col>
+          </div>
           <Col sm={5} md={4} lg={2}>
-            <div className="show-col" style={{ padding: "25px 0px 0px 0px" }}>
-              <Button
-                className="applyButton"
-                appearance="primary"
-                onClick={onApply}
-              >
-                Apply
-              </Button>
-            </div>
+            <Button
+              className="applyButton"
+              appearance="primary"
+              onClick={onApply}
+            >
+              Apply
+            </Button>
           </Col>
 
           <Col sm={3} md={4} lg={2}>
-            <div className="show-col">
-              <Button
-                className="resetButton"
-                appearance="subtle"
-                //   onClick={onReset}
-              >
-                Reset Filter
-              </Button>
-            </div>
+            <Button
+              className="resetButton"
+              appearance="subtle"
+              //   onClick={onReset}
+            >
+              Reset Filter
+            </Button>
           </Col>
         </Row>
       </Grid>
@@ -539,12 +541,12 @@ const AttachProgeny = ({
         />
       </div>
       {/* STEP 2 CUSTOMISE TABLE END*/}
-      <Grid fluid>
-        <Row className="show-grid" id="tableOption">
+      <Grid fluid className="footerLayout">
+        <Row className="show-grid">
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={3}>
               <FlexboxGrid.Item>
-                <Button appearance="subtle" className="btnAddTrial">
+                <Button appearance="subtle" className="cancelButton">
                   Cancel
                 </Button>
               </FlexboxGrid.Item>
@@ -552,7 +554,7 @@ const AttachProgeny = ({
             <Col sm={5} md={5} lg={3}>
               <FlexboxGrid.Item>
                 <Button
-                  className="btnAddTrial"
+                  className="saveButton"
                   appearance="primary"
                   onClick={() => setShowConfirmation(true)}
                   type="button"

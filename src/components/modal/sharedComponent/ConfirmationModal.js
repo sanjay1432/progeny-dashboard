@@ -6,6 +6,7 @@ const ConfirmationModal = ({
   show,
   hide,
   data,
+  save,
   savePlotData,
   savePalmData
 }) => {
@@ -70,6 +71,37 @@ const ConfirmationModal = ({
                 className="yesButton"
                 onClick={() => savePalmData(data.trialid)}
                 appearance="primary"
+              >
+                Yes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      )
+    case "palmEdit":
+      return (
+        <>
+          <Modal id="confirmationModal" show={show} onHide={hide}>
+            <Modal.Header>
+              <b className="title">Edit Palm</b>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                Are you sure edit Palm for
+                <b className="targetName"> {data.plot}</b> for
+                <b className="targetName"> Replicate {data.replicate}</b> at
+                <b className="targetName"> Trial {data.trialid}</b> from the
+                list? This might change data that is associate with it as well.
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button className="noButton" onClick={hide} appearance="subtle">
+                No
+              </Button>
+              <Button
+                className="yesButton"
+                appearance="primary"
+                onClick={() => save()}
               >
                 Yes
               </Button>

@@ -66,6 +66,22 @@ const EditProgeny = ({ option, ...props }) => {
     console.log(formData)
   }
 
+  function handleFpChange(e) {
+    e.persist()
+    setFormData(() => ({
+      ...formData,
+      [e.target.name]: formData.fpFam + "." + e.target.value
+    }))
+  }
+
+  function handleMpChange(e) {
+    e.persist()
+    setFormData(() => ({
+      ...formData,
+      [e.target.name]: formData.mpFam + "." + e.target.value
+    }))
+  }
+
   function handleSelectFpFam(fpFam) {
     setFormData(() => ({ ...formData, fpFam }))
     console.log(formData)
@@ -209,7 +225,7 @@ const EditProgeny = ({ option, ...props }) => {
               <Input
                 name="fp"
                 value={formData.fp.split(".")[1]}
-                onChange={(value, e) => handleChange(e)}
+                onChange={(value, e) => handleFpChange(e)}
               />
             </InputGroup>
           </Col>
@@ -252,7 +268,7 @@ const EditProgeny = ({ option, ...props }) => {
               <Input
                 name="mp"
                 value={formData.mp.split(".")[1]}
-                onChange={(value, e) => handleChange(e)}
+                onChange={(value, e) => handleMpChange(e)}
               />
             </InputGroup>
           </Col>

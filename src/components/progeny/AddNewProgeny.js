@@ -61,14 +61,28 @@ const AddNewProgeny = () => {
     console.log(formData)
   }
 
+  function handleFpChange(e) {
+    e.persist()
+    setFormData(() => ({
+      ...formData,
+      [e.target.name]: formData.fpFam + "." + e.target.value
+    }))
+  }
+
+  function handleMpChange(e) {
+    e.persist()
+    setFormData(() => ({
+      ...formData,
+      [e.target.name]: formData.mpFam + "." + e.target.value
+    }))
+  }
+
   function handleSelectFpFam(fpFam) {
     setFormData(() => ({ ...formData, fpFam }))
-    console.log(formData)
   }
 
   function handleSelectMpFam(mpFam) {
     setFormData(() => ({ ...formData, mpFam }))
-    console.log(formData)
   }
 
   function addProgeny() {
@@ -80,7 +94,7 @@ const AddNewProgeny = () => {
           data: formData,
           action: "CREATED"
         }
-        dispatch(clearBreadcrumb())
+        //dispatch(clearBreadcrumb())
         publish(savedData)
       },
       error => {
@@ -185,7 +199,7 @@ const AddNewProgeny = () => {
           <Col>
             <InputGroup>
               <InputGroup.Addon>{formData.fpFam}</InputGroup.Addon>
-              <Input name="fp" onChange={(value, e) => handleChange(e)} />
+              <Input name="fp" onChange={(value, e) => handleFpChange(e)} />
             </InputGroup>
           </Col>
         </Row>
@@ -222,7 +236,7 @@ const AddNewProgeny = () => {
           <Col>
             <InputGroup>
               <InputGroup.Addon>{formData.mpFam}</InputGroup.Addon>
-              <Input name="mp" onChange={(value, e) => handleChange(e)} />
+              <Input name="mp" onChange={(value, e) => handleMpChange(e)} />
             </InputGroup>
           </Col>
         </Row>

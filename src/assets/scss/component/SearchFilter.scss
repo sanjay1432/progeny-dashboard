@@ -1,6 +1,11 @@
 #dashboardFilterPanel {
   padding: 0px 0px 40px 0px;
 
+  .show-col {
+    display: flex;
+    flex-direction: column;
+  }
+
   .multiFilterButton {
     width: 120px;
     height: 40px;
@@ -11,13 +16,13 @@
   .applyButton {
     width: 135px;
     height: 40px;
-    margin-top: 28px;
+    margin-top: 25px;
   }
   
   .resetButton {
     width: 100px;
     height: 40px;
-    margin-top: 28px;
+    margin-top: 25px;
   }
 }
 

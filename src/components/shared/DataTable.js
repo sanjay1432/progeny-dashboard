@@ -429,7 +429,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "trial":
         return (
           <Col sm={5} md={5} lg={4}>
-            <FlexboxGrid.Item>
+            <FlexboxGrid.Item className="alignButtonCenter">
               <Button
                 appearance="primary"
                 className="addTrialButton"
@@ -450,8 +450,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "plot":
         return (
-          <Col sm={5} md={5} lg={4}>
-            <FlexboxGrid.Item>
+          <Col sm={5} md={5} lg={5}>
+            <FlexboxGrid.Item className="alignButtonCenter">
               <Button appearance="primary" className="attachProgeniesButton">
                 Attach Progenies
               </Button>
@@ -463,7 +463,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "progeny":
         return (
           <Col sm={5} md={5} lg={5}>
-            <FlexboxGrid.Item>
+            <FlexboxGrid.Item className="alignButtonCenter">
               <Button
                 appearance="primary"
                 className="addProgenyButton"
@@ -769,6 +769,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
+    console.log(confirmationData)
     PlotService.editPlot(confirmationData).then(
       data => {
         setTableData(nextData)
@@ -807,7 +808,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function savePalmData(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
-    console.log(activeItem)
     activeItem.status = activeItem.status ? null : true
     PalmService.editPalm(confirmationData).then(
       data => {

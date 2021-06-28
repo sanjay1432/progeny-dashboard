@@ -22,9 +22,18 @@ const getTrialPlots = trialid => {
     })
 }
 
+const getPalmInformation = () => {
+  return axiosApiInstance
+    .get(`${API_URL}/plot/PalmInformation`)
+    .then(response => {
+      return response.data
+    })
+}
+
 const PlotService = {
   getQrCodeDataList,
   getTrialPlots,
+  getPalmInformation,
   editPlot
 }
 
