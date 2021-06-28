@@ -66,10 +66,6 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
               currentSubNavState={currentSubNavState}
               option={option}
             />
-            <AttachProgeny
-              currentSubNavState={currentSubNavState}
-              option={option}
-            />
           </>
         )
       case "Trial and Replicate" && "attach":

@@ -48,8 +48,9 @@ const AttachProgeny = ({
   const [pagination, setPagination] = useState(initialState)
   const [show, setShow] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
-  const [replicateSelectorDisable, setReplicateSelectorDisable] =
-    useState(false)
+  const [replicateSelectorDisable, setReplicateSelectorDisable] = useState(
+    false
+  )
   const [nPalm, setnPalm] = useState(16)
   const [trialIds, setTrialIds] = useState([])
   const [estates, setEstates] = useState([])
@@ -89,7 +90,6 @@ const AttachProgeny = ({
   }
 
   function onApply() {
-    console.log(filters)
     setTrials()
     setPlots()
     setProgeny()
@@ -145,11 +145,9 @@ const AttachProgeny = ({
     console.log({ data })
 
     if (filters.replicate != "All") {
-      // const plots = [...trialPlots]
       data.forEach(plot => {
         plot.replicate = filters.replicate
       })
-      // setTrialPlots(plots)
     }
     setTrialPlots(data)
   }
@@ -176,6 +174,7 @@ const AttachProgeny = ({
       pro => pro.progenyId === value
     )
     const data = [...trialPlots]
+    data[idx].progenyId = value
     data[idx].progeny = foundedProgeny.progeny
     data[idx].ortet = foundedProgeny.ortet ? foundedProgeny.ortet : "-"
     data[idx].fp = foundedProgeny.fp
@@ -253,12 +252,32 @@ const AttachProgeny = ({
   }
 
   function handleReplicateChange(value, replicate, idx) {
+    console.log(value)
     const data = [...trialPlots]
     data[idx].replicate = value
     setTrialPlots(data)
   }
-  function onSave() {
-    console.log(trialPlots)
+
+  function handlePlotChange(value, idx) {
+    const data = [...trialPlots]
+    data[idx].plot = value
+    setTrialPlots(data)
+  }
+  async function onSave() {
+    const newArray = trialPlots.map(
+      ({
+        subblock,
+        estateblock,
+        design,
+        fp,
+        mp,
+        ortet,
+        replicate,
+        progeny,
+        ...keepAttrs
+      }) => keepAttrs
+    )
+    await PlotService.attachTrialPlots(filters.trialId, newArray)
     setShowConfirmation(false)
   }
 
@@ -267,7 +286,7 @@ const AttachProgeny = ({
     var found = false
     for (var i = 0; i < plots.length; i++) {
       const keys = Object.keys(plots[i])
-      if (keys.length != 10) {
+      if (keys.length != 12) {
         found = true
         break
       }
@@ -375,7 +394,7 @@ const AttachProgeny = ({
               </FlexboxGrid.Item>
             </Col>
 
-            <Col sm={4} md={4} lg={3}>
+            {/* <Col sm={4} md={4} lg={3}>
               <FlexboxGrid.Item>
                 <div className="deleteButtonLayout">
                   <Button
@@ -387,13 +406,13 @@ const AttachProgeny = ({
                   </Button>
                 </div>
               </FlexboxGrid.Item>
-            </Col>
+            </Col> */}
           </FlexboxGrid>
         </Row>
       </Grid>
 
       <Table wordWrap data={getData(displaylength)} autoHeight>
-        <Column width={70} align="center" fixed>
+        {/* <Column width={70} align="center" fixed>
           <HeaderCell className="tableHeader">
             <Checkbox
               checked={checked}
@@ -406,7 +425,7 @@ const AttachProgeny = ({
             checkedKeys={checkStatus}
             onChange={handleCheck}
           />
-        </Column>
+        </Column> */}
 
         <Column width={120} align="left">
           <HeaderCell className="tableHeader">Replicate</HeaderCell>
@@ -418,7 +437,7 @@ const AttachProgeny = ({
                   style={{ width: 224 }}
                   placeholder="-"
                   value={rowData.replicate}
-                  disabled={replicateSelectorDisable}
+                  disabled
                   onChange={(value, event) =>
                     handleReplicateChange(value, rowData.replicate, i)
                   }
@@ -447,8 +466,13 @@ const AttachProgeny = ({
         <Column width={100} align="left">
           <HeaderCell className="tableHeader">Plot</HeaderCell>
           <Cell dataKey="plot">
-            {rowData => {
-              return <Input value={`Plot ${rowData.plot}`} />
+            {(rowData, i) => {
+              return (
+                <Input
+                  value={rowData.plot}
+                  onChange={(value, event) => handlePlotChange(value, i)}
+                />
+              )
             }}
           </Cell>
         </Column>
@@ -457,7 +481,7 @@ const AttachProgeny = ({
           <HeaderCell className="tableHeader">Subblock</HeaderCell>
           <Cell dataKey="subblock">
             {rowData => {
-              return <Input value={rowData.subblock} />
+              return <Input value={rowData.subblock} disabled />
             }}
           </Cell>
         </Column>

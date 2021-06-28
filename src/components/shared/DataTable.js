@@ -21,7 +21,9 @@ import {
   Message,
   Input,
   IconButton,
-  Icon
+  Icon,
+  Tooltip,
+  Whisper
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
@@ -52,7 +54,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     // SET TABLE DATA
     setCurrentTableData()
   })
-
+  const attachProgeny = (
+    <Tooltip>
+      The plots that are in this Trial has already been attached to its own
+      unique progeny.
+    </Tooltip>
+  )
+  const editProgeny = (
+    <Tooltip>
+      You are unable to edit the data for this value because it has data already
+      attached to palms.
+    </Tooltip>
+  )
   const [successMessage, setSuccessMessage] = useState(false)
   const [successData, setSuccessData] = useState(null)
   const [errorMessage, setErrorMessage] = useState("")
@@ -861,35 +874,51 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <img
-                src={CreateIcon}
-                alt=""
-                onClick={() =>
-                  handleActionExpand(
-                    ["Trial and Replicate", `Edit Trial and Replicate`],
-                    {
-                      trial: data.trialid,
-                      estate: data.estate,
-                      type: "edit"
-                    }
-                  )
-                }
-              />
+              {data.isEditable ? (
+                <img
+                  src={CreateIcon}
+                  alt=""
+                  onClick={() =>
+                    handleActionExpand(
+                      ["Trial and Replicate", `Edit Trial and Replicate`],
+                      {
+                        trial: data.trialid,
+                        estate: data.estate,
+                        type: "edit"
+                      }
+                    )
+                  }
+                />
+              ) : (
+                <Whisper placement="top" trigger="click" speaker={editProgeny}>
+                  <img src={CreateIcon} style={{ opacity: 0.2 }} />
+                </Whisper>
+              )}
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              <img
-                src={LinkIcon}
-                onClick={() =>
-                  handleActionExpand(
-                    ["Trial and Replicate", `Attach Progenies`],
-                    {
-                      trial: data.trialid,
-                      estate: data.estate,
-                      type: "attach"
-                    }
-                  )
-                }
-              />
+              {data.isEditable ? (
+                <img
+                  src={LinkIcon}
+                  onClick={() =>
+                    handleActionExpand(
+                      ["Trial and Replicate", `Attach Progenies`],
+                      {
+                        trial: data.trialid,
+                        estate: data.estate,
+                        type: "attach"
+                      }
+                    )
+                  }
+                />
+              ) : (
+                <Whisper
+                  placement="top"
+                  trigger="click"
+                  speaker={attachProgeny}
+                >
+                  <img src={LinkIcon} style={{ opacity: 0.2 }} />
+                </Whisper>
+              )}
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
