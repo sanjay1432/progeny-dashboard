@@ -30,11 +30,20 @@ const getPalmInformation = () => {
     })
 }
 
+const attachTrialPlots = (trialid, plots) => {
+  return axiosApiInstance
+    .post(`${API_URL}/trial/replicates/plots/${trialid}`, plots)
+    .then(response => {
+      return response.data
+    })
+}
+
 const PlotService = {
   getQrCodeDataList,
   getTrialPlots,
   getPalmInformation,
-  editPlot
+  editPlot,
+  attachTrialPlots
 }
 
 export default PlotService

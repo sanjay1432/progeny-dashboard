@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import {
   Table,
   FlexboxGrid,
@@ -12,6 +12,7 @@ import {
   Pagination,
   ControlLabel,
   Message,
+  Modal,
   IconButton,
   Icon,
   Input
@@ -30,7 +31,7 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-// let tableData = []
+
 const TrialEstateBlocks = ({
   currentSubNavState,
   currentItem,
@@ -41,17 +42,41 @@ const TrialEstateBlocks = ({
   const [filteredTableData, setFilteredTableData] = useState([])
   const [ebAdded, setebAdded] = useState(null)
   const [selectedSoilType, setSelectedSoilType] = useState(null)
+  const [selectedReplicate, setSelectedReplicate] = useState(null)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
+  const [show, setShow] = useState(false)
   const [estateBlocks, setEstateBlocks] = useState([])
   const [soilTypeFilterData, setSoilTypeFilterData] = useState([])
   useEffect(() => {
     async function fetchData() {
       // You can await here
       const data = await TrialService.getTrialReplicates(option.trial)
-      const replicates = data.replicates
-      setTableData(replicates)
+      let replicates = data.replicates
+      console.log({ replicates })
+      const newSetOfReps = []
+      replicates.forEach((reps, idx) => {
+        const blocks = reps.estateblocks
+        if (blocks.length < 2) {
+          reps.estateblock = blocks[0].name
+          newSetOfReps.push(reps)
+        }
+        if (blocks.length > 1) {
+          const uni = reps
+          delete uni.estateblock
+          for (let i = 0; i < blocks.length; i++) {
+            reps = {}
+            reps["estateblock"] = blocks[i].name
+            Object.keys(uni).map(key => (reps[key] = uni[key]))
+            newSetOfReps.push(reps)
+          }
+        }
+      })
+      setTableData([...newSetOfReps])
+      console.log({ newSetOfReps })
+      replicates = newSetOfReps
+
       replicates.filter((v, i) => {
         const start = displaylength * (activePage - 1)
         const end = start + displaylength
@@ -78,6 +103,21 @@ const TrialEstateBlocks = ({
   async function getEstateBlocks() {
     const { data } = await EstateService.getUpdatedEstateBlocks()
     console.log(data)
+
+    const estateBlocksItems = []
+    data.forEach(estate => {
+      estateBlocksItems.push(...estate.estateblocks)
+    })
+    const estateBlocks = [
+      ...new Set(
+        estateBlocksItems
+          .map(item => item.estateblock)
+          .map(block => estateBlocksItems.find(eb => eb.estateblock === block))
+      )
+    ]
+
+    console.log({ estateBlocks })
+
     const items = data.find(eb => eb.estate === option.estate).estateblocks
     const blocks = []
     console.log({ items })
@@ -188,7 +228,7 @@ const TrialEstateBlocks = ({
           <Message
             showIcon
             type="success"
-            description="Estate Blocks have been added to the system."
+            description={`Replicate ${selectedReplicate.replicate} for Trial ${option.trial} has been successfully edited`}
             onClick={() => {
               setebAdded(null)
             }}
@@ -205,21 +245,35 @@ const TrialEstateBlocks = ({
       return <></>
     }
   }
-  const handleChange = (replicate, key, value) => {
-    console.log(replicate, key, value)
-    const nextData = Object.assign([], tableData)
-    nextData.find(item => item.replicate === replicate)[key] = value
-    setTableData(nextData)
+  const handleChange = (idx, key, value) => {
+    console.log(estateBlocks)
+    const nextData = Object.assign([], filteredTableData)
+    nextData.find((item, i) => i === idx)[key] = value
+    setFilteredTableData(nextData)
   }
 
-  const handleEditState = replicate => {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.replicate === replicate)
+  const handleEditState = (idx, save = false) => {
+    const nextData = Object.assign([], filteredTableData)
+    const activeItem = nextData.find((item, i) => i === idx)
     activeItem.status = activeItem.status ? null : "EDIT"
     setTableData(nextData)
   }
 
-  const EditCell = ({ rowData, dataKey, onChange, ...props }) => {
+  function UnderLinedText(props) {
+    return (
+      <span
+        style={{
+          fontWeight: "bold",
+          textDecorationLine: "underline",
+          fontSize: "16px"
+        }}
+      >
+        {props.text}
+      </span>
+    )
+  }
+
+  const EditCell = ({ rowData, rowIndex, dataKey, onChange, ...props }) => {
     const editing = rowData.status === "EDIT"
     return (
       <Cell {...props} className={editing ? "table-content-editing" : ""}>
@@ -227,9 +281,8 @@ const TrialEstateBlocks = ({
           <Input
             defaultValue={rowData[dataKey]}
             disabled={["replicate", "design", "soiltype"].includes(dataKey)}
-            onChange={event => {
-              onChange &&
-                onChange(rowData.replicate, dataKey, event.target.value)
+            onChange={(value, event) => {
+              onChange && onChange(rowIndex, dataKey, event.target.value)
             }}
           />
         ) : editing && dataKey === "estateblock" ? (
@@ -239,7 +292,7 @@ const TrialEstateBlocks = ({
             placeholder="-"
             value={rowData.estateblock}
             onChange={value => {
-              onChange && onChange(rowData.replicate, dataKey, value)
+              onChange && onChange(rowIndex, dataKey, value)
             }}
           />
         ) : (
@@ -249,7 +302,7 @@ const TrialEstateBlocks = ({
     )
   }
 
-  const ActionCell = ({ rowData, dataKey, onClick, ...props }) => {
+  const ActionCell = ({ rowData, rowIndex, dataKey, onClick, ...props }) => {
     return (
       <Cell align="center" {...props}>
         {rowData.status === "EDIT" ? (
@@ -261,7 +314,10 @@ const TrialEstateBlocks = ({
                 color="green"
                 size="xs"
                 onClick={() => {
-                  onClick && onClick(rowData.replicate)
+                  // onClick && onClick(rowData.id)
+                  rowData.idx = rowIndex
+                  setSelectedReplicate(rowData)
+                  setShow(true)
                 }}
               />
             </FlexboxGrid.Item>
@@ -272,7 +328,7 @@ const TrialEstateBlocks = ({
                 color="red"
                 size="xs"
                 onClick={() => {
-                  onClick && onClick(rowData.replicate)
+                  onClick && onClick(rowIndex)
                 }}
               />
             </FlexboxGrid.Item>
@@ -283,7 +339,7 @@ const TrialEstateBlocks = ({
               src={CreateIcon}
               alt=""
               onClick={() => {
-                onClick && onClick(rowData.replicate)
+                onClick && onClick(rowIndex)
               }}
             />
           </span>
@@ -303,6 +359,26 @@ const TrialEstateBlocks = ({
       row => row.soiltype === selectedSoilType
     )
     setFilteredTableData(filteredData)
+  }
+  async function onSaveReplicate() {
+    try {
+      handleEditState(selectedReplicate.idx, true)
+      console.log(selectedReplicate)
+      setShow(false)
+      const { estateblock, estate, density, replicateId } = selectedReplicate
+      const payload = {
+        estateblock,
+        estate,
+        density,
+        replicateId,
+        trialId: option.trial
+      }
+      await TrialService.updateTrialReplicate(payload)
+      setebAdded(true)
+    } catch (err) {
+      setebAdded(false)
+      console.log(err)
+    }
   }
   return (
     <>
@@ -410,7 +486,7 @@ const TrialEstateBlocks = ({
             <HeaderCell className="tableHeader" align="center">
               Action
             </HeaderCell>
-            <ActionCell dataKey="replicate" onClick={handleEditState} />
+            <ActionCell dataKey="id" onClick={handleEditState} />
           </Column>
         </Table>
         <div className="pagination">
@@ -422,6 +498,40 @@ const TrialEstateBlocks = ({
             onSelect={handleChangePage}
           />
         </div>
+
+        {/* EDIT CONFIRMATION MODEL START */}
+        <Modal id="SaveTrialModal" show={show} onHide={() => setShow(false)}>
+          <Modal.Header>
+            <Modal.Title className="title">Edit Replicate</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="body">
+            Are you sure to edit{" "}
+            <UnderLinedText
+              text={`Replicate ${selectedReplicate?.replicate}`}
+            />{" "}
+            for <UnderLinedText text={`Trial  ${option.trial}`} /> &nbsp; from
+            the list? This might change data that is associate with it as well!
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              onClick={() => setShow(false)}
+              className="yesButton"
+              appearance="subtle"
+            >
+              No
+            </Button>
+            <Button
+              onClick={onSaveReplicate}
+              className="noButton"
+              appearance="primary"
+            >
+              Yes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        {/* EDIT CONFIRMATION MODEL END */}
+
+        <SuccessMessage />
       </div>
     </>
   )

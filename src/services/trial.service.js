@@ -18,10 +18,19 @@ const getTrialReplicates = trialId => {
       return response.data
     })
 }
+
+const updateTrialReplicate = body => {
+  return axiosApiInstance
+    .put(`${API_URL}/trial/replicate`, body)
+    .then(response => {
+      return response.data
+    })
+}
 const TrialService = {
   saveTrial,
   editTrial,
-  getTrialReplicates
+  getTrialReplicates,
+  updateTrialReplicate
 }
 
 export default TrialService
