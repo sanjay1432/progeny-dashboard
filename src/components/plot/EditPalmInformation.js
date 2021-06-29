@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import PlotService from "../../services/plot.service"
+import { publish } from "../../services/pubsub.service"
 import DataPicker from "./sharedComponent/DataPicker"
 import ConfirmationModal from "../modal/sharedComponent/ConfirmationModal"
 import {
@@ -14,8 +15,48 @@ import {
   ControlLabel,
   Button
 } from "rsuite"
-import memoize from "memoize-one"
 const { Column, HeaderCell, Cell } = Table
+
+const EditableCell = ({
+  rowData,
+  dataKey,
+  onChange,
+  handleEditChange,
+  ...cellProps
+}) => {
+  console.log(cellProps)
+  return (
+    <Cell {...cellProps}>
+      <Input
+        defaultValue={rowData[dataKey]}
+        disabled={[
+          "trialid",
+          "estate",
+          "replicate",
+          "estateblock",
+          "design",
+          "density",
+          "progeny",
+          "ortet",
+          "fp",
+          "mp",
+          "noofPalm"
+        ].includes(dataKey)}
+        onChange={value =>
+          handleEditChange &&
+          handleEditChange(
+            rowData.trialid,
+            rowData.estate,
+            rowData.replicate,
+            rowData.plot,
+            dataKey,
+            value
+          )
+        }
+      />
+    </Cell>
+  )
+}
 
 const EditPalmInformation = ({ option }) => {
   console.log(option)
@@ -197,42 +238,6 @@ const EditPalmInformation = ({ option }) => {
     }
   ]
 
-  const EditableCell = memoize(
-    ({ rowData, dataKey, onChange, ...cellProps }) => {
-      return (
-        <Cell {...cellProps}>
-          <Input
-            defaultValue={rowData[dataKey]}
-            disabled={[
-              "trialid",
-              "estate",
-              "replicate",
-              "estateblock",
-              "design",
-              "density",
-              "progeny",
-              "ortet",
-              "fp",
-              "mp",
-              "noofPalm"
-            ].includes(dataKey)}
-            onChange={value =>
-              handleEditChange &&
-              handleEditChange(
-                rowData.trialid,
-                rowData.estate,
-                rowData.replicate,
-                rowData.plot,
-                dataKey,
-                value
-              )
-            }
-          />
-        </Cell>
-      )
-    }
-  )
-
   const handleEditChange = (trialid, estate, replicate, plot, key, value) => {
     var nextData = Object.assign([], tableData)
     nextData.find(
@@ -243,10 +248,22 @@ const EditPalmInformation = ({ option }) => {
         item.plot === plot
     )[key] = value
     setTableData(nextData)
+    console.log(tableData)
   }
 
   const saveEditabedData = () => {
-    console.log(tableData)
+    PlotService.editPalmInformation(tableData).then(
+      data => {
+        const savedData = {
+          type: "PLOT_EDIT",
+          data: tableData,
+          action: "EDIT"
+        }
+        dispatch(clearBreadcrumb())
+        publish(savedData)
+      },
+      error => {}
+    )
   }
 
   return (
@@ -371,7 +388,10 @@ const EditPalmInformation = ({ option }) => {
           return (
             <Column width={width} flexGrow={flexGrow} fixed={fixed}>
               <HeaderCell className="tableHeader">{col.name}</HeaderCell>
-              <EditableCell dataKey={col.dataKey} />
+              <EditableCell
+                dataKey={col.dataKey}
+                handleEditChange={handleEditChange}
+              />
             </Column>
           )
         })}

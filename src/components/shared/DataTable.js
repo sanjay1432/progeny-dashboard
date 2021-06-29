@@ -46,6 +46,83 @@ const initialState = {
   activePage: 1
 }
 // let tableData = []
+
+const EditableCell = ({
+  rowData,
+  dataKey,
+  onChange,
+  handlePlotEditChange,
+  handlePalmEditChange,
+  active,
+  dashboardData,
+  ...cellProps
+}) => {
+  const editing = rowData.status === true
+  switch (active) {
+    case "plot":
+      return (
+        <Cell {...cellProps}>
+          {editing && dataKey === "progenyId" ? (
+            <DataPicker
+              dataType="progenyId"
+              OriginalData={dashboardData.result.plot}
+              dataValue={rowData[dataKey]}
+              onChange={value =>
+                handlePlotEditChange(rowData.trialid, dataKey, value)
+              }
+            />
+          ) : editing && dataKey !== "progenyId" ? (
+            <Input
+              defaultValue={rowData[dataKey]}
+              disabled={[
+                "trialid",
+                "estate",
+                "replicate",
+                "estateblock",
+                "design",
+                "density",
+                "progeny",
+                "ortet",
+                "fp",
+                "mp",
+                "noofPalm"
+              ].includes(dataKey)}
+              onChange={value =>
+                handlePlotEditChange(rowData.trialid, dataKey, value)
+              }
+            />
+          ) : (
+            <span>{rowData[dataKey]}</span>
+          )}
+        </Cell>
+      )
+    case "palm":
+      return (
+        <Cell {...cellProps}>
+          {rowData.status === true ? (
+            <Input
+              defaultValue={rowData[dataKey]}
+              disabled={[
+                "trialid",
+                "estate",
+                "replicate",
+                "estateblock",
+                "plot"
+              ].includes(dataKey)}
+              onChange={(value, e) =>
+                handlePalmEditChange(rowData.trialid, dataKey, e.target.value)
+              }
+            />
+          ) : (
+            <span>{rowData[dataKey]}</span>
+          )}
+        </Cell>
+      )
+    default:
+      return null
+  }
+}
+
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
@@ -364,7 +441,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       return i >= start && i < end
     })
   }
-
+  console.log(tableData)
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
@@ -582,73 +659,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </Button>
         )
 
-      default:
-        return null
-    }
-  }
-
-  const EditableCell = ({ rowData, dataKey, onChange, ...cellProps }) => {
-    const editing = rowData.status === true
-    switch (active) {
-      case "plot":
-        return (
-          <Cell {...cellProps}>
-            {editing && dataKey === "progenyId" ? (
-              <DataPicker
-                dataType="progenyId"
-                OriginalData={dashboardData.result.plot}
-                dataValue={rowData[dataKey]}
-                onChange={value =>
-                  handlePlotEditChange(rowData.trialid, dataKey, value)
-                }
-              />
-            ) : editing && dataKey !== "progenyId" ? (
-              <Input
-                defaultValue={rowData[dataKey]}
-                disabled={[
-                  "trialid",
-                  "estate",
-                  "replicate",
-                  "estateblock",
-                  "design",
-                  "density",
-                  "progeny",
-                  "ortet",
-                  "fp",
-                  "mp",
-                  "noofPalm"
-                ].includes(dataKey)}
-                onChange={value =>
-                  handlePlotEditChange(rowData.trialid, dataKey, value)
-                }
-              />
-            ) : (
-              <span>{rowData[dataKey]}</span>
-            )}
-          </Cell>
-        )
-      case "palm":
-        return (
-          <Cell {...cellProps}>
-            {rowData.status === true ? (
-              <Input
-                defaultValue={rowData[dataKey]}
-                disabled={[
-                  "trialid",
-                  "estate",
-                  "replicate",
-                  "estateblock",
-                  "plot"
-                ].includes(dataKey)}
-                onChange={(value, e) =>
-                  handlePalmEditChange(rowData.trialid, dataKey, e.target.value)
-                }
-              />
-            ) : (
-              <span>{rowData[dataKey]}</span>
-            )}
-          </Cell>
-        )
       default:
         return null
     }
@@ -1329,19 +1339,23 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "estate":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "estate") {
-            field.width = 320
+            //field.width = 320
+            field.flexGrow = 1
             currentTableDataFields[0] = field
           }
           if (field.value === "estatefullname") {
-            field.width = 320
+            //field.width = 320
+            field.flexGrow = 1
             currentTableDataFields[1] = field
           }
           if (field.value === "noofestateblock") {
-            field.width = 320
+            //field.width = 320
+            field.flexGrow = 1
             currentTableDataFields[2] = field
           }
           if (field.value === "nooftrails") {
-            field.width = 1000
+            //field.width = 320
+            field.flexGrow = 1
             currentTableDataFields[3] = field
           }
         })
@@ -1471,31 +1485,38 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const palmfields = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialid") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[0] = field
           }
           if (field.value === "estate") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[1] = field
           }
           if (field.value === "replicate") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[2] = field
           }
           if (field.value === "estateblock") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[3] = field
           }
           if (field.value === "plot") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[4] = field
           }
           if (field.value === "palmno") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[5] = field
           }
           if (field.value === "palmname") {
-            field.width = 200
+            //field.width = 200
+            field.flexGrow = 1
             palmfields[6] = field
           }
         })
@@ -1560,7 +1581,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             currentTableDataFields[13] = field
           }
           if (field.value === "crossType") {
-            field.width = 100
+            field.width = 180
             currentTableDataFields[14] = field
           }
         })
@@ -1616,7 +1637,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddButton />
 
-              <DeleteButton />
+              {/* <DeleteButton /> */}
               <DeleteModal
                 show={isDeleteModal}
                 hide={() => setDeleteModal(false)}
@@ -1672,7 +1693,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           data={getData(displaylength)}
           autoHeight
         >
-          {active === "palm" ||
+          {/* {active === "palm" ||
           currentItem.name === "User Management" ? null : (
             <Column width={70} align="center" fixed>
               <HeaderCell className="tableHeader">
@@ -1688,11 +1709,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 onChange={handleCheck}
               />
             </Column>
-          )}
+          )} */}
           {reArrangeTableFields().map((field, i) =>
             field.value === "status" ? (
               <Column
                 width={field.width ? field.width : null}
+                flexGrow={field.flexGrow ? field.flexGrow : null}
                 align="center"
                 key={i}
                 fixed="right"
@@ -1705,10 +1727,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 </Cell>
               </Column>
             ) : (
-              <Column width={field.width} align="left" key={i}>
+              <Column
+                width={field.width ? field.width : null}
+                flexGrow={field.flexGrow ? field.flexGrow : null}
+                align="left"
+                key={i}
+              >
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
                 {active === "plot" || active === "palm" ? (
-                  <EditableCell dataKey={field.value} />
+                  <EditableCell
+                    dataKey={field.value}
+                    dashboardData={dashboardData}
+                    handlePalmEditChange={handlePalmEditChange}
+                    handlePlotEditChange={handlePlotEditChange}
+                    active={active}
+                  />
                 ) : (
                   <Cell dataKey={field.value} />
                 )}

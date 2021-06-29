@@ -94,7 +94,7 @@ const AddNewProgeny = () => {
           data: formData,
           action: "CREATED"
         }
-        //dispatch(clearBreadcrumb())
+        dispatch(clearBreadcrumb())
         publish(savedData)
       },
       error => {

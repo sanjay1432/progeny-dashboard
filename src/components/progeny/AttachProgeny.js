@@ -294,7 +294,7 @@ const AttachProgeny = ({
     return found
   }
   return (
-    <div id="attachProgeny">
+    <div id="TrialAction">
       {/* STEP 1 GENERATE TABLE START*/}
       <div>
         <h4 className="title">
@@ -390,7 +390,7 @@ const AttachProgeny = ({
               <FlexboxGrid.Item>
                 <Button
                   appearance="primary"
-                  className="addEstateBlockButton"
+                  className="nPalmButton"
                   onClick={() => setShow(true)}
                 >
                   Enter nPalm
@@ -415,7 +415,12 @@ const AttachProgeny = ({
         </Row>
       </Grid>
 
-      <Table wordWrap data={getData(displaylength)} autoHeight>
+      <Table
+        id="dashboardTable"
+        wordWrap
+        data={getData(displaylength)}
+        autoHeight
+      >
         {/* <Column width={70} align="center" fixed>
           <HeaderCell className="tableHeader">
             <Checkbox
@@ -564,7 +569,7 @@ const AttachProgeny = ({
         />
       </div>
       {/* STEP 2 CUSTOMISE TABLE END*/}
-      <Grid fluid className="footerLayout">
+      <Grid fluid className="footerLayout attachProgeny">
         <Row className="show-grid">
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={3}>

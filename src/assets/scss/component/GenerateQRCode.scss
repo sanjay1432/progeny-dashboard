@@ -95,3 +95,43 @@
   }
 
 }
+
+#PrintLayout {
+  margin: 100px;
+
+  .singleLayout {
+    padding-top: 100px;
+
+    .qrLayout {
+      text-align: center;
+
+      .palm {
+        font-size: 150px;
+        margin-top: 60px;
+        .palmData {
+          color: $primary-green;
+        }
+      }
+    }
+  }
+
+  .multiLayout {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap; 
+
+    .qrLayout {
+      width: 50%;
+      text-align: center;
+
+      .palm {
+        font-size: 50px;
+        margin-top: 6px;
+        margin-bottom: 30px;
+        .palmData {
+          color: $primary-green;
+        }
+      }
+    }
+  }
+}

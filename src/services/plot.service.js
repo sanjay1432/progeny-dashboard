@@ -30,6 +30,14 @@ const getPalmInformation = () => {
     })
 }
 
+const editPalmInformation = payload => {
+  return axiosApiInstance
+    .post(`${API_URL}/plot/editPalmInformation`, payload)
+    .then(response => {
+      return response.data
+    })
+}
+
 const attachTrialPlots = (trialid, plots) => {
   return axiosApiInstance
     .post(`${API_URL}/trial/replicates/plots/${trialid}`, plots)
@@ -42,6 +50,7 @@ const PlotService = {
   getQrCodeDataList,
   getTrialPlots,
   getPalmInformation,
+  editPalmInformation,
   editPlot,
   attachTrialPlots
 }

@@ -375,7 +375,7 @@ const EstateBlockTable = ({
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col sm={5} md={5} lg={4}>
+              <Col sm={5} md={6} lg={5}>
                 <FlexboxGrid.Item className="estateBlockButtonLayout">
                   <Button
                     appearance="primary"
@@ -426,32 +426,32 @@ const EstateBlockTable = ({
             />
           </Column>
 
-          <Column width={300} align="left">
+          <Column flexGrow={1} align="left">
             <HeaderCell className="tableHeader">Estate Block</HeaderCell>
             <Cell dataKey="estateblock" />
           </Column>
 
-          <Column width={300} align="left">
+          <Column flexGrow={1} align="left">
             <HeaderCell className="tableHeader">Size (ha)</HeaderCell>
             <Cell dataKey="size" />
           </Column>
 
-          <Column width={300} align="left">
+          <Column flexGrow={1} align="left">
             <HeaderCell className="tableHeader">Density (p/ha)</HeaderCell>
             <Cell dataKey="density" />
           </Column>
         </Table>
         <SuccessMessage />
         <EbDeletionMessage />
-        <div style={{ float: "right", padding: "1rem" }}>
-          <Pagination
-            {...pagination}
-            pages={getNoPages()}
-            maxButtons={2}
-            activePage={activePage}
-            onSelect={handleChangePage}
-          />
-        </div>
+
+        <Pagination
+          className="pagination"
+          {...pagination}
+          pages={getNoPages()}
+          maxButtons={2}
+          activePage={activePage}
+          onSelect={handleChangePage}
+        />
       </div>
     </>
   )

@@ -30,7 +30,7 @@
   }
 
   .alignButtonCenter {
-    text-align: center;
+    text-align: right;
   }
 
   .addEstateButton {
@@ -50,6 +50,11 @@
   }
 
   .addUserButton {
+    width: 125px;
+    float: right;
+  }
+  
+  .nPalmButton {
     width: 125px;
     float: right;
   }

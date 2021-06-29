@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import QRCode from "qrcode.react"
 import PlotService from "../../services/plot.service"
+import { useReactToPrint } from "react-to-print"
+import { PrintLayout } from "./sharedComponent/PrintLayout"
 import { Panel, Grid, Row, Col, Button, Checkbox, Modal } from "rsuite"
 
 const GenerationQRCode = ({ option }) => {
@@ -16,6 +18,8 @@ const GenerationQRCode = ({ option }) => {
     }
     fetchData()
   }, [])
+
+  console.log(qrData)
 
   const CheckCell = ({ onChange, checkedKeys, data }) => {
     return (
@@ -53,8 +57,34 @@ const GenerationQRCode = ({ option }) => {
     console.log(checkStatus)
   }
 
+  const printRef = useRef()
+
+  const handleValue = useRef()
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current
+  })
+
   return (
     <div id="GenerationQRCode">
+      <Modal
+        id="QrCodeModal"
+        size="xs"
+        show={zoomInQR}
+        onHide={() => setZoomInQR(false)}
+      >
+        <Modal.Body>
+          <QRCode className="QRCode" size={290} value="hihi" />
+          <p className="palm">
+            Plam : <b className="palmData">{zoomInData}</b>
+          </p>
+        </Modal.Body>
+      </Modal>
+
+      <div style={{ display: "none" }}>
+        <PrintLayout ref={printRef} data={checkStatus} />
+      </div>
+
       <Grid className="qrFunctionSetting" fluid>
         <Row>
           <Col md={3} lg={3}>
@@ -84,6 +114,7 @@ const GenerationQRCode = ({ option }) => {
               className="qrPrintButton"
               appearance="primary"
               disabled={disabled}
+              onClick={handlePrint}
             >
               Print QR Code
             </Button>
@@ -93,48 +124,39 @@ const GenerationQRCode = ({ option }) => {
 
       <Row>
         {qrData.map(data => {
-          function ZoomInQRCode(e) {
-            console.log(e.target.value)
+          function ZoomInQRCode(value) {
+            console.log(value)
+            setZoomInQR(true)
           }
           return (
             <Col className="QRCodeLayout" md={4} lg={4}>
               <Panel shaded className="QrCodePanel">
                 <QRCode
                   size={113}
-                  value={data.palmno}
-                  onClick={(e, value) => ZoomInQRCode(e)}
+                  value={`{trialid: "${data.trialid}", plot: "${data.plot}", estateblock: "${data.estateblock}", palmno: "${data.palmno}"}`}
+                  onClick={(e, value) => ZoomInQRCode(value)}
+                  renderAs="svg"
                 />
               </Panel>
 
               <div className="selectPalmLayout">
                 <CheckCell
                   className="selectPalm"
-                  data={data.palmno} //Primary key of table
+                  data={data} //Primary key of table
                   checkedKeys={checkStatus}
                   onChange={handleCheck}
                 />
                 <p className="palm">
-                  Palm : <b className="palmData">{data.palmno}</b>
+                  Palm :{" "}
+                  <b className="palmData" ref={handleValue} value={data.palmno}>
+                    {data.palmno}
+                  </b>
                 </p>
               </div>
             </Col>
           )
         })}
       </Row>
-
-      <Modal
-        id="QrCodeModal"
-        size="xs"
-        show={zoomInQR}
-        onHide={() => setZoomInQR(false)}
-      >
-        <Modal.Body>
-          <QRCode className="QRCode" size={290} value="hihi" />
-          <p className="palm">
-            Plam : <b className="palmData">{zoomInData}</b>
-          </p>
-        </Modal.Body>
-      </Modal>
     </div>
   )
 }
