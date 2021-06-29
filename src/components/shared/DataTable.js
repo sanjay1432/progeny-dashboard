@@ -552,7 +552,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return null
       case "progeny":
         return (
-          <Col sm={5} md={5} lg={5}>
+          <Col sm={5} md={6} lg={5}>
             <FlexboxGrid.Item className="alignButtonCenter">
               <Button
                 appearance="primary"
@@ -595,9 +595,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function DeleteButton() {
-    if (active === "palm" || currentItem.name === "User Management") {
-      return null
-    } else {
+    if (active === "progeny") {
       return (
         <Col sm={4} md={4} lg={4}>
           <FlexboxGrid.Item>
@@ -613,6 +611,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </FlexboxGrid.Item>
         </Col>
       )
+    } else {
+      return null
     }
   }
 
@@ -1637,7 +1637,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <AddButton />
 
-              {/* <DeleteButton /> */}
+              <DeleteButton />
               <DeleteModal
                 show={isDeleteModal}
                 hide={() => setDeleteModal(false)}
@@ -1693,8 +1693,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           data={getData(displaylength)}
           autoHeight
         >
-          {/* {active === "palm" ||
-          currentItem.name === "User Management" ? null : (
+          {active === "progeny" ? (
             <Column width={70} align="center" fixed>
               <HeaderCell className="tableHeader">
                 <Checkbox
@@ -1709,7 +1708,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 onChange={handleCheck}
               />
             </Column>
-          )} */}
+          ) : null}
           {reArrangeTableFields().map((field, i) =>
             field.value === "status" ? (
               <Column
