@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import QRCode from "qrcode.react"
 import PlotService from "../../services/plot.service"
 import { useReactToPrint } from "react-to-print"
-import { PrintLayout } from "./sharedComponent/PrintLayout"
+import { PrintLayout } from "../SharedComponent/PrintLayout"
 import { Panel, Grid, Row, Col, Button, Checkbox, Modal } from "rsuite"
 
 const GenerationQRCode = ({ option }) => {

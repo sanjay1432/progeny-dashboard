@@ -1,41 +1,35 @@
-#addNewUser {
-  margin-top: 50px;
+#UserListAction {
+  margin: 30px 0px;
 
-  .labelLayout {
-      display: flex;
-      flex-direction: row;
+  .rs-row {
+    margin: 0px 0px 25px 0px;
   }
 
-  .rs-btn-toolbar {
-      float: right;
+  .labelName {
+    color: $primary-black;
+    font-weight: 700;
   }
 
-  .formLabel {
-      font-size: 16px;
-      font-weight: 700;
-      padding-top: 10px;
+  .rs-input {
+    width: 444px;
   }
 
-  .dataBox {
-      width: 444px;
-      height: 40px;
-  }
-      
-  .rs-picker-default .rs-picker-toggle.rs-btn {
-      width: 444px;
+  .dataPicker {
+    width: 444px;
+    .rs-picker-toggle {
+      width: 435px;
+    }
   }
 
-  .rs-picker-toggle-clean {
-      display: none;
+  .saveButton {
+    width: 170px;
+    height: 42px;
+    float: right;
   }
 
-  .btnCancel {
-      width: 145px;
-      height: 40px;
-  }
-
-  .btnSave {
-      width: 145px;
-      height: 40px;
+  .cancelButton {
+    width: 170px;
+    height: 42px;
+    float: right;
   }
 }

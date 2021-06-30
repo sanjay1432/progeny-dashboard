@@ -7,7 +7,7 @@ import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
 import SuccessModal from "../modal/masterData/success/success"
 import { progenySubject } from "../../services/pubsub.service"
-import DataPicker from "components/progeny/sharedComponent/DataPicker"
+import DataPicker from "../SharedComponent/DataPicker"
 import {
   Table,
   FlexboxGrid,
@@ -57,7 +57,7 @@ const EditableCell = ({
   ...cellProps
 }) => {
   const editing = rowData.status === true
-  console.log(OriginalData)
+
   switch (active) {
     case "plot":
       return (
@@ -172,10 +172,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       setSuccessData(payload)
       setSuccessModal(true)
     } else if (
-      (payload && payload.type === "PROGENY_ADD") ||
-      payload.type === "PROGENY_EDIT" ||
-      payload.type === "USERLIST_ADD" ||
-      payload.type === "USERLIST_EDIT"
+      (payload && payload.type === "PROGENY_CREATE") ||
+      payload.type === "PROGENY_UPDATE" ||
+      payload.type === "USERLIST_CREATE" ||
+      payload.type === "USERLIST_UPDATE"
     ) {
       setSuccessData(payload)
       setSuccessMessage(active)
@@ -700,7 +700,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
     console.log(confirmationData)
-    PlotService.editPlot(confirmationData).then(
+    PlotService.updatePlot(confirmationData).then(
       data => {
         setTableData(nextData)
         setConfirmationModal(false)
@@ -748,7 +748,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
-    PalmService.editPalm(confirmationData).then(
+    PalmService.updatePalm(confirmationData).then(
       data => {
         setTableData(nextData)
         setConfirmationModal(false)
@@ -1171,7 +1171,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 type="success"
                 description={`${successData.plot} for
                             Replicate ${successData.replicate} for 
-                            Trial ${successData.trialid} has been successfully edited.`}
+                            Trial ${successData.trialCode} has been successfully edited.`}
                 onClick={() => {
                   setSuccessMessage("")
                 }}
@@ -1216,7 +1216,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 description={`Palm ${successData.palmno} in 
                                 ${successData.plot} in 
                                 Replicate ${successData.replicate} in 
-                                Trial ${successData.trialid} has been successfully edited.`}
+                                Trial ${successData.trialCode} has been successfully edited.`}
                 onClick={() => {
                   setSuccessMessage("")
                 }}
@@ -1251,7 +1251,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               )}
             </>
           )
-        } else if (successData.type === "PROGENY_ADD") {
+        } else if (successData.type === "PROGENY_CREATE") {
           return (
             <Message
               showIcon
@@ -1262,7 +1262,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               }}
             />
           )
-        } else if (successData.type === "PROGENY_EDIT") {
+        } else if (successData.type === "PROGENY_UPDATE") {
           return (
             <Message
               showIcon
@@ -1541,64 +1541,64 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
       case "progeny":
         currentTableDataFields.forEach((field, i) => {
-          if (field.value === "progenyId") {
-            field.width = 150
+          if (field.value === "progenyCode") {
+            field.width = 200
             currentTableDataFields[0] = field
           }
           if (field.value === "popvar") {
-            field.width = 120
+            field.width = 170
             currentTableDataFields[1] = field
           }
           if (field.value === "origin") {
-            field.width = 150
+            field.width = 200
             currentTableDataFields[2] = field
           }
           if (field.value === "progenyremark") {
-            field.width = 150
+            field.width = 200
             currentTableDataFields[3] = field
           }
           if (field.value === "progeny") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[4] = field
           }
           if (field.value === "generation") {
-            field.width = 120
+            field.width = 170
             currentTableDataFields[5] = field
           }
           if (field.value === "ortet") {
-            field.width = 120
+            field.width = 170
             currentTableDataFields[6] = field
           }
           if (field.value === "fp") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[7] = field
           }
           if (field.value === "fpFam") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[8] = field
           }
           if (field.value === "fpVar") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[9] = field
           }
           if (field.value === "mp") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[10] = field
           }
           if (field.value === "mpFam") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[11] = field
           }
           if (field.value === "mpVar") {
-            field.width = 100
+            field.width = 150
             currentTableDataFields[12] = field
           }
           if (field.value === "cross") {
-            field.width = 180
+            field.width = 200
             currentTableDataFields[13] = field
           }
           if (field.value === "crossType") {
-            field.width = 180
+            field.width = 200
             currentTableDataFields[14] = field
           }
         })
@@ -1607,15 +1607,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "userlist":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "userId") {
-            field.width = 180
+            field.flexGrow = 1
             currentTableDataFields[0] = field
           }
           if (field.value === "username") {
-            field.width = 180
+            field.flexGrow = 1
             currentTableDataFields[1] = field
           }
           if (field.value === "position") {
-            field.width = 1200
+            field.flexGrow = 4
             currentTableDataFields[2] = field
           }
           if (field.value === "status") {

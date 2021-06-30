@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { Grid, Row, Col, InputGroup, Input, Button } from "rsuite"
-import DataPicker from "./sharedComponent/DataPicker"
+import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
 
@@ -45,27 +45,14 @@ const AddNewProgeny = () => {
 
   function handleChange(e) {
     e.persist()
-    setFormData(() => ({
-      ...formData,
-      [e.target.name]: e.target.value,
-      cross:
-        formData.fpFam +
-        "." +
-        formData.fp +
-        " x " +
-        formData.mpFam +
-        "." +
-        formData.mp
-    }))
-    //setFormData(() => ({ ...formData, ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp }))
-    console.log(formData)
+    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }))
   }
 
   function handleFpChange(e) {
     e.persist()
     setFormData(() => ({
       ...formData,
-      [e.target.name]: formData.fpFam + "." + e.target.value
+      fp: formData.fpFam + "." + e.target.value
     }))
   }
 
@@ -73,7 +60,7 @@ const AddNewProgeny = () => {
     e.persist()
     setFormData(() => ({
       ...formData,
-      [e.target.name]: formData.mpFam + "." + e.target.value
+      mp: formData.mpFam + "." + e.target.value
     }))
   }
 
@@ -85,14 +72,17 @@ const AddNewProgeny = () => {
     setFormData(() => ({ ...formData, mpFam }))
   }
 
-  function addProgeny() {
-    console.log(formData)
-    ProgenyService.addNewProgeny(formData).then(
+  function createProgeny() {
+    setFormData(() => ({
+      ...formData,
+      cross: formData.fp + " x " + formData.mp
+    }))
+    ProgenyService.createProgeny(formData).then(
       data => {
         const savedData = {
-          type: "PROGENY_ADD",
+          type: "PROGENY_CREATE",
           data: formData,
-          action: "CREATED"
+          action: "CREATE"
         }
         dispatch(clearBreadcrumb())
         publish(savedData)
@@ -267,21 +257,7 @@ const AddNewProgeny = () => {
             ) : (
               <Input
                 name="cross"
-                value={
-                  formData.fpFam +
-                  "." +
-                  formData.fp +
-                  " x " +
-                  formData.mpFam +
-                  "." +
-                  formData.mp
-                }
-                // onChange={(value =>
-                //   setFormData(() => ({
-                //     ...formData,
-                //     ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp
-                //   })))
-                // }
+                value={formData.fp + " x " + formData.mp}
                 disabled
               />
             )}
@@ -328,7 +304,7 @@ const AddNewProgeny = () => {
             <Button
               className="saveButton"
               appearance="primary"
-              onClick={addProgeny}
+              onClick={createProgeny}
             >
               Save
             </Button>

@@ -2,14 +2,11 @@ import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { Grid, Row, Col, InputGroup, Input, Button } from "rsuite"
-import DataPicker from "./sharedComponent/DataPicker"
+import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
 
 const EditProgeny = ({ option, ...props }) => {
-  var string = option.fp.split(".")
-  console.log(string[0])
-
   const initialForm = {
     progenyId: option.progenyId,
     popvar: option.popvar,
@@ -27,9 +24,9 @@ const EditProgeny = ({ option, ...props }) => {
     cross: option.cross,
     crossType: option.crossType
   }
+
   const [formData, setFormData] = useState(initialForm)
   const dispatch = useDispatch()
-  console.log(initialForm)
   const ProgenyData = useSelector(
     state => state.dashboardDataReducer.result.progeny
   )
@@ -46,24 +43,9 @@ const EditProgeny = ({ option, ...props }) => {
     }
   ]
 
-  console.log(formData.crossType.slice(4))
-
   function handleChange(e) {
     e.persist()
-    setFormData(() => ({
-      ...formData,
-      [e.target.name]: e.target.value,
-      cross:
-        formData.fpFam +
-        "." +
-        formData.fp +
-        " x " +
-        formData.mpFam +
-        "." +
-        formData.mp
-    }))
-    //setFormData(() => ({ ...formData, ["cross"]: formData.fpFam + "." + formData.fp + " x " + formData.mpFam + "." + formData.mp }))
-    console.log(formData)
+    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }))
   }
 
   function handleFpChange(e) {
@@ -84,21 +66,23 @@ const EditProgeny = ({ option, ...props }) => {
 
   function handleSelectFpFam(fpFam) {
     setFormData(() => ({ ...formData, fpFam }))
-    console.log(formData)
   }
 
   function handleSelectMpFam(mpFam) {
     setFormData(() => ({ ...formData, mpFam }))
-    console.log(formData)
   }
-  function editProgeny() {
-    console.log(formData)
-    ProgenyService.editProgeny(formData).then(
+
+  function updateProgeny() {
+    setFormData(() => ({
+      ...formData,
+      cross: formData.fp + " x " + formData.mp
+    }))
+    ProgenyService.updateProgeny(formData).then(
       data => {
         const savedData = {
-          type: "PROGENY_EDIT",
+          type: "PROGENY_UPDATE",
           data: formData,
-          action: "EDITED"
+          action: "UPDATE"
         }
         dispatch(clearBreadcrumb())
         publish(savedData)
@@ -170,7 +154,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col>
             <Input
               name="progeny"
-              value={formData.progenyremark}
+              value={formData.progeny}
               onChange={(value, e) => handleChange(e)}
             />
           </Col>
@@ -295,15 +279,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col>
             <Input
               name="cross"
-              value={
-                formData.fpFam +
-                "." +
-                formData.fp +
-                " x " +
-                formData.mpFam +
-                "." +
-                formData.mp
-              }
+              value={formData.fp + " x " + formData.mp}
               disabled
             />
           </Col>
@@ -346,7 +322,7 @@ const EditProgeny = ({ option, ...props }) => {
             <Button
               className="saveButton"
               appearance="primary"
-              onClick={editProgeny}
+              onClick={updateProgeny}
             >
               Save
             </Button>

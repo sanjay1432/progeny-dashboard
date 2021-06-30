@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import PlotService from "../../services/plot.service"
 import { publish } from "../../services/pubsub.service"
-import DataPicker from "./sharedComponent/DataPicker"
+import DataPicker from "../SharedComponent/DataPicker"
 import ConfirmationModal from "../modal/sharedComponent/ConfirmationModal"
 import {
   Table,

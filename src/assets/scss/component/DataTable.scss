@@ -81,6 +81,10 @@
 
 #dashboardTable {
   .rs-table-row-header {
+    .rs-table-cell {
+      background-color: $secondary-green;
+    }
+
     .rs-table-cell-content {
       padding: 5px 10px 10px 20px;
       font-size: 16px;

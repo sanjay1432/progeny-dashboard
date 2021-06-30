@@ -1,5 +1,5 @@
 #ProgenyAction {
-  margin: 50px 0px;
+  margin: 30px 0px;
 
   .rs-row {
     margin: 0px 0px 25px 0px;
@@ -14,8 +14,11 @@
     width: 444px;
   }
 
-  .progenyDataPicker {
+  .dataPicker {
     width: 444px;
+    .rs-picker-toggle {
+      width: 435px;
+    }
   }
 
   .rs-input-group {

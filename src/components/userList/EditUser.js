@@ -1,88 +1,52 @@
 import React, { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import {
-  SelectPicker,
-  Button,
-  ControlLabel,
-  Form,
-  FormGroup,
-  FormControl,
-  ButtonToolbar
-} from "rsuite"
-import { getPositionList } from "../../redux/actions/user.action"
-import UserService from "../../services/user.service"
+import { useDispatch } from "react-redux"
+import { Button, Grid, Row, Col, Input } from "rsuite"
+import DataPicker from "../SharedComponent/DataPicker"
+import UserListService from "../../services/userlist.service"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { publish } from "../../services/pubsub.service"
 
-let selectionData = {}
 const EditUser = ({ option }) => {
   console.log(option)
-  const [userId, setUserId] = useState(option.userId)
-  const [username, setUsername] = useState(option.username)
-  const [position, setPosition] = useState(option.position)
-  const [status, setStatus] = useState(option.status)
+  const initialForm = {
+    userId: option.userId,
+    username: option.username,
+    position: option.position,
+    status: option.status
+  }
+  const [formData, setFormData] = useState(initialForm)
+  const [positionList, setPositionList] = useState([])
   const dispatch = useDispatch()
-  const positionList = useSelector(state => state.positionListReducer)
-  const PositionList = positionList.result
 
   useEffect(() => {
-    dispatch(getPositionList())
+    UserListService.getPositionList().then(response => {
+      setPositionList(response.data)
+    })
   }, [])
 
-  const selectionType = [{ name: "position" }]
-
-  if (PositionList) {
-    selectionType.forEach(filter => {
-      const selectionLabel = "position"
-      const selectiondata = [
-        ...new Set(PositionList.map(res => res[selectionLabel]))
-      ]
-      selectionData[selectionLabel] = selectiondata
-    })
-  }
-
-  let dataInSelection = []
-  const finalData = selectionData["position"]
-  if (finalData) {
-    finalData.forEach(data => {
-      dataInSelection.push({
-        label: data,
-        value: data
-      })
-    })
-  } else {
-    dataInSelection.push({
-      label: "not data",
-      value: "not data"
-    })
-  }
-
-  const statusData = [
+  const statusList = [
     {
-      label: "Active",
-      value: "active"
+      status: "active"
     },
     {
-      label: "Inactive",
-      value: "inactive"
+      status: "inactive"
     }
   ]
 
-  function editUser() {
-    const payload = {
-      userId: userId,
-      username: username,
-      position: position,
-      status: status
-    }
-    UserService.editUser(payload).then(
+  function handleChange(e) {
+    e.persist()
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  function updateUser() {
+    UserListService.updateUser(formData).then(
       data => {
-        console.log(payload, "has not been edited to the system.")
+        console.log(formData, "has not been edited to the system.")
         dispatch(clearBreadcrumb())
         const savedData = {
-          type: "USERLIST_EDIT",
-          data: payload,
-          action: "CREATED"
+          type: "USERLIST_UPDATE",
+          data: formData,
+          action: "UPDATE"
         }
         dispatch(clearBreadcrumb())
         publish(savedData)
@@ -94,66 +58,91 @@ const EditUser = ({ option }) => {
   }
 
   return (
-    <div id="addNewUser">
-      <Form className="formLayout">
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">User ID</ControlLabel>
-          <FormControl
-            name="userId"
-            value={userId}
-            className="dataBox"
-            placeholder="User ID"
-            onChange={setUserId}
-          />
-        </FormGroup>
+    <div id="UserListAction">
+      <Grid fluid>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">User ID</p>
+          </Col>
+          <Col>
+            <Input
+              name="userId"
+              value={formData.userId}
+              className="dataBox"
+              placeholder="User ID"
+              onChange={(value, e) => handleChange(e)}
+            />
+          </Col>
+        </Row>
 
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">Username</ControlLabel>
-          <FormControl
-            name="username"
-            value={username}
-            className="dataBox"
-            placeholder="Username"
-            onChange={setUsername}
-          />
-        </FormGroup>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">Username</p>
+          </Col>
+          <Col>
+            <Input
+              name="username"
+              value={formData.username}
+              className="dataBox"
+              placeholder="Username"
+              onChange={(value, e) => handleChange(e)}
+            />
+          </Col>
+        </Row>
 
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">Position</ControlLabel>
-          <SelectPicker
-            name="position"
-            value={position}
-            data={dataInSelection}
-            onChange={setPosition}
-          />
-        </FormGroup>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">Position</p>
+          </Col>
+          <Col>
+            <DataPicker
+              dataType="position"
+              dataValue={formData.position}
+              OriginalData={positionList}
+              onChange={value =>
+                setFormData(() => ({ ...formData, position: value }))
+              }
+            />
+          </Col>
+        </Row>
 
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">Position</ControlLabel>
-          <SelectPicker
-            name="status"
-            value={status}
-            data={statusData}
-            onChange={setStatus}
-            searchable={false}
-          />
-        </FormGroup>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">Status</p>
+          </Col>
+          <Col>
+            <DataPicker
+              dataType="status"
+              dataValue={formData.status}
+              OriginalData={statusList}
+              onChange={value =>
+                setFormData(() => ({ ...formData, status: value }))
+              }
+            />
+          </Col>
+        </Row>
 
-        <FormGroup>
-          <ButtonToolbar>
+        <Row>
+          <Col md={4} mdOffset={16} lg={4} lgOffset={16}>
             <Button
               appearance="subtle"
-              className="btnCancel"
-              onClick={dispatch(clearBreadcrumb())}
+              className="cancelButton"
+              onClick={() => dispatch(clearBreadcrumb())}
             >
               Cancel
             </Button>
-            <Button appearance="primary" className="btnSave" onClick={editUser}>
+          </Col>
+          <Col md={4} lg={4}>
+            <Button
+              appearance="primary"
+              className="saveButton"
+              onClick={updateUser}
+            >
               Save
             </Button>
-          </ButtonToolbar>
-        </FormGroup>
-      </Form>
+          </Col>
+        </Row>
+      </Grid>
     </div>
   )
 }

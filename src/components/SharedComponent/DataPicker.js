@@ -2,14 +2,20 @@ import React from "react"
 import { InputPicker } from "rsuite"
 
 const SelectionData = {}
-const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
-  const Picker01 = [dataType]
-  Picker01.forEach(obj => {
+const DataPicker = ({
+  OriginalData,
+  dataType,
+  dataValue,
+  selectAllData,
+  ...props
+}) => {
+  const Picker = [dataType]
+  Picker.forEach(obj => {
     const data = [...new Set(OriginalData.map(res => res[obj]))]
-    SelectionData[Picker01] = data
+    SelectionData[Picker] = data
   })
 
-  const pureData = SelectionData[Picker01]
+  const pureData = SelectionData[Picker]
   let DataInPicker = []
   if (pureData) {
     pureData.forEach(data => {
@@ -18,6 +24,12 @@ const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
         value: data
       })
     })
+    if (selectAllData !== undefined) {
+      DataInPicker.unshift({
+        label: selectAllData,
+        value: "all"
+      })
+    }
   } else {
     DataInPicker.push({
       label: "no data",
@@ -25,7 +37,7 @@ const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
     })
   }
 
-  const handleChange = value => {
+  function handleChange(value) {
     props.onChange(value)
   }
 
@@ -33,7 +45,7 @@ const DataPicker = ({ OriginalData, dataType, dataValue, ...props }) => {
     <>
       <InputPicker
         name={dataType}
-        className="progenyDataPicker"
+        className="dataPicker"
         data={DataInPicker}
         value={dataValue}
         onChange={(value, e) => handleChange(value)}

@@ -15,10 +15,12 @@ const getQrCodeDataList = payload => {
     })
 }
 
-const editPlot = payload => {
-  return axiosApiInstance.put(`${API_URL}/plot`, payload).then(response => {
-    return response.data
-  })
+const updatePlot = payload => {
+  return axiosApiInstance
+    .put(`${API_URL}/update-plot`, payload)
+    .then(response => {
+      return response.data
+    })
 }
 const getTrialPlots = trialid => {
   return axiosApiInstance
@@ -58,7 +60,7 @@ const PlotService = {
   getTrialPlots,
   getPalmInformation,
   editPalmInformation,
-  editPlot,
+  updatePlot,
   attachTrialPlots
 }
 

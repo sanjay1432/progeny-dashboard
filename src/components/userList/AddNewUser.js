@@ -1,20 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import {
-  SelectPicker,
-  Button,
-  ControlLabel,
-  Form,
-  FormGroup,
-  FormControl,
-  ButtonToolbar
-} from "rsuite"
-import { getPositionList } from "../../redux/actions/user.action"
-import UserService from "../../services/user.service"
+import { useDispatch } from "react-redux"
+import { Button, Grid, Row, Col, Input } from "rsuite"
+import DataPicker from "../SharedComponent/DataPicker"
+import UserListService from "../../services/userlist.service"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { publish } from "../../services/pubsub.service"
-
-let selectionData = {}
 
 const AddNewUser = () => {
   const initialForm = {
@@ -23,58 +13,28 @@ const AddNewUser = () => {
     position: ""
   }
   const [formData, setFormData] = useState(initialForm)
+  const [positionList, setPositionList] = useState([])
   const dispatch = useDispatch()
 
-  const PositionList = useSelector(state => state.positionListReducer.result)
-
   useEffect(() => {
-    dispatch(getPositionList())
+    UserListService.getPositionList().then(response => {
+      setPositionList(response.data)
+    })
   }, [])
-
-  const selectionType = [{ name: "position" }]
-
-  if (PositionList) {
-    selectionType.forEach(filter => {
-      const selectionLabel = "position"
-      const selectiondata = [
-        ...new Set(PositionList.map(res => res[selectionLabel]))
-      ]
-
-      selectionData[selectionLabel] = selectiondata
-    })
-  }
-
-  let dataInSelection = []
-
-  const finalData = selectionData["position"]
-
-  if (finalData) {
-    finalData.forEach(data => {
-      dataInSelection.push({
-        label: data,
-        value: data
-      })
-    })
-  } else {
-    dataInSelection.push({
-      label: "not data",
-      value: "not data"
-    })
-  }
 
   function handleChange(e) {
     e.persist()
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  function addNewUser() {
-    UserService.addNewUser(formData).then(
+  function createUser() {
+    UserListService.createUser(formData).then(
       data => {
         console.log(formData, "has been added to the system.")
         const savedData = {
-          type: "USERLIST_ADD",
+          type: "USERLIST_CREATE",
           data: formData,
-          action: "CREATED"
+          action: "CREATE"
         }
         dispatch(clearBreadcrumb())
         publish(savedData)
@@ -86,59 +46,72 @@ const AddNewUser = () => {
   }
 
   return (
-    <div id="addNewUser">
-      <Form className="formLayout">
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">User ID</ControlLabel>
-          <FormControl
-            name="userId"
-            className="dataBox"
-            placeholder="User ID"
-            onChange={(value, e) => handleChange(e)}
-          />
-        </FormGroup>
+    <div id="UserListAction">
+      <Grid fluid>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">User ID</p>
+          </Col>
+          <Col>
+            <Input
+              name="userId"
+              className="dataBox"
+              placeholder="User ID"
+              onChange={(value, e) => handleChange(e)}
+            />
+          </Col>
+        </Row>
 
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">Username</ControlLabel>
-          <FormControl
-            name="username"
-            className="dataBox"
-            placeholder="Username"
-            onChange={(value, e) => handleChange(e)}
-          />
-        </FormGroup>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">Username</p>
+          </Col>
+          <Col className="labelLayout">
+            <Input
+              name="username"
+              className="dataBox"
+              placeholder="Username"
+              onChange={(value, e) => handleChange(e)}
+            />
+          </Col>
+        </Row>
 
-        <FormGroup className="labelLayout">
-          <ControlLabel className="formLabel">Position</ControlLabel>
-          <SelectPicker
-            name="position"
-            data={dataInSelection}
-            onChange={value =>
-              setFormData(() => ({ ...formData, position: value }))
-            }
-          />
-        </FormGroup>
+        <Row>
+          <Col md={5} lg={5}>
+            <p className="labelName">Position</p>
+          </Col>
+          <Col>
+            <DataPicker
+              dataType="position"
+              OriginalData={positionList}
+              onChange={value =>
+                setFormData(() => ({ ...formData, position: value }))
+              }
+            />
+          </Col>
+        </Row>
 
-        <FormGroup>
-          <ButtonToolbar>
+        <Row>
+          <Col md={4} mdOffset={16} lg={4} lgOffset={16}>
             <Button
               appearance="subtle"
-              className="btnCancel"
+              className="cancelButton"
               onClick={() => dispatch(clearBreadcrumb())}
             >
               Cancel
             </Button>
-
+          </Col>
+          <Col md={4} lg={4}>
             <Button
               appearance="primary"
-              className="btnSave"
-              onClick={addNewUser}
+              className="saveButton"
+              onClick={createUser}
             >
               Save
             </Button>
-          </ButtonToolbar>
-        </FormGroup>
-      </Form>
+          </Col>
+        </Row>
+      </Grid>
     </div>
   )
 }
