@@ -68,7 +68,7 @@ const listItems = [
         eventKey: "trial",
         filters: [
           {
-            name: "trialid",
+            name: "trialCode",
             label: "Trial Id",
             type: "select",
             disable: false

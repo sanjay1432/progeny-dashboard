@@ -56,7 +56,30 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     TrialService.getTrialReplicates(option.trial).then(data => {
       setTrial(data)
       setStatus(data.status)
-      setExistingReplicatesInEstate(data.replicates)
+      console.log("Replicates", `data.replicates`)
+
+      let replicates = data.replicates
+      console.log({ replicates })
+      const newSetOfReps = []
+      replicates.forEach((reps, idx) => {
+        const blocks = reps.estateblocks
+        if (blocks.length < 2) {
+          reps.estateblock = blocks[0].name
+          newSetOfReps.push(reps)
+        }
+        if (blocks.length > 1) {
+          const uni = reps
+          delete uni.estateblock
+          for (let i = 0; i < blocks.length; i++) {
+            reps = {}
+            reps["estateblock"] = blocks[i].name
+            Object.keys(uni).map(key => (reps[key] = uni[key]))
+            newSetOfReps.push(reps)
+          }
+        }
+      })
+
+      setExistingReplicatesInEstate(newSetOfReps)
       //Can be multiple estate in trial
       const estateReps = {
         estate: data.estate,
@@ -492,7 +515,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               placeholder="Key in Trial ID"
               className="formField"
               name="trialid"
-              value={trial.trialid}
+              value={trial.trialCode}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
@@ -1031,9 +1054,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Header>
         <Modal.Body style={{ color: "#444444" }}>
           Are you sure to <UnderLinedText text={"regenerate table"} /> for{" "}
-          <UnderLinedText text={`Trial ${trial.trialid}`} />. All the replicates
-          inside the the Trial and the respective data associated with it might
-          be <UnderLinedText text={"erased"} /> or{" "}
+          <UnderLinedText text={`Trial ${trial.trialCode}`} />. All the
+          replicates inside the the Trial and the respective data associated
+          with it might be <UnderLinedText text={"erased"} /> or{" "}
           <UnderLinedText text={"changed"} /> after you have saved this Trial.
         </Modal.Body>
         <Modal.Footer className="footerLayout">
@@ -1061,8 +1084,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Header>
         <Modal.Body className="body">
           Are you sure to edit{" "}
-          <UnderLinedText text={`Trial ${trial.trialid}`} /> from the list? This
-          might change data that is associate with it as well!
+          <UnderLinedText text={`Trial ${trial.trialCode}`} /> from the list?
+          This might change data that is associate with it as well!
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={hide} className="yesButton" appearance="subtle">

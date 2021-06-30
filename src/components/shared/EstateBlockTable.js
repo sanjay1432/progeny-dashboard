@@ -199,6 +199,7 @@ const EstateBlockTable = ({
     })
     const payload = {
       estate: option.estate,
+      estateId: option.estateId,
       blocks: estateBlocks
     }
     console.log("payload", payload)
@@ -387,7 +388,7 @@ const EstateBlockTable = ({
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col sm={4} md={4} lg={3}>
+              {/* <Col sm={4} md={4} lg={3}>
                 <FlexboxGrid.Item>
                   <div className="deleteButtonLayout">
                     <Button
@@ -399,7 +400,7 @@ const EstateBlockTable = ({
                     </Button>
                   </div>
                 </FlexboxGrid.Item>
-              </Col>
+              </Col> */}
             </FlexboxGrid>
           </Row>
         </Grid>
@@ -411,7 +412,7 @@ const EstateBlockTable = ({
           onRowClick={data1 => {}}
           autoHeight
         >
-          <Column width={70} align="center" fixed>
+          {/* <Column width={70} align="center" fixed>
             <HeaderCell className="tableHeader">
               <Checkbox
                 checked={checked}
@@ -424,7 +425,7 @@ const EstateBlockTable = ({
               checkedKeys={checkStatus}
               onChange={handleCheck}
             />
-          </Column>
+          </Column> */}
 
           <Column flexGrow={1} align="left">
             <HeaderCell className="tableHeader">Estate Block</HeaderCell>

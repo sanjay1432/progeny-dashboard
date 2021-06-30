@@ -309,7 +309,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       const foundedBlock = estateBlocks.find(eb => eb.estateblock === block)
       const data = [...tableData]
-      // data[rowIndex].estateblock = block
+      data[rowIndex].estateblock = block
       data[rowIndex].blockId = foundedBlock.id
       data[rowIndex].soiltype = foundedBlock.soiltype
       setTableData(data)

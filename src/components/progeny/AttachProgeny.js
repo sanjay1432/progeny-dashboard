@@ -39,7 +39,7 @@ const AttachProgeny = ({
   ...props
 }) => {
   const initialFilterState = {
-    trialId: option.trial,
+    trialCode: option.trial,
     estate: option.estate,
     replicate: "All"
   }
@@ -85,6 +85,7 @@ const AttachProgeny = ({
 
   function setFilterData(value, name) {
     console.log(value, name)
+
     setFilters(() => ({ ...filters, [name]: value }))
   }
 
@@ -92,15 +93,15 @@ const AttachProgeny = ({
     setTrials()
     setPlots()
     setProgeny()
-    if (filters.replicate != "All") {
-      setReplicateSelectorDisable(true)
-    } else {
-      setReplicateSelectorDisable(false)
-    }
+    // if (filters.replicate != "All") {
+    //   setReplicateSelectorDisable(true)
+    // } else {
+    //   setReplicateSelectorDisable(false)
+    // }
   }
   function setTrials() {
     const selectorTrialIds = []
-    const trialIdxs = [...new Set(trialData.map(trial => trial.trialid))]
+    const trialIdxs = [...new Set(trialData.map(trial => trial.trialCode))]
     trialIdxs.forEach(id => {
       selectorTrialIds.push({
         label: id,
@@ -109,7 +110,7 @@ const AttachProgeny = ({
     })
     setTrialIds(selectorTrialIds)
     const selectedTrial = trialData.find(
-      trial => trial.trialid === filters.trialId
+      trial => trial.trialCode === filters.trialCode
     )
     setTrialEstates(selectedTrial)
   }
@@ -124,11 +125,14 @@ const AttachProgeny = ({
     setTrialEstateReplicates()
   }
   async function setTrialEstateReplicates() {
-    const reps = await TrialService.getTrialReplicates(filters.trialId)
+    const { trialId } = trialData.find(
+      trial => trial.trialCode === filters.trialCode
+    )
+    const reps = await TrialService.getTrialReplicates(trialId)
     const trialReps = []
     reps.replicates.forEach(replicate => {
       trialReps.push({
-        label: ` Rep ${replicate.replicate}`,
+        label: replicate.replicate,
         value: replicate.replicate
       })
     })
@@ -140,15 +144,23 @@ const AttachProgeny = ({
     setReplicates(trialReps)
   }
   async function setPlots() {
-    const data = await PlotService.getTrialPlots(filters.trialId)
+    const { trialId } = trialData.find(
+      trial => trial.trialCode === filters.trialCode
+    )
+    const data = await PlotService.getTrialPlots(trialId)
     console.log({ data })
 
     if (filters.replicate != "All") {
-      data.forEach(plot => {
-        plot.replicate = filters.replicate
-      })
+      console.log(filters.replicate)
+      const filteredReps = data.filter(d => d.replicate === filters.replicate)
+      // data.forEach(plot => {
+      //   plot.replicate = filters.replicate
+      // })
+      console.log("COUNT", filteredReps.length)
+      return setTrialPlots(filteredReps)
+    } else {
+      setTrialPlots(data)
     }
-    setTrialPlots(data)
   }
 
   function getData(displaylength) {
@@ -305,46 +317,37 @@ const AttachProgeny = ({
 
       <Grid fluid id="dashboardFilterPanel">
         <Row className="show-grid">
-          <div>
-            <Col md={4} lg={3}>
-              <div className="show-col">
-                <ControlLabel className="labelFilter">Trial ID</ControlLabel>
-                <SelectPicker
-                  className="dashboardSelectFilter"
-                  data={trialIds}
-                  value={filters.trialId}
-                  onChange={(value, e) => setFilterData(value, "trialId")}
-                />
-              </div>
-            </Col>
-          </div>
-          <div>
-            <Col md={4} lg={3}>
-              <div className="show-col">
-                <ControlLabel className="labelFilter">Estate</ControlLabel>
-                <SelectPicker
-                  className="dashboardSelectFilter"
-                  data={estates}
-                  value={filters.estate}
-                  onChange={(value, e) => setFilterData(value, "estate")}
-                />
-              </div>
-            </Col>
-          </div>
-          <div>
-            <Col md={4} lg={3}>
-              <div className="show-col">
-                <ControlLabel className="labelFilter">Replicate</ControlLabel>
-                <SelectPicker
-                  className="dashboardSelectFilter"
-                  data={replicates}
-                  value={filters.replicate}
-                  disabled={!option.estate}
-                  onChange={(value, e) => setFilterData(value, "replicate")}
-                />
-              </div>
-            </Col>
-          </div>
+          <Col sm={6} md={6} lg={3}>
+            <ControlLabel>Trial ID</ControlLabel>
+            <br />
+            <SelectPicker
+              data={trialIds}
+              value={filters.trialCode}
+              onChange={(value, e) => setFilterData(value, "trialCode")}
+              style={{ width: 180 }}
+            />
+          </Col>
+          <Col sm={6} md={6} lg={3}>
+            <ControlLabel>Estate</ControlLabel>
+            <br />
+            <SelectPicker
+              data={estates}
+              value={filters.estate}
+              onChange={(value, e) => setFilterData(value, "estate")}
+              style={{ width: 180 }}
+            />
+          </Col>
+          <Col sm={6} md={6} lg={3}>
+            <ControlLabel>Replicate</ControlLabel>
+            <br />
+            <SelectPicker
+              data={replicates}
+              value={filters.replicate}
+              disabled={!option.estate}
+              onChange={(value, e) => setFilterData(value, "replicate")}
+              style={{ width: 180 }}
+            />
+          </Col>
           <Col sm={5} md={4} lg={2}>
             <Button
               className="applyButton"
@@ -415,12 +418,7 @@ const AttachProgeny = ({
         </Row>
       </Grid>
 
-      <Table
-        id="dashboardTable"
-        wordWrap
-        data={getData(displaylength)}
-        autoHeight
-      >
+      <Table wordWrap data={trialPlots} height={400}>
         {/* <Column width={70} align="center" fixed>
           <HeaderCell className="tableHeader">
             <Checkbox
@@ -559,7 +557,7 @@ const AttachProgeny = ({
         </Column>
       </Table>
 
-      <div className="pagination">
+      {/* <div className="pagination">
         <Pagination
           {...pagination}
           pages={getNoPages()}
@@ -567,7 +565,7 @@ const AttachProgeny = ({
           activePage={activePage}
           onSelect={handleChangePage}
         />
-      </div>
+      </div> */}
       {/* STEP 2 CUSTOMISE TABLE END*/}
       <Grid fluid className="footerLayout attachProgeny">
         <Row className="show-grid">
