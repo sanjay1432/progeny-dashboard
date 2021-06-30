@@ -402,8 +402,9 @@ const EstateInformation = ({ option }) => {
           )
         })}
       </Table>
-      <div style={{ float: "right", padding: "1rem" }}>
+      <div>
         <Pagination
+          className="pagination"
           {...pagination}
           pages={getNoPages()}
           maxButtons={2}

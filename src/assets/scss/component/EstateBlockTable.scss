@@ -35,5 +35,30 @@
       }
     }
   }
-
 }  
+
+#modalEstateTable {
+  .rs-table-row-header {
+    .rs-table-cell-content {
+      font-size: 16px;
+      padding: 5px 10px 10px 10px;
+
+      .rs-checkbox-wrapper {
+        left: 22px;
+        border-radius: 6px;
+        background-color: white;
+        top: 4px;
+      }
+    }
+  }
+
+  .rs-body-row-header {
+    .rs-table-cell-content {
+      font-size: 16px;
+
+      .rs-table-cell-wrap > .rs-checkbox-inline {
+        margin-left: 2px;
+      } 
+    }
+  }
+}

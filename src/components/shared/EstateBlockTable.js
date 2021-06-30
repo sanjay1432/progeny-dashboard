@@ -322,9 +322,9 @@ const EstateBlockTable = ({
               </p>
               <p>List of Estate Blocks ({estateBlocks.length})</p>
             </div>
-            <Table wordWrap data={estateBlocks} id="modalTable">
-              <Column width={70} align="center" fixed>
-                <HeaderCell className="tableHeader">
+            <Table wordWrap data={estateBlocks} id="modalEstateTable">
+              <Column width={80}>
+                <HeaderCell>
                   <Checkbox
                     checked={ebchecked}
                     indeterminate={ebindeterminate}
