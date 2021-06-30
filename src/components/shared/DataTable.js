@@ -53,19 +53,20 @@ const EditableCell = ({
   handlePlotEditChange,
   handlePalmEditChange,
   active,
-  dashboardData,
+  OriginalData,
   ...cellProps
 }) => {
   const editing = rowData.status === true
+  console.log(OriginalData)
   switch (active) {
     case "plot":
       return (
         <Cell {...cellProps}>
           {editing ? (
-            dataKey === "progenyId" ? (
+            dataKey === "progenyCode" ? (
               <DataPicker
-                dataType="progenyId"
-                OriginalData={dashboardData.result.plot}
+                OriginalData={OriginalData}
+                dataType="progenyCode"
                 dataValue={rowData[dataKey]}
                 onChange={value =>
                   handlePlotEditChange(rowData.trialid, dataKey, value)
@@ -75,12 +76,13 @@ const EditableCell = ({
               <Input
                 defaultValue={rowData[dataKey]}
                 disabled={[
-                  "trialid",
+                  "trialCode",
                   "estate",
                   "replicate",
                   "estateblock",
                   "design",
                   "density",
+                  "subblock",
                   "progeny",
                   "ortet",
                   "fp",
@@ -275,7 +277,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
     {
       label: "Progeny ID",
-      value: "progenyId"
+      value: "progenyCode"
     },
     {
       label: "Progeny",
@@ -307,7 +309,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
     {
       label: "Progeny ID",
-      value: "progenyId"
+      value: "progenyCode"
     },
     {
       label: "Pop Var",
@@ -425,14 +427,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       currentTableData = filterTable(filterData.filter, currentTableData)
     }
     return currentTableData.filter((v, i) => {
-      //v["check"] = false
-      //v["rowNumber"] = i
+      v["check"] = false
+      v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
     })
   }
-  console.log(tableData)
+
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
     <Cell {...props} style={{ padding: 0 }}>
       <div>
@@ -655,6 +657,20 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
+  useEffect(() => {
+    if (active === "plot") {
+      PlotService.getPlotData().then(response => {
+        const originalPlotData = response.data
+        setOriginalData(originalPlotData)
+      })
+    } else if (active === "palm") {
+      PalmService.getPalmData().then(response => {
+        const originalPalmData = response.data
+        setOriginalData(originalPalmData)
+      })
+    }
+  }, [])
+
   const handlePlotEditChange = (trialid, key, value) => {
     const nextData = Object.assign([], tableData)
     nextData.find(item => item.trialid === trialid)[key] = value
@@ -666,6 +682,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
     setTableData(nextData)
+  }
+
+  function cancelPlotData(trialCode) {
+    const nextData = Object.assign([], tableData)
+    const activeItem = nextData.find(item => item.trialCode === trialCode)
+    const nextData2 = Object.assign([], originalData)
+    const activeItem2 = nextData2.find(item => item.trialCode === trialCode)
+    activeItem.status = null
+    activeItem.plot = activeItem2.plot
+    activeItem.progenyCode = activeItem2.progenyCode
+    setTableData(nextData2)
   }
 
   function savePlotData(trialid) {
@@ -700,27 +727,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function handlePalmEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
+    const nextData2 = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
     setTableData(nextData)
   }
-
-  useEffect(() => {
-    PalmService.getPalmData().then(response => {
-      const originalPalmData = response.data
-      setOriginalData(originalPalmData)
-    })
-  }, [])
 
   function cancelPalmData(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     const nextData2 = Object.assign([], originalData)
     const activeItem2 = nextData2.find(item => item.trialid === trialid)
-    activeItem2.status = null
-    activeItem2.status = activeItem2.status ? null : true
-    console.log(activeItem)
-    setTableData(activeItem2)
+    activeItem.status = null
+    activeItem.palmname = activeItem2.palmname
+    activeItem.palmno = activeItem2.palmno
+    setTableData(nextData2)
   }
 
   function savePalmData(trialid) {
@@ -851,7 +872,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="red"
                     size="xs"
                     icon={<Icon icon="close" />}
-                    onClick={() => handlePlotEditStatus()}
+                    onClick={() => cancelPlotData(data.trialCode)}
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
@@ -1418,7 +1439,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "plot":
         const plotfields = []
         currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialid") {
+          if (field.value === "trialCode") {
             field.width = 140
             plotfields[0] = field
           }
@@ -1450,7 +1471,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.width = 140
             plotfields[7] = field
           }
-          if (field.value === "progenyId") {
+          if (field.value === "progenyCode") {
             field.width = 140
             plotfields[8] = field
           }
@@ -1480,7 +1501,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "palm":
         const palmfields = []
         currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialid") {
+          if (field.value === "trialCode") {
             //field.width = 200
             field.flexGrow = 1
             palmfields[0] = field
@@ -1732,7 +1753,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 {active === "plot" || active === "palm" ? (
                   <EditableCell
                     dataKey={field.value}
-                    dashboardData={dashboardData}
+                    OriginalData={originalData}
                     handlePalmEditChange={handlePalmEditChange}
                     handlePlotEditChange={handlePlotEditChange}
                     active={active}

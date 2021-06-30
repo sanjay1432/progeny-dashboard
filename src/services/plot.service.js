@@ -1,6 +1,12 @@
 import { API_URL } from "../constants"
 import axiosApiInstance from "../api/api"
 
+const getPlotData = () => {
+  return axiosApiInstance.get(`${API_URL}/plot`).then(response => {
+    return response.data
+  })
+}
+
 const getQrCodeDataList = payload => {
   return axiosApiInstance
     .get(`${API_URL}/plot/qrcode/${payload}`)
@@ -47,6 +53,7 @@ const attachTrialPlots = (trialid, plots) => {
 }
 
 const PlotService = {
+  getPlotData,
   getQrCodeDataList,
   getTrialPlots,
   getPalmInformation,
