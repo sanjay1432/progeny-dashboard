@@ -11,6 +11,20 @@
   opacity: .3;
 }
 
+//Calender
+.rs-calendar-header-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.rs-calendar-month-dropdown-year, .rs-calendar-month-dropdown-cell-content {
+  color: black;
+}
+
+.rs-calendar-month-dropdown-year-active {
+  color: $primary-green ;
+}
+
 //Button
 .rs-btn {
   font-weight: 700;

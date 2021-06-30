@@ -45,7 +45,6 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-// let tableData = []
 
 const EditableCell = ({
   rowData,
@@ -62,35 +61,37 @@ const EditableCell = ({
     case "plot":
       return (
         <Cell {...cellProps}>
-          {editing && dataKey === "progenyId" ? (
-            <DataPicker
-              dataType="progenyId"
-              OriginalData={dashboardData.result.plot}
-              dataValue={rowData[dataKey]}
-              onChange={value =>
-                handlePlotEditChange(rowData.trialid, dataKey, value)
-              }
-            />
-          ) : editing && dataKey !== "progenyId" ? (
-            <Input
-              defaultValue={rowData[dataKey]}
-              disabled={[
-                "trialid",
-                "estate",
-                "replicate",
-                "estateblock",
-                "design",
-                "density",
-                "progeny",
-                "ortet",
-                "fp",
-                "mp",
-                "noofPalm"
-              ].includes(dataKey)}
-              onChange={value =>
-                handlePlotEditChange(rowData.trialid, dataKey, value)
-              }
-            />
+          {editing ? (
+            dataKey === "progenyId" ? (
+              <DataPicker
+                dataType="progenyId"
+                OriginalData={dashboardData.result.plot}
+                dataValue={rowData[dataKey]}
+                onChange={value =>
+                  handlePlotEditChange(rowData.trialid, dataKey, value)
+                }
+              />
+            ) : (
+              <Input
+                defaultValue={rowData[dataKey]}
+                disabled={[
+                  "trialid",
+                  "estate",
+                  "replicate",
+                  "estateblock",
+                  "design",
+                  "density",
+                  "progeny",
+                  "ortet",
+                  "fp",
+                  "mp",
+                  "noofPalm"
+                ].includes(dataKey)}
+                onChange={value =>
+                  handlePlotEditChange(rowData.trialid, dataKey, value)
+                }
+              />
+            )
           ) : (
             <span>{rowData[dataKey]}</span>
           )}

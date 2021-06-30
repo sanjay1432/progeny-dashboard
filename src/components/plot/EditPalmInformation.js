@@ -34,13 +34,7 @@ const EditableCell = ({
           "estate",
           "replicate",
           "estateblock",
-          "design",
-          "density",
-          "progeny",
-          "ortet",
-          "fp",
-          "mp",
-          "noofPalm"
+          "plot"
         ].includes(dataKey)}
         onChange={value =>
           handleEditChange &&
@@ -204,37 +198,37 @@ const EditPalmInformation = ({ option }) => {
     {
       name: "Trial ID",
       dataKey: "trialid",
-      width: 150
+      flexGrow: 1
     },
     {
       name: "Estate",
       dataKey: "estate",
-      width: 150
+      flexGrow: 1
     },
     {
       name: "Replicate",
       dataKey: "replicate",
-      width: 150
+      flexGrow: 1
     },
     {
       name: "Estate Block",
       dataKey: "estateblock",
-      width: 150
+      flexGrow: 1
     },
     {
       name: "Plot",
       dataKey: "plot",
-      width: 150
+      flexGrow: 1
     },
     {
       name: "Palm Number",
       dataKey: "palmNum",
-      width: 150
+      flexGrow: 1
     },
     {
       name: "Palm Name",
       dataKey: "palmName",
-      width: 150
+      flexGrow: 1
     }
   ]
 
