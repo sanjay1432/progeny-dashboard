@@ -46,6 +46,7 @@
 
   .QRCodeLayout {
     width: 20%;
+    text-align: -webkit-center;
 
     .QrCodePanel {
       width:188.8px;
@@ -54,9 +55,12 @@
   }
 
   .selectPalmLayout {
+    width: 100%;
     display: flex;
     flex-direction: row;
-    padding-left: 10%;
+
+    .selectPalm {
+    }
 
     .palm {
       margin-top: 6px;

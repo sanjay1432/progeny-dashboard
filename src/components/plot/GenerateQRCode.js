@@ -19,8 +19,6 @@ const GenerationQRCode = ({ option }) => {
     fetchData()
   }, [])
 
-  console.log(qrData)
-
   const CheckCell = ({ onChange, checkedKeys, data }) => {
     return (
       <Checkbox
@@ -82,7 +80,7 @@ const GenerationQRCode = ({ option }) => {
       </Modal>
 
       <div style={{ display: "none" }}>
-        <PrintLayout ref={printRef} data={checkStatus} />
+        <PrintLayout ref={printRef} selectedItem={checkStatus} data={qrData} />
       </div>
 
       <Grid className="qrFunctionSetting" fluid>
@@ -124,36 +122,50 @@ const GenerationQRCode = ({ option }) => {
 
       <Row>
         {qrData.map(data => {
-          function ZoomInQRCode(value) {
-            console.log(value)
+          function ZoomInQRCode(trialId, plot, estateBlock, palmNo) {
             setZoomInQR(true)
+            setZoomInData(trialId)
+            console.log(trialId, plot, estateBlock, palmNo)
           }
           return (
-            <Col className="QRCodeLayout" md={4} lg={4}>
-              <Panel shaded className="QrCodePanel">
-                <QRCode
-                  size={113}
-                  value={`{trialid: "${data.trialid}", plot: "${data.plot}", estateblock: "${data.estateblock}", palmno: "${data.palmno}"}`}
-                  onClick={(e, value) => ZoomInQRCode(value)}
-                  renderAs="svg"
-                />
-              </Panel>
+            <div>
+              <Col className="QRCodeLayout" md={4} lg={4}>
+                <Panel shaded className="QrCodePanel">
+                  <QRCode
+                    size={113}
+                    value={`${data.trialid}\ ${data.plot}\ ${data.estateblock}\ ${data.palmno}`}
+                    onClick={() =>
+                      ZoomInQRCode(
+                        data.trialid,
+                        data.plot,
+                        data.estateblock,
+                        data.palmno
+                      )
+                    }
+                    renderAs="svg"
+                  />
+                </Panel>
 
-              <div className="selectPalmLayout">
-                <CheckCell
-                  className="selectPalm"
-                  data={data} //Primary key of table
-                  checkedKeys={checkStatus}
-                  onChange={handleCheck}
-                />
-                <p className="palm">
-                  Palm :{" "}
-                  <b className="palmData" ref={handleValue} value={data.palmno}>
-                    {data.palmno}
-                  </b>
-                </p>
-              </div>
-            </Col>
+                <div className="selectPalmLayout">
+                  <CheckCell
+                    className="selectPalm"
+                    data={data} //Primary key of table
+                    checkedKeys={checkStatus}
+                    onChange={handleCheck}
+                  />
+                  <p className="palm">
+                    Palm :{" "}
+                    <b
+                      className="palmData"
+                      ref={handleValue}
+                      value={data.palmno}
+                    >
+                      {data.palmno}
+                    </b>
+                  </p>
+                </div>
+              </Col>
+            </div>
           )
         })}
       </Row>

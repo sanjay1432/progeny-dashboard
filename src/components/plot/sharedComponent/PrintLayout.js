@@ -3,16 +3,21 @@ import QRCode from "qrcode.react"
 
 export class PrintLayout extends PureComponent {
   render() {
-    const data = this.props.data
+    const selectedItem = this.props.selectedItem
 
-    console.log(data)
-    if (this.props.data.length < 2) {
+    const data = this.props.data.filter(data => data.plot === selectedItem.plot)
+
+    if (selectedItem.length < 2) {
       return (
         <div id="PrintLayout">
           <div className="singleLayout">
-            <div className="qrLayout">
-              <QRCode value="hihi" size={900} renderAs="svg" />
-            </div>
+            {data.map(selectedItem => {
+              return (
+                <div className="qrLayout">
+                  <QRCode value="hihi" size={370} renderAs="svg" />
+                </div>
+              )
+            })}
           </div>
         </div>
       )
@@ -20,7 +25,7 @@ export class PrintLayout extends PureComponent {
       return (
         <div id="PrintLayout">
           <div className="multiLayout">
-            {this.props.data.map(data => {
+            {data.map(selectedItem => {
               return (
                 <div className="qrLayout">
                   <QRCode value="hihi" size={370} renderAs="svg" />

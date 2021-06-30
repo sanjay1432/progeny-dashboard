@@ -676,111 +676,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setTableData(nextData)
   }
 
-  const EditDataCell = ({ rowData, dataKey, onClick, ...props }) => {
-    switch (active) {
-      case "plot":
-        return (
-          <Cell {...props}>
-            {rowData.status ? (
-              <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
-                <FlexboxGrid.Item>
-                  <IconButton
-                    circle
-                    color="green"
-                    size="xs"
-                    icon={<Icon icon="check" />}
-                    onClick={() => openConfirmationModal(rowData)}
-                  />
-                </FlexboxGrid.Item>
-                <FlexboxGrid.Item>
-                  <IconButton
-                    circle
-                    color="red"
-                    size="xs"
-                    icon={<Icon icon="close" />}
-                    onClick={() => handlePlotEditStatus()}
-                  />
-                </FlexboxGrid.Item>
-              </FlexboxGrid>
-            ) : (
-              <FlexboxGrid justify="space-between">
-                <FlexboxGrid.Item>
-                  <img
-                    src={QrCodeScanner}
-                    alt=""
-                    onClick={() =>
-                      handleActionExpand(["Plot", "Generate QR Code"], {
-                        type: "generate QR",
-                        trialid: rowData.trialid,
-                        plot: rowData.plot
-                      })
-                    }
-                  />
-                </FlexboxGrid.Item>
-                <FlexboxGrid.Item>
-                  <img
-                    src={CreateIcon}
-                    alt=""
-                    onClick={() => handlePlotEditStatus(rowData.trialid)}
-                  />
-                </FlexboxGrid.Item>
-                <FlexboxGrid.Item>
-                  <img
-                    src={LinkIcon}
-                    alt=""
-                    onClick={() =>
-                      handleActionExpand(["Plot", "Edit Palms Information"], {
-                        type: "edit",
-                        trialid: rowData.trialid,
-                        estate: rowData.estate,
-                        replicate: rowData.replicate,
-                        plot: rowData.plot
-                      })
-                    }
-                  />
-                </FlexboxGrid.Item>
-              </FlexboxGrid>
-            )}
-          </Cell>
-        )
-      case "palm":
-        return (
-          <Cell {...props}>
-            {rowData.status ? (
-              <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
-                <FlexboxGrid.Item>
-                  <IconButton
-                    circle
-                    color="green"
-                    size="xs"
-                    icon={<Icon icon="check" />}
-                    onClick={() => openConfirmationModal(rowData)}
-                  />
-                </FlexboxGrid.Item>
-                <FlexboxGrid.Item>
-                  <IconButton
-                    circle
-                    color="red"
-                    size="xs"
-                    icon={<Icon icon="close" />}
-                    onClick={() => cancelPalmData(rowData.trialid)}
-                  />
-                </FlexboxGrid.Item>
-              </FlexboxGrid>
-            ) : (
-              <img
-                src={CreateIcon}
-                alt=""
-                onClick={() => handlePalmEditStatus(rowData.trialid)}
-              />
-            )}
-          </Cell>
-        )
-      default:
-        return null
-    }
-  }
-
   function handlePlotEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
@@ -934,6 +829,107 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
+
+      case "plot":
+        return (
+          <>
+            {data.status ? (
+              <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="green"
+                    size="xs"
+                    icon={<Icon icon="check" />}
+                    onClick={() => openConfirmationModal(data)}
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="red"
+                    size="xs"
+                    icon={<Icon icon="close" />}
+                    onClick={() => handlePlotEditStatus()}
+                  />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            ) : (
+              <FlexboxGrid justify="space-between">
+                <FlexboxGrid.Item>
+                  <img
+                    src={QrCodeScanner}
+                    alt=""
+                    onClick={() =>
+                      handleActionExpand(["Plot", "Generate QR Code"], {
+                        type: "generate QR",
+                        trialid: data.trialid,
+                        plot: data.plot
+                      })
+                    }
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <img
+                    src={CreateIcon}
+                    alt=""
+                    onClick={() => handlePlotEditStatus(data.trialid)}
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <img
+                    src={LinkIcon}
+                    alt=""
+                    onClick={() =>
+                      handleActionExpand(["Plot", "Edit Palms Information"], {
+                        type: "edit",
+                        trialid: data.trialid,
+                        estate: data.estate,
+                        replicate: data.replicate,
+                        plot: data.plot
+                      })
+                    }
+                  />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            )}
+          </>
+        )
+
+      case "palm":
+        return (
+          <>
+            {data.status ? (
+              <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="green"
+                    size="xs"
+                    icon={<Icon icon="check" />}
+                    onClick={() => openConfirmationModal(data)}
+                  />
+                </FlexboxGrid.Item>
+                <FlexboxGrid.Item>
+                  <IconButton
+                    circle
+                    color="red"
+                    size="xs"
+                    icon={<Icon icon="close" />}
+                    onClick={() => cancelPalmData(data.trialid)}
+                  />
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+            ) : (
+              <img
+                src={CreateIcon}
+                alt=""
+                onClick={() => handlePalmEditStatus(data.trialid)}
+              />
+            )}
+          </>
+        )
+
       case "progeny":
         return (
           <span>
@@ -1750,13 +1746,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
           <Column width={130} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>
-            {active === "plot" || active === "palm" ? (
-              <EditDataCell dataKey="trialid" />
-            ) : (
-              <Cell align="center" {...props}>
-                {rowData => <ActionButtons data={rowData} />}
-              </Cell>
-            )}
+            <Cell align="center" {...props}>
+              {rowData => <ActionButtons data={rowData} />}
+            </Cell>
           </Column>
         </Table>
 
