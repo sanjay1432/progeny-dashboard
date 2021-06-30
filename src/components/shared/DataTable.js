@@ -435,8 +435,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       currentTableData = filterTable(filterData.filter, currentTableData)
     }
     return currentTableData.filter((v, i) => {
-      v["check"] = false
-      v["rowNumber"] = i
+      //v["check"] = false
+      //v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
@@ -671,12 +671,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setTableData(nextData)
   }
 
-  const handlePalmEditChange = (trialid, key, value) => {
-    const nextData = Object.assign([], tableData)
-    nextData.find(item => item.trialid === trialid)[key] = value
-    setTableData(nextData)
-  }
-
   function handlePlotEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
@@ -703,10 +697,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     )
   }
 
+  const handlePalmEditChange = (trialid, key, value) => {
+    const nextData = Object.assign([], tableData)
+    if (key === "palmno") {
+      nextData.find(item => item.trialid === trialid)[key] = parseInt(value)
+      setTableData(nextData)
+    } else {
+      nextData.find(item => item.trialid === trialid)[key] = value
+      setTableData(nextData)
+    }
+  }
+
   function handlePalmEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? false : true
+    activeItem.status = activeItem.status ? null : true
     setTableData(nextData)
   }
 
@@ -719,9 +724,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function cancelPalmData(trialid) {
     const nextData = Object.assign([], tableData)
-    const activeItem = originalData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? false : true
-    setTableData(nextData)
+    const activeItem = nextData.find(item => item.trialid === trialid)
+    const nextData2 = Object.assign([], originalData)
+    const activeItem2 = nextData2.find(item => item.trialid === trialid)
+    activeItem2.status = null
+    activeItem2.status = activeItem2.status ? null : true
+    console.log(activeItem)
+    setTableData(activeItem2)
   }
 
   function savePalmData(trialid) {
@@ -830,7 +839,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </FlexboxGrid>
         )
-
       case "plot":
         return (
           <>
@@ -896,7 +904,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             )}
           </>
         )
-
       case "palm":
         return (
           <>

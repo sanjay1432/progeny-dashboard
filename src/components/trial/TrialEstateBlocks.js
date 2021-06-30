@@ -328,7 +328,7 @@ const TrialEstateBlocks = ({
                 color="red"
                 size="xs"
                 onClick={() => {
-                  onClick && onClick(rowIndex)
+                  onClick && onClick(rowIndex) //handleEditState
                 }}
               />
             </FlexboxGrid.Item>
@@ -339,7 +339,7 @@ const TrialEstateBlocks = ({
               src={CreateIcon}
               alt=""
               onClick={() => {
-                onClick && onClick(rowIndex)
+                onClick && onClick(rowIndex) //handleEditState
               }}
             />
           </span>
