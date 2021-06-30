@@ -42,15 +42,17 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable, getValue] =
-    useState(true)
+  const [disabledGenerateTable, setDisabledGenerateTable, getValue] = useState(
+    true
+  )
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
-    useState("yes")
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState(
+    "yes"
+  )
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
     { estate: "", estatenofreplicate: "" }
@@ -309,7 +311,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       const foundedBlock = estateBlocks.find(eb => eb.estateblock === block)
       const data = [...tableData]
-      // data[rowIndex].estateblock = block
+      data[rowIndex].estateblock = block
       data[rowIndex].blockId = foundedBlock.id
       data[rowIndex].soiltype = foundedBlock.soiltype
       setTableData(data)

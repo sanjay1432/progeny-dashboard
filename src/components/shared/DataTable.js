@@ -54,18 +54,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     // SET TABLE DATA
     setCurrentTableData()
   })
-  const attachProgeny = (
-    <Tooltip>
-      The plots that are in this Trial has already been attached to its own
-      unique progeny.
-    </Tooltip>
-  )
-  const editProgeny = (
-    <Tooltip>
-      You are unable to edit the data for this value because it has data already
-      attached to palms.
-    </Tooltip>
-  )
+  const attachProgeny = <Tooltip>Progenies attached.</Tooltip>
+  const editProgeny = <Tooltip>Data exists for Palms</Tooltip>
   const [successMessage, setSuccessMessage] = useState(false)
   const [successData, setSuccessData] = useState(null)
   const [errorMessage, setErrorMessage] = useState("")
@@ -146,7 +136,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
     {
       label: "Trial ID",
-      value: "trialid"
+      value: "trialCode"
     },
     {
       label: "Trial",
@@ -533,7 +523,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       active === "palm" ||
       active === "userlist" ||
       active === "estateAssignment" ||
-      active === "userAssignment"
+      active === "userAssignment" ||
+      active === "trial" ||
+      active === "estate" ||
+      active === "plot"
     ) {
       return null
     } else {
@@ -845,7 +838,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               onClick={() =>
                 handleActionExpand(["Estate", `Estate ${data.estate}`], {
                   type: "add",
-                  estate: data.estate
+                  estate: data.estate,
+                  estateId: data.estateId
                 })
               }
             />
@@ -862,10 +856,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   handleActionExpand(
                     [
                       "Trial and Replicate",
-                      `Trial ${data.trialid}/Estate ${data.estate}`
+                      `Trial ${data.trialCode}/Estate ${data.estate}`
                     ],
                     {
-                      trial: data.trialid,
+                      trial: data.trialId,
                       estate: data.estate,
                       type: "expand"
                     }
@@ -882,7 +876,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     handleActionExpand(
                       ["Trial and Replicate", `Edit Trial and Replicate`],
                       {
-                        trial: data.trialid,
+                        trial: data.trialId,
                         estate: data.estate,
                         type: "edit"
                       }
@@ -890,7 +884,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   }
                 />
               ) : (
-                <Whisper placement="top" trigger="click" speaker={editProgeny}>
+                <Whisper placement="left" trigger="hover" speaker={editProgeny}>
                   <img src={CreateIcon} style={{ opacity: 0.2 }} />
                 </Whisper>
               )}
@@ -903,7 +897,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     handleActionExpand(
                       ["Trial and Replicate", `Attach Progenies`],
                       {
-                        trial: data.trialid,
+                        trial: data.trialCode,
+                        trialId: data.trialId,
                         estate: data.estate,
                         type: "attach"
                       }
@@ -912,8 +907,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 />
               ) : (
                 <Whisper
-                  placement="top"
-                  trigger="click"
+                  placement="left"
+                  trigger="hover"
                   speaker={attachProgeny}
                 >
                   <img src={LinkIcon} style={{ opacity: 0.2 }} />
@@ -1348,7 +1343,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "trial":
         const trialfields = []
         currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialid") {
+          if (field.value === "trialCode") {
             field.width = 120
             trialfields[0] = field
           }
@@ -1671,7 +1666,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           onRowClick={data1 => {}}
           autoHeight
         >
-          {active === "palm" ||
+          {active != "progeny" ||
           currentItem.name === "User Management" ? null : (
             <Column width={70} align="center" fixed>
               <HeaderCell className="tableHeader">

@@ -45,9 +45,9 @@ const TrialEstateBlocks = ({
   const [selectedReplicate, setSelectedReplicate] = useState(null)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatus, setCheckStatus] = useState([])
-  const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
   const [show, setShow] = useState(false)
   const [estateBlocks, setEstateBlocks] = useState([])
+  const [blocksForEstate, setBlocksForEstate] = useState([])
   const [soilTypeFilterData, setSoilTypeFilterData] = useState([])
   useEffect(() => {
     async function fetchData() {
@@ -119,6 +119,7 @@ const TrialEstateBlocks = ({
     console.log({ estateBlocks })
 
     const items = data.find(eb => eb.estate === option.estate).estateblocks
+    setBlocksForEstate(items)
     const blocks = []
     console.log({ items })
     for (let item in items) {
@@ -363,11 +364,14 @@ const TrialEstateBlocks = ({
   async function onSaveReplicate() {
     try {
       handleEditState(selectedReplicate.idx, true)
+      console.log({ blocksForEstate })
       console.log(selectedReplicate)
+
       setShow(false)
       const { estateblock, estate, density, replicateId } = selectedReplicate
+      const block = blocksForEstate.find(b => b.estateblock === estateblock)
       const payload = {
-        estateblock,
+        blockId: block.id,
         estate,
         density,
         replicateId,
@@ -442,7 +446,7 @@ const TrialEstateBlocks = ({
         </Grid>
 
         <Table wordWrap data={filteredTableData} autoHeight id="dashboardTable">
-          <Column width={70} align="center" fixed>
+          {/* <Column width={70} align="center" fixed>
             <HeaderCell className="tableHeader">
               <Checkbox
                 checked={checked}
@@ -455,7 +459,7 @@ const TrialEstateBlocks = ({
               checkedKeys={checkStatus}
               onChange={handleCheck}
             />
-          </Column>
+          </Column> */}
 
           <Column width={200}>
             <HeaderCell className="tableHeader">Replicate</HeaderCell>
