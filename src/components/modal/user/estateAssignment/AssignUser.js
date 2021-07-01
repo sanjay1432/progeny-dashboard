@@ -1,7 +1,7 @@
 import FilterPanel from "components/modal/sharedComponent/FilterPanel"
 import Table from "components/modal/sharedComponent/DataTable"
 import React, { useState, useEffect } from "react"
-import UserService from "../../../../services/user.service"
+import EstateAssignmentService from "../../../../services/estateAssignment.service"
 import { Modal, Button } from "rsuite"
 
 const AssignUser = ({
@@ -16,12 +16,12 @@ const AssignUser = ({
   const [positionList, setPositionList] = useState([])
 
   useEffect(() => {
-    UserService.getUserList().then(response => {
+    EstateAssignmentService.getUserList().then(response => {
       const data = response.data
       setUserList(data)
     })
 
-    UserService.getPositionList().then(response => {
+    EstateAssignmentService.getPositionList().then(response => {
       const data = response.data
       setPositionList(data)
     })

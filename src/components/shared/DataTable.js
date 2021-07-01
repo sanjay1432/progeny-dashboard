@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
-import UserService from "../../services/user.service"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
@@ -33,6 +32,8 @@ import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
 import ConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
 import PalmService from "services/palm.service"
 import PlotService from "services/plot.service"
+import EstateAssignmentService from "../../services/estateAssignment.service"
+import UserAssignmentService from "../../services/userAssignment.service"
 
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -57,47 +58,50 @@ const EditableCell = ({
   ...cellProps
 }) => {
   const editing = rowData.status === true
-
   switch (active) {
     case "plot":
       return (
-        <Cell {...cellProps}>
+        <>
           {editing ? (
-            dataKey === "progenyCode" ? (
-              <DataPicker
-                OriginalData={OriginalData}
-                dataType="progenyCode"
-                dataValue={rowData[dataKey]}
-                onChange={value =>
-                  handlePlotEditChange(rowData.trialid, dataKey, value)
-                }
-              />
-            ) : (
-              <Input
-                defaultValue={rowData[dataKey]}
-                disabled={[
-                  "trialCode",
-                  "estate",
-                  "replicate",
-                  "estateblock",
-                  "design",
-                  "density",
-                  "subblock",
-                  "progeny",
-                  "ortet",
-                  "fp",
-                  "mp",
-                  "noofPalm"
-                ].includes(dataKey)}
-                onChange={value =>
-                  handlePlotEditChange(rowData.trialid, dataKey, value)
-                }
-              />
-            )
+            <Cell {...cellProps}>
+              {dataKey === "progenyCode" ? (
+                <DataPicker
+                  OriginalData={OriginalData}
+                  dataType="progenyCode"
+                  dataValue={rowData[dataKey]}
+                  onChange={value =>
+                    handlePlotEditChange(rowData.trialid, dataKey, value)
+                  }
+                />
+              ) : (
+                <Input
+                  defaultValue={rowData[dataKey]}
+                  disabled={[
+                    "trialCode",
+                    "estate",
+                    "replicate",
+                    "estateblock",
+                    "design",
+                    "density",
+                    "subblock",
+                    "progeny",
+                    "ortet",
+                    "fp",
+                    "mp",
+                    "noofPalm"
+                  ].includes(dataKey)}
+                  onChange={value =>
+                    handlePlotEditChange(rowData.trialid, dataKey, value)
+                  }
+                />
+              )}
+            </Cell>
           ) : (
-            <span>{rowData[dataKey]}</span>
+            <Cell {...cellProps}>
+              <span>{rowData[dataKey]}</span>
+            </Cell>
           )}
-        </Cell>
+        </>
       )
     case "palm":
       return (
@@ -122,7 +126,11 @@ const EditableCell = ({
         </Cell>
       )
     default:
-      return null
+      return (
+        <Cell {...cellProps}>
+          <span>{rowData[dataKey]}</span>
+        </Cell>
+      )
   }
 }
 
@@ -495,20 +503,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function AddButton() {
     switch (active) {
-      // case "estate":
-      //   return (
-      //     <Col sm={5} md={5} lg={4}>
-      //       <FlexboxGrid.Item>
-      //         <Button
-      //           appearance="primary"
-      //           className="addEstateButton"
-      //           disabled
-      //         >
-      //           Add Estate
-      //         </Button>
-      //       </FlexboxGrid.Item>
-      //     </Col>
-      //   )
+      case "estate":
+        return null
       case "trial":
         return (
           <Col sm={5} md={5} lg={4}>
@@ -641,10 +637,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             canceled
           </Button>
         )
-      case "finished":
+      case "pending":
         return (
           <Button
             color="yellow"
+            appearance="ghost"
+            className="pendingStatusButton"
+          >
+            finished
+          </Button>
+        )
+
+      case "finished":
+        return (
+          <Button
+            color="blue"
             appearance="ghost"
             className="finishedStatusButton"
           >
@@ -1049,7 +1056,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       estate: estate,
       userId: selectedItem
     }
-    UserService.assignUserToEstate(payload).then(
+    EstateAssignmentService.assignUserToEstate(payload).then(
       data => {
         console.log(payload, " successfully transfer to backend")
         setSuccessMessage(active)
@@ -1066,7 +1073,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       username: username,
       estate: selectedItem
     }
-    UserService.assignEstateToUser(payload).then(
+    UserAssignmentService.assignEstateToUser(payload).then(
       data => {
         console.log(payload, " successfully transfer to backend")
         setSuccessMessage(active)
@@ -1351,27 +1358,23 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  function reArrangeTableFields() {
+  const reArrangeTableFields = () => {
     switch (active) {
       case "estate":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "estate") {
-            //field.width = 320
             field.flexGrow = 1
             currentTableDataFields[0] = field
           }
           if (field.value === "estatefullname") {
-            //field.width = 320
             field.flexGrow = 1
             currentTableDataFields[1] = field
           }
           if (field.value === "noofestateblock") {
-            //field.width = 320
             field.flexGrow = 1
             currentTableDataFields[2] = field
           }
           if (field.value === "nooftrails") {
-            //field.width = 320
             field.flexGrow = 1
             currentTableDataFields[3] = field
           }
@@ -1413,10 +1416,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.width = 140
             trialfields[7] = field
           }
-          // if (field.value === "soiltype") {
-          //   field.width = 120
-          //   trialfields[8] = field
-          // }
           if (field.value === "nofplot") {
             field.width = 120
             trialfields[9] = field
@@ -1431,6 +1430,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "status") {
             field.width = 130
+            field.align = "center"
+            field.fixed = "right"
             trialfields[12] = field
           }
         })
@@ -1502,37 +1503,30 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const palmfields = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[0] = field
           }
           if (field.value === "estate") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[1] = field
           }
           if (field.value === "replicate") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[2] = field
           }
           if (field.value === "estateblock") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[3] = field
           }
           if (field.value === "plot") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[4] = field
           }
           if (field.value === "palmno") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[5] = field
           }
           if (field.value === "palmname") {
-            //field.width = 200
             field.flexGrow = 1
             palmfields[6] = field
           }
@@ -1620,6 +1614,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "status") {
             field.width = 130
+            field.align = "center"
+            field.fixed = "right"
             currentTableDataFields[3] = field
           }
         })
@@ -1726,44 +1722,30 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </Column>
           ) : null}
-          {reArrangeTableFields().map((field, i) =>
-            field.value === "status" ? (
-              <Column
-                width={field.width ? field.width : null}
-                flexGrow={field.flexGrow ? field.flexGrow : null}
-                align="center"
-                key={i}
-                fixed="right"
-              >
-                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                <Cell align="center">
-                  {rowData => {
-                    return <StatusButton status={rowData.status} />
-                  }}
+          {reArrangeTableFields().map((field, i) => (
+            <Column
+              width={field.width ? field.width : null}
+              flexGrow={field.flexGrow ? field.flexGrow : null}
+              align={field.align ? field.align : "left"}
+              fixed={field.fixed ? field.fixed : null}
+              key={i}
+            >
+              <HeaderCell className="tableHeader">{field.label}</HeaderCell>
+              {field.value === "status" ? (
+                <Cell align="center" {...props}>
+                  {rowData => <StatusButton status={rowData.status} />}
                 </Cell>
-              </Column>
-            ) : (
-              <Column
-                width={field.width ? field.width : null}
-                flexGrow={field.flexGrow ? field.flexGrow : null}
-                align="left"
-                key={i}
-              >
-                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                {active === "plot" || active === "palm" ? (
-                  <EditableCell
-                    dataKey={field.value}
-                    OriginalData={originalData}
-                    handlePalmEditChange={handlePalmEditChange}
-                    handlePlotEditChange={handlePlotEditChange}
-                    active={active}
-                  />
-                ) : (
-                  <Cell dataKey={field.value} />
-                )}
-              </Column>
-            )
-          )}
+              ) : (
+                <EditableCell
+                  dataKey={field.value}
+                  OriginalData={originalData}
+                  handlePalmEditChange={handlePalmEditChange}
+                  handlePlotEditChange={handlePlotEditChange}
+                  active={active}
+                />
+              )}
+            </Column>
+          ))}
 
           <Column width={130} align="center" fixed="right">
             <HeaderCell className="tableHeader">Action</HeaderCell>

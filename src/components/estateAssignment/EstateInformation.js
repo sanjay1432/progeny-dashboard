@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import UserService from "../../services/user.service"
+import EstateAssignmentService from "../../services/userAssignment.service"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 import {
   Table,
@@ -38,7 +38,7 @@ const EstateInformation = ({ option }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    UserService.getTrialList().then(response => {
+    EstateAssignmentService.getTrialList().then(response => {
       const data = response.data.filter(
         filter => filter.estate === option.estate
       )

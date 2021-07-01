@@ -53,7 +53,6 @@ const EditableCell = ({
 }
 
 const EditPalmInformation = ({ option }) => {
-  console.log(option)
   const initialFilterValue = {
     trialid: option.trialid,
     estate: option.estate,
