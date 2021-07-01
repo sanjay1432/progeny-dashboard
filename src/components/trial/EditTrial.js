@@ -792,9 +792,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Button>
       </div>
       {/* STEP 1 Edit Trial END */}
-      <hr
-        style={{ marginTop: "4rem", borderTop: "2px solid rgb(0 0 0 / 28%)" }}
-      />
+      <hr className="lineBetweenStep" />
 
       {/* STEP 2 Edit Replicates in Trial START*/}
       <div>

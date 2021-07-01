@@ -912,7 +912,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     onClick={() =>
                       handleActionExpand(["Plot", "Edit Palms Information"], {
                         type: "edit",
-                        trialid: data.trialid,
+                        trialCode: data.trialCode,
                         estate: data.estate,
                         replicate: data.replicate,
                         plot: data.plot
@@ -1120,6 +1120,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function SuccessMessage({ activeNav, successData }) {
     console.log({ activeNav })
+    console.log(successData)
     switch (activeNav) {
       case "estate":
         return (
@@ -1282,18 +1283,34 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           )
         }
       case "userlist":
-        return (
-          <>
-            <Message
-              showIcon
-              type="success"
-              description="{`has been added to the system.`}"
-              onClick={() => {
-                setSuccessMessage("")
-              }}
-            />
-          </>
-        )
+        if (successData.action === "CREATE") {
+          return (
+            <>
+              <Message
+                showIcon
+                type="success"
+                description={`${successData.data.username} has been added to the system.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            </>
+          )
+        } else if (successData.action === "UPDATE") {
+          return (
+            <>
+              <Message
+                showIcon
+                type="success"
+                description={`${successData.data.username} has been edited to the system.`}
+                onClick={() => {
+                  setSuccessMessage("")
+                }}
+              />
+            </>
+          )
+        }
+
       case "estateAssignment":
         return (
           <>

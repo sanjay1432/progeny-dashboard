@@ -291,7 +291,7 @@ const AddNewProgeny = () => {
           </Col>
         </Row>
         <Row>
-          <Col md={4} mdOffset={16} lg={4} lgOffset={16}>
+          <Col mdOffset={16} md={4} lgOffset={16} lg={4}>
             <Button
               className="cancelButton"
               appearance="subtle"

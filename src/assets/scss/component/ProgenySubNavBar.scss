@@ -40,6 +40,19 @@
     padding: 3px 16px;
   }
 
+  .rs-nav-item-active {
+    .rs-nav-item-content::before {
+      left: 30% !important;
+      right: 30% !important;
+    }
+    .item {
+      font-weight: 700;
+      color: $primary-green;
+    }
+  } 
+
+
+
   .rs-nav-subtle.rs-nav-horizontal .rs-nav-item-active > .rs-nav-item-content::before {
     height: 3px;
     font-weight: 700;

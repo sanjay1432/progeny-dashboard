@@ -28,7 +28,7 @@ const ProgenySubNavBar = ({ active, currentItem, onSelect, ...props }) => {
                 listItems.map((item, i) => (
                   <Nav.Item eventKey={item.eventKey} key={i}>
                     {" "}
-                    <p>{item.name}</p>
+                    <p className="item">{item.name}</p>
                   </Nav.Item>
                 ))
               )}

@@ -370,9 +370,7 @@ const AttachProgeny = ({
         </Row>
       </Grid>
       {/* STEP 1 GENERATE TABLE END */}
-      <hr
-        style={{ marginTop: "4rem", borderTop: "2px solid rgb(0 0 0 / 28%)" }}
-      />
+      <hr className="lineBetweenStep" />
 
       {/* STEP 2 CUSTOMISE TABLE START*/}
       <div>

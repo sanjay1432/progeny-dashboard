@@ -5,6 +5,7 @@ import PlotService from "../../services/plot.service"
 import { publish } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
 import ConfirmationModal from "../modal/sharedComponent/ConfirmationModal"
+import SearchMessage from "../../assets/img/SearchMessage.svg"
 import {
   Table,
   FlexboxGrid,
@@ -30,7 +31,7 @@ const EditableCell = ({
       <Input
         defaultValue={rowData[dataKey]}
         disabled={[
-          "trialid",
+          "trialCode",
           "estate",
           "replicate",
           "estateblock",
@@ -39,7 +40,7 @@ const EditableCell = ({
         onChange={value =>
           handleEditChange &&
           handleEditChange(
-            rowData.trialid,
+            rowData.trialCode,
             rowData.estate,
             rowData.replicate,
             rowData.plot,
@@ -54,7 +55,7 @@ const EditableCell = ({
 
 const EditPalmInformation = ({ option }) => {
   const initialFilterValue = {
-    trialid: option.trialid,
+    trialCode: option.trialCode,
     estate: option.estate,
     replicate: option.replicate,
     plot: option.plot
@@ -74,7 +75,7 @@ const EditPalmInformation = ({ option }) => {
       const data = await PlotService.getPalmInformation()
       const initialTableData = data.filter(
         data =>
-          data.trialid === filterValue.trialid &&
+          data.trialCode === filterValue.trialCode &&
           data.estate === filterValue.estate &&
           data.replicate === filterValue.replicate &&
           data.plot === filterValue.plot
@@ -85,125 +86,83 @@ const EditPalmInformation = ({ option }) => {
       setPlotFilterData(data)
       setInitialData(data)
       setTableData(initialTableData)
+      console.log(data)
     }
     fetchData()
   }, [])
 
   function handleTrialFilterChange(value) {
-    setFilterValue({ ...filterValue, trialid: value })
-    const filteredEstate = initialData.filter(data => data.trialid === value)
-    const filteredReplicate = initialData.filter(data => data.trialid === value)
-    const filteredPlot = initialData.filter(data => data.trialid === value)
-    setEstateFilterData(filteredEstate)
-    setReplicateFilterData(filteredReplicate)
-    setPlotFilterData(filteredPlot)
+    setFilterValue({ ...filterValue, trialCode: value })
+    const renewFilterData = initialData.filter(data => data.trialCode === value)
+    setEstateFilterData(renewFilterData)
+    setReplicateFilterData(renewFilterData)
+    setPlotFilterData(renewFilterData)
   }
 
   function handleEstateFilterChange(value) {
     setFilterValue({ ...filterValue, estate: value })
     if (value === "all") {
-      const filteredReplicate = initialData.filter(
-        data => data.trialid === filterValue.trialid
+      const renewFilterData = initialData.filter(
+        data => data.trialCode === filterValue.trialCode
       )
-      const filteredPlot = initialData.filter(
-        data => data.trialid === filterValue.trialid
-      )
-      setReplicateFilterData(filteredReplicate)
-      setPlotFilterData(filteredPlot)
-      console.log(filterValue.estate)
+      setReplicateFilterData(renewFilterData)
+      setPlotFilterData(renewFilterData)
     } else {
-      const filteredReplicate = initialData.filter(
-        data => data.estate === value
+      const renewFilterData = initialData.filter(
+        data =>
+          data.trialCode === filterValue.trialCode && data.estate === value
       )
-      const filteredPlot = initialData.filter(data => data.estate === value)
-      setReplicateFilterData(filteredReplicate)
-      setPlotFilterData(filteredPlot)
-      console.log(filterValue.estate)
+      setReplicateFilterData(renewFilterData)
+      setPlotFilterData(renewFilterData)
     }
   }
 
   function handleReplicateFilterChange(value) {
     setFilterValue({ ...filterValue, replicate: value })
-    if (value === "all") {
-      const filteredEstate = initialData.filter(
-        data => data.estate === filterValue.estate
-      )
-      const filteredPlot = initialData.filter(
-        data => data.estate === filterValue.estate
-      )
-      setEstateFilterData(filteredEstate)
-      setPlotFilterData(filteredPlot)
-      console.log(filterValue.replicate)
-    } else {
-      const filteredEstate = initialData.filter(
-        data => data.replicate === value
-      )
-      const filteredPlot = initialData.filter(data => data.replicate === value)
-      setEstateFilterData(filteredEstate)
-      setPlotFilterData(filteredPlot)
-      console.log(filterValue.replicate)
+    if (value !== "all") {
+      const renewData = tableData.filter(data => data.replicate === value)
+      setPlotFilterData(renewData)
+      setTableData(renewData)
     }
   }
 
   function handlePlotFilterChange(value) {
     setFilterValue({ ...filterValue, plot: value })
-    const filteredEstate = initialData.filter(data => data.estate === value)
-    const filteredReplicate = initialData.filter(data => data.estate === value)
-    setEstateFilterData(filteredEstate)
-    setReplicateFilterData(filteredReplicate)
-    console.log(filterValue.plot)
+    if (value !== "all") {
+      const renewData = tableData.filter(data => data.plot === value)
+      setReplicateFilterData(renewData)
+      setTableData(renewData)
+    }
   }
 
   function applyFilter() {
-    const filteredTrial = initialData.filter(
-      data => data.trialid === filterValue.trialid
-    )
-    if (filterValue.estate === "all" || filterValue.estate === "") {
-      setTableData(filteredTrial)
-    } else {
-      const filteredEstate = filteredTrial.filter(
-        data => data.estate === filterValue.estate
+    if (filterValue.estate === "all") {
+      const renewTableData = initialData.filter(
+        data => data.trialCode === filterValue.trialCode
       )
-      if (filterValue.replicate === "all" || filterValue.replicate === "") {
-        setTableData(filteredEstate)
-      } else {
-        const filteredReplicate = filteredEstate.filter(
-          data => data.replicate === filterValue.replicate
-        )
-        if (filterValue.plot === "all" || filterValue.plot === "") {
-          setTableData(filteredReplicate)
-        } else {
-          const filterPlot = filteredReplicate.filter(
-            data => data.plot === filterValue.plot
-          )
-          setTableData(filterPlot)
-        }
-      }
+      setTableData(renewTableData)
+    } else {
+      const renewTableData = initialData.filter(
+        data =>
+          data.trialCode === filterValue.trialCode &&
+          data.estate === filterValue.estate
+      )
+      setTableData(renewTableData)
     }
   }
 
   function resetFilter() {
     setFilterValue({
       ...filterValue,
-      trialid: "",
+      trialCode: "",
       estate: "",
       replicate: "",
       plot: ""
     })
-    setTableData(initialData)
+    setTableData([])
   }
 
   const columns = [
-    {
-      name: "Trial ID",
-      dataKey: "trialid",
-      flexGrow: 1
-    },
-    {
-      name: "Estate",
-      dataKey: "estate",
-      flexGrow: 1
-    },
     {
       name: "Replicate",
       dataKey: "replicate",
@@ -231,11 +190,11 @@ const EditPalmInformation = ({ option }) => {
     }
   ]
 
-  const handleEditChange = (trialid, estate, replicate, plot, key, value) => {
+  const handleEditChange = (trialCode, estate, replicate, plot, key, value) => {
     var nextData = Object.assign([], tableData)
     nextData.find(
       item =>
-        item.trialid === trialid &&
+        item.trialCode === trialCode &&
         item.estate === estate &&
         item.replicate === replicate &&
         item.plot === plot
@@ -248,9 +207,9 @@ const EditPalmInformation = ({ option }) => {
     PlotService.editPalmInformation(tableData).then(
       data => {
         const savedData = {
-          type: "PLOT_EDIT",
+          type: "PALMINFORMATION_UPDATE",
           data: tableData,
-          action: "EDIT"
+          action: "UPDATE"
         }
         dispatch(clearBreadcrumb())
         publish(savedData)
@@ -283,9 +242,9 @@ const EditPalmInformation = ({ option }) => {
               <div className="show-col">
                 <ControlLabel className="labelFilter">Trial ID</ControlLabel>
                 <DataPicker
-                  dataType="trialid"
+                  dataType="trialCode"
                   OriginalData={trialFilterData}
-                  dataValue={filterValue.trialid}
+                  dataValue={filterValue.trialCode}
                   onChange={value => handleTrialFilterChange(value)}
                 />
               </div>
@@ -305,34 +264,7 @@ const EditPalmInformation = ({ option }) => {
               </div>
             </Col>
           </div>
-          <div>
-            <Col md={4} lg={3}>
-              <div className="show-col">
-                <ControlLabel className="labelFilter">Replicate</ControlLabel>
-                <DataPicker
-                  dataType="replicate"
-                  selectAllData="All Replicate"
-                  OriginalData={replicateFilterData}
-                  dataValue={filterValue.replicate}
-                  onChange={value => handleReplicateFilterChange(value)}
-                />
-              </div>
-            </Col>
-          </div>
-          <div>
-            <Col md={4} lg={3}>
-              <div className="show-col">
-                <ControlLabel className="labelFilter">Plot</ControlLabel>
-                <DataPicker
-                  dataType="plot"
-                  selectAllData="All Plot"
-                  OriginalData={plotFilterData}
-                  dataValue={filterValue.plot}
-                  onChange={value => handlePlotFilterChange(value)}
-                />
-              </div>
-            </Col>
-          </div>
+
           <Col md={4} lg={3}>
             <Button
               appearance="primary"
@@ -354,9 +286,7 @@ const EditPalmInformation = ({ option }) => {
         </Row>
       </Grid>
 
-      <hr
-        style={{ marginTop: "4rem", borderTop: "2px solid rgb(0 0 0 / 28%)" }}
-      />
+      <hr className="lineBetweenStep" />
 
       <div>
         <h4 className="title">
@@ -365,60 +295,91 @@ const EditPalmInformation = ({ option }) => {
         </h4>
       </div>
 
-      <Grid fluid>
-        <Row className="show-grid" id="dashboardTableSetting">
-          <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-            <b>Total records ({tableData ? tableData.length : null})</b>
-          </Col>
-        </Row>
-      </Grid>
+      {tableData.length < 1 ? (
+        <div className="imageLayout">
+          <img src={SearchMessage} alt="" />
+          <p className="desc">
+            Please enter <b className="title">Trial ID and Estate</b> to edit
+            Palms Information.
+          </p>
+        </div>
+      ) : (
+        <>
+          <Grid fluid>
+            <Row className="show-grid" id="dashboardTableSetting">
+              <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+                <b>Total records ({tableData.length})</b>
+              </Col>
 
-      <Table id="dashboardTable" data={tableData} autoHeight wordWrap>
-        {columns.map(col => {
-          const width = col.width ? col.width : false
-          const flexGrow = col.flexGrow ? col.flexGrow : false
-          const fixed = col.fixed ? col.fixed : false
-          return (
-            <Column width={width} flexGrow={flexGrow} fixed={fixed}>
-              <HeaderCell className="tableHeader">{col.name}</HeaderCell>
-              <EditableCell
-                dataKey={col.dataKey}
-                handleEditChange={handleEditChange}
-              />
-            </Column>
-          )
-        })}
-      </Table>
+              <Col mdOffset={10} md={4} lgOffset={12} lg={3}>
+                <DataPicker
+                  dataType="replicate"
+                  selectAllData="All Replicate"
+                  OriginalData={replicateFilterData}
+                  dataValue={filterValue.replicate}
+                  onChange={value => handleReplicateFilterChange(value)}
+                />
+              </Col>
+              <Col md={4} lg={3}>
+                <DataPicker
+                  dataType="plot"
+                  selectAllData="All Plot"
+                  OriginalData={plotFilterData}
+                  dataValue={filterValue.plot}
+                  onChange={value => handlePlotFilterChange(value)}
+                />
+              </Col>
+            </Row>
+          </Grid>
 
-      <Grid fluid className="footerLayout">
-        <Row className="show-grid">
-          <FlexboxGrid justify="end">
-            <Col md={5} lg={4}>
-              <FlexboxGrid.Item>
-                <Button
-                  appearance="subtle"
-                  className="cancelButton"
-                  onClick={() => dispatch(clearBreadcrumb())}
-                >
-                  Cancel
-                </Button>
-              </FlexboxGrid.Item>
-            </Col>
-            <Col md={5} lg={4}>
-              <FlexboxGrid.Item>
-                <Button
-                  className="saveButton"
-                  appearance="primary"
-                  onClick={() => setConfirmationModal(true)}
-                  type="button"
-                >
-                  Save
-                </Button>
-              </FlexboxGrid.Item>
-            </Col>
-          </FlexboxGrid>
-        </Row>
-      </Grid>
+          <Table id="dashboardTable" data={tableData} autoHeight wordWrap>
+            {columns.map(col => {
+              const width = col.width ? col.width : false
+              const flexGrow = col.flexGrow ? col.flexGrow : false
+              const fixed = col.fixed ? col.fixed : false
+              return (
+                <Column width={width} flexGrow={flexGrow} fixed={fixed}>
+                  <HeaderCell className="tableHeader">{col.name}</HeaderCell>
+                  <EditableCell
+                    dataKey={col.dataKey}
+                    handleEditChange={handleEditChange}
+                  />
+                </Column>
+              )
+            })}
+          </Table>
+
+          <Grid fluid className="footerLayout">
+            <Row className="show-grid">
+              <FlexboxGrid justify="end">
+                <Col md={5} lg={4}>
+                  <FlexboxGrid.Item>
+                    <Button
+                      appearance="subtle"
+                      className="cancelButton"
+                      onClick={() => dispatch(clearBreadcrumb())}
+                    >
+                      Cancel
+                    </Button>
+                  </FlexboxGrid.Item>
+                </Col>
+                <Col md={5} lg={4}>
+                  <FlexboxGrid.Item>
+                    <Button
+                      className="saveButton"
+                      appearance="primary"
+                      onClick={() => setConfirmationModal(true)}
+                      type="button"
+                    >
+                      Save
+                    </Button>
+                  </FlexboxGrid.Item>
+                </Col>
+              </FlexboxGrid>
+            </Row>
+          </Grid>
+        </>
+      )}
     </div>
   )
 }
