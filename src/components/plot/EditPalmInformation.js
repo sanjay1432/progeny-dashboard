@@ -25,7 +25,6 @@ const EditableCell = ({
   handleEditChange,
   ...cellProps
 }) => {
-  console.log(cellProps)
   return (
     <Cell {...cellProps}>
       <Input
@@ -119,7 +118,18 @@ const EditPalmInformation = ({ option }) => {
 
   function handleReplicateFilterChange(value) {
     setFilterValue({ ...filterValue, replicate: value })
-    if (value !== "all") {
+    if (value === "all") {
+      const renewData = initialData.filter(
+        data =>
+          data.trialCode === filterValue.trialCode &&
+          data.estate === filterValue.estate
+      )
+      setPlotFilterData(renewData)
+      setReplicateFilterData(renewData)
+      setTableData(renewData)
+      console.log(renewData)
+      console.log(tableData)
+    } else {
       const renewData = tableData.filter(data => data.replicate === value)
       setPlotFilterData(renewData)
       setTableData(renewData)
@@ -128,7 +138,18 @@ const EditPalmInformation = ({ option }) => {
 
   function handlePlotFilterChange(value) {
     setFilterValue({ ...filterValue, plot: value })
-    if (value !== "all") {
+    if (value === "all") {
+      const renewData = initialData.filter(
+        data =>
+          data.trialCode === filterValue.trialCode &&
+          data.estate === filterValue.estate
+      )
+      setPlotFilterData(renewData)
+      setReplicateFilterData(renewData)
+      setTableData(renewData)
+      console.log(renewData)
+      console.log(tableData)
+    } else {
       const renewData = tableData.filter(data => data.plot === value)
       setReplicateFilterData(renewData)
       setTableData(renewData)
@@ -136,6 +157,7 @@ const EditPalmInformation = ({ option }) => {
   }
 
   function applyFilter() {
+    setFilterValue({ ...filterValue, replicate: "all", plot: "all" })
     if (filterValue.estate === "all") {
       const renewTableData = initialData.filter(
         data => data.trialCode === filterValue.trialCode
