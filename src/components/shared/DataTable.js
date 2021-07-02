@@ -29,7 +29,7 @@ import LinkIcon from "../../assets/img/icons/link_24px.svg"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
 import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
-import ConfirmationModal from "components/modal/sharedComponent/ConfirmationModal"
+import ConfirmationModal from "../SharedComponent/ConfirmationModal"
 import PalmService from "services/palm.service"
 import PlotService from "services/plot.service"
 import EstateAssignmentService from "../../services/estateAssignment.service"
@@ -108,6 +108,7 @@ const EditableCell = ({
         <Cell {...cellProps}>
           {rowData.status === true ? (
             <Input
+              className="editTableInput"
               defaultValue={rowData[dataKey]}
               disabled={[
                 "trialid",
@@ -1115,7 +1116,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function SuccessMessage({ activeNav, successData }) {
     console.log({ activeNav })
-    console.log(successData)
     switch (activeNav) {
       case "estate":
         return (

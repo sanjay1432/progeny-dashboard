@@ -78,7 +78,7 @@ const ConfirmationModal = ({
           </Modal>
         </>
       )
-    case "palmEdit":
+    case "palmNumberEdit":
       return (
         <>
           <Modal id="confirmationModal" show={show} onHide={hide}>

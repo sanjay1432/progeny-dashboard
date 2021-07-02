@@ -4,7 +4,8 @@ import { clearBreadcrumb } from "../../redux/actions/app.action"
 import PlotService from "../../services/plot.service"
 import { publish } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
-import ConfirmationModal from "../modal/sharedComponent/ConfirmationModal"
+import ConfirmationModal from "../SharedComponent/ConfirmationModal"
+import SuccessMessage from "../SharedComponent/SuccessMessage"
 import SearchMessage from "../../assets/img/SearchMessage.svg"
 import {
   Table,
@@ -28,6 +29,7 @@ const EditableCell = ({
   return (
     <Cell {...cellProps}>
       <Input
+        className="editTableInput"
         defaultValue={rowData[dataKey]}
         disabled={[
           "trialCode",
@@ -67,6 +69,7 @@ const EditPalmInformation = ({ option }) => {
   const [replicateFilterData, setReplicateFilterData] = useState([])
   const [plotFilterData, setPlotFilterData] = useState([])
   const [tableData, setTableData] = useState([])
+  const [successMessage, setSuccessMessage] = useState(false)
   const [confirmationModal, setConfirmationModal] = useState(false)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -202,12 +205,7 @@ const EditPalmInformation = ({ option }) => {
     },
     {
       name: "Palm Number",
-      dataKey: "palmNum",
-      flexGrow: 1
-    },
-    {
-      name: "Palm Name",
-      dataKey: "palmName",
+      dataKey: "palmno",
       flexGrow: 1
     }
   ]
@@ -223,6 +221,21 @@ const EditPalmInformation = ({ option }) => {
     )[key] = value
     setTableData(nextData)
     console.log(tableData)
+  }
+
+  const quickSaveEditedData = () => {
+    PlotService.editPalmInformation(tableData).then(
+      data => {
+        const savedData = {
+          type: "PALMINFORMATION_UPDATE",
+          data: tableData,
+          action: "UPDATE"
+        }
+        publish(savedData)
+        setSuccessMessage(true)
+      },
+      error => {}
+    )
   }
 
   const saveEditabedData = () => {
@@ -247,8 +260,10 @@ const EditPalmInformation = ({ option }) => {
         hide={() => setConfirmationModal(false)}
         save={saveEditabedData}
         data={filterValue}
-        currentPage="palmEdit"
+        currentPage="palmNumberEdit"
       />
+
+      <SuccessMessage />
 
       <div>
         <h4 className="title">
@@ -333,7 +348,7 @@ const EditPalmInformation = ({ option }) => {
                 <b>Total records ({tableData.length})</b>
               </Col>
 
-              <Col mdOffset={10} md={4} lgOffset={12} lg={3}>
+              <Col mdOffset={7} md={4} lgOffset={10} lg={3}>
                 <DataPicker
                   dataType="replicate"
                   selectAllData="All Replicate"
@@ -350,6 +365,16 @@ const EditPalmInformation = ({ option }) => {
                   dataValue={filterValue.plot}
                   onChange={value => handlePlotFilterChange(value)}
                 />
+              </Col>
+
+              <Col md={3} lg={2}>
+                <Button
+                  className="quickSaveButton"
+                  appearance="primary"
+                  onClick={quickSaveEditedData}
+                >
+                  Quick Save
+                </Button>
               </Col>
             </Row>
           </Grid>
@@ -393,7 +418,7 @@ const EditPalmInformation = ({ option }) => {
                       onClick={() => setConfirmationModal(true)}
                       type="button"
                     >
-                      Save
+                      Complete
                     </Button>
                   </FlexboxGrid.Item>
                 </Col>
