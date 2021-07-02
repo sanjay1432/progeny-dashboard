@@ -308,12 +308,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       value: "noofPalm"
     },
     {
-      label: "Palm No",
+      label: "Palm Number",
       value: "palmno"
-    },
-    {
-      label: "Palm Name",
-      value: "palmname"
     },
     {
       label: "Progeny ID",
@@ -746,7 +742,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const nextData2 = Object.assign([], originalData)
     const activeItem2 = nextData2.find(item => item.trialid === trialid)
     activeItem.status = null
-    activeItem.palmname = activeItem2.palmname
     activeItem.palmno = activeItem2.palmno
     setTableData(nextData2)
   }
@@ -1542,10 +1537,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           if (field.value === "palmno") {
             field.flexGrow = 1
             palmfields[5] = field
-          }
-          if (field.value === "palmname") {
-            field.flexGrow = 1
-            palmfields[6] = field
           }
         })
         return palmfields

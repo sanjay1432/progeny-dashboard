@@ -95,8 +95,9 @@
 .rs-breadcrumb-item-active:nth-child(n+1) {
   color: black;
 }
-.rs-breadcrumb-item-active:nth-child(n+2) {
+.rs-breadcrumb-item-active:nth-child(n) {
   color: $primary-green;
+  cursor: pointer;
 }
 
 //Table
