@@ -61,6 +61,11 @@
   }
 }
 
+.rs-picker-default.rs-picker-disabled .rs-picker-toggle, .rs-picker-input.rs-picker-disabled .rs-picker-toggle, .rs-picker-default.rs-picker-disabled .rs-btn, .rs-picker-input.rs-picker-disabled .rs-btn {
+  background-color: $primary-grey !important;
+
+}
+
 //Breadcrumb
 .rs-breadcrumb {
   .rs-breadcrumb-item {

@@ -75,14 +75,22 @@
         left: 20px;
         border-radius: 6px;
         background-color: white;
-        top: 5px;
+        top: 6px;
       }
     }
   }
 
-  .rs-body-row-header {
-    .rs-table-cell-content {
-      font-size: 16px;
+  .rs-table-body-wheel-area {
+    .rs-table-row:nth-child(even) > .rs-table-cell-group > .rs-table-cell {
+      background-color: $table-color-even;
+    }
+
+    .rs-checkbox-wrapper {
+      left: 10px;
+      border-radius: 6px;
+      background-color: white;
+      top: 5px;
     }
   }
+
 }

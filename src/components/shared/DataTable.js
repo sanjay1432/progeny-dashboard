@@ -586,7 +586,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function DeleteButton() {
     if (active === "progeny") {
       return (
-        <Col sm={4} md={4} lg={4}>
+        <Col sm={4} md={4} lg={3}>
           <FlexboxGrid.Item>
             <div className="deleteButtonLayout">
               <Button

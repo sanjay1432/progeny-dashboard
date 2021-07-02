@@ -31,17 +31,17 @@ const AssignUser = ({
     {
       name: "User ID",
       dataKey: "userId",
-      width: 100
+      flexGrow: 1
     },
     {
       name: "Username",
       dataKey: "username",
-      width: 150
+      flexGrow: 2
     },
     {
       name: "Position",
       dataKey: "position",
-      flexGrow: 1
+      flexGrow: 2
     }
   ]
 
