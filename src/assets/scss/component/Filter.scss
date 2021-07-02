@@ -7,17 +7,14 @@
 .dashboardSelectFilter {
   width: 146px;
   height: 42px;
+
   .rs-picker-toggle {
     width: 144px;
     height: 40px;
     border-radius: 8px;
 
-    .rs-picker-toggle-value {
-      padding-top: 2px;
-    }
-
-    .rs-picker-toggle-caret {
-      padding-top: 2px;
+    .rs-picker-toggle-placeholder, .rs-picker-toggle-value, .rs-picker-toggle-caret {
+      padding-top: 1px;
     }
   }
 }

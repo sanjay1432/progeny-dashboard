@@ -50,21 +50,37 @@
   }
 }
 
+//Input
+.rs-input[disabled] {
+  background-color: $secondary-grey;
+  color: $primary-grey;
+}
+
 //SelectPicker
 .rs-picker-toggle {
   .rs-picker-toggle-value {
     font-size: 700;
     color: black !important;
   }
+
+  .rs-picker-toggle-placeholder {
+    color: $primary-black;
+  }
+
   .rs-picker-toggle-clean {
     display: none;
   }
 }
 
-.rs-picker-default.rs-picker-disabled .rs-picker-toggle, .rs-picker-input.rs-picker-disabled .rs-picker-toggle, .rs-picker-default.rs-picker-disabled .rs-btn, .rs-picker-input.rs-picker-disabled .rs-btn {
+.rs-picker-default.rs-picker-disabled .rs-picker-toggle {
+  opacity: 1;
   background-color: $primary-grey !important;
 
+  .rs-picker-toggle-placeholder, .rs-picker-toggle-caret {
+    color: black !important;
+  }
 }
+
 
 //Breadcrumb
 .rs-breadcrumb {
