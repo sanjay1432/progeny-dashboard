@@ -3,6 +3,10 @@
 
   .totalRecordLayout {
     margin-top: 10px;
+    
+    b {
+      pointer-events: none;
+    }
   }
 
   .selectPage {
@@ -26,6 +30,7 @@
 
     .page {
       margin-left: 3px;
+      pointer-events: none;
     }
   }
 

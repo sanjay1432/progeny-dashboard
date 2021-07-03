@@ -20,6 +20,7 @@
     margin: 10px 25px 0px 15px;
     border-radius: 8px;
     background-color: $primary-green;
+    cursor: pointer;
   }
 
   .progenyLogo {
@@ -33,6 +34,7 @@
     font-weight: 700;
     color: $primary-green;
     margin-top: 10px;
+    pointer-events: none;
   }
 
   .logoutToggle {
@@ -79,6 +81,7 @@
         font-size: 20px;
         font-weight: 700;
         color: $primary-green;
+        pointer-events: none;
       }
     }
   }
