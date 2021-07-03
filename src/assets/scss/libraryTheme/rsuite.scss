@@ -97,7 +97,14 @@
 }
 .rs-breadcrumb-item-active:nth-child(n) {
   color: $primary-green;
+}
+
+.rs-breadcrumb-item-active:first-child {
   cursor: pointer;
+}
+
+.rs-breadcrumb-item-active:nth-child(n+2) {
+  pointer-events: none;
 }
 
 //Table
