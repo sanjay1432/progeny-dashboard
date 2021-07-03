@@ -69,7 +69,7 @@ const EditPalmInformation = ({ option }) => {
   const [replicateFilterData, setReplicateFilterData] = useState([])
   const [plotFilterData, setPlotFilterData] = useState([])
   const [tableData, setTableData] = useState([])
-  const [successMessage, setSuccessMessage] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
   const [confirmationModal, setConfirmationModal] = useState(false)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -226,19 +226,13 @@ const EditPalmInformation = ({ option }) => {
   const quickSaveEditedData = () => {
     PlotService.editPalmInformation(tableData).then(
       data => {
-        const savedData = {
-          type: "PALMINFORMATION_UPDATE",
-          data: tableData,
-          action: "UPDATE"
-        }
-        publish(savedData)
         setSuccessMessage(true)
       },
       error => {}
     )
   }
 
-  const saveEditabedData = () => {
+  const completedEditData = () => {
     PlotService.editPalmInformation(tableData).then(
       data => {
         const savedData = {
@@ -246,8 +240,8 @@ const EditPalmInformation = ({ option }) => {
           data: tableData,
           action: "UPDATE"
         }
-        dispatch(clearBreadcrumb())
         publish(savedData)
+        dispatch(clearBreadcrumb())
       },
       error => {}
     )
@@ -258,12 +252,16 @@ const EditPalmInformation = ({ option }) => {
       <ConfirmationModal
         show={confirmationModal}
         hide={() => setConfirmationModal(false)}
-        save={saveEditabedData}
+        save={completedEditData}
         data={filterValue}
-        currentPage="palmNumberEdit"
+        action="MULTIPALMDATA_UPDATE"
       />
 
-      <SuccessMessage />
+      <SuccessMessage
+        show={successMessage}
+        hide={() => setSuccessMessage("")}
+        action="MULTIPALMDATA_UPDATE"
+      />
 
       <div>
         <h4 className="title">

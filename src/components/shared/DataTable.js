@@ -7,6 +7,7 @@ import DeleteModal from "../../components/modal/DeleteModal"
 import SuccessModal from "../modal/masterData/success/success"
 import { progenySubject } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
+import SuccessMessage from "components/SharedComponent/SuccessMessage"
 import {
   Table,
   FlexboxGrid,
@@ -147,6 +148,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const editProgeny = <Tooltip>Data exists for Palms</Tooltip>
   const [successMessage, setSuccessMessage] = useState(false)
   const [successData, setSuccessData] = useState(null)
+  const [action, setAction] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [errorData, setErrorData] = useState("")
   const [confirmationModal, setConfirmationModal] = useState(false)
@@ -177,17 +179,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function itemSaved(payload) {
     if (payload && payload.type === "TRIAL") {
-      console.log(payload)
       setSuccessData(payload)
       setSuccessModal(true)
     } else if (
       (payload && payload.type === "PROGENY_CREATE") ||
       payload.type === "PROGENY_UPDATE" ||
-      payload.type === "USERLIST_CREATE" ||
-      payload.type === "USERLIST_UPDATE"
+      payload.type === "USER_CREATE" ||
+      payload.type === "USER_UPDATE"
     ) {
-      setSuccessData(payload)
-      setSuccessMessage(active)
+      setAction(payload.type)
+      setSuccessData(payload.data)
+      setSuccessMessage(true)
     }
   }
 
@@ -708,8 +710,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       data => {
         setTableData(nextData)
         setConfirmationModal(false)
-        setSuccessMessage(active)
         setSuccessData(confirmationData)
+        setAction("PLOTDATA_UPDATE")
+        setSuccessMessage(active)
       },
       error => {
         setErrorMessage(active)
@@ -755,8 +758,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       data => {
         setTableData(nextData)
         setConfirmationModal(false)
-        setSuccessMessage(active)
         setSuccessData(confirmationData)
+        setAction("PALMDATA_UPDATE")
+        setSuccessMessage(true)
       },
       error => {
         setErrorMessage(active)
@@ -1054,13 +1058,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
     EstateAssignmentService.assignUserToEstate(payload).then(
       data => {
-        console.log(payload, " successfully transfer to backend")
-        setSuccessMessage(active)
         setAssignUserModal(false)
+        setAction("MULTIUSERTOESTATE_ASSIGN")
+        setSuccessMessage(true)
       },
-      error => {
-        console.log(payload, " was not successfully transfer to backend.")
-      }
+      error => {}
     )
   }
 
@@ -1071,13 +1073,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
     UserAssignmentService.assignEstateToUser(payload).then(
       data => {
-        console.log(payload, " successfully transfer to backend")
-        setSuccessMessage(active)
         setAssignEstateModal(false)
+        setAction("MULTIESTATETOUSER_ASSIGN")
+        setSuccessMessage(true)
       },
-      error => {
-        console.log(payload, " was not successfully transfer to backend.")
-      }
+      error => {}
     )
   }
 
@@ -1110,231 +1110,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       // Close the modal
       setDeleteModal(false)
       //Display success message
-      setSuccessMessage(active)
+      setSuccessMessage(true)
+      setAction("PROGENY_DELETE")
     }, 500)
-  }
-
-  function SuccessMessage({ activeNav, successData }) {
-    console.log({ activeNav })
-    switch (activeNav) {
-      case "estate":
-        return (
-          <>
-            {rowsToDelete.length < 2 ? (
-              <Message
-                showIcon
-                type="success"
-                description={`Estate ${rowsToDelete[0].estate} has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            ) : (
-              <Message
-                showIcon
-                type="success"
-                description={`${rowsToDelete.length} Estates  has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            )}
-          </>
-        )
-      case "trial":
-        return (
-          <>
-            {rowsToDelete.length < 2 ? (
-              <Message
-                showIcon
-                type="success"
-                description={`Trial ${rowsToDelete[0].trialid} has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            ) : (
-              <Message
-                showIcon
-                type="success"
-                description={`${rowsToDelete.length} Trials  has been successfuly been deleted.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            )}
-          </>
-        )
-      case "plot":
-        if (successData !== null) {
-          return (
-            <>
-              <Message
-                showIcon
-                type="success"
-                description={`${successData.plot} for
-                            Replicate ${successData.replicate} for 
-                            Trial ${successData.trialCode} has been successfully edited.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            </>
-          )
-        } else if (successData === null) {
-          return <></>
-        } else {
-          return (
-            <>
-              {rowsToDelete.length < 2 ? (
-                <Message
-                  showIcon
-                  type="success"
-                  description={`${rowsToDelete[0].plot} in replicate ${rowsToDelete[0].replicate} at trial ${rowsToDelete[0].trialid} has been successfuly been deleted.`}
-                  onClick={() => {
-                    setSuccessMessage("")
-                  }}
-                />
-              ) : (
-                <Message
-                  showIcon
-                  type="success"
-                  description={`${rowsToDelete.length} Plots in their replicates at
-                the trial has been successfuly been deleted.`}
-                  onClick={() => {
-                    setSuccessMessage("")
-                  }}
-                />
-              )}
-            </>
-          )
-        }
-      case "palm":
-        if (successData !== null) {
-          return (
-            <>
-              <Message
-                showIcon
-                type="success"
-                description={`Palm ${successData.palmno} in 
-                                ${successData.plot} in 
-                                Replicate ${successData.replicate} in 
-                                Trial ${successData.trialCode} has been successfully edited.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            </>
-          )
-        } else if (successData === null) {
-          return <></>
-        }
-      case "progeny":
-        if (successData === null) {
-          return (
-            <>
-              {rowsToDelete.length < 2 ? (
-                <Message
-                  showIcon
-                  type="success"
-                  description={`Progeny ${rowsToDelete[0].progenyId} has been successfuly been deleted.`}
-                  onClick={() => {
-                    setSuccessMessage("")
-                  }}
-                />
-              ) : (
-                <Message
-                  showIcon
-                  type="success"
-                  description={`${rowsToDelete.length} Progenies  has been successfuly been deleted.`}
-                  onClick={() => {
-                    setSuccessMessage("")
-                  }}
-                />
-              )}
-            </>
-          )
-        } else if (successData.type === "PROGENY_CREATE") {
-          return (
-            <Message
-              showIcon
-              type="success"
-              description={`Progeny ${successData.data.progenyId} has been successfuly been added.`}
-              onClick={() => {
-                setSuccessMessage("")
-              }}
-            />
-          )
-        } else if (successData.type === "PROGENY_UPDATE") {
-          return (
-            <Message
-              showIcon
-              type="success"
-              description={`Progeny ${successData.data.progenyId} has been successfuly been edited.`}
-              onClick={() => {
-                setSuccessMessage("")
-              }}
-            />
-          )
-        }
-      case "userlist":
-        if (successData.action === "CREATE") {
-          return (
-            <>
-              <Message
-                showIcon
-                type="success"
-                description={`${successData.data.username} has been added to the system.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            </>
-          )
-        } else if (successData.action === "UPDATE") {
-          return (
-            <>
-              <Message
-                showIcon
-                type="success"
-                description={`${successData.data.username} has been edited to the system.`}
-                onClick={() => {
-                  setSuccessMessage("")
-                }}
-              />
-            </>
-          )
-        }
-
-      case "estateAssignment":
-        return (
-          <>
-            <Message
-              showIcon
-              type="success"
-              description={`Users have been assigned to the estate.`}
-              onClick={() => {
-                setSuccessMessage("")
-              }}
-            />
-          </>
-        )
-      case "userAssignment":
-        return (
-          <>
-            <Message
-              showIcon
-              type="success"
-              description={`Estate have been assigned to the users.`}
-              onClick={() => {
-                setSuccessMessage("")
-              }}
-            />
-          </>
-        )
-      default:
-        return <></>
-    }
   }
 
   function ErrorMessage({ activeNav, errorData }) {
@@ -1667,8 +1445,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 rows={rowsToDelete}
               />
               <SuccessMessage
-                activeNav={successMessage}
-                successData={successData}
+                rowsToDelete={rowsToDelete}
+                data={successData}
+                show={successMessage}
+                hide={() => setSuccessMessage("")}
+                action={action}
               />
 
               <ErrorMessage activeNav={errorMessage} errorData={errorData} />
@@ -1702,7 +1483,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 data={confirmationData}
                 savePlotData={savePlotData}
                 savePalmData={savePalmData}
-                currentPage={active}
+                action={active}
               />
             </FlexboxGrid>
           </Row>
