@@ -27,7 +27,7 @@ import { publish } from "../../services/pubsub.service"
 const styles = { width: 280, display: "block", marginBottom: 10 }
 const { Column, HeaderCell, Cell } = Table
 const initializeTrailState = {
-  trialid: "",
+  trialCode: "",
   trial: "",
   trialremark: "",
   area: "",
@@ -42,15 +42,17 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable, getValue] =
-    useState(true)
+  const [disabledGenerateTable, setDisabledGenerateTable, getValue] = useState(
+    true
+  )
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
-    useState("yes")
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState(
+    "yes"
+  )
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
     { estate: "", estatenofreplicate: "" }
@@ -71,11 +73,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const { data } = await EstateService.getUpdatedEstateBlocks()
     setEstatesWithBlocks(data)
     const mappedEstate = []
-
     for (let item in data) {
-      mappedEstate.push({ label: data[item].estate, value: data[item].estate })
+      mappedEstate.push({
+        label: data[item].estate,
+        value: data[item].estateId
+      })
     }
-    console.log(mappedEstate)
+    console.log("mappedEstate", data)
     setEstates(mappedEstate)
   }
   async function fetchDesigns() {
@@ -176,16 +180,14 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     }
   }
   function onGenerateTable() {
-    console.log(trial)
-    console.log(inputListForTrialInEState)
-    console.log(radioInputForTrialInEState)
     setTableData([])
 
     if (radioInputForTrialInEState === "yes") {
       const noOfReplicates = parseInt(trial.nofreplicate)
       for (let replicate = 0; replicate < noOfReplicates; replicate++) {
         const item = {
-          estate: trial.estate,
+          estateId: trial.estate,
+          estate: getEstateName(trial.estate),
           replicate: replicate + 1,
           estateblock: "",
           density: trial.density,
@@ -204,7 +206,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         console.log({ noOfReps })
         for (let replicate = 0; replicate < noOfReps; replicate++) {
           const item = {
-            estate: inputListForTrialInEState[i].estate,
+            estateId: inputListForTrialInEState[i].estate,
+            estate: getEstateName(inputListForTrialInEState[i].estate),
             replicate: replicate + 1,
             estateblock: "",
             density: trial.density,
@@ -217,6 +220,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       }
     }
     setDisbaledANR(false)
+  }
+
+  function getEstateName(id) {
+    const noOfestates = [...estates]
+    console.log({ noOfestates }, { id })
+    const est = noOfestates.find(est => est.value === id)
+    return est.label
   }
   function checkProperties(obj) {
     for (var key in obj) {
@@ -409,7 +419,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <Input
               placeholder="Key in Trial ID"
               className="formField"
-              name="trialid"
+              name="trialCode"
               onChange={(value, e) => onInput(e)}
             />
           </Col>

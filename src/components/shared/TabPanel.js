@@ -97,6 +97,15 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
               <EditPalmInformation option={option} />
             </>
           )
+        } else if (option.type == "attach") {
+          return (
+            <>
+              <AttachProgeny
+                currentSubNavState={currentSubNavState}
+                option={option}
+              />
+            </>
+          )
         }
       case "Progeny":
         if (breadcrumb[1] === "Add New Progeny") {

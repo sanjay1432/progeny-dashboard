@@ -1,7 +1,26 @@
 import React from "react"
 import { Modal, Button } from "rsuite"
+import { useDispatch, useSelector } from "react-redux"
+import { setBreadcrumb } from "../../../../redux/actions/app.action"
+import TrialService from "../../../../services/trial.service"
 const SuccessModal = ({ show, hide, data, ...props }) => {
-  function attachProgeny() {}
+  console.log(data)
+  const dispatch = useDispatch()
+  async function attachProgeny() {
+    const trial = await TrialService.getTrial(data.data.trialCode)
+    console.log({ trial })
+    dispatch(
+      setBreadcrumb({
+        breadcrumb: ["Plot", `Attach Progenies`],
+        option: {
+          trial: trial.trialCode,
+          trialId: trial.trialId,
+          estate: trial.estate,
+          type: "attach"
+        }
+      })
+    )
+  }
 
   function UnderLinedText(props) {
     return (

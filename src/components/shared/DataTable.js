@@ -127,6 +127,16 @@ const EditableCell = ({
           )}
         </Cell>
       )
+    case "trial":
+      return (
+        <Cell {...cellProps}>
+          {dataKey === "estate" ? (
+            <span>{getMultipleEstateString(rowData.estate)}</span>
+          ) : (
+            <span>{rowData[dataKey]}</span>
+          )}
+        </Cell>
+      )
     default:
       return (
         <Cell {...cellProps}>
@@ -136,6 +146,15 @@ const EditableCell = ({
   }
 }
 
+function getMultipleEstateString(estates) {
+  let estateString = ""
+  estates.forEach((element, idx) => {
+    const pipe = estates.length - idx > 1 ? "|" : ""
+    estateString += ` ${element.name} ${pipe}`
+  })
+
+  return estateString
+}
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
@@ -414,9 +433,23 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
+      console.log(active, dashboardData.result[active])
+      // if(active === 'trial'){
+      //   const trials   = dashboardData.result[active];
+      //   trials.forEach(trial => {
+      //        if(trial.estates.length<2){
+      //          trial.estateId = trial.estates[0].id
+      //          trial.estate = trial.estates[0].name
+      //        }else {
+      //           for (let i = 0 ; i< trial.estates.length; i++){
+      //             trial.estate =
+      //           }
+      //        }
+
+      //   });
+      // }
       setTableData(dashboardData.result[active])
       const firstRow = dashboardData.result[active][0]
-      // tableData = dashboardData.result[active]
       const availableKeys = Object.keys(firstRow)
 
       availableKeys.forEach(key => {
@@ -530,7 +563,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <Col sm={5} md={5} lg={5}>
             <FlexboxGrid.Item className="alignButtonCenter">
-              <Button appearance="primary" className="attachProgeniesButton">
+              <Button
+                appearance="primary"
+                className="attachProgeniesButton"
+                onClick={() =>
+                  handleActionExpand(["Plot", `Attach Progenies`], {
+                    // trial: data.trialCode,
+                    // trialId: data.trialId,
+                    // estate: data.estate,
+                    type: "attach"
+                  })
+                }
+              >
                 Attach Progenies
               </Button>
             </FlexboxGrid.Item>

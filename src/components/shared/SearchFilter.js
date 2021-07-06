@@ -59,7 +59,20 @@ const SearchFilter = forwardRef(
           const filterdata = [
             ...new Set(dashboardData.result[active].map(res => res[filterName]))
           ]
-          filterData[filterName] = filterdata
+
+          console.log({ filterdata })
+          if (active === "trial" && filter.name === "estate") {
+            const filterValues = []
+            if (filterdata) {
+              filterdata.forEach(estate => {
+                const est = estate.map(estateObj => estateObj.name)
+                filterValues.push(...est)
+              })
+              filterData[filterName] = filterValues
+            }
+          } else {
+            filterData[filterName] = filterdata
+          }
         }
       })
     }
