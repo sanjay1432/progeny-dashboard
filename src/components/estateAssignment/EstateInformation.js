@@ -201,10 +201,10 @@ const EstateInformation = ({ option }) => {
 
   //Filter01
   let selectionData01 = {}
-  const selectionType01 = [{ name: "trialid" }]
+  const selectionType01 = [{ name: "trialCode" }]
   if (trialList) {
     selectionType01.forEach(filter => {
-      const selectionLabel01 = "trialid"
+      const selectionLabel01 = "trialCode"
       const selectiondata01 = [
         ...new Set(trialList.map(res => res[selectionLabel01]))
       ]
@@ -212,8 +212,7 @@ const EstateInformation = ({ option }) => {
     })
   }
   const dataInSelection01 = []
-  const filterData01 = selectionData01["trialid"]
-
+  const filterData01 = selectionData01["trialCode"]
   if (filterData01) {
     filterData01.forEach(data => {
       dataInSelection01.push({
@@ -269,7 +268,7 @@ const EstateInformation = ({ option }) => {
     selectedFilterArray = []
     dispatch(clearFilter())
   }
-
+  console.log(selectedFilters)
   function onChangeSelection(e) {
     if (!e.target.value) {
       const index = selectedFilterArray.indexOf(e.target.name)
@@ -298,7 +297,9 @@ const EstateInformation = ({ option }) => {
               data={dataInSelection01}
               value={selectedFilters ? selectedFilters.value : null}
               onChange={(value, e) =>
-                onChangeSelection({ target: { name: "trialid", value: value } })
+                onChangeSelection({
+                  target: { name: "trialCode", value: value }
+                })
               }
             />
           </Col>

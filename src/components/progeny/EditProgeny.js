@@ -251,7 +251,7 @@ const EditProgeny = ({ option, ...props }) => {
               <InputGroup.Addon>{formData.mpFam}</InputGroup.Addon>
               <Input
                 name="mp"
-                value={formData.mp.split(".")[1]}
+                value={formData.mp.split(",")[1]}
                 onChange={(value, e) => handleMpChange(e)}
               />
             </InputGroup>
