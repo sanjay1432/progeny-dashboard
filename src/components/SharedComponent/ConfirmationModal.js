@@ -109,6 +109,32 @@ const ConfirmationModal = ({
           </Modal>
         </>
       )
+
+    case "PROGENY_CREATE":
+      return (
+        <>
+          <Modal id="confirmationModal" show={show} onHide={hide}>
+            <Modal.Header>
+              <b className="title">Saving Progeny</b>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                Are you sure want to savethis Progeny
+                <b className="targetName"> {data.progenyId}</b>? This Progeny
+                will be created inside the system.
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button className="noButton" onClick={hide} appearance="subtle">
+                No
+              </Button>
+              <Button className="yesButton" appearance="primary" onClick={save}>
+                Yes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      )
     default:
       return null
   }

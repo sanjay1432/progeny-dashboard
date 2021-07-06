@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { Grid, Row, Col, InputGroup, Input, Button } from "rsuite"
+import ConfirmationModal from "components/SharedComponent/ConfirmationModal"
 import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
@@ -25,6 +26,7 @@ const AddNewProgeny = () => {
     crossType: ""
   }
   const [formData, setFormData] = useState(initialForm)
+  const [confirmationModal, setConfirmationModal] = useState(false)
   const dispatch = useDispatch()
 
   const ProgenyData = useSelector(
@@ -95,13 +97,25 @@ const AddNewProgeny = () => {
 
   return (
     <div id="ProgenyAction">
+      <ConfirmationModal
+        show={confirmationModal}
+        hide={() => setConfirmationModal(false)}
+        save={createProgeny}
+        data={formData}
+        action="PROGENY_CREATE"
+      />
+
       <Grid fluid>
         <Row>
           <Col md={5} lg={5}>
             <p className="labelName">Progeny ID</p>
           </Col>
           <Col>
-            <Input name="progenyId" onChange={(value, e) => handleChange(e)} />
+            <Input
+              name="progenyId"
+              onChange={(value, e) => handleChange(e)}
+              placeholder="Key in Progeny ID"
+            />
           </Col>
         </Row>
         <Row>
@@ -115,6 +129,7 @@ const AddNewProgeny = () => {
               onChange={value =>
                 setFormData(() => ({ ...formData, popvar: value }))
               }
+              placeholder="Choose or Create New Pop Var"
             />
           </Col>
         </Row>
@@ -123,7 +138,11 @@ const AddNewProgeny = () => {
             <p className="labelName">Origin</p>
           </Col>
           <Col>
-            <Input name="origin" onChange={(value, e) => handleChange(e)} />
+            <Input
+              name="origin"
+              onChange={(value, e) => handleChange(e)}
+              placeholder="Key in Origin"
+            />
           </Col>
         </Row>
         <Row>
@@ -134,6 +153,7 @@ const AddNewProgeny = () => {
             <Input
               name="progenyremark"
               onChange={(value, e) => handleChange(e)}
+              placeholder="Key in Progeny Remark"
             />
           </Col>
         </Row>
@@ -142,7 +162,11 @@ const AddNewProgeny = () => {
             <p className="labelName">Progeny</p>
           </Col>
           <Col>
-            <Input name="progeny" onChange={(value, e) => handleChange(e)} />
+            <Input
+              name="progeny"
+              onChange={(value, e) => handleChange(e)}
+              placeholder="Key in Progeny"
+            />
           </Col>
         </Row>
         <Row>
@@ -156,6 +180,7 @@ const AddNewProgeny = () => {
               onChange={value =>
                 setFormData(() => ({ ...formData, generation: value }))
               }
+              placeholder="Choose or Create New Generation"
             />
           </Col>
         </Row>
@@ -164,7 +189,11 @@ const AddNewProgeny = () => {
             <p className="labelName">Ortet</p>
           </Col>
           <Col>
-            <Input name="ortet" onChange={(value, e) => handleChange(e)} />
+            <Input
+              name="ortet"
+              onChange={(value, e) => handleChange(e)}
+              placeholder="key in Ortet"
+            />
           </Col>
         </Row>
         <Row>
@@ -204,6 +233,7 @@ const AddNewProgeny = () => {
               onChange={value =>
                 setFormData(() => ({ ...formData, fpVar: value }))
               }
+              placeholder="Choose or Create New FP Var"
             />
           </Col>
         </Row>
@@ -216,6 +246,7 @@ const AddNewProgeny = () => {
               dataType="mpFam"
               OriginalData={ProgenyData}
               onChange={mpFam => handleSelectMpFam(mpFam)}
+              placeholder=""
             />
           </Col>
         </Row>
@@ -241,6 +272,7 @@ const AddNewProgeny = () => {
               onChange={value =>
                 setFormData(() => ({ ...formData, mpVar: value }))
               }
+              placeholder="Choose or Create New MP Var"
             />
           </Col>
         </Row>
@@ -253,7 +285,7 @@ const AddNewProgeny = () => {
             formData.fp === "" ||
             formData.mpFam === "" ||
             formData.mp === "" ? (
-              <Input disabled />
+              <Input disabled placeholder="Please choose FP and MP" />
             ) : (
               <Input
                 name="cross"
@@ -304,7 +336,7 @@ const AddNewProgeny = () => {
             <Button
               className="saveButton"
               appearance="primary"
-              onClick={createProgeny}
+              onClick={() => setConfirmationModal(true)}
             >
               Save
             </Button>

@@ -672,7 +672,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setConfirmationModal(false)
         setSuccessData(confirmationData)
         setAction("PLOTDATA_UPDATE")
-        setSuccessMessage(active)
+        setSuccessMessage(true)
       },
       error => {
         setErrorMessage(active)

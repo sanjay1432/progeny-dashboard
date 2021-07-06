@@ -6,6 +6,7 @@ const DataPicker = ({
   OriginalData,
   dataType,
   dataValue,
+  placeholder,
   selectAllData,
   ...props
 }) => {
@@ -45,6 +46,7 @@ const DataPicker = ({
     <>
       <InputPicker
         name={dataType}
+        placeholder={placeholder}
         className="dataPicker"
         data={DataInPicker}
         value={dataValue}

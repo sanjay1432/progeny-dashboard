@@ -6,31 +6,30 @@
     height: 100%;
     display: flex;
     flex-wrap: wrap;
-    padding: 0px !important;
 
-    .QRCodeLayout {
+    .block {
       width: 50%;
       height: 50%;
-      border: 1px solid $print-grey;
-    }
+      text-align: center;
 
-  
-    .QRCodeLayout {
-      padding-left: 22%;
-      padding-top: 90px;
-      width: 400px;
-      height: 793px;
-  
-      .descLayout {
-        margin-top: 15px;
-  
-        p + p {
-          margin-top: 0px;
-        }
-  
-        .trialId, .plotId, .palmNumber {
-          font-size: 20px;
-          margin-bottom: 0px;
+      .QRCodeLayout {
+        width: 378px;
+        height: 378px;
+        border: 1px solid $print-grey;
+        padding-top: 45px;
+        margin: 180px 0px 0px 80px;
+    
+        .descLayout {
+          margin-top: 35px;
+    
+          p + p {
+            margin-top: 0px;
+          }
+    
+          .trialId, .plotId, .palmNumber {
+            font-size: 20px;
+            margin-bottom: 0px;
+          }
         }
       }
     }

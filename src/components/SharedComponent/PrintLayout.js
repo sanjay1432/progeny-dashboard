@@ -9,18 +9,20 @@ export class PrintLayout extends PureComponent {
       <div id="PrintLayout">
         {selectedItem.map(data => {
           return (
-            <div className="QRCodeLayout">
-              <QRCode value="" size={189} />
-              <div className="descLayout">
-                <p className="trialId">
-                  Trial ID : <b>Trial {data.trialId}</b>
-                </p>
-                <p className="plotId">
-                  Plot No : <b>{data.plot}</b>
-                </p>
-                <p className="palmNumber">
-                  Palm Number : <b>Trial {data.palmno}</b>
-                </p>
+            <div className="block">
+              <div className="QRCodeLayout">
+                <QRCode value="" size={189} />
+                <div className="descLayout">
+                  <p className="trialId">
+                    Trial ID : <b>Trial {data.trialId}</b>
+                  </p>
+                  <p className="plotId">
+                    Plot No : <b>{data.plot}</b>
+                  </p>
+                  <p className="palmNumber">
+                    Palm Number : <b>Trial {data.palmno}</b>
+                  </p>
+                </div>
               </div>
             </div>
           )
