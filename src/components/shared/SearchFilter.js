@@ -59,6 +59,8 @@ const SearchFilter = forwardRef(
           const filterdata = [
             ...new Set(dashboardData.result[active].map(res => res[filterName]))
           ]
+
+          console.log({ filterdata })
           if (active === "trial" && filter.name === "estate") {
             const filterValues = []
             if (filterdata) {

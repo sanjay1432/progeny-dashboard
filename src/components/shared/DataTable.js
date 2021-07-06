@@ -563,7 +563,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <Col sm={5} md={5} lg={5}>
             <FlexboxGrid.Item className="alignButtonCenter">
-              <Button appearance="primary" className="attachProgeniesButton">
+              <Button
+                appearance="primary"
+                className="attachProgeniesButton"
+                onClick={() =>
+                  handleActionExpand(["Plot", `Attach Progenies`], {
+                    // trial: data.trialCode,
+                    // trialId: data.trialId,
+                    // estate: data.estate,
+                    type: "attach"
+                  })
+                }
+              >
                 Attach Progenies
               </Button>
             </FlexboxGrid.Item>
