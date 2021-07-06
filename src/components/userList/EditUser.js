@@ -41,10 +41,9 @@ const EditUser = ({ option }) => {
   function updateUser() {
     UserListService.updateUser(formData).then(
       data => {
-        console.log(formData, "has not been edited to the system.")
         dispatch(clearBreadcrumb())
         const savedData = {
-          type: "USERLIST_UPDATE",
+          type: "USER_UPDATE",
           data: formData,
           action: "UPDATE"
         }

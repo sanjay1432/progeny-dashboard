@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import EstateAssignmentService from "../../services/userAssignment.service"
+import EstateAssignmentService from "../../services/estateAssignment.service"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 import {
   Table,
@@ -43,6 +43,7 @@ const EstateInformation = ({ option }) => {
         filter => filter.estate === option.estate
       )
       setTrialList(data)
+      console.log(data)
     })
   }, [])
 
@@ -52,8 +53,6 @@ const EstateInformation = ({ option }) => {
       trialList = filterTable(filterData.filter, trialList)
     }
     return trialList.filter((v, i) => {
-      v["check"] = false
-      v["rowNumber"] = i
       const start = itemlength * (activePage - 1)
       const end = start + itemlength
       return i >= start && i < end
@@ -110,12 +109,7 @@ const EstateInformation = ({ option }) => {
     if (rowData[dataKey] === "active") {
       return (
         <Cell {...props}>
-          <Button
-            className="activeStatusButton"
-            dataKey={rowData[dataKey]}
-            color="green"
-            appearance="ghost"
-          >
+          <Button className="activeStatusButton" dataKey={rowData[dataKey]}>
             Active
           </Button>
         </Cell>
@@ -123,12 +117,7 @@ const EstateInformation = ({ option }) => {
     } else if (rowData[dataKey] === "canceled") {
       return (
         <Cell {...props}>
-          <Button
-            className="canceledStatusButton"
-            dataKey={rowData[dataKey]}
-            color="red"
-            appearance="ghost"
-          >
+          <Button className="canceledStatusButton" dataKey={rowData[dataKey]}>
             CANCELED
           </Button>
         </Cell>
@@ -136,12 +125,7 @@ const EstateInformation = ({ option }) => {
     } else if (rowData[dataKey] === "finished") {
       return (
         <Cell {...props}>
-          <Button
-            className="finishedStatusButton"
-            dataKey={rowData[dataKey]}
-            color="yellow"
-            appearance="ghost"
-          >
+          <Button className="finishedStatusButton" dataKey={rowData[dataKey]}>
             FINISHED
           </Button>
         </Cell>
@@ -152,7 +136,7 @@ const EstateInformation = ({ option }) => {
   const columns = [
     {
       name: "Trial ID",
-      dataKey: "trialid",
+      dataKey: "trialCode",
       width: 120
     },
     {
@@ -177,7 +161,7 @@ const EstateInformation = ({ option }) => {
     },
     {
       name: "n Progeny",
-      dataKey: "nofProgeny",
+      dataKey: "nofprogeny",
       width: 120
     },
     {

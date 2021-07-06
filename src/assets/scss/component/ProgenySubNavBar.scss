@@ -3,6 +3,10 @@
   .navigationBackground {
     background-color: white;
 
+    .title, .symbol {
+      pointer-events: none;
+    }
+
     .rs-navbar-body {
       .rs-nav-horizontal {
         ul > b {

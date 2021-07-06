@@ -30,9 +30,8 @@ const AddNewUser = () => {
   function createUser() {
     UserListService.createUser(formData).then(
       data => {
-        console.log(formData, "has been added to the system.")
         const savedData = {
-          type: "USERLIST_CREATE",
+          type: "USER_CREATE",
           data: formData,
           action: "CREATE"
         }

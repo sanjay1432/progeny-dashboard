@@ -4,7 +4,8 @@ import { clearBreadcrumb } from "../../redux/actions/app.action"
 import PlotService from "../../services/plot.service"
 import { publish } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
-import ConfirmationModal from "../modal/sharedComponent/ConfirmationModal"
+import ConfirmationModal from "../SharedComponent/ConfirmationModal"
+import SuccessMessage from "../SharedComponent/SuccessMessage"
 import SearchMessage from "../../assets/img/SearchMessage.svg"
 import {
   Table,
@@ -28,7 +29,9 @@ const EditableCell = ({
   return (
     <Cell {...cellProps}>
       <Input
-        defaultValue={rowData[dataKey]}
+        className="editTableInput"
+        // defaultValue={rowData[dataKey]}
+        value={rowData[dataKey]}
         disabled={[
           "trialCode",
           "estate",
@@ -61,12 +64,14 @@ const EditPalmInformation = ({ option }) => {
   }
 
   const [initialData, setInitialData] = useState([])
+  const [appliedData, setAppliedData] = useState([])
   const [filterValue, setFilterValue] = useState(initialFilterValue)
   const [trialFilterData, setTrialFilterData] = useState([])
   const [estateFilterData, setEstateFilterData] = useState([])
   const [replicateFilterData, setReplicateFilterData] = useState([])
   const [plotFilterData, setPlotFilterData] = useState([])
   const [tableData, setTableData] = useState([])
+  const [successMessage, setSuccessMessage] = useState("")
   const [confirmationModal, setConfirmationModal] = useState(false)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -118,19 +123,13 @@ const EditPalmInformation = ({ option }) => {
 
   function handleReplicateFilterChange(value) {
     setFilterValue({ ...filterValue, replicate: value })
-    if (value === "all") {
-      const renewData = initialData.filter(
-        data =>
-          data.trialCode === filterValue.trialCode &&
-          data.estate === filterValue.estate
-      )
-      setPlotFilterData(renewData)
-      setReplicateFilterData(renewData)
-      setTableData(renewData)
-      console.log(renewData)
-      console.log(tableData)
-    } else {
-      const renewData = tableData.filter(data => data.replicate === value)
+
+    if (value === "all" && filterValue.plot === "all") {
+      setPlotFilterData(appliedData)
+      setTableData(appliedData)
+    } else if (filterValue.plot === "all") {
+      const renewData = appliedData.filter(data => data.replicate === value)
+      console.log(renewData, appliedData, value)
       setPlotFilterData(renewData)
       setTableData(renewData)
     }
@@ -138,19 +137,12 @@ const EditPalmInformation = ({ option }) => {
 
   function handlePlotFilterChange(value) {
     setFilterValue({ ...filterValue, plot: value })
-    if (value === "all") {
-      const renewData = initialData.filter(
-        data =>
-          data.trialCode === filterValue.trialCode &&
-          data.estate === filterValue.estate
-      )
-      setPlotFilterData(renewData)
-      setReplicateFilterData(renewData)
-      setTableData(renewData)
-      console.log(renewData)
-      console.log(tableData)
-    } else {
-      const renewData = tableData.filter(data => data.plot === value)
+
+    if (value === "all" && filterValue.replicate === "all") {
+      setReplicateFilterData(appliedData)
+      setTableData(appliedData)
+    } else if (filterValue.replicate === "all") {
+      const renewData = appliedData.filter(data => data.plot === value)
       setReplicateFilterData(renewData)
       setTableData(renewData)
     }
@@ -162,14 +154,22 @@ const EditPalmInformation = ({ option }) => {
       const renewTableData = initialData.filter(
         data => data.trialCode === filterValue.trialCode
       )
+      console.log(renewTableData)
       setTableData(renewTableData)
+      setAppliedData(renewTableData)
+      setReplicateFilterData(renewTableData)
+      setPlotFilterData(renewTableData)
     } else {
       const renewTableData = initialData.filter(
         data =>
           data.trialCode === filterValue.trialCode &&
           data.estate === filterValue.estate
       )
+      console.log(renewTableData)
       setTableData(renewTableData)
+      setAppliedData(renewTableData)
+      setReplicateFilterData(renewTableData)
+      setPlotFilterData(renewTableData)
     }
   }
 
@@ -202,12 +202,7 @@ const EditPalmInformation = ({ option }) => {
     },
     {
       name: "Palm Number",
-      dataKey: "palmNum",
-      flexGrow: 1
-    },
-    {
-      name: "Palm Name",
-      dataKey: "palmName",
+      dataKey: "palmno",
       flexGrow: 1
     }
   ]
@@ -225,7 +220,20 @@ const EditPalmInformation = ({ option }) => {
     console.log(tableData)
   }
 
-  const saveEditabedData = () => {
+  const quickSaveEditedData = () => {
+    PlotService.editPalmInformation(tableData).then(
+      data => {
+        setSuccessMessage(true)
+      },
+      error => {}
+    )
+  }
+
+  function Check1() {
+    console.log(tableData)
+  }
+
+  const completedEditData = () => {
     PlotService.editPalmInformation(tableData).then(
       data => {
         const savedData = {
@@ -233,8 +241,8 @@ const EditPalmInformation = ({ option }) => {
           data: tableData,
           action: "UPDATE"
         }
-        dispatch(clearBreadcrumb())
         publish(savedData)
+        dispatch(clearBreadcrumb())
       },
       error => {}
     )
@@ -245,9 +253,15 @@ const EditPalmInformation = ({ option }) => {
       <ConfirmationModal
         show={confirmationModal}
         hide={() => setConfirmationModal(false)}
-        save={saveEditabedData}
+        save={completedEditData}
         data={filterValue}
-        currentPage="palmEdit"
+        action="MULTIPALMDATA_UPDATE"
+      />
+
+      <SuccessMessage
+        show={successMessage}
+        hide={() => setSuccessMessage("")}
+        action="MULTIPALMDATA_UPDATE"
       />
 
       <div>
@@ -305,6 +319,15 @@ const EditPalmInformation = ({ option }) => {
               Reset Filter
             </Button>
           </Col>
+          <Col md={4} lg={3}>
+            <Button
+              appearance="subtle"
+              className="resetButton"
+              onClick={Check1}
+            >
+              check
+            </Button>
+          </Col>
         </Row>
       </Grid>
 
@@ -333,7 +356,7 @@ const EditPalmInformation = ({ option }) => {
                 <b>Total records ({tableData.length})</b>
               </Col>
 
-              <Col mdOffset={10} md={4} lgOffset={12} lg={3}>
+              <Col mdOffset={7} md={4} lgOffset={10} lg={3}>
                 <DataPicker
                   dataType="replicate"
                   selectAllData="All Replicate"
@@ -351,9 +374,18 @@ const EditPalmInformation = ({ option }) => {
                   onChange={value => handlePlotFilterChange(value)}
                 />
               </Col>
+
+              <Col md={3} lg={2}>
+                <Button
+                  className="quickSaveButton"
+                  appearance="primary"
+                  onClick={quickSaveEditedData}
+                >
+                  Quick Save
+                </Button>
+              </Col>
             </Row>
           </Grid>
-
           <Table id="dashboardTable" data={tableData} autoHeight wordWrap>
             {columns.map(col => {
               const width = col.width ? col.width : false
@@ -393,7 +425,7 @@ const EditPalmInformation = ({ option }) => {
                       onClick={() => setConfirmationModal(true)}
                       type="button"
                     >
-                      Save
+                      Complete
                     </Button>
                   </FlexboxGrid.Item>
                 </Col>

@@ -13,7 +13,7 @@ const GenerationQRCode = ({ option }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await PlotService.getQrCodeDataList(option.trialid)
+      const data = await PlotService.getQrCodeDataList(option.plotId)
       setQrData(data)
     }
     fetchData()
@@ -43,7 +43,7 @@ const GenerationQRCode = ({ option }) => {
   }
 
   function handleCheckAll(value, checkedAllItem) {
-    const keys = checkedAllItem ? qrData.map(item => item.palmno) : []
+    const keys = checkedAllItem ? qrData.map(item => item) : []
     setCheckStatus(keys)
   }
 
@@ -57,11 +57,29 @@ const GenerationQRCode = ({ option }) => {
 
   const printRef = useRef()
 
-  const handleValue = useRef()
-
   const handlePrint = useReactToPrint({
     content: () => printRef.current
   })
+
+  const pageStyle = `
+  @page {
+    size: 80mm 50mm;
+    margin: 0px;
+  }
+
+  @media all {
+    .pagebreak {
+      display: none;
+    }
+  }
+
+  @media print {
+    margin: 0px;
+    .pagebreak {
+      page-break-before: always;
+    }
+  }
+`
 
   return (
     <div id="GenerationQRCode">
@@ -72,22 +90,32 @@ const GenerationQRCode = ({ option }) => {
         onHide={() => setZoomInQR(false)}
       >
         <Modal.Body>
-          <QRCode className="QRCode" size={290} value="hihi" />
+          <QRCode
+            className="QRCode"
+            size={290}
+            value="HIHI"
+            value={`${zoomInData.trialId}\ ${zoomInData.plot}\ ${zoomInData.estateBlock}\ ${zoomInData.palmNo}`}
+          />
           <p className="palm">
-            Plam : <b className="palmData">{zoomInData}</b>
+            Plam : <b className="palmData">{zoomInData.palmNo}</b>
           </p>
         </Modal.Body>
       </Modal>
 
-      <div style={{ display: "none" }}>
-        <PrintLayout ref={printRef} selectedItem={checkStatus} data={qrData} />
+      <div style={{ overflow: "hidden", height: "0" }}>
+        <PrintLayout
+          pageStyle={pageStyle}
+          ref={printRef}
+          selectedItem={checkStatus}
+          data={qrData}
+        />
       </div>
 
       <Grid className="qrFunctionSetting" fluid>
         <Row>
           <Col md={3} lg={3}>
             <p className="trial">
-              Trial ID : <b className="trialData">{option.trialid}</b>
+              Trial ID : <b className="trialData">{option.trialCode}</b>
             </p>
           </Col>
 
@@ -123,9 +151,16 @@ const GenerationQRCode = ({ option }) => {
       <Row>
         {qrData.map(data => {
           function ZoomInQRCode(trialId, plot, estateBlock, palmNo) {
+            data = {
+              trialId: trialId,
+              plot: plot,
+              estateBlock: estateBlock,
+              palmNo: palmNo
+            }
+
+            console.log(data)
             setZoomInQR(true)
-            setZoomInData(trialId)
-            console.log(trialId, plot, estateBlock, palmNo)
+            setZoomInData(data)
           }
           return (
             <div>
@@ -133,10 +168,10 @@ const GenerationQRCode = ({ option }) => {
                 <Panel shaded className="QrCodePanel">
                   <QRCode
                     size={113}
-                    value={`${data.trialid}\ ${data.plot}\ ${data.estateblock}\ ${data.palmno}`}
+                    value={`${data.trialId}\ ${data.plot}\ ${data.estateblock}\ ${data.palmno}`}
                     onClick={() =>
                       ZoomInQRCode(
-                        data.trialid,
+                        data.trialId,
                         data.plot,
                         data.estateblock,
                         data.palmno
@@ -154,14 +189,7 @@ const GenerationQRCode = ({ option }) => {
                     onChange={handleCheck}
                   />
                   <p className="palm">
-                    Palm :{" "}
-                    <b
-                      className="palmData"
-                      ref={handleValue}
-                      value={data.palmno}
-                    >
-                      {data.palmno}
-                    </b>
+                    Palm :<b className="palmData">{data.palmno}</b>
                   </p>
                 </div>
               </Col>
