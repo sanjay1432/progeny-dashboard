@@ -20,6 +20,10 @@ import DashboardService from "../../services/dashboarddata.service"
 import TrialService from "../../services/trial.service"
 
 import PlotService from "../../services/plot.service"
+
+import ProgenyService from "../../services/progeny.service"
+
+import EstateService from "../../services/estate.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -31,7 +35,8 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-
+let progenyIdSet = []
+let replicateSelector = "All"
 const AttachProgeny = ({
   currentSubNavState,
   currentItem,
@@ -40,7 +45,7 @@ const AttachProgeny = ({
 }) => {
   const initialFilterState = {
     trialCode: option.trial,
-    estate: option.estate,
+    estate: "All",
     replicate: "All"
   }
 
@@ -48,18 +53,17 @@ const AttachProgeny = ({
   const [pagination, setPagination] = useState(initialState)
   const [show, setShow] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
-  const [replicateSelectorDisable, setReplicateSelectorDisable] =
-    useState(false)
+  const [loading, setLoading] = useState(false)
   const [nPalm, setnPalm] = useState(16)
   const [trialIds, setTrialIds] = useState([])
   const [estates, setEstates] = useState([])
   const [progenies, setProgenies] = useState([])
   const [progenyIds, setProgenyIds] = useState([])
-  const [disabledProgenyIds, setDisabledProgenyIds] = useState([])
+  const [disabledRepIds, setDisabledRepIds] = useState({})
   const [replicates, setReplicates] = useState([])
   const [trialPlots, setTrialPlots] = useState([])
   const [checkStatus, setCheckStatus] = useState([])
-  const { activePage, displaylength } = pagination
+  const [trialEstatesBlocks, setTrialEstatesBlocks] = useState([])
   useEffect(() => {
     setTrials()
     setPlots()
@@ -73,7 +77,7 @@ const AttachProgeny = ({
     const selectorProgenyIds = []
     result.data.forEach(progeny => {
       selectorProgenyIds.push({
-        label: progeny.progenyId,
+        label: progeny.progenyCode,
         value: progeny.progenyId
       })
     })
@@ -85,7 +89,11 @@ const AttachProgeny = ({
 
   function setFilterData(value, name) {
     console.log(value, name)
+    if (name === "trialCode") {
+      const selectedTrial = trialData.find(trial => trial.trialCode === value)
 
+      setTrialEstates(selectedTrial)
+    }
     setFilters(() => ({ ...filters, [name]: value }))
   }
 
@@ -93,11 +101,6 @@ const AttachProgeny = ({
     setTrials()
     setPlots()
     setProgeny()
-    // if (filters.replicate != "All") {
-    //   setReplicateSelectorDisable(true)
-    // } else {
-    //   setReplicateSelectorDisable(false)
-    // }
   }
   function setTrials() {
     const selectorTrialIds = []
@@ -115,13 +118,32 @@ const AttachProgeny = ({
     setTrialEstates(selectedTrial)
   }
   function setTrialEstates(trial) {
-    const trialEstate = trial.estate
-    setEstates([
-      {
-        label: trialEstate,
-        value: trialEstate
+    const trialEstate = []
+    const trialEstateBlocks = []
+    trialEstate.push({
+      label: "All Estate",
+      value: "All"
+    })
+    trial.estate.forEach(est => {
+      trialEstate.push({
+        label: est.name,
+        value: est.id
+      })
+      for (let i = 0; i < est.estateblocks.length; i++) {
+        trialEstateBlocks.push({
+          label: `${est.name} - ${est.estateblocks[i].estateblock}`,
+          id: est.estateblocks[i].blockId,
+          name: est.estateblocks[i].estateblock,
+          estate: est.name,
+          value: `${est.name} - ${est.estateblocks[i].estateblock}`
+        })
       }
-    ])
+    })
+
+    // SET THE ESTATE BLOCKS WITH ESTATE NAME
+    console.log({ trialEstateBlocks })
+    setTrialEstatesBlocks(trialEstateBlocks)
+    setEstates(trialEstate)
     setTrialEstateReplicates()
   }
   async function setTrialEstateReplicates() {
@@ -143,43 +165,31 @@ const AttachProgeny = ({
     console.log({ trialReps })
     setReplicates(trialReps)
   }
-  async function setPlots() {
+  async function setPlots(replicate = undefined) {
+    if (replicate) replicateSelector = replicate
     const { trialId } = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
+    setLoading(true)
     const data = await PlotService.getTrialPlots(trialId)
+
+    data.forEach(item => {
+      item["blockId"] = item.estateblocks[0].id
+    })
     console.log({ data })
 
-    if (filters.replicate != "All") {
-      console.log(filters.replicate)
-      const filteredReps = data.filter(d => d.replicate === filters.replicate)
-      // data.forEach(plot => {
-      //   plot.replicate = filters.replicate
-      // })
-      console.log("COUNT", filteredReps.length)
+    if (replicateSelector != "All") {
+      console.log(replicateSelector)
+      const filteredReps = data.filter(d => d.replicate === replicateSelector)
       return setTrialPlots(filteredReps)
     } else {
       setTrialPlots(data)
     }
+    setLoading(false)
   }
 
-  function getData(displaylength) {
-    return trialPlots.filter((v, i) => {
-      // v["rowNumber"] = i
-      const start = displaylength * (activePage - 1)
-      const end = start + displaylength
-      return i >= start && i < end
-    })
-  }
-  function handleChangePage(dataKey) {
-    setPagination(() => ({ ...pagination, activePage: dataKey }))
-  }
-
-  function getNoPages() {
-    return Math.ceil(trialPlots.length / displaylength)
-  }
-
-  function handleProgenyChange(value, idx) {
+  function handleProgenyChange(value, idx, replicate) {
+    console.log({ disabledRepIds })
     const existingProgenies = [...progenies]
     const foundedProgeny = existingProgenies.find(
       pro => pro.progenyId === value
@@ -191,43 +201,14 @@ const AttachProgeny = ({
     data[idx].fp = foundedProgeny.fp
     data[idx].mp = foundedProgeny.mp
     setTrialPlots(data)
-    setDisabledProgenyIds([...disabledProgenyIds, value])
-  }
 
-  let checked = false
-  let indeterminate = false
+    if (disabledRepIds[replicate]) {
+      progenyIdSet = [...disabledRepIds[replicate], value]
+    } else {
+      progenyIdSet = [value]
+    }
 
-  if (checkStatus.length === 0) {
-    checked = false
-    indeterminate = false
-  } else if (checkStatus.length > 0 && checkStatus.length < trialPlots.length) {
-    checked = false
-    indeterminate = true
-  } else if (checkStatus.length === trialPlots.length) {
-    checked = true
-    indeterminate = false
-  }
-  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
-    <Cell {...props} style={{ padding: 0 }}>
-      <div>
-        <Checkbox
-          value={rowData[dataKey]}
-          inline
-          onChange={onChange}
-          checked={checkedKeys.some(item => item === rowData[dataKey])}
-        />
-      </div>
-    </Cell>
-  )
-  const handleCheck = (value, checked) => {
-    const keys = checked
-      ? [...checkStatus, value]
-      : checkStatus.filter(item => item !== value)
-    setCheckStatus(keys)
-  }
-  const handleCheckAll = (value, checked) => {
-    const keys = checked ? trialPlots.map(item => item.plot) : []
-    setCheckStatus(keys)
+    setDisabledRepIds(() => ({ ...disabledRepIds, [replicate]: progenyIdSet }))
   }
 
   function UnderLinedText(props) {
@@ -253,25 +234,9 @@ const AttachProgeny = ({
     setShow(false)
   }
 
-  function onDeletePlot() {
-    const data = [...trialPlots]
-    for (let index in checkStatus) {
-      data.splice(checkStatus[index + 1], 1)
-      checkStatus.splice(index + 1, 1)
-    }
-    setTrialPlots(data)
-  }
-
-  function handleReplicateChange(value, replicate, idx) {
-    console.log(value)
-    const data = [...trialPlots]
-    data[idx].replicate = value
-    setTrialPlots(data)
-  }
-
   function handlePlotChange(value, idx) {
     const data = [...trialPlots]
-    data[idx].plot = value
+    data[idx].plotName = value
     setTrialPlots(data)
   }
   async function onSave() {
@@ -279,6 +244,7 @@ const AttachProgeny = ({
       ({
         subblock,
         estateblock,
+        estateblocks,
         design,
         fp,
         mp,
@@ -288,7 +254,7 @@ const AttachProgeny = ({
         ...keepAttrs
       }) => keepAttrs
     )
-    await PlotService.attachTrialPlots(filters.trialId, newArray)
+    await ProgenyService.attachProgeny(newArray, filters.trialCode)
     setShowConfirmation(false)
   }
 
@@ -302,8 +268,31 @@ const AttachProgeny = ({
         break
       }
     }
-    console.log(found)
     return found
+  }
+
+  function getEstateBlocksItem(items) {
+    const blocks = []
+    items.forEach(block => {
+      blocks.push({
+        label: block.name,
+        value: block.id
+      })
+    })
+    return blocks
+  }
+  function handleEstateBlockChange(value, idx, estate) {
+    const data = [...trialPlots]
+    data[idx].blockId = value
+    data[idx].estate = estate
+    setTrialPlots(data)
+  }
+
+  function getEstateBlockValue(estate, id) {
+    const block = estate
+      ? trialEstatesBlocks.find(teb => teb.id === id && teb.estate === estate)
+      : trialEstatesBlocks.find(teb => teb.id === id)
+    return block.value
   }
   return (
     <div id="TrialAction">
@@ -337,17 +326,7 @@ const AttachProgeny = ({
               style={{ width: 180 }}
             />
           </Col>
-          <Col sm={6} md={6} lg={3}>
-            <ControlLabel>Replicate</ControlLabel>
-            <br />
-            <SelectPicker
-              data={replicates}
-              value={filters.replicate}
-              disabled={!option.estate}
-              onChange={(value, e) => setFilterData(value, "replicate")}
-              style={{ width: 180 }}
-            />
-          </Col>
+
           <Col sm={5} md={4} lg={2}>
             <Button
               className="applyButton"
@@ -389,6 +368,17 @@ const AttachProgeny = ({
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={4}>
               <FlexboxGrid.Item>
+                <SelectPicker
+                  data={replicates}
+                  value={replicateSelector}
+                  disabled={!option.estate}
+                  onChange={(value, e) => setPlots(value)}
+                  style={{ width: 180 }}
+                />
+              </FlexboxGrid.Item>
+            </Col>
+            <Col sm={5} md={5} lg={4}>
+              <FlexboxGrid.Item>
                 <Button
                   appearance="primary"
                   className="nPalmButton"
@@ -399,64 +389,76 @@ const AttachProgeny = ({
               </FlexboxGrid.Item>
             </Col>
 
-            {/* <Col sm={4} md={4} lg={3}>
+            <Col sm={5} md={5} lg={4}>
               <FlexboxGrid.Item>
                 <div className="deleteButtonLayout">
                   <Button
-                    className="deleteButton"
-                    disabled={checkStatus.length === 0}
-                    onClick={onDeletePlot}
+                    className="btnAddTrial"
+                    appearance="primary"
+                    onClick={onSave}
                   >
-                    Delete
+                    Quick Save
                   </Button>
                 </div>
               </FlexboxGrid.Item>
-            </Col> */}
+            </Col>
           </FlexboxGrid>
         </Row>
       </Grid>
 
-      <Table wordWrap data={trialPlots} height={400}>
-        {/* <Column width={70} align="center" fixed>
-          <HeaderCell className="tableHeader">
-            <Checkbox
-              checked={checked}
-              indeterminate={indeterminate}
-              onChange={handleCheckAll}
-            />
-          </HeaderCell>
-          <CheckCell
-            dataKey="plot"
-            checkedKeys={checkStatus}
-            onChange={handleCheck}
-          />
-        </Column> */}
-
+      <Table
+        virtualized
+        wordWrap
+        data={trialPlots}
+        height={400}
+        rowHeight={55}
+        shouldUpdateScroll={false}
+      >
         <Column width={120} align="left">
           <HeaderCell className="tableHeader">Replicate</HeaderCell>
           <Cell>
             {(rowData, i) => {
-              return (
-                <SelectPicker
-                  data={replicates.filter(rep => rep.value != "All")}
-                  style={{ width: 224 }}
-                  placeholder="-"
-                  value={rowData.replicate}
-                  disabled
-                  onChange={(value, event) =>
-                    handleReplicateChange(value, rowData.replicate, i)
-                  }
-                />
-              )
+              return <Input value={rowData.replicate} disabled />
             }}
           </Cell>
         </Column>
 
-        <Column width={100} align="left">
+        <Column width={170} align="left">
           <HeaderCell className="tableHeader">Estate Block</HeaderCell>
           <Cell dataKey="estateblock">
-            {rowData => {
-              return <Input value={rowData.estateblock} disabled />
+            {(rowData, i) => {
+              if (filters.estate === "All") {
+                return (
+                  <SelectPicker
+                    data={trialEstatesBlocks}
+                    value={getEstateBlockValue(rowData.estate, rowData.blockId)}
+                    style={{ width: 224 }}
+                    placeholder="-"
+                    onChange={(value, event) => {
+                      const blockName = value.split("-")[1].trim()
+                      const estateName = value.split("-")[0].trim()
+                      const block = trialEstatesBlocks.find(
+                        teb => teb.name === blockName
+                      )
+                      handleEstateBlockChange(block.id, i, estateName)
+                    }}
+                  />
+                )
+              } else if (rowData.estateblocks.length < 2) {
+                return <Input value={rowData.estateblocks[0].name} disabled />
+              } else {
+                return (
+                  <SelectPicker
+                    data={getEstateBlocksItem(rowData.estateblocks)}
+                    style={{ width: 224 }}
+                    placeholder="-"
+                    value={rowData.blockId}
+                    onChange={(value, event) =>
+                      handleEstateBlockChange(value, i, "")
+                    }
+                  />
+                )
+              }
             }}
           </Cell>
         </Column>
@@ -474,7 +476,7 @@ const AttachProgeny = ({
             {(rowData, i) => {
               return (
                 <Input
-                  value={rowData.plot}
+                  value={rowData.plotName}
                   onChange={(value, event) => handlePlotChange(value, i)}
                 />
               )
@@ -500,9 +502,12 @@ const AttachProgeny = ({
                   data={progenyIds}
                   style={{ width: 224 }}
                   placeholder="-"
-                  //   disabledItemValues={disabledProgenyIds}
+                  disabledItemValues={disabledRepIds[rowData.replicate]}
                   // cleanable = {true}
-                  onChange={(value, event) => handleProgenyChange(value, i)}
+                  value={rowData.progenyId}
+                  onChange={(value, event) =>
+                    handleProgenyChange(value, i, rowData.replicate)
+                  }
                 />
               )
             }}
@@ -518,7 +523,7 @@ const AttachProgeny = ({
           </Cell>
         </Column>
 
-        <Column width={100} align="left">
+        <Column width={150} align="left">
           <HeaderCell className="tableHeader">Ortet</HeaderCell>
           <Cell>
             {rowData => {
@@ -527,7 +532,7 @@ const AttachProgeny = ({
           </Cell>
         </Column>
 
-        <Column width={100} align="left">
+        <Column width={150} align="left">
           <HeaderCell className="tableHeader">FP</HeaderCell>
           <Cell>
             {rowData => {
@@ -536,7 +541,7 @@ const AttachProgeny = ({
           </Cell>
         </Column>
 
-        <Column width={100} align="left">
+        <Column width={150} align="left">
           <HeaderCell className="tableHeader">MP</HeaderCell>
           <Cell>
             {rowData => {
@@ -548,22 +553,22 @@ const AttachProgeny = ({
         <Column width={100} align="left">
           <HeaderCell className="tableHeader">nPalm</HeaderCell>
           <Cell>
-            {rowData => {
-              return <Input value={rowData.nPalm} />
+            {(rowData, i) => {
+              return (
+                <Input
+                  value={rowData.nPalm}
+                  onChange={(value, e) => {
+                    const data = [...trialPlots]
+                    data[i].nPalm = value
+                    setTrialPlots(data)
+                  }}
+                />
+              )
             }}
           </Cell>
         </Column>
       </Table>
 
-      {/* <div className="pagination">
-        <Pagination
-          {...pagination}
-          pages={getNoPages()}
-          maxButtons={2}
-          activePage={activePage}
-          onSelect={handleChangePage}
-        />
-      </div> */}
       {/* STEP 2 CUSTOMISE TABLE END*/}
       <Grid fluid className="footerLayout attachProgeny">
         <Row className="show-grid">
@@ -584,7 +589,7 @@ const AttachProgeny = ({
                   type="button"
                   disabled={checkDisableStateForSave()}
                 >
-                  Save
+                  Complete
                 </Button>
               </FlexboxGrid.Item>
             </Col>
@@ -636,9 +641,7 @@ const AttachProgeny = ({
           >
             No
           </Button>
-          <Button onClick={onSave} appearance="primary">
-            Yes
-          </Button>
+          <Button appearance="primary">Yes</Button>
         </Modal.Footer>
       </Modal>
       {/* CONFIRMATION MODEL END */}

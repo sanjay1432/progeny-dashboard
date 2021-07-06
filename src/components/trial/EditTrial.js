@@ -56,7 +56,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     TrialService.getTrialReplicates(option.trial).then(data => {
       setTrial(data)
       setStatus(data.status)
-      console.log("Replicates", `data.replicates`)
+      console.log("Trial", data)
 
       let replicates = data.replicates
       console.log({ replicates })
@@ -78,14 +78,18 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           }
         }
       })
-
+      console.log({ newSetOfReps })
       setExistingReplicatesInEstate(newSetOfReps)
       //Can be multiple estate in trial
-      const estateReps = {
-        estate: data.estate,
-        replicate: data.nofreplicate
-      }
-      setReplicatesInEstate([estateReps])
+      const estateReps = []
+      data.estate.forEach(est => {
+        estateReps.push({
+          estate: est.name,
+          replicate: est.replicate
+        })
+      })
+
+      setReplicatesInEstate(estateReps)
     })
   }, [])
 
@@ -114,7 +118,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     for (let item in data) {
       mappedEstate.push({ label: data[item].estate, value: data[item].estate })
     }
-    console.log(mappedEstate)
+    console.log({ mappedEstate })
     setEstates(mappedEstate)
   }
   async function fetchDesigns() {
@@ -495,6 +499,18 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     data[rowIndex][e.target.name] = e.target.value
     setExistingReplicatesInEstate(data)
   }
+
+  function getMultipleEstateString(estates) {
+    let estateString = ""
+    if (estates) {
+      estates.forEach((element, idx) => {
+        const pipe = estates.length - idx > 1 ? "|" : ""
+        estateString += ` ${element.name} ${pipe}`
+      })
+    }
+
+    return estateString
+  }
   return (
     <div id="TrialAction">
       {/* STEP 1 Edit Trial START*/}
@@ -755,7 +771,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               <Input
                 className="formField"
                 name="nofprogeny"
-                value={trial.estate}
+                value={getMultipleEstateString(trial.estate)}
                 disabled={disabled === "no"}
               />
             </Col>

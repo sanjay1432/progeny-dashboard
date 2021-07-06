@@ -17,9 +17,18 @@ const updateProgeny = payload => {
     })
 }
 
+const attachProgeny = (payload, trialId) => {
+  return axiosApiInstance
+    .put(`${API_URL}/attach-progeny/${trialId}`, payload)
+    .then(response => {
+      return response.data
+    })
+}
+
 const ProgenyService = {
   createProgeny,
-  updateProgeny
+  updateProgeny,
+  attachProgeny
 }
 
 export default ProgenyService
