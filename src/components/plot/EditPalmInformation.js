@@ -30,7 +30,8 @@ const EditableCell = ({
     <Cell {...cellProps}>
       <Input
         className="editTableInput"
-        defaultValue={rowData[dataKey]}
+        // defaultValue={rowData[dataKey]}
+        value={rowData[dataKey]}
         disabled={[
           "trialCode",
           "estate",
@@ -63,6 +64,7 @@ const EditPalmInformation = ({ option }) => {
   }
 
   const [initialData, setInitialData] = useState([])
+  const [appliedData, setAppliedData] = useState([])
   const [filterValue, setFilterValue] = useState(initialFilterValue)
   const [trialFilterData, setTrialFilterData] = useState([])
   const [estateFilterData, setEstateFilterData] = useState([])
@@ -121,19 +123,13 @@ const EditPalmInformation = ({ option }) => {
 
   function handleReplicateFilterChange(value) {
     setFilterValue({ ...filterValue, replicate: value })
-    if (value === "all") {
-      const renewData = initialData.filter(
-        data =>
-          data.trialCode === filterValue.trialCode &&
-          data.estate === filterValue.estate
-      )
-      setPlotFilterData(renewData)
-      setReplicateFilterData(renewData)
-      setTableData(renewData)
-      console.log(renewData)
-      console.log(tableData)
-    } else {
-      const renewData = tableData.filter(data => data.replicate === value)
+
+    if (value === "all" && filterValue.plot === "all") {
+      setPlotFilterData(appliedData)
+      setTableData(appliedData)
+    } else if (filterValue.plot === "all") {
+      const renewData = appliedData.filter(data => data.replicate === value)
+      console.log(renewData, appliedData, value)
       setPlotFilterData(renewData)
       setTableData(renewData)
     }
@@ -141,19 +137,12 @@ const EditPalmInformation = ({ option }) => {
 
   function handlePlotFilterChange(value) {
     setFilterValue({ ...filterValue, plot: value })
-    if (value === "all") {
-      const renewData = initialData.filter(
-        data =>
-          data.trialCode === filterValue.trialCode &&
-          data.estate === filterValue.estate
-      )
-      setPlotFilterData(renewData)
-      setReplicateFilterData(renewData)
-      setTableData(renewData)
-      console.log(renewData)
-      console.log(tableData)
-    } else {
-      const renewData = tableData.filter(data => data.plot === value)
+
+    if (value === "all" && filterValue.replicate === "all") {
+      setReplicateFilterData(appliedData)
+      setTableData(appliedData)
+    } else if (filterValue.replicate === "all") {
+      const renewData = appliedData.filter(data => data.plot === value)
       setReplicateFilterData(renewData)
       setTableData(renewData)
     }
@@ -165,14 +154,22 @@ const EditPalmInformation = ({ option }) => {
       const renewTableData = initialData.filter(
         data => data.trialCode === filterValue.trialCode
       )
+      console.log(renewTableData)
       setTableData(renewTableData)
+      setAppliedData(renewTableData)
+      setReplicateFilterData(renewTableData)
+      setPlotFilterData(renewTableData)
     } else {
       const renewTableData = initialData.filter(
         data =>
           data.trialCode === filterValue.trialCode &&
           data.estate === filterValue.estate
       )
+      console.log(renewTableData)
       setTableData(renewTableData)
+      setAppliedData(renewTableData)
+      setReplicateFilterData(renewTableData)
+      setPlotFilterData(renewTableData)
     }
   }
 
@@ -230,6 +227,10 @@ const EditPalmInformation = ({ option }) => {
       },
       error => {}
     )
+  }
+
+  function Check1() {
+    console.log(tableData)
   }
 
   const completedEditData = () => {
@@ -318,6 +319,15 @@ const EditPalmInformation = ({ option }) => {
               Reset Filter
             </Button>
           </Col>
+          <Col md={4} lg={3}>
+            <Button
+              appearance="subtle"
+              className="resetButton"
+              onClick={Check1}
+            >
+              check
+            </Button>
+          </Col>
         </Row>
       </Grid>
 
@@ -376,7 +386,6 @@ const EditPalmInformation = ({ option }) => {
               </Col>
             </Row>
           </Grid>
-
           <Table id="dashboardTable" data={tableData} autoHeight wordWrap>
             {columns.map(col => {
               const width = col.width ? col.width : false

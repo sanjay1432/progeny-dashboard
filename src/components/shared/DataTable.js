@@ -607,56 +607,16 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function StatusButton({ status }) {
     switch (status) {
       case "active":
-        return (
-          <Button
-            color="green"
-            appearance="ghost"
-            className="activeStatusButton"
-          >
-            Active
-          </Button>
-        )
+        return <Button className="activeStatusButton">Active</Button>
       case "inactive":
-        return (
-          <Button
-            color="red"
-            appearance="ghost"
-            className="inavtiveStatusButton"
-          >
-            Inactive
-          </Button>
-        )
+        return <Button className="inavtiveStatusButton">Inactive</Button>
       case "canceled":
-        return (
-          <Button
-            color="red"
-            appearance="ghost"
-            className="canceledStatusButton"
-          >
-            canceled
-          </Button>
-        )
+        return <Button className="canceledStatusButton">canceled</Button>
       case "pending":
-        return (
-          <Button
-            color="yellow"
-            appearance="ghost"
-            className="pendingStatusButton"
-          >
-            finished
-          </Button>
-        )
+        return <Button className="pendingStatusButton">finished</Button>
 
       case "finished":
-        return (
-          <Button
-            color="blue"
-            appearance="ghost"
-            className="finishedStatusButton"
-          >
-            finished
-          </Button>
-        )
+        return <Button className="finishedStatusButton">finished</Button>
 
       default:
         return null
@@ -892,7 +852,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     onClick={() =>
                       handleActionExpand(["Plot", "Generate QR Code"], {
                         type: "generate QR",
-                        trialid: data.trialid,
+                        plotId: data.plotId,
+                        trialCode: data.trialCode,
                         plot: data.plot
                       })
                     }

@@ -137,7 +137,7 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
             />
           </>
         )
-
+      case "":
       default:
         return null
     }

@@ -109,12 +109,7 @@ const EstateInformation = ({ option }) => {
     if (rowData[dataKey] === "active") {
       return (
         <Cell {...props}>
-          <Button
-            className="activeStatusButton"
-            dataKey={rowData[dataKey]}
-            color="green"
-            appearance="ghost"
-          >
+          <Button className="activeStatusButton" dataKey={rowData[dataKey]}>
             Active
           </Button>
         </Cell>
@@ -122,12 +117,7 @@ const EstateInformation = ({ option }) => {
     } else if (rowData[dataKey] === "canceled") {
       return (
         <Cell {...props}>
-          <Button
-            className="canceledStatusButton"
-            dataKey={rowData[dataKey]}
-            color="red"
-            appearance="ghost"
-          >
+          <Button className="canceledStatusButton" dataKey={rowData[dataKey]}>
             CANCELED
           </Button>
         </Cell>
@@ -135,12 +125,7 @@ const EstateInformation = ({ option }) => {
     } else if (rowData[dataKey] === "finished") {
       return (
         <Cell {...props}>
-          <Button
-            className="finishedStatusButton"
-            dataKey={rowData[dataKey]}
-            color="blue"
-            appearance="ghost"
-          >
+          <Button className="finishedStatusButton" dataKey={rowData[dataKey]}>
             FINISHED
           </Button>
         </Cell>
