@@ -10,7 +10,6 @@ const SelectFilter = ({ data, dataType, selectedData, onUpdate }) => {
       const selectionLabel = dataType
       const selectiondata = [...new Set(data.map(res => res[selectionLabel]))]
       selectionData[selectionLabel] = selectiondata
-      console.log(selectionLabel)
     })
   }
   const dataInSelection = []

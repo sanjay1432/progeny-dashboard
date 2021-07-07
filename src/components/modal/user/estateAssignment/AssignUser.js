@@ -44,7 +44,6 @@ const AssignUser = ({
       flexGrow: 2
     }
   ]
-
   return (
     <>
       <Modal id="UserModal" show={show} onHide={hide}>
@@ -66,6 +65,7 @@ const AssignUser = ({
           <Table
             columns={columns}
             data={userList}
+            modalType="AssignUser"
             selectedItem={selectedItem ? selectedItem : null}
             onChange={keys => props.setSelectedItem(keys)}
           />

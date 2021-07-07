@@ -60,6 +60,17 @@ const EditableCell = ({
 }) => {
   const editing = rowData.status === true
   switch (active) {
+    case "trial":
+    case "userAssignment":
+      return (
+        <Cell {...cellProps}>
+          {dataKey === "estate" ? (
+            <span>{getMultipleEstateString(rowData.estate)}</span>
+          ) : (
+            <span>{rowData[dataKey]}</span>
+          )}
+        </Cell>
+      )
     case "plot":
       return (
         <>
@@ -127,16 +138,6 @@ const EditableCell = ({
           )}
         </Cell>
       )
-    case "trial":
-      return (
-        <Cell {...cellProps}>
-          {dataKey === "estate" ? (
-            <span>{getMultipleEstateString(rowData.estate)}</span>
-          ) : (
-            <span>{rowData[dataKey]}</span>
-          )}
-        </Cell>
-      )
     default:
       return (
         <Cell {...cellProps}>
@@ -155,6 +156,7 @@ function getMultipleEstateString(estates) {
 
   return estateString
 }
+
 let currentTableDataFields = []
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch()
@@ -392,6 +394,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     {
       label: "Position",
       value: "position"
+    },
+    {
+      label: "No. Trials on this Estate",
+      value: "noTrialOnHere"
+    },
+    {
+      label: "No.of Users Assigned",
+      value: "assignedUser"
     }
   ]
 
@@ -738,7 +748,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function handlePalmEditStatus(trialid) {
     const nextData = Object.assign([], tableData)
-    const nextData2 = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
     setTableData(nextData)
@@ -1076,14 +1085,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       username: username,
       estate: selectedItem
     }
-    UserAssignmentService.assignEstateToUser(payload).then(
-      data => {
-        setAssignEstateModal(false)
-        setAction("MULTIESTATETOUSER_ASSIGN")
-        setSuccessMessage(true)
-      },
-      error => {}
-    )
+    console.log(payload)
+    // UserAssignmentService.assignEstateToUser(payload).then(
+    //   data => {
+    //     setAssignEstateModal(false)
+    //     setAction("MULTIESTATETOUSER_ASSIGN")
+    //     setSuccessMessage(true)
+    //   },
+    //   error => {}
+    // )
   }
 
   function handleActionExpand(breadcrumb, option) {
@@ -1407,6 +1417,48 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.width = 130
             field.align = "center"
             field.fixed = "right"
+            currentTableDataFields[3] = field
+          }
+        })
+        return currentTableDataFields
+
+      case "estateAssignment":
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "estate") {
+            field.flexGrow = 2
+            currentTableDataFields[0] = field
+          }
+          if (field.value === "estatefullname") {
+            field.flexGrow = 2
+            currentTableDataFields[1] = field
+          }
+          if (field.value === "noTrialOnHere") {
+            field.flexGrow = 2
+            currentTableDataFields[2] = field
+          }
+          if (field.value === "assignedUser") {
+            field.flexGrow = 3
+            currentTableDataFields[3] = field
+          }
+        })
+        return currentTableDataFields
+
+      case "userAssignment":
+        currentTableDataFields.forEach((field, i) => {
+          if (field.value === "userId") {
+            field.flexGrow = 1
+            currentTableDataFields[0] = field
+          }
+          if (field.value === "username") {
+            field.flexGrow = 1
+            currentTableDataFields[1] = field
+          }
+          if (field.value === "position") {
+            field.flexGrow = 1
+            currentTableDataFields[2] = field
+          }
+          if (field.value === "estate") {
+            field.flexGrow = 4
             currentTableDataFields[3] = field
           }
         })

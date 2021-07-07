@@ -4,7 +4,7 @@ import { Table, Loader, Checkbox } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
 
 const currentTableDataFields = []
-const DataTable = ({ columns, data, selectedItem, ...props }) => {
+const DataTable = ({ columns, data, selectedItem, modalType, ...props }) => {
   const [checkStatus, setCheckStatus] = useState([])
 
   const filterData = useSelector(state => state.filterReducer)
@@ -62,8 +62,13 @@ const DataTable = ({ columns, data, selectedItem, ...props }) => {
   }
 
   const handleCheckAll = (value, checkedAllItem) => {
-    const keys = checkedAllItem ? data.map(item => item.userId) : []
-    setCheckStatus(keys)
+    if (modalType === "AssignUser") {
+      const keys = checkedAllItem ? data.map(item => item.userId) : []
+      setCheckStatus(keys)
+    } else if (modalType === "AssignEstate") {
+      const keys = checkedAllItem ? data.map(item => item.estate) : []
+      setCheckStatus(keys)
+    }
   }
 
   const handleCheck = (value, checkedItem, e) => {
@@ -72,15 +77,15 @@ const DataTable = ({ columns, data, selectedItem, ...props }) => {
       : checkStatus.filter(item => item !== value)
     setCheckStatus(keys)
     props.onChange(keys)
-    console.log(checkStatus)
+    //console.log(checkStatus)
   }
 
   return (
     <div>
       {columns && data ? (
         <div>
-          <Table id="modalTable" data={getData()} height={390} bordered>
-            <Column width={80}>
+          <Table id="modalTable" data={getData()} height={400} bordered>
+            <Column width={60}>
               <HeaderCell>
                 {" "}
                 <Checkbox

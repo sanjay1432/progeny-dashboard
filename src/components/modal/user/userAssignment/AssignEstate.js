@@ -45,6 +45,7 @@ const AssignEstate = ({
         <Table
           columns={columns}
           data={estateList}
+          modalType="AssignEstate"
           selectedItem={selectedItem ? selectedItem : null}
           onChange={keys => props.setSelectedItem(keys)}
         />

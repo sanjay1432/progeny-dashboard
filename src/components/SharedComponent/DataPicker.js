@@ -1,19 +1,26 @@
 import React from "react"
 import { InputPicker } from "rsuite"
+import CreatableSelect from "react-select/creatable"
 
 const SelectionData = {}
 const DataPicker = ({
   OriginalData,
+  completedData,
   dataType,
   dataValue,
   placeholder,
+  searchable,
   selectAllData,
   ...props
 }) => {
   const Picker = [dataType]
   Picker.forEach(obj => {
-    const data = [...new Set(OriginalData.map(res => res[obj]))]
-    SelectionData[Picker] = data
+    if (OriginalData !== undefined) {
+      const data = [...new Set(OriginalData.map(res => res[obj]))]
+      SelectionData[Picker] = data
+    } else {
+      SelectionData[Picker] = completedData
+    }
   })
 
   const pureData = SelectionData[Picker]
@@ -42,16 +49,31 @@ const DataPicker = ({
     props.onChange(value)
   }
 
+  function handleInputChange(value) {
+    props.onChange(value.value)
+  }
+
   return (
     <>
-      <InputPicker
-        name={dataType}
-        placeholder={placeholder}
-        className="dataPicker"
-        data={DataInPicker}
-        value={dataValue}
-        onChange={(value, e) => handleChange(value)}
-      />
+      {searchable === "true" ? (
+        <CreatableSelect
+          name={dataType}
+          className="InputSelectPicker"
+          placeholder={placeholder}
+          value={dataValue}
+          onChange={(value, e) => handleInputChange(value)}
+          options={DataInPicker}
+        />
+      ) : (
+        <InputPicker
+          name={dataType}
+          placeholder={placeholder}
+          className="dataPicker"
+          data={DataInPicker}
+          value={dataValue}
+          onChange={(value, e) => handleChange(value)}
+        />
+      )}
     </>
   )
 }

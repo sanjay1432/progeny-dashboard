@@ -11,15 +11,31 @@
   }
 
   .rs-input {
-    width: 444px;
+    width: 100%;
   }
 
   .dataPicker {
-    width: 444px;
+    width: 100%;
     .rs-picker-toggle {
-      width: 435px;
+      width: 99%;
     }
   }
+
+  .InputSelectPicker {
+    width: 100%;
+  }
+
+  .fpFamDisplay, .mpFamDisplay  {
+    width: 190px;
+    float: left;
+  }
+
+  .fpInput, .mpInput {
+    width: 190px;
+    float: right;
+  }
+
+
 
   .rs-input-group {
     width: 444px;

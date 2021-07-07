@@ -33,7 +33,7 @@ const AddNewProgeny = () => {
     state => state.dashboardDataReducer.result.progeny
   )
 
-  const crossTypeData = [
+  const data = [
     {
       crossType: "sibbing"
     },
@@ -44,6 +44,12 @@ const AddNewProgeny = () => {
       crossType: "intercross"
     }
   ]
+
+  const crossTypeData = data.map(data => {
+    const addOn = formData.fpVar + "x" + formData.mpVar + " "
+    const result = addOn.concat(data.crossType)
+    return result
+  })
 
   function handleChange(e) {
     e.persist()
@@ -62,16 +68,8 @@ const AddNewProgeny = () => {
     e.persist()
     setFormData(() => ({
       ...formData,
-      mp: formData.mpFam + "." + e.target.value
+      mp: formData.mpFam + "," + e.target.value
     }))
-  }
-
-  function handleSelectFpFam(fpFam) {
-    setFormData(() => ({ ...formData, fpFam }))
-  }
-
-  function handleSelectMpFam(mpFam) {
-    setFormData(() => ({ ...formData, mpFam }))
   }
 
   function createProgeny() {
@@ -110,7 +108,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny ID</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <Input
               name="progenyId"
               onChange={(value, e) => handleChange(e)}
@@ -122,9 +120,10 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Pop Var</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <DataPicker
               dataType="popvar"
+              searchable="true"
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, popvar: value }))
@@ -137,7 +136,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Origin</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <Input
               name="origin"
               onChange={(value, e) => handleChange(e)}
@@ -149,7 +148,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny Remark</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <Input
               name="progenyremark"
               onChange={(value, e) => handleChange(e)}
@@ -161,7 +160,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <Input
               name="progeny"
               onChange={(value, e) => handleChange(e)}
@@ -173,9 +172,10 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Generation</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <DataPicker
               dataType="generation"
+              searchable="true"
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, generation: value }))
@@ -188,7 +188,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Ortet</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <Input
               name="ortet"
               onChange={(value, e) => handleChange(e)}
@@ -200,14 +200,15 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">FP Fam</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <DataPicker
               dataType="fpFam"
+              searchable="true"
               OriginalData={ProgenyData}
-              // onChange={value =>
-              //   setFormData(() => ({ ...formData, ["fpFam"]: value }))
-              // }
-              onChange={fpFam => handleSelectFpFam(fpFam)}
+              onChange={value =>
+                setFormData(() => ({ ...formData, fpFam: value }))
+              }
+              placeholder="Choose or Create New FP Fam"
             />
           </Col>
         </Row>
@@ -215,20 +216,49 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">FP</p>
           </Col>
-          <Col>
-            <InputGroup>
-              <InputGroup.Addon>{formData.fpFam}</InputGroup.Addon>
-              <Input name="fp" onChange={(value, e) => handleFpChange(e)} />
-            </InputGroup>
+          <Col md={5} lg={5}>
+            {formData.fpFam === "" ? (
+              <Input
+                className="fpFamDisplay"
+                name="fp"
+                placeholder="FP"
+                disabled
+              />
+            ) : (
+              <Input
+                className="fpFamDisplay"
+                name="fp"
+                value={formData.fpFam}
+                disabled
+              />
+            )}
+          </Col>
+          <Col md={5} lg={5}>
+            {formData.fpFam === "" ? (
+              <Input
+                className="fpInput"
+                name="fp"
+                placeholder="Palm Number"
+                disabled
+              />
+            ) : (
+              <Input
+                className="fpInput"
+                name="fp"
+                placeholder="Palm Number"
+                onChange={(value, e) => handleFpChange(e)}
+              />
+            )}
           </Col>
         </Row>
         <Row>
           <Col md={5} lg={5}>
             <p className="labelName">FP Var</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <DataPicker
               dataType="fpVar"
+              searchable="true"
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, fpVar: value }))
@@ -237,16 +267,20 @@ const AddNewProgeny = () => {
             />
           </Col>
         </Row>
+
         <Row>
           <Col md={5} lg={5}>
             <p className="labelName">MP Fam</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <DataPicker
               dataType="mpFam"
+              searchable="true"
               OriginalData={ProgenyData}
-              onChange={mpFam => handleSelectMpFam(mpFam)}
-              placeholder=""
+              onChange={value =>
+                setFormData(() => ({ ...formData, mpFam: value }))
+              }
+              placeholder="Choose or Create New MP Fam"
             />
           </Col>
         </Row>
@@ -254,20 +288,49 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">MP</p>
           </Col>
-          <Col>
-            <InputGroup>
-              <InputGroup.Addon>{formData.mpFam}</InputGroup.Addon>
-              <Input name="mp" onChange={(value, e) => handleMpChange(e)} />
-            </InputGroup>
+          <Col md={5} lg={5}>
+            {formData.fpFam === "" ? (
+              <Input
+                className="mpFamDisplay"
+                name="mp"
+                placeholder="MP"
+                disabled
+              />
+            ) : (
+              <Input
+                className="mpFamDisplay"
+                name="mfp"
+                value={formData.mpFam}
+                disabled
+              />
+            )}
+          </Col>
+          <Col md={5} lg={5}>
+            {formData.mpFam === "" ? (
+              <Input
+                className="mpInput"
+                name="mp"
+                placeholder="Palm Number"
+                disabled
+              />
+            ) : (
+              <Input
+                className="mpInput"
+                name="mp"
+                placeholder="Palm Number"
+                onChange={(value, e) => handleMpChange(e)}
+              />
+            )}
           </Col>
         </Row>
         <Row>
           <Col md={5} lg={5}>
             <p className="labelName">MP Var</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             <DataPicker
               dataType="mpVar"
+              searchable="true"
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, mpVar: value }))
@@ -280,7 +343,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Cross</p>
           </Col>
-          <Col>
+          <Col md={10} lg={10}>
             {formData.fpFam === "" ||
             formData.fp === "" ||
             formData.mpFam === "" ||
@@ -290,6 +353,9 @@ const AddNewProgeny = () => {
               <Input
                 name="cross"
                 value={formData.fp + " x " + formData.mp}
+                onChange={value =>
+                  setFormData(() => ({ ...formData, cross: value }))
+                }
                 disabled
               />
             )}
@@ -299,27 +365,20 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Cross Type</p>
           </Col>
-          <Col>
-            <InputGroup>
-              {formData.fpVar === "" || formData.mpVar === "" ? (
-                <InputGroup.Addon></InputGroup.Addon>
-              ) : (
-                <InputGroup.Addon>
-                  {formData.fpVar + "X" + formData.mpVar}
-                </InputGroup.Addon>
-              )}
+          <Col md={10} lg={10}>
+            {formData.fpVar === "" && formData.mpVar === "" ? (
+              <Input placeholder="Please choose FP Var and MP Var" disabled />
+            ) : (
               <DataPicker
                 dataType="crossType"
-                OriginalData={crossTypeData}
+                searchable="true"
+                completedData={crossTypeData}
                 onChange={value =>
-                  setFormData(() => ({
-                    ...formData,
-                    crossType:
-                      formData.fpVar + "X" + formData.mpVar + " " + value
-                  }))
+                  setFormData(() => ({ ...formData, crossType: value }))
                 }
+                placeholder="Choose or Create New MP Var"
               />
-            </InputGroup>
+            )}
           </Col>
         </Row>
         <Row>
