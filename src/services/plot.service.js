@@ -17,7 +17,7 @@ const getQrCodeDataList = payload => {
 
 const updatePlot = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-plot`, payload)
+    .post(`${API_URL}/update-plot`, payload)
     .then(response => {
       return response.data
     })

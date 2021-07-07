@@ -3,7 +3,7 @@ import axiosApiInstance from "../api/api"
 
 const updatePalm = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-palm`, payload)
+    .post(`${API_URL}/update-palm`, payload)
     .then(response => {
       return response.data
     })

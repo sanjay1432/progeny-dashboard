@@ -221,6 +221,7 @@ const EditPalmInformation = ({ option }) => {
   }
 
   const quickSaveEditedData = () => {
+    console.log(tableData)
     PlotService.editPalmInformation(tableData).then(
       data => {
         setSuccessMessage(true)

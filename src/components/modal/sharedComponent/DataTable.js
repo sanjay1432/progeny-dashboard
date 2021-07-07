@@ -65,9 +65,11 @@ const DataTable = ({ columns, data, selectedItem, modalType, ...props }) => {
     if (modalType === "AssignUser") {
       const keys = checkedAllItem ? data.map(item => item.userId) : []
       setCheckStatus(keys)
+      props.onChange(keys)
     } else if (modalType === "AssignEstate") {
       const keys = checkedAllItem ? data.map(item => item.estate) : []
       setCheckStatus(keys)
+      props.onChange(keys)
     }
   }
 

@@ -720,19 +720,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
     console.log(confirmationData)
-    PlotService.updatePlot(confirmationData).then(
-      data => {
-        setTableData(nextData)
-        setConfirmationModal(false)
-        setSuccessData(confirmationData)
-        setAction("PLOTDATA_UPDATE")
-        setSuccessMessage(true)
-      },
-      error => {
-        setErrorMessage(active)
-        setErrorData(error.message)
-      }
-    )
+    // PlotService.updatePlot(confirmationData).then(
+    //   data => {
+    //     setTableData(nextData)
+    //     setConfirmationModal(false)
+    //     setSuccessData(confirmationData)
+    //     setAction("PLOTDATA_UPDATE")
+    //     setSuccessMessage(true)
+    //   },
+    //   error => {
+    //     setErrorMessage(active)
+    //     setErrorData(error.message)
+    //   }
+    // )
   }
 
   const handlePalmEditChange = (trialid, key, value) => {
@@ -1067,6 +1067,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       estate: estate,
       userId: selectedItem
     }
+    console.log(payload)
     EstateAssignmentService.assignUserToEstate(payload).then(
       data => {
         setAssignUserModal(false)
@@ -1083,14 +1084,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       estate: selectedItem
     }
     console.log(payload)
-    // UserAssignmentService.assignEstateToUser(payload).then(
-    //   data => {
-    //     setAssignEstateModal(false)
-    //     setAction("MULTIESTATETOUSER_ASSIGN")
-    //     setSuccessMessage(true)
-    //   },
-    //   error => {}
-    // )
+    UserAssignmentService.assignEstateToUser(payload).then(
+      data => {
+        setAssignEstateModal(false)
+        setAction("MULTIESTATETOUSER_ASSIGN")
+        setSuccessMessage(true)
+      },
+      error => {}
+    )
   }
 
   function handleActionExpand(breadcrumb, option) {
