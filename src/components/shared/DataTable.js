@@ -800,10 +800,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 alt=""
                 onClick={() =>
                   handleActionExpand(
-                    [
-                      "Trial and Replicate",
-                      `Trial ${data.trialCode}/Estate ${data.estate}`
-                    ],
+                    ["Trial and Replicate", `Trial ${data.trialCode}`],
                     {
                       trial: data.trialId,
                       estate: data.estate,

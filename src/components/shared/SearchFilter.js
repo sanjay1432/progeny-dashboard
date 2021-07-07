@@ -49,12 +49,12 @@ const SearchFilter = forwardRef(
     })
 
     let mainPageFilters = currentFilters
+    console.log({ mainPageFilters })
 
     if (dashboardData.result[active]) {
       mainPageFilters.forEach(filter => {
         //console.log("filter",filter)
         const filterName = filter.name
-
         if (filter.type === "select") {
           const filterdata = [
             ...new Set(dashboardData.result[active].map(res => res[filterName]))
