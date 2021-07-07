@@ -99,7 +99,7 @@ const listItems = [
         eventKey: "plot",
         filters: [
           {
-            name: "trialid",
+            name: "trialCode",
             label: "Trial Id",
             type: "select",
             disable: false
@@ -124,7 +124,7 @@ const listItems = [
         eventKey: "palm",
         filters: [
           {
-            name: "trialid",
+            name: "trialCode",
             label: "Trial Id",
             type: "select",
             disable: false

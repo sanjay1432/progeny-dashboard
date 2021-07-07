@@ -2,14 +2,18 @@ import { API_URL } from "../constants"
 import axiosApiInstance from "../api/api"
 
 const saveTrial = payload => {
-  return axiosApiInstance.post(`${API_URL}/trial`, payload).then(response => {
-    return response.data
-  })
+  return axiosApiInstance
+    .post(`${API_URL}/create-trial`, payload)
+    .then(response => {
+      return response.data
+    })
 }
 const editTrial = payload => {
-  return axiosApiInstance.put(`${API_URL}/trial`, payload).then(response => {
-    return response.data
-  })
+  return axiosApiInstance
+    .put(`${API_URL}/update-trial`, payload)
+    .then(response => {
+      return response.data
+    })
 }
 
 const getTrial = trialCode => {

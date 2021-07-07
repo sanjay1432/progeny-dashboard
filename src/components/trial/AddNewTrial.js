@@ -42,9 +42,7 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable, getValue] = useState(
-    true
-  )
+  const [disabledGenerateTable, setDisabledGenerateTable] = useState(true)
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
   const [tableData, setTableData] = useState([])
@@ -383,6 +381,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   function onSaveTrial() {
     trial["replicates"] = tableData
     console.log(trial)
+    trial["trialId"] = null
     TrialService.saveTrial(trial).then(
       data => {
         const savedData = {
@@ -869,7 +868,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           <FlexboxGrid justify="end">
             <Col md={5} lg={4}>
               <FlexboxGrid.Item>
-                <Button appearance="subtle" className="cancelButton">
+                <Button
+                  appearance="subtle"
+                  className="cancelButton"
+                  onClick={() => dispatch(clearBreadcrumb())}
+                >
                   Cancel
                 </Button>
               </FlexboxGrid.Item>
@@ -898,7 +901,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Header>
         <Modal.Body className="body">
           Are you sure you want to save this{" "}
-          <span className="description">Trial {trial.trialid}</span> ? This
+          <span className="description">Trial {trial.trialCode}</span> ? This
           Trial and it’s replicate will be created inside the system.
         </Modal.Body>
         <Modal.Footer>

@@ -14,6 +14,7 @@ import {
   Modal,
   ControlLabel
 } from "rsuite"
+import { clearBreadcrumb } from "../../redux/actions/app.action"
 
 import DashboardService from "../../services/dashboarddata.service"
 
@@ -57,6 +58,7 @@ const AttachProgeny = ({
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [loading, setLoading] = useState(false)
   const [nPalm, setnPalm] = useState(16)
+  const [nPalmValue, setNPalmValue] = useState(null)
   const [trialIds, setTrialIds] = useState([])
   const [estates, setEstates] = useState([])
   const [progenies, setProgenies] = useState([])
@@ -64,10 +66,11 @@ const AttachProgeny = ({
   const [disabledRepIds, setDisabledRepIds] = useState({})
   const [replicates, setReplicates] = useState([])
   const [trialPlots, setTrialPlots] = useState([])
-  const [checkStatus, setCheckStatus] = useState([])
   const [trialEstatesBlocks, setTrialEstatesBlocks] = useState([])
+  const dispatch = useDispatch()
   useEffect(() => {
     setFilterTrialIds()
+    setTrialEstateReplicates()
     if (option.trial) {
       setTrials()
       setPlots()
@@ -173,12 +176,16 @@ const AttachProgeny = ({
     )
     const reps = await TrialService.getTrialReplicates(trialId)
     const trialReps = []
-    reps.replicates.forEach(replicate => {
-      trialReps.push({
-        label: replicate.replicate,
-        value: replicate.replicate
-      })
-    })
+    const map = new Map()
+    for (const item of reps.replicates) {
+      if (!map.has(item.replicateId)) {
+        map.set(item.replicateId, true) // set any value to Map
+        trialReps.push({
+          label: item.replicate,
+          value: item.replicateId
+        })
+      }
+    }
     trialReps.unshift({
       label: `All Replicates`,
       value: `All`
@@ -196,6 +203,7 @@ const AttachProgeny = ({
 
     data.forEach(item => {
       item["blockId"] = item.estateblocks[0].id
+      item["isUpdated"] = false
     })
     console.log({ data })
 
@@ -221,6 +229,7 @@ const AttachProgeny = ({
     data[idx].ortet = foundedProgeny.ortet ? foundedProgeny.ortet : "-"
     data[idx].fp = foundedProgeny.fp
     data[idx].mp = foundedProgeny.mp
+    data[idx].isUpdated = true
     setTrialPlots(data)
 
     if (disabledRepIds[replicate]) {
@@ -251,6 +260,7 @@ const AttachProgeny = ({
     plots.forEach(plot => {
       plot["nPalm"] = parseInt(nPalm)
     })
+    setNPalmValue(parseInt(nPalm))
     setTrialPlots(plots)
     setShow(false)
   }
@@ -258,6 +268,7 @@ const AttachProgeny = ({
   function handlePlotChange(value, idx) {
     const data = [...trialPlots]
     data[idx].plotName = value
+    data[idx].isUpdated = true
     setTrialPlots(data)
   }
   async function onSave() {
@@ -275,7 +286,11 @@ const AttachProgeny = ({
         ...keepAttrs
       }) => keepAttrs
     )
-    await ProgenyService.attachProgeny(newArray, filters.trialCode)
+    const payload = {
+      progenies: newArray.filter(progeny => progeny.isUpdated),
+      nPalm: nPalmValue
+    }
+    await ProgenyService.attachProgeny(payload, filters.trialCode)
     setShowConfirmation(false)
   }
 
@@ -306,6 +321,7 @@ const AttachProgeny = ({
     const data = [...trialPlots]
     data[idx].blockId = value
     data[idx].estate = estate
+    data[idx].isUpdated = true
     setTrialPlots(data)
   }
 
@@ -594,6 +610,7 @@ const AttachProgeny = ({
                           onChange={(value, e) => {
                             const data = [...trialPlots]
                             data[i].nPalm = value
+                            data[i].isUpdated = true
                             setTrialPlots(data)
                           }}
                         />
@@ -609,7 +626,11 @@ const AttachProgeny = ({
                   <FlexboxGrid justify="end">
                     <Col sm={5} md={5} lg={3}>
                       <FlexboxGrid.Item>
-                        <Button appearance="subtle" className="cancelButton">
+                        <Button
+                          appearance="subtle"
+                          className="cancelButton"
+                          onClick={() => dispatch(clearBreadcrumb())}
+                        >
                           Cancel
                         </Button>
                       </FlexboxGrid.Item>

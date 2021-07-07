@@ -27,7 +27,7 @@ import { publish } from "../../services/pubsub.service"
 const styles = { width: 280, display: "block", marginBottom: 10 }
 const { Column, HeaderCell, Cell } = Table
 const initializeTrailState = {
-  trialid: "",
+  trialCode: "",
   trial: "",
   trialremark: "",
   area: "",
@@ -278,12 +278,14 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     }
 
     const mappedEstateBlocks = []
+    console.log({ estateBlocks })
     for (let item in estateBlocks) {
       mappedEstateBlocks.push({
         label: estateBlocks[item].estateblock,
         value: estateBlocks[item].estateblock
       })
     }
+    console.log({ mappedEstateBlocks })
     return mappedEstateBlocks
   }
 
@@ -305,7 +307,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       const foundedBlock = estateBlocks.find(eb => eb.estateblock === block)
       const data = [...existingReplicatesInEstate]
-      // data[rowIndex].estateblock = block
+      data[rowIndex].estateblock = block
       data[rowIndex].blockId = foundedBlock.id
       data[rowIndex].soiltype = foundedBlock.soiltype
       setExistingReplicatesInEstate(data)
@@ -370,18 +372,35 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setShow(false)
     trial["replicates"] = existingReplicatesInEstate
     console.log(trial)
-    TrialService.editTrial(trial).then(
-      data => {
-        const savedData = {
-          type: "TRIAL",
-          data: trial,
-          action: "UPDATED"
-        }
-        dispatch(clearBreadcrumb())
-        publish(savedData)
-      },
-      err => console.log(err)
-    )
+    trial.status = status
+    console.log({ disabled })
+    if (disabled === "yes") {
+      TrialService.saveTrial(trial).then(
+        data => {
+          const savedData = {
+            type: "TRIAL",
+            data: trial,
+            action: "CREATED"
+          }
+          dispatch(clearBreadcrumb())
+          publish(savedData)
+        },
+        err => console.log(err)
+      )
+    } else {
+      TrialService.editTrial(trial).then(
+        data => {
+          const savedData = {
+            type: "TRIAL",
+            data: trial,
+            action: "UPDATED"
+          }
+          dispatch(clearBreadcrumb())
+          publish(savedData)
+        },
+        err => console.log(err)
+      )
+    }
   }
 
   function hide() {
@@ -530,7 +549,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <Input
               placeholder="Key in Trial ID"
               className="formField"
-              name="trialid"
+              name="trialCode"
               value={trial.trialCode}
               onChange={(value, e) => onInput(e)}
             />
@@ -617,7 +636,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               inline
               style={{ color: "#353131f2" }}
             >
-              <Radio value="active">Active</Radio>
+              {/* <Radio value="active">Active</Radio> */}
               <Radio value="canceled">Canceled</Radio>
               <Radio value="finished">Finished</Radio>
             </RadioGroup>
@@ -863,7 +882,13 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             </Row>
           </Grid>
 
-          <Table wordWrap data={existingReplicatesInEstate} autoHeight>
+          <Table
+            wordWrap
+            data={existingReplicatesInEstate}
+            virtualized
+            rowHeight={55}
+            autoHeight
+          >
             <Column width={70} align="center" fixed>
               <HeaderCell className="tableHeader">
                 <Checkbox
@@ -990,7 +1015,13 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <>
           {/* TABLE WITH NO REGENERATED DATA  START*/}
 
-          <Table wordWrap data={existingReplicatesInEstate} autoHeight>
+          <Table
+            wordWrap
+            data={existingReplicatesInEstate}
+            virtualized
+            rowHeight={55}
+            autoHeight
+          >
             <Column width={200}>
               <HeaderCell>Estate</HeaderCell>
               <EditCell dataKey="estate" onChange={handleChange} />
@@ -1034,7 +1065,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           <FlexboxGrid justify="end">
             <Col sm={5} md={5} lg={3}>
               <FlexboxGrid.Item>
-                <Button appearance="subtle" className="cancelButton">
+                <Button
+                  appearance="subtle"
+                  className="cancelButton"
+                  onClick={() => dispatch(clearBreadcrumb())}
+                >
                   Cancel
                 </Button>
               </FlexboxGrid.Item>

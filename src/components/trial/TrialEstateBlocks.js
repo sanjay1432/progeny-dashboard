@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import {
   Table,
   FlexboxGrid,
@@ -8,7 +8,6 @@ import {
   Grid,
   Row,
   Col,
-  Checkbox,
   Pagination,
   ControlLabel,
   Message,
@@ -44,7 +43,6 @@ const TrialEstateBlocks = ({
   const [selectedSoilType, setSelectedSoilType] = useState(null)
   const [selectedReplicate, setSelectedReplicate] = useState(null)
   const [pagination, setPagination] = useState(initialState)
-  const [checkStatus, setCheckStatus] = useState([])
   const [show, setShow] = useState(false)
   const [estateBlocks, setEstateBlocks] = useState([])
   const [blocksForEstate, setBlocksForEstate] = useState([])
@@ -102,38 +100,28 @@ const TrialEstateBlocks = ({
 
   async function getEstateBlocks() {
     const { data } = await EstateService.getUpdatedEstateBlocks()
-    console.log(data)
-
-    const estateBlocksItems = []
-    data.forEach(estate => {
-      estateBlocksItems.push(...estate.estateblocks)
+    const ebs = []
+    option.estate.forEach(est => {
+      const items = data.find(eb => eb.estate === est.name).estateblocks
+      ebs.push(...items)
     })
-    const estateBlocks = [
-      ...new Set(
-        estateBlocksItems
-          .map(item => item.estateblock)
-          .map(block => estateBlocksItems.find(eb => eb.estateblock === block))
-      )
-    ]
 
-    console.log({ estateBlocks })
+    setBlocksForEstate(ebs)
 
-    const items = data.find(eb => eb.estate === option.estate).estateblocks
-    setBlocksForEstate(items)
     const blocks = []
-    console.log({ items })
-    for (let item in items) {
-      blocks.push({
-        label: items[item].estateblock,
-        value: items[item].estateblock
-      })
+    const map = new Map()
+    for (const item of ebs) {
+      if (!map.has(item.estateblock)) {
+        map.set(item.estateblock, true) // set any value to Map
+        blocks.push({
+          label: item.estateblock,
+          value: item.estateblock
+        })
+      }
     }
-
-    console.log({ blocks })
     setEstateBlocks(blocks)
   }
   const { activePage, displaylength } = pagination
-  //const { active } = currentSubNavState
 
   const perpage = [
     {
@@ -178,48 +166,6 @@ const TrialEstateBlocks = ({
   function getNoPages() {
     const { displaylength } = pagination
     return Math.ceil(tableData.length / displaylength)
-  }
-
-  const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
-    <Cell {...props} style={{ padding: 0 }}>
-      <div>
-        <Checkbox
-          value={rowData[dataKey]}
-          inline
-          onChange={onChange}
-          checked={checkedKeys.some(item => item === rowData[dataKey])}
-        />
-      </div>
-    </Cell>
-  )
-
-  let checked = false
-  let indeterminate = false
-
-  if (checkStatus.length === 0) {
-    checked = false
-    indeterminate = false
-  } else if (
-    checkStatus.length > 0 &&
-    checkStatus.length < filteredTableData.length
-  ) {
-    checked = false
-    indeterminate = true
-  } else if (checkStatus.length === filteredTableData.length) {
-    checked = true
-    indeterminate = false
-  }
-
-  const handleCheckAll = (value, checked) => {
-    const keys = checked ? filteredTableData.map(item => item.replicate) : []
-    setCheckStatus(keys)
-  }
-
-  const handleCheck = (value, checked) => {
-    const keys = checked
-      ? [...checkStatus, value]
-      : checkStatus.filter(item => item !== value)
-    setCheckStatus(keys)
   }
 
   function SuccessMessage() {
@@ -446,21 +392,6 @@ const TrialEstateBlocks = ({
         </Grid>
 
         <Table wordWrap data={filteredTableData} autoHeight id="dashboardTable">
-          {/* <Column width={70} align="center" fixed>
-            <HeaderCell className="tableHeader">
-              <Checkbox
-                checked={checked}
-                indeterminate={indeterminate}
-                onChange={handleCheckAll}
-              />
-            </HeaderCell>
-            <CheckCell
-              dataKey="replicate"
-              checkedKeys={checkStatus}
-              onChange={handleCheck}
-            />
-          </Column> */}
-
           <Column width={200}>
             <HeaderCell className="tableHeader">Replicate</HeaderCell>
             <EditCell dataKey="replicate" onChange={handleChange} />
