@@ -1,11 +1,10 @@
 import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
-import { Grid, Row, Col, InputGroup, Input, Button } from "rsuite"
+import { Grid, Row, Col, Input, Button } from "rsuite"
 import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
-import { form } from "react-validation/build/form"
 
 const EditProgeny = ({ option, ...props }) => {
   const initialForm = {
@@ -44,10 +43,9 @@ const EditProgeny = ({ option, ...props }) => {
     }
   ]
 
-  const crossTypeData = data.map(data => {
+  const crossTypeData = data.map(item => {
     const addOn = formData.fpVar + "x" + formData.mpVar + " "
-    const result = addOn.concat(data.crossType)
-    return result
+    return addOn.concat(item.crossType)
   })
 
   function handleChange(e) {

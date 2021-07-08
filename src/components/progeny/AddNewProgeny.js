@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
-import { Grid, Row, Col, InputGroup, Input, Button } from "rsuite"
+import { Grid, Row, Col, Input, Button } from "rsuite"
 import ConfirmationModal from "components/SharedComponent/ConfirmationModal"
 import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
@@ -45,10 +45,9 @@ const AddNewProgeny = () => {
     }
   ]
 
-  const crossTypeData = data.map(data => {
+  const crossTypeData = data.map(item => {
     const addOn = formData.fpVar + "x" + formData.mpVar + " "
-    const result = addOn.concat(data.crossType)
-    return result
+    return addOn.concat(item.crossType)
   })
 
   function handleChange(e) {

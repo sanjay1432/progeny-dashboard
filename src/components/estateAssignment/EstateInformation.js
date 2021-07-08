@@ -106,30 +106,39 @@ const EstateInformation = ({ option }) => {
   }
 
   const StatusCell = ({ rowData, dataKey, ...props }) => {
-    if (rowData[dataKey] === "active") {
-      return (
-        <Cell {...props}>
-          <Button className="activeStatusButton" dataKey={rowData[dataKey]}>
-            Active
-          </Button>
-        </Cell>
-      )
-    } else if (rowData[dataKey] === "canceled") {
-      return (
-        <Cell {...props}>
-          <Button className="canceledStatusButton" dataKey={rowData[dataKey]}>
-            CANCELED
-          </Button>
-        </Cell>
-      )
-    } else if (rowData[dataKey] === "finished") {
-      return (
-        <Cell {...props}>
-          <Button className="finishedStatusButton" dataKey={rowData[dataKey]}>
-            FINISHED
-          </Button>
-        </Cell>
-      )
+    switch (rowData[dataKey]) {
+      case "active":
+        return (
+          <Cell {...props}>
+            <Button className="activeStatusButton" dataKey={rowData[dataKey]}>
+              ACTIVE
+            </Button>
+          </Cell>
+        )
+      case "canceled":
+        return (
+          <Cell {...props}>
+            <Button className="canceledStatusButton" dataKey={rowData[dataKey]}>
+              CANCELED
+            </Button>
+          </Cell>
+        )
+      case "pending":
+        return (
+          <Cell {...props}>
+            <Button className="pendingStatusButton" dataKey={rowData[dataKey]}>
+              PENDING
+            </Button>
+          </Cell>
+        )
+      case "finished":
+        return (
+          <Cell {...props}>
+            <Button className="finishedStatusButton" dataKey={rowData[dataKey]}>
+              FINISHED
+            </Button>
+          </Cell>
+        )
     }
   }
 
@@ -345,7 +354,7 @@ const EstateInformation = ({ option }) => {
       <Grid fluid>
         <Row className="show-grid" id="dashboardTableSetting">
           <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-            <b>Total records ({trialList ? trialList.length : "undefined"})</b>
+            <b>Total records ({trialList.length})</b>
           </Col>
 
           <FlexboxGrid justify="end">

@@ -199,18 +199,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }, [])
 
   function itemSaved(payload) {
-    if (payload && payload.type === "TRIAL") {
-      setSuccessData(payload)
-      setSuccessModal(true)
-    } else if (
-      (payload && payload.type === "PROGENY_CREATE") ||
-      payload.type === "PROGENY_UPDATE" ||
-      payload.type === "USER_CREATE" ||
-      payload.type === "USER_UPDATE"
-    ) {
-      setAction(payload.type)
-      setSuccessData(payload.data)
-      setSuccessMessage(true)
+    switch (payload.type) {
+      case "TRIAL":
+        setSuccessData(payload)
+        setSuccessModal(true)
+        break
+      case "PROGENY_CREATE":
+      case "PROGENY_UPDATE":
+      case "USER_CREATE":
+      case "USER_UPDATE":
+        setAction(payload.type)
+        setSuccessData(payload.data)
+        setSuccessMessage(true)
+        break
     }
   }
 
@@ -545,8 +546,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function AddButton() {
     switch (active) {
-      case "estate":
-        return null
       case "trial":
         return (
           <Col sm={5} md={5} lg={4}>
@@ -590,8 +589,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </Col>
         )
-      case "palm":
-        return null
       case "progeny":
         return (
           <Col sm={5} md={6} lg={5}>
@@ -627,10 +624,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </FlexboxGrid.Item>
           </Col>
         )
-      case "estateAssignment":
-        return null
-      case "userAssignment":
-        return null
       default:
         return null
     }
@@ -667,7 +660,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "canceled":
         return <Button className="canceledStatusButton">canceled</Button>
       case "pending":
-        return <Button className="pendingStatusButton">finished</Button>
+        return <Button className="pendingStatusButton">pending</Button>
 
       case "finished":
         return <Button className="finishedStatusButton">finished</Button>
@@ -678,16 +671,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   useEffect(() => {
-    if (active === "plot") {
-      PlotService.getPlotData().then(response => {
-        const originalPlotData = response.data
-        setOriginalData(originalPlotData)
-      })
-    } else if (active === "palm") {
-      PalmService.getPalmData().then(response => {
-        const originalPalmData = response.data
-        setOriginalData(originalPalmData)
-      })
+    switch (active) {
+      case "plot":
+        PlotService.getPlotData().then(response => {
+          const originalPlotData = response.data
+          setOriginalData(originalPlotData)
+        })
+        break
+      case "palm":
+        PalmService.getPalmData().then(response => {
+          const originalPalmData = response.data
+          setOriginalData(originalPalmData)
+        })
     }
   }, [])
 

@@ -12,7 +12,7 @@ import EstateInformation from "components/estateAssignment/EstateInformation"
 import AddNewProgeny from "components/progeny/AddNewProgeny"
 import AttachProgeny from "components/progeny/AttachProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
-import GenerateQRCode from "components/plot/GenerateQRCode"
+import GenerationQRCode from "components/plot/GenerationQRCode"
 import EditPalmInformation from "components/plot/EditPalmInformation"
 
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
@@ -88,7 +88,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
         if (breadcrumb[1] === "Generate QR Code") {
           return (
             <>
-              <GenerateQRCode option={option} />
+              <GenerationQRCode option={option} />
             </>
           )
         } else if (option.type == "edit") {

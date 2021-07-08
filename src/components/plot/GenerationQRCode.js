@@ -151,16 +151,16 @@ const GenerationQRCode = ({ option }) => {
       <Row>
         {qrData.map(data => {
           function ZoomInQRCode(trialId, plot, estateBlock, palmNo) {
-            data = {
+            var Info = {
               trialId: trialId,
               plot: plot,
               estateBlock: estateBlock,
               palmNo: palmNo
             }
 
-            console.log(data)
+            console.log(Info)
             setZoomInQR(true)
-            setZoomInData(data)
+            setZoomInData(Info)
           }
           return (
             <div>
