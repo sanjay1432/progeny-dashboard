@@ -344,34 +344,42 @@ const EditPalmInformation = ({ option }) => {
                 <b>Total records ({tableData.length})</b>
               </Col>
 
-              <Col mdOffset={7} md={4} lgOffset={10} lg={3}>
-                <DataPicker
-                  dataType="replicate"
-                  selectAllData="All Replicate"
-                  OriginalData={replicateFilterData}
-                  dataValue={filterValue.replicate}
-                  onChange={value => handleReplicateFilterChange(value)}
-                />
-              </Col>
-              <Col md={4} lg={3}>
-                <DataPicker
-                  dataType="plot"
-                  selectAllData="All Plot"
-                  OriginalData={plotFilterData}
-                  dataValue={filterValue.plot}
-                  onChange={value => handlePlotFilterChange(value)}
-                />
-              </Col>
-
-              <Col md={3} lg={2}>
-                <Button
-                  className="quickSaveButton"
-                  appearance="primary"
-                  onClick={quickSaveEditedData}
+              <FlexboxGrid justify="end">
+                <Col
+                  mdOffset={7}
+                  md={4}
+                  lgOffset={10}
+                  lg={3}
+                  class="replicateFilterLayout"
                 >
-                  Quick Save
-                </Button>
-              </Col>
+                  <DataPicker
+                    dataType="replicate"
+                    selectAllData="All Replicate"
+                    OriginalData={replicateFilterData}
+                    dataValue={filterValue.replicate}
+                    onChange={value => handleReplicateFilterChange(value)}
+                  />
+                </Col>
+                <Col md={4} lg={3} class="plotFilterLayout">
+                  <DataPicker
+                    dataType="plot"
+                    selectAllData="All Plot"
+                    OriginalData={plotFilterData}
+                    dataValue={filterValue.plot}
+                    onChange={value => handlePlotFilterChange(value)}
+                  />
+                </Col>
+
+                <Col md={3} lg={2} class="buttonLayout">
+                  <Button
+                    className="quickSaveButton"
+                    appearance="primary"
+                    onClick={quickSaveEditedData}
+                  >
+                    Quick Save
+                  </Button>
+                </Col>
+              </FlexboxGrid>
             </Row>
           </Grid>
           <Table id="dashboardTable" data={tableData} autoHeight wordWrap>
@@ -394,7 +402,7 @@ const EditPalmInformation = ({ option }) => {
           <Grid fluid className="footerLayout">
             <Row className="show-grid">
               <FlexboxGrid justify="end">
-                <Col md={5} lg={4}>
+                <Col md={5} lg={4} className="cancelButtonLayout">
                   <FlexboxGrid.Item>
                     <Button
                       appearance="subtle"
@@ -405,7 +413,7 @@ const EditPalmInformation = ({ option }) => {
                     </Button>
                   </FlexboxGrid.Item>
                 </Col>
-                <Col md={5} lg={4}>
+                <Col md={5} lg={4} className="completeButtonLayout">
                   <FlexboxGrid.Item>
                     <Button
                       className="saveButton"

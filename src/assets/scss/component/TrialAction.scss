@@ -102,17 +102,21 @@
 
   .footerLayout {
     margin: 30px 0px 20px;
-    
-    .saveButton, .yesButton {
-      width: 170px;
-      height: 42px;
-      float: right;
-    }
 
-    .cancelButton, .noButton {
-      width: 170px;
-      height: 42px;
-      float: right;
+    .cancelButtonLayout, .completeButtonLayout {
+      max-width: 200px;
+
+      .saveButton, .yesButton {
+        width: 170px;
+        height: 42px;
+        float: right;
+      }
+  
+      .cancelButton, .noButton {
+        width: 170px;
+        height: 42px;
+        float: right;
+      }
     }
   }
 }

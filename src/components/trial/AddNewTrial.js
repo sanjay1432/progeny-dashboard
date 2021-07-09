@@ -48,9 +48,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState(
-    "yes"
-  )
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
+    useState("yes")
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
     { estate: "", estatenofreplicate: "" }
@@ -865,7 +864,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       <Grid fluid className="footerLayout">
         <Row className="show-grid">
-          <FlexboxGrid justify="end">
+          <FlexboxGrid justify="end" className="cancelButtonLayout">
             <Col md={5} lg={4}>
               <FlexboxGrid.Item>
                 <Button
@@ -877,7 +876,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 </Button>
               </FlexboxGrid.Item>
             </Col>
-            <Col md={5} lg={4}>
+            <Col md={5} lg={4} className="completeButtonLayout">
               <FlexboxGrid.Item>
                 <Button
                   className="saveButton"

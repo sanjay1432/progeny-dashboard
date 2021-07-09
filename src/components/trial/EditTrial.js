@@ -1063,7 +1063,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       <Grid fluid className="footerLayout">
         <Row className="show-grid TrialFormLayout">
           <FlexboxGrid justify="end">
-            <Col sm={5} md={5} lg={3}>
+            <Col sm={5} md={5} lg={3} className="cancelButtonLayout">
               <FlexboxGrid.Item>
                 <Button
                   appearance="subtle"
@@ -1074,7 +1074,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 </Button>
               </FlexboxGrid.Item>
             </Col>
-            <Col sm={5} md={5} lg={3}>
+            <Col sm={5} md={5} lg={3} className="completeButtonLayout">
               <FlexboxGrid.Item>
                 <Button
                   className="saveButton"

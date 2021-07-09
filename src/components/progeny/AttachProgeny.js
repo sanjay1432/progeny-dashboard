@@ -510,7 +510,7 @@ const AttachProgeny = ({
                     }}
                   </Cell>
                 </Column>
-                <Column width={150} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">Design</HeaderCell>
                   <Cell dataKey="design">
                     {rowData => {
@@ -518,7 +518,7 @@ const AttachProgeny = ({
                     }}
                   </Cell>
                 </Column>
-                <Column width={100} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">Plot</HeaderCell>
                   <Cell dataKey="plot">
                     {(rowData, i) => {
@@ -534,7 +534,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={100} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">Subblock</HeaderCell>
                   <Cell dataKey="subblock">
                     {rowData => {
@@ -543,7 +543,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={200} align="left">
+                <Column flexGrow={2} align="left">
                   <HeaderCell className="tableHeader">Progeny ID</HeaderCell>
                   <Cell>
                     {(rowData, i) => {
@@ -564,7 +564,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={100} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">Progeny</HeaderCell>
                   <Cell>
                     {rowData => {
@@ -573,7 +573,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={150} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">Ortet</HeaderCell>
                   <Cell>
                     {rowData => {
@@ -582,7 +582,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={150} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">FP</HeaderCell>
                   <Cell>
                     {rowData => {
@@ -591,7 +591,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={150} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">MP</HeaderCell>
                   <Cell>
                     {rowData => {
@@ -600,7 +600,7 @@ const AttachProgeny = ({
                   </Cell>
                 </Column>
 
-                <Column width={100} align="left">
+                <Column flexGrow={1} align="left">
                   <HeaderCell className="tableHeader">nPalm</HeaderCell>
                   <Cell>
                     {(rowData, i) => {
@@ -624,7 +624,7 @@ const AttachProgeny = ({
               <Grid fluid className="footerLayout attachProgeny">
                 <Row className="show-grid">
                   <FlexboxGrid justify="end">
-                    <Col sm={5} md={5} lg={3}>
+                    <Col sm={5} md={5} lg={3} className="cancelButtonLayout">
                       <FlexboxGrid.Item>
                         <Button
                           appearance="subtle"
@@ -635,7 +635,7 @@ const AttachProgeny = ({
                         </Button>
                       </FlexboxGrid.Item>
                     </Col>
-                    <Col sm={5} md={5} lg={3}>
+                    <Col sm={5} md={5} lg={3} className="completeButtonLayout">
                       <FlexboxGrid.Item>
                         <Button
                           className="saveButton"
