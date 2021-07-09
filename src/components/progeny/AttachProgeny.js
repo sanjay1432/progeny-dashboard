@@ -343,28 +343,28 @@ const AttachProgeny = ({
 
       <Grid fluid id="dashboardFilterPanel">
         <Row className="show-grid">
-          <Col sm={6} md={6} lg={3}>
+          <Col sm={6} md={6} lg={3} className="dashboardFilterLayout">
             <ControlLabel>Trial ID</ControlLabel>
             <br />
             <SelectPicker
               data={trialIds}
+              className="dashboardSelectFilter"
               value={filters.trialCode}
               onChange={(value, e) => setFilterData(value, "trialCode")}
-              style={{ width: 180 }}
             />
           </Col>
-          <Col sm={6} md={6} lg={3}>
+          <Col sm={6} md={6} lg={3} className="dashboardFilterLayout">
             <ControlLabel>Estate</ControlLabel>
             <br />
             <SelectPicker
               data={estates}
+              className="dashboardSelectFilter"
               value={filters.estate}
               onChange={(value, e) => setFilterData(value, "estate")}
-              style={{ width: 180 }}
             />
           </Col>
 
-          <Col sm={5} md={4} lg={2}>
+          <Col sm={5} md={4} lg={3} className="applyButtonLayout">
             <Button
               className="applyButton"
               appearance="primary"
@@ -374,7 +374,7 @@ const AttachProgeny = ({
             </Button>
           </Col>
 
-          <Col sm={3} md={4} lg={2}>
+          <Col sm={3} md={4} lg={3} className="applyButtonLayout">
             <Button
               className="resetButton"
               appearance="subtle"
@@ -406,18 +406,18 @@ const AttachProgeny = ({
                   </Col>
 
                   <FlexboxGrid justify="end">
-                    <Col sm={5} md={5} lg={4}>
+                    <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
                       <FlexboxGrid.Item>
                         <SelectPicker
                           data={replicates}
+                          className="dashboardSelectFilter"
                           value={replicateSelector}
                           disabled={!option.estate}
                           onChange={(value, e) => setPlots(value)}
-                          style={{ width: 180 }}
                         />
                       </FlexboxGrid.Item>
                     </Col>
-                    <Col sm={5} md={5} lg={4}>
+                    <Col sm={5} md={5} lg={4} className="nPalmLayout">
                       <FlexboxGrid.Item>
                         <Button
                           appearance="primary"
@@ -429,11 +429,11 @@ const AttachProgeny = ({
                       </FlexboxGrid.Item>
                     </Col>
 
-                    <Col sm={5} md={5} lg={4}>
+                    <Col sm={5} md={5} lg={4} className="quickSaveLayout">
                       <FlexboxGrid.Item>
-                        <div className="deleteButtonLayout">
+                        <div>
                           <Button
-                            className="btnAddTrial"
+                            className="quickSaveButton"
                             appearance="primary"
                             onClick={onSave}
                           >
@@ -448,6 +448,7 @@ const AttachProgeny = ({
 
               <Table
                 virtualized
+                id="dashboardTable"
                 wordWrap
                 data={trialPlots}
                 height={400}

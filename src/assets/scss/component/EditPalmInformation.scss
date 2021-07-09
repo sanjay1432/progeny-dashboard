@@ -25,7 +25,12 @@
 }
 
 .replicateFilterLayout, .plotFilterLayout {
-  max-width: 200px;
+  max-width: 190px;
+}
+
+.nPalmLayout, .quickSaveLayout {
+  min-width: 120px;
+  max-width: 120px;
 }
 
 .editTableInput {

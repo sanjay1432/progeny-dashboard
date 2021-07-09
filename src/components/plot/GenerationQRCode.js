@@ -147,8 +147,7 @@ const GenerationQRCode = ({ option }) => {
           </Col>
         </Row>
       </Grid>
-
-      <Row>
+      <div className="ContentLayout">
         {qrData.map(data => {
           function ZoomInQRCode(trialId, plot, estateBlock, palmNo) {
             var Info = {
@@ -163,40 +162,38 @@ const GenerationQRCode = ({ option }) => {
             setZoomInData(Info)
           }
           return (
-            <div>
-              <Col className="QRCodeLayout" md={4} lg={4}>
-                <Panel shaded className="QrCodePanel">
-                  <QRCode
-                    size={113}
-                    value={`${data.trialId}\ ${data.plot}\ ${data.estateblock}\ ${data.palmno}`}
-                    onClick={() =>
-                      ZoomInQRCode(
-                        data.trialId,
-                        data.plot,
-                        data.estateblock,
-                        data.palmno
-                      )
-                    }
-                    renderAs="svg"
-                  />
-                </Panel>
+            <div className="QrItemLayout">
+              <Panel shaded>
+                <QRCode
+                  size={113}
+                  value={`${data.trialId}\ ${data.plot}\ ${data.estateblock}\ ${data.palmno}`}
+                  onClick={() =>
+                    ZoomInQRCode(
+                      data.trialId,
+                      data.plot,
+                      data.estateblock,
+                      data.palmno
+                    )
+                  }
+                  renderAs="svg"
+                />
+              </Panel>
 
-                <div className="selectPalmLayout">
-                  <CheckCell
-                    className="selectPalm"
-                    data={data} //Primary key of table
-                    checkedKeys={checkStatus}
-                    onChange={handleCheck}
-                  />
-                  <p className="palm">
-                    Palm :<b className="palmData">{data.palmno}</b>
-                  </p>
-                </div>
-              </Col>
+              <div className="selectPalmLayout">
+                <CheckCell
+                  className="selectPalm"
+                  data={data} //Primary key of table
+                  checkedKeys={checkStatus}
+                  onChange={handleCheck}
+                />
+                <p className="palm">
+                  Palm :<b className="palmData">{data.palmno}</b>
+                </p>
+              </div>
             </div>
           )
         })}
-      </Row>
+      </div>
     </div>
   )
 }

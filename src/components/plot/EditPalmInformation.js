@@ -345,13 +345,7 @@ const EditPalmInformation = ({ option }) => {
               </Col>
 
               <FlexboxGrid justify="end">
-                <Col
-                  mdOffset={7}
-                  md={4}
-                  lgOffset={10}
-                  lg={3}
-                  class="replicateFilterLayout"
-                >
+                <Col mdOffset={6} md={4} lgOffset={9} lg={3}>
                   <DataPicker
                     dataType="replicate"
                     selectAllData="All Replicate"
@@ -360,7 +354,7 @@ const EditPalmInformation = ({ option }) => {
                     onChange={value => handleReplicateFilterChange(value)}
                   />
                 </Col>
-                <Col md={4} lg={3} class="plotFilterLayout">
+                <Col md={4} lg={3}>
                   <DataPicker
                     dataType="plot"
                     selectAllData="All Plot"
@@ -370,7 +364,7 @@ const EditPalmInformation = ({ option }) => {
                   />
                 </Col>
 
-                <Col md={3} lg={2} class="buttonLayout">
+                <Col md={3} lg={2} className="quickSaveLayout">
                   <Button
                     className="quickSaveButton"
                     appearance="primary"

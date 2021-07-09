@@ -44,32 +44,35 @@
     }
   }
 
-  .QRCodeLayout {
-    width: 20%;
-    text-align: -webkit-center;
-
-    .QrCodePanel {
-      width:188.8px;
-      text-align: center;
-    }
-  }
-
-  .selectPalmLayout {
-    width: 100%;
+  .ContentLayout {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
 
-    .rs-checkbox-inline {
-      margin-left: 25%;
+    .QrItemLayout {
+      width: 155px;
+      margin: 20px 45px;
     }
 
-    .palm {
-      margin-top: 6px;
-      .palmData {
-        color: $primary-green;
+    .selectPalmLayout {
+      display: flex;
+      flex-direction: row;
+      text-align: center;
+  
+      .rs-checkbox-inline {
+        margin-left: 25px;
+      }
+  
+      .palm {
+        margin-top: 6px;
+        .palmData {
+          color: $primary-green;
+        }
       }
     }
   }
+
+
 
 }
 
