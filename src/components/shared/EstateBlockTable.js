@@ -339,7 +339,7 @@ const EstateBlockTable = ({
                 />
               </Column>
 
-              <Column width={300} align="left">
+              <Column flexGrow={1} align="left">
                 <HeaderCell className="tableHeader">Estate Block</HeaderCell>
                 <Cell dataKey="estateblock" />
               </Column>
@@ -364,7 +364,7 @@ const EstateBlockTable = ({
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={4}>
+              <Col sm={5} md={5} lg={4} className="pageOptionLayout">
                 <FlexboxGrid.Item className="selectPage">
                   <InputPicker
                     className="option"
@@ -376,8 +376,8 @@ const EstateBlockTable = ({
                 </FlexboxGrid.Item>
               </Col>
 
-              <Col sm={5} md={6} lg={5}>
-                <FlexboxGrid.Item className="estateBlockButtonLayout">
+              <Col sm={5} md={6} lg={5} className="addButtonLayout">
+                <FlexboxGrid.Item>
                   <Button
                     appearance="primary"
                     className="addEstateBlockButton"
@@ -437,7 +437,7 @@ const EstateBlockTable = ({
             <Cell dataKey="size" />
           </Column>
 
-          <Column flexGrow={1} align="left">
+          <Column flexGrow={4} align="left">
             <HeaderCell className="tableHeader">Density (p/ha)</HeaderCell>
             <Cell dataKey="density" />
           </Column>

@@ -107,7 +107,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny ID</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progenyId"
               onChange={(value, e) => handleChange(e)}
@@ -119,7 +119,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Pop Var</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="popvar"
               searchable="true"
@@ -135,7 +135,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Origin</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="origin"
               onChange={(value, e) => handleChange(e)}
@@ -147,7 +147,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny Remark</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progenyremark"
               onChange={(value, e) => handleChange(e)}
@@ -159,7 +159,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progeny"
               onChange={(value, e) => handleChange(e)}
@@ -171,7 +171,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Generation</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="generation"
               searchable="true"
@@ -187,7 +187,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Ortet</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="ortet"
               onChange={(value, e) => handleChange(e)}
@@ -199,7 +199,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">FP Fam</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="fpFam"
               searchable="true"
@@ -215,7 +215,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">FP</p>
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="fpLayout">
             {formData.fpFam === "" ? (
               <Input
                 className="fpFamDisplay"
@@ -232,7 +232,7 @@ const AddNewProgeny = () => {
               />
             )}
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="fpLayout">
             {formData.fpFam === "" ? (
               <Input
                 className="fpInput"
@@ -254,7 +254,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">FP Var</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="fpVar"
               searchable="true"
@@ -271,7 +271,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">MP Fam</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="mpFam"
               searchable="true"
@@ -287,7 +287,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">MP</p>
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="mpLayout">
             {formData.fpFam === "" ? (
               <Input
                 className="mpFamDisplay"
@@ -304,7 +304,7 @@ const AddNewProgeny = () => {
               />
             )}
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="mpLayout">
             {formData.mpFam === "" ? (
               <Input
                 className="mpInput"
@@ -326,7 +326,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">MP Var</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="mpVar"
               searchable="true"
@@ -342,7 +342,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Cross</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             {formData.fpFam === "" ||
             formData.fp === "" ||
             formData.mpFam === "" ||
@@ -364,7 +364,7 @@ const AddNewProgeny = () => {
           <Col md={5} lg={5}>
             <p className="labelName">Cross Type</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             {formData.fpVar === "" && formData.mpVar === "" ? (
               <Input placeholder="Please choose FP Var and MP Var" disabled />
             ) : (
@@ -381,7 +381,13 @@ const AddNewProgeny = () => {
           </Col>
         </Row>
         <Row>
-          <Col mdOffset={16} md={4} lgOffset={16} lg={4}>
+          <Col
+            mdOffset={16}
+            md={4}
+            lgOffset={16}
+            lg={4}
+            className="cancelButtonLayout"
+          >
             <Button
               className="cancelButton"
               appearance="subtle"
@@ -390,7 +396,7 @@ const AddNewProgeny = () => {
               Cancel
             </Button>
           </Col>
-          <Col md={4} lg={4}>
+          <Col md={4} lg={4} className="saveButtonLayout">
             <Button
               className="saveButton"
               appearance="primary"

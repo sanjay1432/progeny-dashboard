@@ -548,8 +548,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (active) {
       case "trial":
         return (
-          <Col sm={5} md={5} lg={4}>
-            <FlexboxGrid.Item className="alignButtonCenter">
+          <Col sm={5} md={5} lg={4} className="addButtonLayout">
+            <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="addTrialButton"
@@ -570,8 +570,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "plot":
         return (
-          <Col sm={5} md={5} lg={5}>
-            <FlexboxGrid.Item className="alignButtonCenter">
+          <Col sm={5} md={5} lg={5} className="addButtonLayout">
+            <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="attachProgeniesButton"
@@ -591,8 +591,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         )
       case "progeny":
         return (
-          <Col sm={5} md={6} lg={5}>
-            <FlexboxGrid.Item className="alignButtonCenter">
+          <Col sm={5} md={6} lg={5} className="addButtonLayout">
+            <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="addProgenyButton"
@@ -612,7 +612,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           handleActionExpand(["User List", "Add New User"], {})
         }
         return (
-          <Col sm={5} md={5} lg={4}>
+          <Col sm={5} md={5} lg={4} className="addButtonLayout">
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
@@ -632,9 +632,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function DeleteButton() {
     if (active === "progeny") {
       return (
-        <Col sm={4} md={4} lg={3}>
+        <Col sm={4} md={4} lg={3} className="deleteButtonLayout">
           <FlexboxGrid.Item>
-            <div className="deleteButtonLayout">
+            <div>
               <Button
                 className="deleteButton"
                 disabled={disabled}
@@ -1472,7 +1472,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={5}>
+              <Col sm={5} md={5} lg={5} className="pageOptionLayout">
                 <FlexboxGrid.Item className="selectPage">
                   <InputPicker
                     className="option"

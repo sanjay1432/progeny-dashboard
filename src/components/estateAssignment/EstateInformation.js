@@ -329,7 +329,7 @@ const EstateInformation = ({ option }) => {
             />
           </Col>
 
-          <Col md={4} lg={3}>
+          <Col md={4} lg={3} className="applyButtonLayout">
             <Button
               appearance="primary"
               className="applyButton"
@@ -339,7 +339,7 @@ const EstateInformation = ({ option }) => {
             </Button>
           </Col>
 
-          <Col md={4} lg={3}>
+          <Col md={4} lg={3} className="resetButtonLayout">
             <Button
               appearance="subtle"
               className="resetButton"

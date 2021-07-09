@@ -35,7 +35,6 @@ const Filter = forwardRef(
             className="dashboardSelectFilter"
             data={dataToFilter}
             value={selected ? selected.value : null}
-            style={{ width: "100%" }}
             disabled={filter.disable}
             onChange={(value, e) =>
               onChangeSelection({ target: { name: filter.name, value: value } })

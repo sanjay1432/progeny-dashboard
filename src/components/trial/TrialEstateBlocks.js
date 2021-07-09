@@ -335,7 +335,7 @@ const TrialEstateBlocks = ({
       <div>
         <Grid fluid id="dashboardFilterPanel" className="modifyPadding">
           <Row className="show-grid">
-            <Col sm={6} md={4} lg={3}>
+            <Col sm={6} md={4} lg={3} className="dashboardFilterLayout">
               <ControlLabel className="labelFilter">Soil Type</ControlLabel>
               <br />
               <SelectPicker
@@ -346,7 +346,7 @@ const TrialEstateBlocks = ({
                 style={{ width: 180 }}
               />
             </Col>
-            <Col sm={5} md={4} lg={3}>
+            <Col sm={5} md={4} lg={3} className="applyButtonLayout">
               <div className="show-col">
                 <Button
                   className="applyButton"
@@ -358,7 +358,7 @@ const TrialEstateBlocks = ({
               </div>
             </Col>
 
-            <Col sm={3} md={4} lg={3}>
+            <Col sm={3} md={4} lg={3} className="resetButtonLayout">
               <div className="show-col">
                 <Button
                   className="resetButton"
@@ -376,7 +376,7 @@ const TrialEstateBlocks = ({
             </Col>
 
             <FlexboxGrid justify="end">
-              <Col sm={5} md={5} lg={4}>
+              <Col sm={5} md={5} lg={4} className="pageOptionLayout">
                 <FlexboxGrid.Item className="selectPage">
                   <InputPicker
                     className="option"
@@ -392,27 +392,27 @@ const TrialEstateBlocks = ({
         </Grid>
 
         <Table wordWrap data={filteredTableData} autoHeight id="dashboardTable">
-          <Column width={200}>
+          <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Replicate</HeaderCell>
             <EditCell dataKey="replicate" onChange={handleChange} />
           </Column>
 
-          <Column width={200}>
+          <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Estate Block</HeaderCell>
             <EditCell dataKey="estateblock" onChange={handleChange} />
           </Column>
 
-          <Column width={250}>
+          <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Density</HeaderCell>
             <EditCell dataKey="density" onChange={handleChange} />
           </Column>
 
-          <Column width={250}>
+          <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Design</HeaderCell>
             <EditCell dataKey="design" onChange={handleChange} />
           </Column>
 
-          <Column width={250}>
+          <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Soil Type</HeaderCell>
             <EditCell dataKey="soiltype" onChange={handleChange} />
           </Column>

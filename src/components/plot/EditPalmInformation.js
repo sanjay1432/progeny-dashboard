@@ -230,10 +230,6 @@ const EditPalmInformation = ({ option }) => {
     )
   }
 
-  function Check1() {
-    console.log(tableData)
-  }
-
   const completedEditData = () => {
     PlotService.editPalmInformation(tableData).then(
       data => {
@@ -275,7 +271,7 @@ const EditPalmInformation = ({ option }) => {
       <Grid fluid id="dashboardFilterPanel">
         <Row>
           <div>
-            <Col md={4} lg={3}>
+            <Col md={4} lg={3} className="dashboardFilterLayout">
               <div className="show-col">
                 <ControlLabel className="labelFilter">Trial ID</ControlLabel>
                 <DataPicker
@@ -288,7 +284,7 @@ const EditPalmInformation = ({ option }) => {
             </Col>
           </div>
           <div>
-            <Col md={4} lg={3}>
+            <Col md={4} lg={3} className="dashboardFilterLayout">
               <div className="show-col">
                 <ControlLabel className="labelFilter">Estate</ControlLabel>
                 <DataPicker
@@ -302,7 +298,7 @@ const EditPalmInformation = ({ option }) => {
             </Col>
           </div>
 
-          <Col md={4} lg={3}>
+          <Col md={4} lg={3} className="applyButtonLayout">
             <Button
               appearance="primary"
               className="applyButton"
@@ -311,22 +307,13 @@ const EditPalmInformation = ({ option }) => {
               Apply
             </Button>
           </Col>
-          <Col md={4} lg={3}>
+          <Col md={4} lg={3} className="resetButtonLayout">
             <Button
               appearance="subtle"
               className="resetButton"
               onClick={resetFilter}
             >
               Reset Filter
-            </Button>
-          </Col>
-          <Col md={4} lg={3}>
-            <Button
-              appearance="subtle"
-              className="resetButton"
-              onClick={Check1}
-            >
-              check
             </Button>
           </Col>
         </Row>

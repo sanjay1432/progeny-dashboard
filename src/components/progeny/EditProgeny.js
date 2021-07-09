@@ -97,7 +97,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny ID</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               value={formData.progenyId}
               name="progenyId"
@@ -110,7 +110,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Pop Var</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="popvar"
               searchable="true"
@@ -127,7 +127,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Origin</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="origin"
               value={formData.origin}
@@ -140,7 +140,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny Remark</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progenyremark"
               value={formData.progenyremark}
@@ -153,7 +153,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Progeny</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progeny"
               value={formData.progeny}
@@ -166,7 +166,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Generation</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="generation"
               searchable="true"
@@ -182,7 +182,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Ortet</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <Input
               name="ortet"
               value={formData.ortet}
@@ -195,7 +195,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">FP Fam</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="fpFam"
               searchable="true"
@@ -211,7 +211,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">FP</p>
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="fpLayout">
             {formData.fpFam === "" ? (
               <Input
                 className="fpFamDisplay"
@@ -228,7 +228,7 @@ const EditProgeny = ({ option, ...props }) => {
               />
             )}
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="fpLayout">
             {formData.fpFam === "" ? (
               <Input
                 className="fpInput"
@@ -251,7 +251,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">FP Var</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="fpVar"
               searchable="true"
@@ -268,7 +268,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">MP Fam</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="mpFam"
               searchable="true"
@@ -284,7 +284,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">MP</p>
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="mpLayout">
             {formData.fpFam === "" ? (
               <Input
                 className="mpFamDisplay"
@@ -301,7 +301,7 @@ const EditProgeny = ({ option, ...props }) => {
               />
             )}
           </Col>
-          <Col md={5} lg={5}>
+          <Col md={5} lg={5} className="mpLayout">
             {formData.mpFam === "" ? (
               <Input
                 className="mpInput"
@@ -324,7 +324,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">MP Var</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             <DataPicker
               dataType="mpVar"
               searchable="true"
@@ -340,7 +340,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Cross</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             {formData.fpFam === "" ||
             formData.fp === "" ||
             formData.mpFam === "" ||
@@ -362,7 +362,7 @@ const EditProgeny = ({ option, ...props }) => {
           <Col md={5} lg={5}>
             <p className="labelName">Cross Type</p>
           </Col>
-          <Col md={10} lg={10}>
+          <Col md={10} lg={10} className="inputLayout">
             {formData.fpVar === "" && formData.mpVar === "" ? (
               <Input placeholder="Please choose FP Var and MP Var" disabled />
             ) : (
@@ -379,7 +379,13 @@ const EditProgeny = ({ option, ...props }) => {
           </Col>
         </Row>
         <Row>
-          <Col md={4} mdOffset={16} lg={4} lgOffset={16}>
+          <Col
+            md={4}
+            mdOffset={17}
+            lg={4}
+            lgOffset={16}
+            className="cancelButtonLayout"
+          >
             <Button
               className="cancelButton"
               appearance="subtle"
@@ -388,7 +394,7 @@ const EditProgeny = ({ option, ...props }) => {
               Cancel
             </Button>
           </Col>
-          <Col md={4} lg={4}>
+          <Col md={4} lg={4} className="saveButtonLayout">
             <Button
               className="saveButton"
               appearance="primary"

@@ -9,32 +9,41 @@
     }
   }
 
-  .selectPage {
-    float: right;
-    
-    .option {
-      width: 60px;
+  .pageOptionLayout {
+    min-width: 155px;
+    max-width: 155px;    
 
-      .rs-picker-toggle-clean {
-        display: none;
+    .selectPage {
+      float: right;
+      
+      .option {
+        width: 60px;
+  
+        .rs-picker-toggle-clean {
+          display: none;
+        }
+  
+        .rs-picker-toggle-value {
+          width: 30px;
+        }
+  
+        .rs-picker-toggle-caret {
+          right: 8px;
+        }
       }
-
-      .rs-picker-toggle-value {
-        width: 30px;
+  
+      .page {
+        margin-left: 3px;
+        pointer-events: none;
       }
-
-      .rs-picker-toggle-caret {
-        right: 8px;
-      }
-    }
-
-    .page {
-      margin-left: 3px;
-      pointer-events: none;
     }
   }
 
-  .alignButtonCenter {
+
+
+  .addButtonLayout {
+    min-width: 160px;
+    max-width: 180px;
     text-align: center;
   }
 
@@ -72,6 +81,7 @@
   }
 
   .deleteButtonLayout {
+    max-width: 130px;
     float: right;
 
     .deleteButton {

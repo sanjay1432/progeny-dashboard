@@ -12,18 +12,24 @@
     margin-top: 25px;
     margin-left: 15px;
   }
-  
-  .applyButton {
-    width: 135px;
-    height: 40px;
-    margin-top: 25px;
+
+  .multiFilterLayout, .applyButtonLayout, .resetButtonLayout {
+    text-align: center;
+    max-width: 170px;
+
+    .applyButton {
+      width: 135px;
+      height: 40px;
+      margin-top: 25px;
+    }
+    
+    .resetButton {
+      width: 100px;
+      height: 40px;
+      margin-top: 25px;
+    }
   }
-  
-  .resetButton {
-    width: 100px;
-    height: 40px;
-    margin-top: 25px;
-  }
+
 }
 
 #filterDrawer {

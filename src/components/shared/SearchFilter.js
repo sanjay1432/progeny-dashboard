@@ -129,7 +129,7 @@ const SearchFilter = forwardRef(
       // const {show} = show;
       if (showMoreFiltersButton) {
         return (
-          <Col sm={5} md={4} lg={3}>
+          <Col sm={5} md={4} lg={3} className="multiFilterLayout">
             <div className="show-col">
               <Button
                 appearance="ghost"
@@ -219,7 +219,7 @@ const SearchFilter = forwardRef(
             {/* <SearchBox /> */}
             {mainPageFilters.map((filter, i) => (
               <div>
-                <Col sm={5} md={4} lg={3}>
+                <Col sm={5} md={4} lg={3} className="dashboardFilterLayout">
                   <div className="show-col">
                     {" "}
                     <Filter
@@ -235,7 +235,7 @@ const SearchFilter = forwardRef(
               </div>
             ))}
             <MoreFilter />
-            <Col sm={5} md={4} lg={3}>
+            <Col sm={5} md={4} lg={3} className="applyButtonLayout">
               <div className="show-col">
                 <Button
                   className="applyButton"
@@ -246,7 +246,7 @@ const SearchFilter = forwardRef(
                 </Button>
               </div>
             </Col>
-            <Col sm={3} md={4} lg={3}>
+            <Col sm={3} md={4} lg={3} className="resetButtonLayout">
               <div className="show-col">
                 <Button
                   className="resetButton"
@@ -272,10 +272,7 @@ const SearchFilter = forwardRef(
           <Drawer.Body>
             {filters.map((filter, i) => (
               <FlexboxGrid justify="center" key={i}>
-                <FlexboxGrid.Item
-                  colspan={12}
-                  // style={{ width: "100%" }}
-                >
+                <FlexboxGrid.Item colspan={12}>
                   <Filter
                     filter={filter}
                     filterData={filterData[filter.name]}

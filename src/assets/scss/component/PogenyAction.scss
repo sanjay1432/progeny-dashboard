@@ -10,8 +10,12 @@
     font-weight: 700;
   }
 
-  .rs-input {
-    width: 100%;
+  .inputLayout {
+    max-width: 470px;
+
+    .rs-input {
+      width: 100%;
+    }
   }
 
   .dataPicker {
@@ -25,15 +29,21 @@
     width: 100%;
   }
 
-  .fpFamDisplay, .mpFamDisplay  {
-    width: 190px;
-    float: left;
+  .fpLayout, .mpLayout {
+    max-width: 235px;
+  
+    .fpFamDisplay, .mpFamDisplay  {
+      width: 190px;
+      float: left;
+    }
+  
+    .fpInput, .mpInput {
+      width: 190px;
+      float: right;
+    }
   }
 
-  .fpInput, .mpInput {
-    width: 190px;
-    float: right;
-  }
+
 
 
 
@@ -53,15 +63,25 @@
     }
   }
 
-  .saveButton {
-    width: 170px;
-    height: 42px;
-    float: right;
+  .saveButtonLayout {
+    max-width: 240px;
+
+    .saveButton {
+      width: 170px;
+      height: 42px;
+      float: right;
+    }
   }
 
-  .cancelButton {
-    width: 170px;
-    height: 42px;
-    float: right;
+
+
+  .cancelButtonLayout {
+    //max-width: 190px;
+
+    .cancelButton {
+      width: 170px;
+      height: 42px;
+      float: right;
+    }
   }
 }
