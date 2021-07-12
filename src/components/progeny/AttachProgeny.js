@@ -27,6 +27,10 @@ import ProgenyService from "../../services/progeny.service"
 import SearchMessage from "../../assets/img/SearchMessage.svg"
 
 import AttachMessage from "../../assets/img/AttachMessage.svg"
+
+import SuccessMessage from "../../components/SharedComponent/SuccessMessage"
+
+import { publish } from "../../services/pubsub.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -56,6 +60,8 @@ const AttachProgeny = ({
   const [editableTrial, setEditableTrial] = useState(true)
   const [show, setShow] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
+  const [quickSaveData, setQuickSaveData] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(false)
   const [loading, setLoading] = useState(false)
   const [nPalm, setnPalm] = useState(16)
   const [nPalmValue, setNPalmValue] = useState(null)
@@ -67,10 +73,14 @@ const AttachProgeny = ({
   const [replicates, setReplicates] = useState([])
   const [trialPlots, setTrialPlots] = useState([])
   const [trialEstatesBlocks, setTrialEstatesBlocks] = useState([])
+  const [completeState, setCompleteState] = useState(true)
   const dispatch = useDispatch()
   useEffect(() => {
     setFilterTrialIds()
-    setTrialEstateReplicates()
+    if(filters.trialCode){
+      setTrialEstateReplicates()
+    }
+    
     if (option.trial) {
       setTrials()
       setPlots()
@@ -167,6 +177,7 @@ const AttachProgeny = ({
 
     // SET THE ESTATE BLOCKS WITH ESTATE NAME
     console.log({ trialEstateBlocks })
+    
     setTrialEstatesBlocks(trialEstateBlocks)
     setEstates(trialEstate)
   }
@@ -175,6 +186,7 @@ const AttachProgeny = ({
       trial => trial.trialCode === filters.trialCode
     )
     const reps = await TrialService.getTrialReplicates(trialId)
+    console.log({reps})
     const trialReps = []
     const map = new Map()
     for (const item of reps.replicates) {
@@ -239,6 +251,7 @@ const AttachProgeny = ({
     }
 
     setDisabledRepIds(() => ({ ...disabledRepIds, [replicate]: progenyIdSet }))
+  
   }
 
   function UnderLinedText(props) {
@@ -267,7 +280,11 @@ const AttachProgeny = ({
 
   function handlePlotChange(value, idx) {
     const data = [...trialPlots]
-    data[idx].plotName = value
+    if(value === ""){
+      delete data[idx].plotName
+    }else {
+      data[idx].plotName = value
+    }
     data[idx].isUpdated = true
     setTrialPlots(data)
   }
@@ -290,22 +307,33 @@ const AttachProgeny = ({
       progenies: newArray.filter(progeny => progeny.isUpdated),
       nPalm: nPalmValue
     }
-    await ProgenyService.attachProgeny(payload, filters.trialCode)
-    setShowConfirmation(false)
+    try {
+      const  {data} = await ProgenyService.attachProgeny(payload, filters.trialCode)
+      console.log(data)
+      setCompleteState(!data.isComplete)
+      setSuccessMessage(true)
+      setQuickSaveData(data)
+    } catch (err) {
+       console.log(err)
+    }
+   
   }
 
-  function checkDisableStateForSave() {
-    const plots = [...trialPlots]
-    var found = false
-    for (var i = 0; i < plots.length; i++) {
-      const keys = Object.keys(plots[i])
-      if (keys.length != 12) {
-        found = true
-        break
-      }
+ 
+  const containsAll = (obj, arr) => {
+    let contain = true
+    for(const str of arr){
+      console.log(obj, str)
+       if(Object.keys(obj).includes(str) ){
+          continue;
+       }else{
+         contain = false
+          break ;
+         
+       }
     }
-    return found
-  }
+    return contain;
+ };
 
   function getEstateBlocksItem(items) {
     const blocks = []
@@ -330,6 +358,26 @@ const AttachProgeny = ({
       ? trialEstatesBlocks.find(teb => teb.id === id && teb.estate === estate)
       : trialEstatesBlocks.find(teb => teb.id === id)
     return block.value
+  }
+
+  async function onComplete(){
+    try{
+      const {trialId} =  option
+      await TrialService.updateTrialState(trialId, "Active")
+      setShowConfirmation(false)
+
+        const savedData = {
+          type: "TRIAL_PLOTS_ATTACHED_TO_PROGENY",
+          data: option,
+          action: "ALL_PLOTS_ATTACHED_TO_PROGENY"
+        }
+        dispatch(clearBreadcrumb())
+        publish(savedData)
+ 
+    }catch(err) {
+       console.log(err)
+    }
+    
   }
   return (
     <div id="TrialAction">
@@ -412,7 +460,6 @@ const AttachProgeny = ({
                           data={replicates}
                           className="dashboardSelectFilter"
                           value={replicateSelector}
-                          disabled={!option.estate}
                           onChange={(value, e) => setPlots(value)}
                         />
                       </FlexboxGrid.Item>
@@ -610,7 +657,11 @@ const AttachProgeny = ({
                           value={rowData.nPalm}
                           onChange={(value, e) => {
                             const data = [...trialPlots]
-                            data[i].nPalm = value
+                            if(value === ""){
+                              delete data[i].nPalm
+                            }else {
+                              data[i].nPalm = value
+                            }
                             data[i].isUpdated = true
                             setTrialPlots(data)
                           }}
@@ -643,7 +694,7 @@ const AttachProgeny = ({
                           appearance="primary"
                           onClick={() => setShowConfirmation(true)}
                           type="button"
-                          disabled={checkDisableStateForSave()}
+                          disabled={completeState}
                         >
                           Complete
                         </Button>
@@ -681,6 +732,16 @@ const AttachProgeny = ({
         }
       })()}
 
+
+
+<SuccessMessage
+                data={quickSaveData}
+                show={successMessage}
+                hide={() => setSuccessMessage(false)}
+                action={"PROGENY_ATTACHED"}
+              />
+
+
       {/* ENTER NPALM MODEL START */}
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header>
@@ -713,20 +774,19 @@ const AttachProgeny = ({
       {/* CONFIRMATION MODEL START */}
       <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)}>
         <Modal.Header>
-          <Modal.Title style={{ color: "#009D57" }}>Saving Plot</Modal.Title>
+          <Modal.Title style={{ color: "#009D57" }}>Completing Progeny Attachment</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ color: "#444444" }}>
-          Are you sure you want to save data for All the Plots ? All the Plots
-          will be attached to a unique Progeny.
+        All the Plots have been attached to their unique Progeny. Are these current attachments alright?
         </Modal.Body>
         <Modal.Footer>
           <Button
-            onClick={() => setShowConfirmation(false)}
             appearance="subtle"
           >
             No
           </Button>
-          <Button appearance="primary">Yes</Button>
+          <Button appearance="primary" 
+            onClick={onComplete}>Yes</Button>
         </Modal.Footer>
       </Modal>
       {/* CONFIRMATION MODEL END */}

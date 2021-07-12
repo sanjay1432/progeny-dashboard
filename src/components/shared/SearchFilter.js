@@ -68,7 +68,8 @@ const SearchFilter = forwardRef(
                 const est = estate.map(estateObj => estateObj.name)
                 filterValues.push(...est)
               })
-              filterData[filterName] = filterValues
+              filterData[filterName] = [
+                ...new Set(filterValues)]
             }
           } else {
             filterData[filterName] = filterdata

@@ -165,7 +165,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     // SET TABLE DATA
     setCurrentTableData()
   })
-  const attachProgeny = <Tooltip>Progenies attached.</Tooltip>
+  const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>
   const editProgeny = <Tooltip>Data exists for Palms</Tooltip>
   const [successMessage, setSuccessMessage] = useState(false)
   const [successData, setSuccessData] = useState(null)
@@ -203,6 +203,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "TRIAL":
         setSuccessData(payload)
         setSuccessModal(true)
+        break
+      case "TRIAL_PLOTS_ATTACHED_TO_PROGENY":
+        setAction(payload.action)
+        setSuccessData(payload.data)
+        setSuccessMessage(true)
         break
       case "PROGENY_CREATE":
       case "PROGENY_UPDATE":
@@ -536,9 +541,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function filterTable(filters, data) {
+    console.log({filters, data})
     var filterKeys = Object.keys(filters)
     return data.filter(function (eachObj) {
       return filterKeys.every(function (eachKey) {
+         if(active === "trial" && eachKey === "estate") {
+              const estates = eachObj[eachKey].map((est)=>est.name)
+              return estates.includes( filters[eachKey])
+         }
         return eachObj[eachKey] === filters[eachKey]
       })
     })

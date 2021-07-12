@@ -353,6 +353,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       const repIndex = checkStatusReplicates[index]
       const existingRep = data[repIndex]
       const variant = {
+        estateId:existingRep.estateId,
         estate: existingRep.estate,
         replicate: existingRep.replicate,
         estateblock: existingRep.estateblock,
@@ -381,6 +382,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     trial["replicates"] = tableData
     console.log(trial)
     trial["trialId"] = null
+
+    delete trial.estate;
     TrialService.saveTrial(trial).then(
       data => {
         const savedData = {

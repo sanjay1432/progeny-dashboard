@@ -89,7 +89,30 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
             )}
           </>
         )
-
+      case "PROGENY_ATTACHED":
+        return (
+          <>
+            <Message
+                showIcon
+                type="success"
+                description={`${data?.nofplotAttached} out of ${data?.nofplot} Plots that are attached to Progenies 
+                have been saved in the system.`}
+                onClick={hide}
+              />
+          </>
+        )
+      case "ALL_PLOTS_ATTACHED_TO_PROGENY":
+        return (
+          <>
+            <Message
+                showIcon
+                type="success"
+                description={`All Plots for Trial ${data.trial} has been 
+                successfully tied to Progenies.`}
+                onClick={hide}
+              />
+          </>
+        )
       case "USER_CREATE":
         return (
           <>

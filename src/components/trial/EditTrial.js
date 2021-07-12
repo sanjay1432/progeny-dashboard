@@ -73,7 +73,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           for (let i = 0; i < blocks.length; i++) {
             reps = {}
             reps["estateblock"] = blocks[i].name
-            Object.keys(uni).map(key => (reps[key] = uni[key]))
+            Object.keys(uni).forEach(key => (reps[key] = uni[key]));
             newSetOfReps.push(reps)
           }
         }
