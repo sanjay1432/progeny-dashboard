@@ -20,14 +20,14 @@ const getTrial = trialCode => {
   return axiosApiInstance
     .get(`${API_URL}/trial/${trialCode}`)
     .then(response => {
-      return response.data
+      return response.data.data
     })
 }
 const getTrialReplicates = trialId => {
   return axiosApiInstance
     .get(`${API_URL}/trial/replicates/${trialId}`)
     .then(response => {
-      return response.data
+      return response.data.data
     })
 }
 
@@ -38,12 +38,21 @@ const updateTrialReplicate = body => {
       return response.data
     })
 }
+
+const updateTrialState = (trialId, state) => {
+  return axiosApiInstance
+    .post(`${API_URL}/update-trial-state/${trialId}`, {state})
+    .then(response => {
+      return response.data
+    })
+}
 const TrialService = {
   saveTrial,
   editTrial,
   getTrial,
   getTrialReplicates,
-  updateTrialReplicate
+  updateTrialReplicate,
+  updateTrialState
 }
 
 export default TrialService

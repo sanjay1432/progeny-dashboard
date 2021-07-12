@@ -85,12 +85,12 @@ const listItems = [
             type: "select",
             disable: false
           },
-          {
-            name: "soiltype",
-            label: "Soil Type",
-            type: "select",
-            disable: false
-          }
+          // {
+          //   name: "soiltype",
+          //   label: "Soil Type",
+          //   type: "select",
+          //   disable: false
+          // }
         ],
         search: false
       },
@@ -155,7 +155,7 @@ const listItems = [
         eventKey: "progeny",
         filters: [
           {
-            name: "progenyId",
+            name: "progenyCode",
             label: "Progeny ID",
             type: "text"
           },
