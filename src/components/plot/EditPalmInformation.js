@@ -17,6 +17,7 @@ import {
   ControlLabel,
   Button
 } from "rsuite"
+
 const { Column, HeaderCell, Cell } = Table
 
 const EditableCell = ({
@@ -90,7 +91,6 @@ const EditPalmInformation = ({ option }) => {
       setPlotFilterData(data)
       setInitialData(data)
       setTableData(initialTableData)
-      console.log(data)
     }
     fetchData()
   }, [])
@@ -105,72 +105,67 @@ const EditPalmInformation = ({ option }) => {
 
   function handleEstateFilterChange(value) {
     setFilterValue({ ...filterValue, estate: value })
-    if (value === "all") {
-      const renewFilterData = initialData.filter(
-        data => data.trialCode === filterValue.trialCode
-      )
-      setReplicateFilterData(renewFilterData)
-      setPlotFilterData(renewFilterData)
-    } else {
-      const renewFilterData = initialData.filter(
-        data =>
-          data.trialCode === filterValue.trialCode && data.estate === value
-      )
-      setReplicateFilterData(renewFilterData)
-      setPlotFilterData(renewFilterData)
-    }
+    const renewFilterData = initialData.filter(data => {
+      if (value === "all") {
+        return data.trialCode === filterValue.trialCode
+      } else {
+        return data.trialCode === filterValue.trialCode && data.estate === value
+      }
+    })
+    setReplicateFilterData(renewFilterData)
+    setPlotFilterData(renewFilterData)
   }
 
   function handleReplicateFilterChange(value) {
     setFilterValue({ ...filterValue, replicate: value })
-
-    if (value === "all" && filterValue.plot === "all") {
-      setPlotFilterData(appliedData)
-      setTableData(appliedData)
-    } else if (filterValue.plot === "all") {
-      const renewData = appliedData.filter(data => data.replicate === value)
-      console.log(renewData, appliedData, value)
-      setPlotFilterData(renewData)
-      setTableData(renewData)
-    }
+    const renewData = appliedData.filter(data => {
+      if (value === "all" && filterValue.plot === "all") {
+        return data
+      } else if (value !== "all" && filterValue.plot === "all") {
+        return data.replicate === value
+      } else if (value === "all" && filterValue.plot !== "all") {
+        return data.plot === filterValue.plot
+      } else {
+        return data.plot === value && data.replicate === filterValue.replicate
+      }
+    })
+    setPlotFilterData(renewData)
+    setTableData(renewData)
   }
 
   function handlePlotFilterChange(value) {
     setFilterValue({ ...filterValue, plot: value })
-
-    if (value === "all" && filterValue.replicate === "all") {
-      setReplicateFilterData(appliedData)
-      setTableData(appliedData)
-    } else if (filterValue.replicate === "all") {
-      const renewData = appliedData.filter(data => data.plot === value)
-      setReplicateFilterData(renewData)
-      setTableData(renewData)
-    }
+    const renewData = appliedData.filter(data => {
+      if (value === "all" && filterValue.replicate === "all") {
+        return data
+      } else if (value !== "all" && filterValue.replicate === "all") {
+        return data.plot === value
+      } else if (value === "all" && filterValue.replicate !== "all") {
+        return data.replicate === filterValue.replicate
+      } else {
+        return data.plot === value && data.replicate === filterValue.replicate
+      }
+    })
+    setReplicateFilterData(renewData)
+    setTableData(renewData)
   }
 
   function applyFilter() {
     setFilterValue({ ...filterValue, replicate: "all", plot: "all" })
-    if (filterValue.estate === "all") {
-      const renewTableData = initialData.filter(
-        data => data.trialCode === filterValue.trialCode
-      )
-      console.log(renewTableData)
-      setTableData(renewTableData)
-      setAppliedData(renewTableData)
-      setReplicateFilterData(renewTableData)
-      setPlotFilterData(renewTableData)
-    } else {
-      const renewTableData = initialData.filter(
-        data =>
+    const renewTableData = initialData.filter(data => {
+      if (filterValue.estate === "all") {
+        return data.trialCode === filterValue.trialCode
+      } else {
+        return (
           data.trialCode === filterValue.trialCode &&
           data.estate === filterValue.estate
-      )
-      console.log(renewTableData)
-      setTableData(renewTableData)
-      setAppliedData(renewTableData)
-      setReplicateFilterData(renewTableData)
-      setPlotFilterData(renewTableData)
-    }
+        )
+      }
+    })
+    setTableData(renewTableData)
+    setAppliedData(renewTableData)
+    setReplicateFilterData(renewTableData)
+    setPlotFilterData(renewTableData)
   }
 
   function resetFilter() {

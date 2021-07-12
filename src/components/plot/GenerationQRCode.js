@@ -94,7 +94,7 @@ const GenerationQRCode = ({ option }) => {
             className="QRCode"
             size={290}
             value="HIHI"
-            value={`${zoomInData.trialId}\ ${zoomInData.plot}\ ${zoomInData.estateBlock}\ ${zoomInData.palmNo}`}
+            value={`${zoomInData.trialId}-${zoomInData.plot}-${zoomInData.estateBlock}-${zoomInData.palmNo}`}
           />
           <p className="palm">
             Plam : <b className="palmData">{zoomInData.palmNo}</b>
@@ -166,7 +166,7 @@ const GenerationQRCode = ({ option }) => {
               <Panel shaded>
                 <QRCode
                   size={113}
-                  value={`${data.trialId}\ ${data.plot}\ ${data.estateblock}\ ${data.palmno}`}
+                  value={`${data.trialId}-${data.plot}-${data.estateblock}-${data.palmno}`}
                   onClick={() =>
                     ZoomInQRCode(
                       data.trialId,
