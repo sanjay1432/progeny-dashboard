@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import GeneralHelper from "../../helper/general.helper"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import PlotService from "../../services/plot.service"
 import { publish, changeActive } from "../../services/pubsub.service"
@@ -93,6 +94,14 @@ const EditPalmInformation = ({ option }) => {
     }
     fetchData()
   }, [])
+
+  const { user } = useSelector(state => state.authReducer)
+
+  const userInfo = GeneralHelper.buildDisplayName(
+    user.firstName,
+    user.lastName,
+    user.username
+  )
 
   function handleTrialFilterChange(value) {
     setFilterValue({ ...filterValue, trialCode: value })
@@ -215,13 +224,24 @@ const EditPalmInformation = ({ option }) => {
   }
 
   const quickSaveEditedData = () => {
-    console.log(tableData)
-    PlotService.editPalmInformation(tableData).then(
-      data => {
-        setSuccessMessage(true)
-      },
-      error => {}
-    )
+    const payload = tableData.map(data => {
+      const savedData = {
+        trialCode: data.trialCode,
+        estate: data.estate,
+        palmno: data.palmno,
+        palmId: data.palmId,
+        updatedBy: userInfo,
+        updatedDate: new Date().toISOString()
+      }
+      return savedData
+    })
+    console.log(payload)
+     PlotService.editPalmInformation(payload).then(
+       data => {
+         setSuccessMessage(true)
+       },
+       error => {}
+     )
   }
 
   const completedEditData = () => {

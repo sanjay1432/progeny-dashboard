@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
+import GeneralHelper from "../../helper/general.helper"
 import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
 import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
@@ -197,6 +198,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       subscribedData(data)
     })
   }, [])
+
+  const { user } = useSelector(state => state.authReducer)
+
+  const userInfo = GeneralHelper.buildDisplayName(
+    user.firstName,
+    user.lastName,
+    user.username
+  )
 
   function itemSaved(payload) {
     console.log(payload)
@@ -727,20 +736,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
-    console.log(confirmationData)
-    // PlotService.updatePlot(confirmationData).then(
-    //   data => {
-    //     setTableData(nextData)
-    //     setConfirmationModal(false)
-    //     setSuccessData(confirmationData)
-    //     setAction("PLOTDATA_UPDATE")
-    //     setSuccessMessage(true)
-    //   },
-    //   error => {
-    //     setErrorMessage(active)
-    //     setErrorData(error.message)
-    //   }
-    // )
+    PlotService.updatePlot(confirmationData).then(
+      data => {
+        setTableData(nextData)
+        setConfirmationModal(false)
+        setSuccessData(confirmationData)
+        setAction("PLOTDATA_UPDATE")
+        setSuccessMessage(true)
+      },
+      error => {
+        setErrorMessage(active)
+        setErrorData(error.message)
+      }
+    )
   }
 
   const handlePalmEditChange = (trialid, key, value) => {
@@ -775,7 +783,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const nextData = Object.assign([], tableData)
     const activeItem = nextData.find(item => item.trialid === trialid)
     activeItem.status = activeItem.status ? null : true
-    PalmService.updatePalm(confirmationData).then(
+    const payload = {
+      trialCode: confirmationData.trialCode,
+      estate: confirmationData.estate,
+      palmno: confirmationData.palmno,
+      palmId: confirmationData.palmId,
+      updatedBy: userInfo,
+      updatedDate: new Date().toISOString()
+    }
+    PalmService.updatePalm(payload).then(
       data => {
         setTableData(nextData)
         setConfirmationModal(false)

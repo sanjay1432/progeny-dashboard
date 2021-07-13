@@ -83,15 +83,11 @@ const ConfirmationModal = ({
         <>
           <Modal id="confirmationModal" show={show} onHide={hide}>
             <Modal.Header>
-              <b className="title">Edit Palm</b>
+              <b className="title">Edit Palm Information</b>
             </Modal.Header>
             <Modal.Body>
               <p>
-                Are you sure edit Palm for
-                <b className="targetName"> {data.plot}</b> for
-                <b className="targetName"> Replicate {data.replicate}</b> at
-                <b className="targetName"> Trial {data.trialid}</b> from the
-                list? This might change data that is associate with it as well.
+                All the Palms have been named and numbered. Are these informations alright?
               </p>
             </Modal.Body>
             <Modal.Footer>

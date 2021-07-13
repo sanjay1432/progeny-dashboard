@@ -50,6 +50,7 @@ const DataPicker = ({
   }
 
   function handleInputChange(value) {
+    console.log(value)
     props.onChange(value.value)
   }
 
