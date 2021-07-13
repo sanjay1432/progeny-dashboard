@@ -27,6 +27,17 @@
 
   .InputSelectPicker {
     width: 100%;
+    color: black;
+    .css-1pahdxg-control {
+      border-color: $primary-green;
+      box-shadow: 0 0 0 1px $primary-green;
+    }
+    
+    div {
+      border-radius: 8px;
+      color: black;
+      background-color: white ;
+    }
   }
 
   .fpLayout, .mpLayout {

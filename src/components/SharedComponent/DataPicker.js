@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { InputPicker } from "rsuite"
 import CreatableSelect from "react-select/creatable"
 
@@ -13,6 +13,8 @@ const DataPicker = ({
   selectAllData,
   ...props
 }) => {
+  const [reactSelectValue, setReactSelectValue] = useState({label: dataValue, value: dataValue})
+
   const Picker = [dataType]
   Picker.forEach(obj => {
     if (OriginalData !== undefined) {
@@ -50,7 +52,7 @@ const DataPicker = ({
   }
 
   function handleInputChange(value) {
-    console.log(value)
+    setReactSelectValue(value)
     props.onChange(value.value)
   }
 
@@ -61,7 +63,7 @@ const DataPicker = ({
           name={dataType}
           className="InputSelectPicker"
           placeholder={placeholder}
-          value={dataValue}
+          value={reactSelectValue}
           onChange={(value, e) => handleInputChange(value)}
           options={DataInPicker}
         />

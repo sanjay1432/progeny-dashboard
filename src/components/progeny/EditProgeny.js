@@ -170,6 +170,7 @@ const EditProgeny = ({ option, ...props }) => {
             <DataPicker
               dataType="generation"
               searchable="true"
+              dataValue={formData.generation}
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, generation: value }))
@@ -199,6 +200,7 @@ const EditProgeny = ({ option, ...props }) => {
             <DataPicker
               dataType="fpFam"
               searchable="true"
+              dataValue={formData.fpFam}
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, fpFam: value }))
@@ -255,6 +257,7 @@ const EditProgeny = ({ option, ...props }) => {
             <DataPicker
               dataType="fpVar"
               searchable="true"
+              dataValue={formData.fpVar}
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, fpVar: value }))
@@ -272,6 +275,7 @@ const EditProgeny = ({ option, ...props }) => {
             <DataPicker
               dataType="mpFam"
               searchable="true"
+              dataValue={formData.mpFam}
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, mpFam: value }))
@@ -328,6 +332,7 @@ const EditProgeny = ({ option, ...props }) => {
             <DataPicker
               dataType="mpVar"
               searchable="true"
+              dataValue={formData.mpVar}
               OriginalData={ProgenyData}
               onChange={value =>
                 setFormData(() => ({ ...formData, mpVar: value }))
@@ -369,6 +374,7 @@ const EditProgeny = ({ option, ...props }) => {
               <DataPicker
                 dataType="crossType"
                 searchable="true"
+                dataValue={formData.crossType}
                 completedData={crossTypeData}
                 onChange={value =>
                   setFormData(() => ({ ...formData, crossType: value }))
