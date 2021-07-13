@@ -236,7 +236,7 @@ const EditPalmInformation = ({ option }) => {
       return savedData
     })
     console.log(payload)
-     PlotService.editPalmInformation(payload).then(
+     PlotService.updatePlot(payload).then(
        data => {
          setSuccessMessage(true)
        },
