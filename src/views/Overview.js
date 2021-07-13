@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { CANCEL_REQUEST } from "../constants"
+import { activeDashboard, progenySubject } from "../services/pubsub.service"
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
 import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
 import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
@@ -28,6 +29,7 @@ import TabPanel from "../components/shared/TabPanel"
 import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
+import SuccessMessage from "components/SharedComponent/SuccessMessage"
 
 const initialSidenavState = {
   expanded: true,
@@ -263,14 +265,42 @@ const listItems = [
 ]
 
 const Overview = props => {
-  //const [activeTab, setActiveTab] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isDrawer, setDrawer] = useState(false)
   const [sidenavState, setSidenavState] = useState(initialSidenavState)
   const [subnavState, setSubnavState] = useState(initialSubnavState)
+  const [successMessage, setSuccessMessage] = useState(false)
+  const [successData, setSuccessData] = useState(null)
+  const [action, setAction] = useState("")
   const dispatch = useDispatch()
-  // dispatch(clearBreadcrumb())
+
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
+
+  useEffect(() => {
+    function subscribedData(data) {
+      handleSelect(data)
+    }
+
+
+    activeDashboard.subscribe(data => {
+      subscribedData(data)
+    })
+  }, [])
+
+  useEffect(() => {
+    function Success(data) {
+      itemSaved(data)
+    }
+
+    progenySubject.subscribe(data => {
+      Success(data)
+    })
+  }, [])
+
+  function itemSaved(data) {
+    setAction(data.type)
+    setSuccessMessage(true)
+  }
 
   const history = useHistory()
   const currentSideItem = listItems.find(
@@ -337,6 +367,7 @@ const Overview = props => {
   const { active } = subnavState
   return (
     <>
+      <SuccessMessage action={action} show={successMessage} hide={() => setSuccessMessage("")}/>
       {isLoggedIn && (
         <ContainerRS>
           <Header>

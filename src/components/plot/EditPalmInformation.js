@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import PlotService from "../../services/plot.service"
-import { publish } from "../../services/pubsub.service"
+import { publish, changeActive } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
 import ConfirmationModal from "../SharedComponent/ConfirmationModal"
 import SuccessMessage from "../SharedComponent/SuccessMessage"
@@ -31,7 +31,6 @@ const EditableCell = ({
     <Cell {...cellProps}>
       <Input
         className="editTableInput"
-        // defaultValue={rowData[dataKey]}
         value={rowData[dataKey]}
         disabled={[
           "trialCode",
@@ -229,14 +228,17 @@ const EditPalmInformation = ({ option }) => {
     PlotService.editPalmInformation(tableData).then(
       data => {
         const savedData = {
-          type: "PALMINFORMATION_UPDATE",
+          type: "MULTIPALMDATA_UPDATE",
           data: tableData,
           action: "UPDATE"
         }
-        publish(savedData)
         dispatch(clearBreadcrumb())
+        publish(savedData)
+        changeActive("palm")
       },
-      error => {}
+      error => {
+        alert("Error 404")
+      }
     )
   }
 

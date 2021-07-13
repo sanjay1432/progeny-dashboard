@@ -867,8 +867,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       <Grid fluid className="footerLayout">
         <Row className="show-grid">
-          <FlexboxGrid justify="end" className="cancelButtonLayout">
-            <Col md={5} lg={4}>
+          <FlexboxGrid justify="end">
+            <Col md={5} lg={4} className="cancelButtonLayout">
               <FlexboxGrid.Item>
                 <Button
                   appearance="subtle"

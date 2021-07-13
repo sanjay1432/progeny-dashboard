@@ -199,6 +199,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }, [])
 
   function itemSaved(payload) {
+    console.log(payload)
     switch (payload.type) {
       case "TRIAL":
         setSuccessData(payload)
@@ -213,9 +214,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "PROGENY_UPDATE":
       case "USER_CREATE":
       case "USER_UPDATE":
+      //case "MULTIPALMDATA_UPDATE":
         setAction(payload.type)
         setSuccessData(payload.data)
         setSuccessMessage(true)
+        console.log(payload.type)
         break
     }
   }

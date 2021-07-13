@@ -18,6 +18,18 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
           </>
         )
 
+      case "MULTIPALMDATA_UPDATE":
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description={`Palms have been successfully named and numbered.`}
+              onClick={hide}
+            />
+          </>
+        )
+
       case "PALMDATA_UPDATE":
         return (
           <>
