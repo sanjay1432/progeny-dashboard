@@ -18,6 +18,7 @@ const GenerationQRCode = ({ option }) => {
     }
     fetchData()
   }, [])
+  console.log(qrData)
 
   const CheckCell = ({ onChange, checkedKeys, data }) => {
     return (
@@ -61,26 +62,6 @@ const GenerationQRCode = ({ option }) => {
     content: () => printRef.current
   })
 
-  const pageStyle = `
-  @page {
-    size: 80mm 50mm;
-    margin: 0px;
-  }
-
-  @media all {
-    .pagebreak {
-      display: none;
-    }
-  }
-
-  @media print {
-    margin: 0px;
-    .pagebreak {
-      page-break-before: always;
-    }
-  }
-`
-
   return (
     <div id="GenerationQRCode">
       <Modal
@@ -94,7 +75,7 @@ const GenerationQRCode = ({ option }) => {
             className="QRCode"
             size={290}
             value="HIHI"
-            value={`${zoomInData.trialId}-${zoomInData.plot}-${zoomInData.estateBlock}-${zoomInData.palmNo}`}
+            value={`${zoomInData.trialId}-${zoomInData.plotId}-${zoomInData.estateblockId}-${zoomInData.palmId}`}
           />
           <p className="palm">
             Plam : <b className="palmData">{zoomInData.palmNo}</b>
@@ -104,7 +85,6 @@ const GenerationQRCode = ({ option }) => {
 
       <div style={{ overflow: "hidden", height: "0" }}>
         <PrintLayout
-          pageStyle={pageStyle}
           ref={printRef}
           selectedItem={checkStatus}
           data={qrData}
@@ -166,7 +146,7 @@ const GenerationQRCode = ({ option }) => {
               <Panel shaded>
                 <QRCode
                   size={113}
-                  value={`${data.trialId}-${data.plot}-${data.estateblock}-${data.palmno}`}
+                  value={`${data.trialId}-${data.plotId}-${data.estateblockId}-${data.palmId}`}
                   onClick={() =>
                     ZoomInQRCode(
                       data.trialId,

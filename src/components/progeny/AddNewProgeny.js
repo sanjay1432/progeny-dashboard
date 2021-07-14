@@ -30,34 +30,6 @@ const AddNewProgeny = () => {
   const [confirmationModal, setConfirmationModal] = useState(false)
   const dispatch = useDispatch()
 
-  const array = [0, 1, 2, 4, 5, 7]
-  const array1 = [0, 2, 3, 4, 6, 8, 9]
-
-  let temp = []
-  let result = []
-  for (const [index, value] of array.entries()) {
-    if (temp.length === 0 || temp[temp.length - 1] + 1 === value) {
-      temp.push(value)
-    } else if (temp.length > 0) {
-      if (temp.length === 1) {
-        result.push(`${temp[0]}`)
-      } else {
-        result.push(`${temp[0]}->${temp[temp.length - 1]}`)
-      }
-      temp = []
-      temp.push(value)
-    }
-    if (index === array.length - 1) {
-      if (temp.length === 1) {
-        result.push(`${temp[0]}`)
-      } else {
-        result.push(`${temp[0]}->${temp[temp.length - 1]}`)
-      }
-      temp = []
-    }
-  }
-  console.log(result)
-
   const ProgenyData = useSelector(
     state => state.dashboardDataReducer.result.progeny
   )
