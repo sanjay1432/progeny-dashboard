@@ -310,6 +310,7 @@ const AttachProgeny = ({
     try {
       const  {data} = await ProgenyService.attachProgeny(payload, filters.trialCode)
       console.log(data)
+      data.nofplot = trialPlots.length
       setCompleteState(!data.isComplete)
       setSuccessMessage(true)
       setQuickSaveData(data)

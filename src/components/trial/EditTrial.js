@@ -42,7 +42,7 @@ const initializeTrailState = {
 
 
 function findEstateBlocks(ebs, estate) {
-  let estateBlocks = ebs.find(row => row.estate === estate).estateblocks
+  let estateBlocks = ebs.find(row => row.estate === estate)?.estateblocks
   const mappedEstateBlocks = []
   for (let item in estateBlocks) {
     mappedEstateBlocks.push({
@@ -162,6 +162,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   async function fetchEstates() {
     const { data } = await EstateService.getUpdatedEstateBlocks()
+    console.log("EstatesWithBlocks", data)
     setEstatesWithBlocks(data)
     const mappedEstate = []
 

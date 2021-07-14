@@ -2,10 +2,13 @@ import axios from "axios"
 import {
   API_URL,
   REFRESH_TOKEN_NAME,
+  SSO_WEB_LOGIN,
   TOKEN_NAME,
   API_TOKEN
 } from "../constants"
 import StateLoader from "../redux/StateLoader"
+var bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
 const stateLoader = new StateLoader()
 
 // const login = (username, password) => {
@@ -25,16 +28,15 @@ const stateLoader = new StateLoader()
 const login = (username, password) =>
   new Promise((resolve, reject) => {
     if (username && password) {
-      const data = {
-        username: "aceadmin",
-        firstName: "Aceras",
-        lastName: "Admin",
-        email: "aceresource@progeny.com",
-        token: API_TOKEN
-      }
-      localStorage.setItem("user", JSON.stringify(data))
-      localStorage.setItem(TOKEN_NAME, data.token)
-      resolve(data)
+      var hash = bcrypt.hashSync(password, salt);
+      return axios
+    .get(`${SSO_WEB_LOGIN}/account/login?username=${username}&password=${hash}`)
+    .then(response => {
+      if (response.data.response) {
+        localStorage.setItem("user", JSON.stringify(response.data.response))
+        localStorage.setItem(TOKEN_NAME, response.data.response.token)
+        resolve(response.data.response)
+      }}) 
     } else {
       reject()
     }
