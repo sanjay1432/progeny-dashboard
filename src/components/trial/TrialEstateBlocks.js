@@ -30,7 +30,34 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-
+export const EditCell = ({ rowData, rowIndex, dataKey, onChange, estateBlocks,...props }) => {
+  const editing = rowData.status === "EDIT"
+  return (
+    <Cell {...props} className={editing ? "table-content-editing" : ""}>
+      {editing && dataKey !== "estateblock" ? (
+        <Input
+          defaultValue={rowData[dataKey]}
+          disabled={["replicate", "design", "soiltype"].includes(dataKey)}
+          onChange={(value, event) => {
+            onChange && onChange(rowIndex, dataKey, event.target.value)
+          }}
+        />
+      ) : editing && dataKey === "estateblock" ? (
+        <SelectPicker
+          data={estateBlocks}
+          style={{ width: 224 }}
+          placeholder="-"
+          value={rowData.estateblock}
+          onChange={value => {
+            onChange && onChange(rowIndex, dataKey, value)
+          }}
+        />
+      ) : (
+        <span className="table-content-edit-span">{rowData[dataKey]}</span>
+      )}
+    </Cell>
+  )
+}
 const TrialEstateBlocks = ({
   currentSubNavState,
   currentItem,
@@ -40,6 +67,7 @@ const TrialEstateBlocks = ({
   const [tableData, setTableData] = useState([])
   const [filteredTableData, setFilteredTableData] = useState([])
   const [ebAdded, setebAdded] = useState(null)
+  const [activeRow, setActiveRow] = useState(null)
   const [selectedSoilType, setSelectedSoilType] = useState(null)
   const [selectedReplicate, setSelectedReplicate] = useState(null)
   const [pagination, setPagination] = useState(initialState)
@@ -202,7 +230,10 @@ const TrialEstateBlocks = ({
   const handleEditState = (idx, save = false) => {
     const nextData = Object.assign([], filteredTableData)
     const activeItem = nextData.find((item, i) => i === idx)
+    console.log({activeItem})
+    setActiveRow({...activeItem})
     activeItem.status = activeItem.status ? null : "EDIT"
+    
     setTableData(nextData)
   }
 
@@ -220,34 +251,7 @@ const TrialEstateBlocks = ({
     )
   }
 
-  const EditCell = ({ rowData, rowIndex, dataKey, onChange, ...props }) => {
-    const editing = rowData.status === "EDIT"
-    return (
-      <Cell {...props} className={editing ? "table-content-editing" : ""}>
-        {editing && dataKey !== "estateblock" ? (
-          <Input
-            defaultValue={rowData[dataKey]}
-            disabled={["replicate", "design", "soiltype"].includes(dataKey)}
-            onChange={(value, event) => {
-              onChange && onChange(rowIndex, dataKey, event.target.value)
-            }}
-          />
-        ) : editing && dataKey === "estateblock" ? (
-          <SelectPicker
-            data={estateBlocks}
-            style={{ width: 224 }}
-            placeholder="-"
-            value={rowData.estateblock}
-            onChange={value => {
-              onChange && onChange(rowIndex, dataKey, value)
-            }}
-          />
-        ) : (
-          <span className="table-content-edit-span">{rowData[dataKey]}</span>
-        )}
-      </Cell>
-    )
-  }
+ 
 
   const ActionCell = ({ rowData, rowIndex, dataKey, onClick, ...props }) => {
     return (
@@ -275,7 +279,8 @@ const TrialEstateBlocks = ({
                 color="red"
                 size="xs"
                 onClick={() => {
-                  onClick && onClick(rowIndex) //handleEditState
+                  // onClick && onClick(rowIndex) //handleEditState
+                  onCancel(rowIndex)
                 }}
               />
             </FlexboxGrid.Item>
@@ -294,6 +299,12 @@ const TrialEstateBlocks = ({
         {/* </Button> */}
       </Cell>
     )
+  }
+
+  function onCancel(idx){
+     const nextData = Object.assign([], filteredTableData)
+     nextData[idx] = activeRow
+     setFilteredTableData(nextData)
   }
 
   function onReset() {
@@ -394,27 +405,27 @@ const TrialEstateBlocks = ({
         <Table wordWrap data={filteredTableData} autoHeight id="dashboardTable">
           <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Replicate</HeaderCell>
-            <EditCell dataKey="replicate" onChange={handleChange} />
+            <EditCell dataKey="replicate" onChange={handleChange} estateBlocks = {estateBlocks}/>
           </Column>
 
           <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Estate Block</HeaderCell>
-            <EditCell dataKey="estateblock" onChange={handleChange} />
+            <EditCell dataKey="estateblock" onChange={handleChange} estateBlocks = {estateBlocks}/>
           </Column>
 
           <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Density</HeaderCell>
-            <EditCell dataKey="density" onChange={handleChange} />
+            <EditCell dataKey="density" onChange={handleChange} estateBlocks = {estateBlocks}/>
           </Column>
 
           <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Design</HeaderCell>
-            <EditCell dataKey="design" onChange={handleChange} />
+            <EditCell dataKey="design" onChange={handleChange} estateBlocks = {estateBlocks}/>
           </Column>
 
           <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Soil Type</HeaderCell>
-            <EditCell dataKey="soiltype" onChange={handleChange} />
+            <EditCell dataKey="soiltype" onChange={handleChange} estateBlocks = {estateBlocks}/>
           </Column>
 
           <Column width={130} fixed="right">

@@ -269,8 +269,6 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const handleCheckAllReplicates = (value, checked) => {
     const keys = checked ? tableData.map((item, i) => i) : []
     setCheckStatusReplicate(keys)
-    // setDisbaledANRV(false)
-    // setDisbaledRD(false)
   }
 
   const handleCheckReplicates = (value, checked) => {

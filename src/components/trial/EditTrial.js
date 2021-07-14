@@ -39,6 +39,55 @@ const initializeTrailState = {
   design: "",
   density: ""
 }
+
+
+function findEstateBlocks(ebs, estate) {
+  let estateBlocks = ebs.find(row => row.estate === estate).estateblocks
+  const mappedEstateBlocks = []
+  for (let item in estateBlocks) {
+    mappedEstateBlocks.push({
+      label: estateBlocks[item].estateblock,
+      value: estateBlocks[item].estateblock
+    })
+  }
+  return mappedEstateBlocks
+}
+
+export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...props }) => {
+  const editing = rowData.status === "EDIT"
+  const blocks = findEstateBlocks(estatesWithBlocks, rowData.estate)
+  return (
+    <Cell {...props} className={editing ? "table-content-editing" : ""}>
+      {editing && dataKey !== "estateblock" ? (
+        <input
+          className="rs-input"
+          defaultValue={rowData[dataKey]}
+          disabled={["estate", "replicate", "design", "soiltype"].includes(
+            dataKey
+          )}
+          onChange={event => {
+            onChange &&
+              onChange(rowData.replicate, dataKey, event.target.value)
+          }}
+        />
+      ) : editing && dataKey === "estateblock" ? (
+        <SelectPicker
+          data={blocks}
+          style={{ width: 224 }}
+          placeholder="-"
+          value={rowData.estateblock}
+          onChange={value => {
+            onChange && onChange(rowData.replicate, dataKey, value)
+          }}
+        />
+      ) : (
+        <span className="table-content-edit-span">{rowData[dataKey]}</span>
+      )}
+    </Cell>
+  )
+}
+
+
 const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   console.log({ option })
   const dispatch = useDispatch()
@@ -104,6 +153,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disbaledANRV, setDisbaledANRV] = useState(true)
   const [disbaledRD, setDisbaledRD] = useState(true)
   const [show, setShow] = useState(false)
+  const [activeRow, setActiveRow] = useState(null)
   const [showRegenerateWarning, setShowRegenerateWarning] = useState(false)
   useEffect(() => {
     fetchEstates()
@@ -407,41 +457,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setShow(false)
   }
 
-  const EditCell = ({ rowData, dataKey, onChange, ...props }) => {
-    const editing = rowData.status === "EDIT"
-    const blocks = getEstateBlocks(rowData.estate)
-    return (
-      <Cell {...props} className={editing ? "table-content-editing" : ""}>
-        {editing && dataKey !== "estateblock" ? (
-          <input
-            className="rs-input"
-            defaultValue={rowData[dataKey]}
-            disabled={["estate", "replicate", "design", "soiltype"].includes(
-              dataKey
-            )}
-            onChange={event => {
-              onChange &&
-                onChange(rowData.replicate, dataKey, event.target.value)
-            }}
-          />
-        ) : editing && dataKey === "estateblock" ? (
-          <SelectPicker
-            data={blocks}
-            style={{ width: 224 }}
-            placeholder="-"
-            value={rowData.estateblock}
-            onChange={value => {
-              onChange && onChange(rowData.replicate, dataKey, value)
-            }}
-          />
-        ) : (
-          <span className="table-content-edit-span">{rowData[dataKey]}</span>
-        )}
-      </Cell>
-    )
-  }
 
-  const ActionCell = ({ rowData, dataKey, onClick, ...props }) => {
+  const ActionCell = ({ rowData, rowIndex, dataKey, onClick, ...props }) => {
     return (
       <Cell {...props} style={{ padding: "6px 0" }}>
         {/* <Button
@@ -468,7 +485,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               color="red"
               size="xs"
               onClick={() => {
-                onClick && onClick(rowData.replicate)
+                // onClick && onClick(rowData.replicate)
+                onCancel(rowIndex)
               }}
             />
           </>
@@ -486,6 +504,12 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     )
   }
 
+  function onCancel(idx){
+    const nextData = Object.assign([], existingReplicatesInEstate)
+    nextData[idx] = activeRow
+    setExistingReplicatesInEstate(nextData)
+ }
+
   const handleChange = (replicate, key, value) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
     nextData.find(item => item.replicate === replicate)[key] = value
@@ -494,6 +518,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const handleEditState = replicate => {
     const nextData = Object.assign([], existingReplicatesInEstate)
     const activeItem = nextData.find(item => item.replicate === replicate)
+    setActiveRow({...activeItem})
     activeItem.status = activeItem.status ? null : "EDIT"
     setExistingReplicatesInEstate(nextData)
   }
@@ -1024,31 +1049,31 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           >
             <Column width={200}>
               <HeaderCell>Estate</HeaderCell>
-              <EditCell dataKey="estate" onChange={handleChange} />
+              <EditCell dataKey="estate" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
             </Column>
 
             <Column width={200}>
               <HeaderCell>Replicate</HeaderCell>
-              <EditCell dataKey="replicate" onChange={handleChange} />
+              <EditCell dataKey="replicate" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Estate Block</HeaderCell>
-              <EditCell dataKey="estateblock" onChange={handleChange} />
+              <EditCell dataKey="estateblock" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Density</HeaderCell>
-              <EditCell dataKey="density" onChange={handleChange} />
+              <EditCell dataKey="density" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Design</HeaderCell>
-              <EditCell dataKey="design" onChange={handleChange} />
+              <EditCell dataKey="design" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
             </Column>
             <Column width={250}>
               <HeaderCell>Soil Type</HeaderCell>
-              <EditCell dataKey="soiltype" onChange={handleChange} />
+              <EditCell dataKey="soiltype" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
             </Column>
             <Column width={130}>
               <HeaderCell>Action</HeaderCell>
