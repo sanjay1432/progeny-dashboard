@@ -6,7 +6,6 @@ import ConfirmationModal from "components/SharedComponent/ConfirmationModal"
 import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
-import { forEachChild } from "typescript"
 
 const AddNewProgeny = () => {
   const initialForm = {
