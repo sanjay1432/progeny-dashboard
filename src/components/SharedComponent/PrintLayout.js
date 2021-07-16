@@ -17,13 +17,13 @@ export class PrintLayout extends PureComponent {
                 />
                 <div className="descLayout">
                   <p className="trialId">
-                    Trial ID : <b>Trial {data.trialId}</b>
+                    Trial ID : <b className="data">Trial {data.trialId}</b>
                   </p>
                   <p className="plotId">
-                    Plot No : <b>{data.plot}</b>
+                    Plot No : <b className="data">{data.plot}</b>
                   </p>
                   <p className="palmNumber">
-                    Palm Number : <b>Palm {data.palmno}</b>
+                    Palm Number : <b className="data">Palm {data.palmno}</b>
                   </p>
                 </div>
               </div>
