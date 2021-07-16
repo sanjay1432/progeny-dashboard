@@ -23,13 +23,6 @@ const getTrial = trialCode => {
       return response.data.data
     })
 }
-const getTrialReplicates = trialId => {
-  return axiosApiInstance
-    .get(`${API_URL}/trial/replicates/${trialId}`)
-    .then(response => {
-      return response.data.data
-    })
-}
 
 const updateTrialReplicate = body => {
   return axiosApiInstance
@@ -50,7 +43,6 @@ const TrialService = {
   saveTrial,
   editTrial,
   getTrial,
-  getTrialReplicates,
   updateTrialReplicate,
   updateTrialState
 }

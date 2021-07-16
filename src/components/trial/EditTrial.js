@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import {
   Table,
@@ -89,7 +89,6 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
 
 
 const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
-  console.log({ option })
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
   const [status, setStatus] = useState("")
@@ -99,16 +98,14 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [existingReplicatesInEstate, setExistingReplicatesInEstate] = useState(
     []
   )
+  const trialData = useSelector(state => state.dashboardDataReducer.result.trial)
   useEffect(() => {
-    // call an API and in the success or failure fill the data buy using setData function
-    // it could be like below
-    TrialService.getTrialReplicates(option.trial).then(data => {
+
+    const data =  trialData.find((t)=> t.trialId === option.trial)
       setTrial(data)
       setStatus(data.status)
-      console.log("Trial", data)
 
       let replicates = data.replicates
-      console.log({ replicates })
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
         const blocks = reps.estateblocks
@@ -127,7 +124,6 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           }
         }
       })
-      console.log({ newSetOfReps })
       setExistingReplicatesInEstate(newSetOfReps)
       //Can be multiple estate in trial
       const estateReps = []
@@ -139,7 +135,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       })
 
       setReplicatesInEstate(estateReps)
-    })
+
   }, [])
 
   const [estates, setEstates] = useState([])
@@ -329,14 +325,12 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     }
 
     const mappedEstateBlocks = []
-    console.log({ estateBlocks })
     for (let item in estateBlocks) {
       mappedEstateBlocks.push({
         label: estateBlocks[item].estateblock,
         value: estateBlocks[item].estateblock
       })
     }
-    console.log({ mappedEstateBlocks })
     return mappedEstateBlocks
   }
 

@@ -837,6 +837,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     {
                       trial: data.trialId,
                       estate: data.estate,
+                      replicates:data.replicates,
                       type: "expand"
                     }
                   )
@@ -854,6 +855,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       {
                         trial: data.trialId,
                         estate: data.estate,
+                        replicates:data.replicates,
                         type: "edit"
                       }
                     )
@@ -876,6 +878,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                         trial: data.trialCode,
                         trialId: data.trialId,
                         estate: data.estate,
+                        replicates:data.replicates,
                         type: "attach"
                       }
                     )

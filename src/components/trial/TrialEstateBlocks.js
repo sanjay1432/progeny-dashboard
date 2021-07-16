@@ -78,8 +78,7 @@ const TrialEstateBlocks = ({
   useEffect(() => {
     async function fetchData() {
       // You can await here
-      const data = await TrialService.getTrialReplicates(option.trial)
-      let replicates = data.replicates
+      let replicates = option.replicates
       console.log({ replicates })
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
