@@ -185,11 +185,11 @@ const AttachProgeny = ({
     const { trialId } = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-    const reps = await TrialService.getTrialReplicates(trialId)
+    const reps = option.replicates;
     console.log({reps})
     const trialReps = []
     const map = new Map()
-    for (const item of reps.replicates) {
+    for (const item of reps) {
       if (!map.has(item.replicateId)) {
         map.set(item.replicateId, true) // set any value to Map
         trialReps.push({
