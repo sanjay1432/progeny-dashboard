@@ -3,8 +3,9 @@ import { CANCEL_REQUEST } from "../constants"
 import { activeDashboard, progenySubject } from "../services/pubsub.service"
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
 import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
+import ShowChartIcon from "@material-ui/icons/ShowChart"
 import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
-import Insights_black from '../assets/img/icons/insights_black_24dp.svg'
+import Insights_black from "../assets/img/icons/insights_black_24dp.svg"
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
 import logo from "assets/img/Progeny-logo/logoStyle02.png"
 // reactstrap components
@@ -86,7 +87,7 @@ const listItems = [
             label: "Estate",
             type: "select",
             disable: false
-          },
+          }
         ],
         search: false
       },
@@ -188,14 +189,21 @@ const listItems = [
         ],
         search: false
       }
-    ]
+    ],
+    type: "single"
   },
   {
-    name: "Verification",
-    customClass: "verification",
-    customIcon: Insights_black,
-    eventKey: "3-1",
-    sublist : [
+    name: "Statistician",
+    customClass: "master",
+    customIcon: ShowChartIcon,
+    eventKey: "2",
+    subItems: [
+      {
+        name: "Verification",
+        customClass: "master",
+        customIcon: null,
+        eventKey: "2-1",
+        sublist: [
           {
             name: "Yearly Verification",
             eventKey: "yearlyverification",
@@ -230,26 +238,29 @@ const listItems = [
                 label: "Recorded By",
                 type: "select",
                 disable: false
-              },
+              }
             ],
             search: false
           }
-          ]
-  },
-  {
-    name: "Verification",
-    customClass: "verification",
-    customIcon: Insights_black,
-    eventKey: "3-1",
-    sublist : [
+        ]
+      },
+      {
+        name: "Data List",
+        customClass: "master",
+        customIcon: null,
+        eventKey: "2-2",
+        sublist: [
           {
             name: "Form Data",
             eventKey: "formdata",
+            filters: [],
             search: true
-          },
+          }
         ]
-          
-  },
+      }
+    ],
+    type: "multiple"
+  }
   // {
   //   name: "User Management",
   //   icon: "group",
@@ -334,7 +345,6 @@ const Overview = props => {
       handleSelect(data)
     }
 
-
     activeDashboard.subscribe(data => {
       subscribedData(data)
     })
@@ -356,11 +366,20 @@ const Overview = props => {
   }
 
   const history = useHistory()
-  const currentSideItem = listItems.find(
-    item => item.eventKey === sidenavState.activeKey
-  )
 
-  console.log("currentSideItem", currentSideItem)
+  const mainKey = sidenavState.activeKey.split("-")[0]
+  let currentSideItem
+  if (mainKey === sidenavState.activeKey) {
+    currentSideItem = listItems.find(
+      item => item.eventKey === sidenavState.activeKey
+    )
+  } else {
+    const mainItem = listItems.find(item => item.eventKey === mainKey)
+
+    currentSideItem = mainItem.subItems.find(
+      item => item.eventKey === sidenavState.activeKey
+    )
+  }
 
   function toggleDrawer() {
     setDrawer(true)
@@ -370,16 +389,13 @@ const Overview = props => {
     if (eventKey === "1") {
       setSubnavState(() => ({ ...subnavState, active: "estate" }))
       handleSelect("estate")
-    }
-    else if (eventKey === "2") {
+    } else if (eventKey === "2") {
       setSubnavState(() => ({ ...subnavState, active: "userlist" }))
       handleSelect("userlist")
-    } 
-    else if (eventKey === "3-1") {
+    } else if (eventKey === "2-1") {
       setSubnavState(() => ({ ...subnavState, active: "yearlyverification" }))
       handleSelect("yearlyverification")
-    }
-    else if (eventKey === "3-2") {
+    } else if (eventKey === "2-2") {
       setSubnavState(() => ({ ...subnavState, active: "formdata" }))
       handleSelect("formdata")
     }
@@ -424,7 +440,11 @@ const Overview = props => {
   const { active } = subnavState
   return (
     <>
-      <SuccessMessage action={action} show={successMessage} hide={() => setSuccessMessage("")}/>
+      <SuccessMessage
+        action={action}
+        show={successMessage}
+        hide={() => setSuccessMessage("")}
+      />
       {isLoggedIn && (
         <ContainerRS>
           <Header>
@@ -492,7 +512,7 @@ const Overview = props => {
               </div>
             </main>
             <NavRS pullRight></NavRS>
-          </Content>                 
+          </Content>
 
           <Drawer
             id="sideNavigation"
@@ -510,34 +530,56 @@ const Overview = props => {
               </div>
             </Drawer.Header>
             <Drawer.Body>
-              <Sidenav
-                expanded={expanded}
-                activeKey={activeKey}
-                onSelect={handleSelectTab}
-              >
-                <Sidenav.Body>
-                  <NavRS>
-                  <NavRS.Item eventKey="1" icon={<ImportantDevicesRoundedIcon />} >
-                          <p className="contentText">Master Data</p>
-                  </NavRS.Item>
-                  <Dropdown title="Statistician">
-                    <Dropdown.Item eventKey="3-1">Verification</Dropdown.Item>
-                    <Dropdown.Item eventKey="3-2">Data List</Dropdown.Item>
-                  </Dropdown>
-                    {/* {listItems.map((item, i) => {
-                      if(item.eventKey === "1") {
-                        <>
-
-                      </>
-                      } else if(item.eventKey === "3") {
-                        <>
-                                  
-                        </>
-                      }
-                    })} */}
-                  </NavRS>
-                </Sidenav.Body>
-              </Sidenav>
+              <div style={{ width: "100% " }}>
+                <Sidenav
+                  expanded={expanded}
+                  activeKey={activeKey}
+                  onSelect={handleSelectTab}
+                >
+                  <Sidenav.Body>
+                    <NavRS>
+                      {listItems.map((item, i) => {
+                        if (item.type === "multiple") {
+                          return (
+                            <Dropdown
+                              eventKey={item.eventKey}
+                              title={item.name}
+                              icon={
+                                <item.customIcon
+                                  className="contentIcon"
+                                  key={i}
+                                />
+                              }
+                            >
+                              {item.subItems.map((subitem, idx) => {
+                                return (
+                                  <Dropdown.Item eventKey={subitem.eventKey} key = {idx}>
+                                    {subitem.name}
+                                  </Dropdown.Item>
+                                )
+                              })}
+                            </Dropdown>
+                          )
+                        } else {
+                          return (
+                            <NavRS.Item
+                              eventKey={item.eventKey}
+                              icon={
+                                <item.customIcon
+                                  className="contentIcon"
+                                  key={i}
+                                />
+                              }
+                            >
+                              {item.name}
+                            </NavRS.Item>
+                          )
+                        }
+                      })}
+                    </NavRS>
+                  </Sidenav.Body>
+                </Sidenav>
+              </div>
             </Drawer.Body>
           </Drawer>
         </ContainerRS>

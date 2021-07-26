@@ -111,18 +111,32 @@
             display: flex;
             flex-direction: row;
             padding-left: 30px;
-
-            .contentIcon {
-              width: 36px;
-              height: 36px;
-              margin-right: 20px;
+            .contentIcon{
+              margin-right: 10px;
             }
+            // .contentIcon {
+            //   width: 36px;
+            //   height: 36px;
+            //   margin-right: 20px;
+            // }
       
-            .contentText {
-              font-size: 20px;
-              color: $primary-black;
-              margin-top: 5px;
-              margin-bottom: 0px;
+            // .contentText {
+            //   font-size: 20px;
+            //   color: $primary-black;
+            //   margin-top: 5px;
+            //   margin-bottom: 0px;
+            // }
+          }
+        }
+        .rs-dropdown {
+
+          .rs-btn {
+            display: flex;
+            flex-direction: row;
+            padding-left: 30px;
+
+            .contentIcon{
+              margin-right: 10px;
             }
           }
         }
