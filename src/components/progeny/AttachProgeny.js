@@ -182,11 +182,10 @@ const AttachProgeny = ({
     setEstates(trialEstate)
   }
   async function setTrialEstateReplicates() {
-    const { trialId } = trialData.find(
+    const selectedTrial = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-    const reps = option.replicates;
-    console.log({reps})
+    const reps = selectedTrial.replicates;
     const trialReps = []
     const map = new Map()
     for (const item of reps) {
