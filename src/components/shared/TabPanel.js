@@ -14,6 +14,7 @@ import AttachProgeny from "components/progeny/AttachProgeny"
 import EditProgeny from "components/progeny/EditProgeny"
 import GenerationQRCode from "components/plot/GenerationQRCode"
 import EditPalmInformation from "components/plot/EditPalmInformation"
+import VerificationDataTable from "./VerificationDataTable"
 
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
   const searchFiltersRef = useRef()
@@ -138,20 +139,38 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
       case "Estate Assignment":
         return <EstateInformation option={option} />
       default:
-        return (
-          <main>
-            <SearchFilter
-              id="searchFilter"
-              currentSubNavState={currentSubNavState}
-              currentItem={currentItem}
-              ref={searchFiltersRef}
-            />
-            <DataTable
-              currentSubNavState={currentSubNavState}
-              currentItem={currentItem}
-            />
-          </main>
-        )
+        if(currentItem.name === "Master Data") {
+          return (
+            <main>
+              <SearchFilter
+                id="searchFilter"
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+                ref={searchFiltersRef}
+              />
+              <DataTable
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+              />
+            </main>
+          )
+        }
+        else if(currentItem.name === "Verification") {
+          return (
+            <main>
+              <SearchFilter
+                id="searchFilter"
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+                ref={searchFiltersRef}
+              />
+              <VerificationDataTable 
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+              />
+            </main>
+          )
+        }
     }
   }
 
