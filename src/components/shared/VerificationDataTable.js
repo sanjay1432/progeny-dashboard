@@ -215,7 +215,7 @@ const VerificationDataTable = ({currentItem ,currentSubNavState}) => {
           autoHeight
         >
           
-          {columns.map(col => {
+          {/* {columns_VerifyForms.map(col => {
             return(
               <>
                 <Column>
@@ -228,7 +228,7 @@ const VerificationDataTable = ({currentItem ,currentSubNavState}) => {
                 </Column>
               </>
             )
-          })}
+          })} */}
 
         </Table>
       <div>
