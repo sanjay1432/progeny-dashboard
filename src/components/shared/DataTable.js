@@ -24,7 +24,8 @@ import {
   IconButton,
   Icon,
   Tooltip,
-  Whisper
+  Whisper,
+  Panel
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
@@ -223,7 +224,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "PROGENY_UPDATE":
       case "USER_CREATE":
       case "USER_UPDATE":
-      //case "MULTIPALMDATA_UPDATE":
         setAction(payload.type)
         setSuccessData(payload.data)
         setSuccessMessage(true)
@@ -564,6 +564,49 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return eachObj[eachKey] === filters[eachKey]
       })
     })
+  }
+
+  const YearlyOverviewVerification = () => {
+    switch (active) {
+      case "yearlyverification":
+      return (
+        <>
+          <b>Yearly Overview Verfication</b>
+          <Grid fluid>
+            <Row>
+              <Col md={6} lg={6}>
+                <Panel header="97.5%" shaded>
+                  Verified Data Record
+                </Panel>
+              </Col>
+
+              <Col md={6} lg={6}>
+                <Panel header="1200" shaded>
+                  Uploaded Data
+                </Panel>
+              </Col>
+
+              <Col md={6} lg={6}>
+                <Panel header="1211" shaded>
+                  Verfied Data
+                </Panel>
+              </Col>
+
+              <Col md={6} lg={6}>
+                <Panel header="1.2" shaded>
+                  Days
+                </Panel>
+              </Col>
+            </Row>
+          </Grid>
+        </>
+      )
+      default:
+        return(
+          <>
+          </>
+        )  
+    }
   }
 
   function AddButton() {
@@ -1499,6 +1542,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       <div>
         <Grid fluid>
           <Row className="show-grid" id="dashboardTableSetting">
+            <YearlyOverviewVerification />
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
               <b>Total records ({tableData.length})</b>
             </Col>
