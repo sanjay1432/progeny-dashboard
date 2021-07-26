@@ -4,6 +4,7 @@ import { activeDashboard, progenySubject } from "../services/pubsub.service"
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
 import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
 import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
+import Insights_black from '../assets/img/icons/insights_black_24dp.svg'
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
 import logo from "assets/img/Progeny-logo/logoStyle02.png"
 // reactstrap components
@@ -43,7 +44,6 @@ const listItems = [
     name: "Master Data",
     customClass: "master",
     customIcon: ImportantDevicesRoundedIcon,
-    icon: "desktop",
     eventKey: "1",
     sublist: [
       {
@@ -87,12 +87,6 @@ const listItems = [
             type: "select",
             disable: false
           },
-          // {
-          //   name: "soiltype",
-          //   label: "Soil Type",
-          //   type: "select",
-          //   disable: false
-          // }
         ],
         search: false
       },
@@ -196,6 +190,66 @@ const listItems = [
       }
     ]
   },
+  {
+    name: "Verification",
+    customClass: "verification",
+    customIcon: Insights_black,
+    eventKey: "3-1",
+    sublist : [
+          {
+            name: "Yearly Verification",
+            eventKey: "yearlyverification",
+            filters: [
+              {
+                name: "year",
+                label: "Year",
+                type: "select",
+                disable: false
+              }
+            ],
+            search: true
+          },
+          {
+            name: "Verify Forms",
+            eventKey: "verifyforms",
+            filters: [
+              {
+                name: "trialCode",
+                label: "Trial Id",
+                type: "select",
+                disable: false
+              },
+              {
+                name: "uploadedby",
+                label: "Uploaded By",
+                type: "select",
+                disable: false
+              },
+              {
+                name: "recordedby",
+                label: "Recorded By",
+                type: "select",
+                disable: false
+              },
+            ],
+            search: false
+          }
+          ]
+  },
+  {
+    name: "Verification",
+    customClass: "verification",
+    customIcon: Insights_black,
+    eventKey: "3-1",
+    sublist : [
+          {
+            name: "Form Data",
+            eventKey: "formdata",
+            search: true
+          },
+        ]
+          
+  },
   // {
   //   name: "User Management",
   //   icon: "group",
@@ -270,7 +324,6 @@ const Overview = props => {
   const [sidenavState, setSidenavState] = useState(initialSidenavState)
   const [subnavState, setSubnavState] = useState(initialSubnavState)
   const [successMessage, setSuccessMessage] = useState(false)
-  const [successData, setSuccessData] = useState(null)
   const [action, setAction] = useState("")
   const dispatch = useDispatch()
 
@@ -309,22 +362,26 @@ const Overview = props => {
 
   console.log("currentSideItem", currentSideItem)
 
-  // console.log({ currentSideItem }, sidenavState)
-  // const toggleNavs = (e, index) => {
-  //   e.preventDefault()
-  //   setActiveTab(index)
-  // }
   function toggleDrawer() {
     setDrawer(true)
   }
   function handleSelectTab(eventKey) {
     setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }))
-    if (eventKey === "2") {
-      setSubnavState(() => ({ ...subnavState, active: "userlist" }))
-      handleSelect("userlist")
-    } else {
+    if (eventKey === "1") {
       setSubnavState(() => ({ ...subnavState, active: "estate" }))
       handleSelect("estate")
+    }
+    else if (eventKey === "2") {
+      setSubnavState(() => ({ ...subnavState, active: "userlist" }))
+      handleSelect("userlist")
+    } 
+    else if (eventKey === "3-1") {
+      setSubnavState(() => ({ ...subnavState, active: "yearlyverification" }))
+      handleSelect("yearlyverification")
+    }
+    else if (eventKey === "3-2") {
+      setSubnavState(() => ({ ...subnavState, active: "formdata" }))
+      handleSelect("formdata")
     }
 
     close()
@@ -435,7 +492,7 @@ const Overview = props => {
               </div>
             </main>
             <NavRS pullRight></NavRS>
-          </Content>
+          </Content>                 
 
           <Drawer
             id="sideNavigation"
@@ -460,16 +517,24 @@ const Overview = props => {
               >
                 <Sidenav.Body>
                   <NavRS>
-                    {listItems.map((item, i) => (
-                      <NavRS.Item
-                        eventKey={item.eventKey}
-                        icon={
-                          <item.customIcon className="contentIcon" key={i} />
-                        }
-                      >
-                        <p className="contentText">{item.name}</p>
-                      </NavRS.Item>
-                    ))}
+                  <NavRS.Item eventKey="1" icon={<ImportantDevicesRoundedIcon />} >
+                          <p className="contentText">Master Data</p>
+                  </NavRS.Item>
+                  <Dropdown title="Statistician">
+                    <Dropdown.Item eventKey="3-1">Verification</Dropdown.Item>
+                    <Dropdown.Item eventKey="3-2">Data List</Dropdown.Item>
+                  </Dropdown>
+                    {/* {listItems.map((item, i) => {
+                      if(item.eventKey === "1") {
+                        <>
+
+                      </>
+                      } else if(item.eventKey === "3") {
+                        <>
+                                  
+                        </>
+                      }
+                    })} */}
                   </NavRS>
                 </Sidenav.Body>
               </Sidenav>

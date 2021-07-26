@@ -2,6 +2,7 @@ import React from "react"
 import { Message } from "rsuite"
 
 const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
+  console.log(data)
   if (show === true) {
     switch (action) {
       case "PLOTDATA_UPDATE":
@@ -63,7 +64,7 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
             <Message
               showIcon
               type="success"
-              description={`Progeny ${data.progenyId} has been successfuly been added.`}
+              description={`Progeny  has been successfuly been added.`}
               onClick={hide}
             />
           </>
@@ -75,7 +76,7 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
             <Message
               showIcon
               type="success"
-              description={`Progeny ${data.progenyId} has been successfuly been edited.`}
+              description={`Progeny  has been successfuly been edited.`}
               onClick={hide}
             />
           </>
