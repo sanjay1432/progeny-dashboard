@@ -195,7 +195,7 @@ const listItems = [
   {
     name: "Statistician",
     customClass: "master",
-    customIcon: ShowChartIcon,
+    customIcon: Insights_black,
     eventKey: "2",
     subItems: [
       {
@@ -543,10 +543,9 @@ const Overview = props => {
                           return (
                             <Dropdown
                               eventKey={item.eventKey}
-                              title={item.name}
+                              title={<p>{item.name}</p>}
                               icon={
-                                <item.customIcon
-                                  className="contentIcon"
+                                <img src={item.customIcon} alt=""
                                   key={i}
                                 />
                               }
@@ -554,7 +553,7 @@ const Overview = props => {
                               {item.subItems.map((subitem, idx) => {
                                 return (
                                   <Dropdown.Item eventKey={subitem.eventKey} key = {idx}>
-                                    {subitem.name}
+                                    <p>{subitem.name}</p>
                                   </Dropdown.Item>
                                 )
                               })}
@@ -571,7 +570,7 @@ const Overview = props => {
                                 />
                               }
                             >
-                              {item.name}
+                              <p>{item.name}</p>
                             </NavRS.Item>
                           )
                         }

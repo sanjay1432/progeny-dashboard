@@ -93,13 +93,32 @@
     .rs-sidenav-default{
       background-color: white;
 
+      .rs-nav-item-content {
+        svg {
+          color: $primary-black;
+          font-size: 35px;
+        }
+
+        p {
+          font-size: 20px;
+          color: $primary-black;
+          margin: 5px 0px 0px 15px;
+        }
+      }
+
       .rs-nav-item-active {
         background-color: rgba(53, 121, 91, 0.1);
 
-        .contentText {
+        svg {
+          color: $primary-green;
+          font-size: 35px;
+        }
+
+        p {
           font-size: 20px;
           font-weight: 700;
-          color: $primary-green !important;
+          color: $primary-green;
+          margin: 5px 0px 0px 15px;
         }
       }
 
@@ -114,18 +133,6 @@
             .contentIcon{
               margin-right: 10px;
             }
-            // .contentIcon {
-            //   width: 36px;
-            //   height: 36px;
-            //   margin-right: 20px;
-            // }
-      
-            // .contentText {
-            //   font-size: 20px;
-            //   color: $primary-black;
-            //   margin-top: 5px;
-            //   margin-bottom: 0px;
-            // }
           }
         }
         .rs-dropdown {
@@ -140,6 +147,49 @@
             }
           }
         }
+      }
+
+      .rs-dropdown-toggle {
+        margin: 0px !important;
+      }
+
+      .rs-dropdown {
+        
+        img {
+          color: $primary-black;
+          width: 35px;
+          margin: 0px;
+        }
+
+        p {
+          font-size: 20px;
+          color: $primary-black;
+          margin: 5px 0px 0px 20px;
+        }
+
+        .rs-dropdown-toggle-caret {
+          font-size: 20px;
+          margin-right: 20px;
+        }
+
+        .rs-dropdown-item-content {
+          p {
+            font-size: 20px;
+            color: $primary-black;
+            margin: 5px 0px 0px 30px;
+          }
+        }
+
+        .rs-dropdown-item-active > .rs-dropdown-item-content {
+            background-color: rgba(53, 121, 91, 0.1);
+            p {
+              font-size: 20px;
+              font-weight: 700;
+              color: $primary-green;
+              margin: 5px 0px 0px 30px;
+            }
+          }
+        
       }
     }    
   }

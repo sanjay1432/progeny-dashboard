@@ -61,9 +61,15 @@
         width: 100%;
       }
 
-      .rs-picker-toggle {
+      .rs-picker-toggle-wrapper {
         width: 100%;
+
+        .rs-picker-toggle {
+          width: 100%;
+        }
       }
+
+
     }
   }
 
