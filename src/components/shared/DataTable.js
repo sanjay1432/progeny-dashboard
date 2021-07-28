@@ -37,7 +37,6 @@ import PalmService from "services/palm.service"
 import PlotService from "services/plot.service"
 import EstateAssignmentService from "../../services/estateAssignment.service"
 import UserAssignmentService from "../../services/userAssignment.service"
-
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -675,7 +674,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function StatusButton({ status }) {
     switch (status) {
-      case "active":
+      case "Active":
         return <Button className="activeStatusButton">Active</Button>
       case "inactive":
         return <Button className="inavtiveStatusButton">Inactive</Button>
@@ -686,10 +685,16 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
       case "finished":
         return <Button className="finishedStatusButton">finished</Button>
+      case "Closed":
+        return <Button className="finishedStatusButton">Closed</Button>
 
       default:
         return null
     }
+  }
+
+  function PlantedDate(date) {
+      return GeneralHelper.modifyDate(date)
   }
 
   useEffect(() => {
@@ -835,9 +840,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   handleActionExpand(
                     ["Trial and Replicate", `Trial ${data.trialCode}`],
                     {
-                      trial: data.trialId,
-                      estate: data.estate,
-                      replicates:data.replicates,
+                      trial: data,
+                      // estate: data.estate,
+                      // replicates:data.replicates,
                       type: "expand"
                     }
                   )
@@ -1231,7 +1236,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             trialfields[3] = field
           }
           if (field.value === "planteddate") {
-            field.width = 120
+            field.width = 200
             trialfields[4] = field
           }
           if (field.value === "nofprogeny") {
@@ -1607,7 +1612,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <Cell align="center" {...props}>
                   {rowData => <StatusButton status={rowData.status} />}
                 </Cell>
-              ) : (
+              ): field.value === "planteddate" ? (<Cell align="center" {...props}>
+              {rowData =>    <PlantedDate date = {rowData.planteddate}/> }
+            </Cell>) : (
                 <EditableCell
                   dataKey={field.value}
                   OriginalData={originalData}

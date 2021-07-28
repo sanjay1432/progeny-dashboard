@@ -111,6 +111,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         const blocks = reps.estateblocks
         if (blocks.length < 2) {
           reps.estateblock = blocks[0].name
+          reps.design = data.design
+          reps.density = blocks[0].density
+          reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
         }
         if (blocks.length > 1) {
@@ -119,11 +122,16 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           for (let i = 0; i < blocks.length; i++) {
             reps = {}
             reps["estateblock"] = blocks[i].name
+            reps.density = blocks[i].density
+            reps.soiltype = blocks[i].soiltype
+            reps.design = data.design
             Object.keys(uni).forEach(key => (reps[key] = uni[key]));
             newSetOfReps.push(reps)
           }
         }
       })
+
+      console.log({newSetOfReps})
       setExistingReplicatesInEstate(newSetOfReps)
       //Can be multiple estate in trial
       const estateReps = []
@@ -336,21 +344,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function handleEstateBlockChange(block, replicate, rowIndex) {
     if (block) {
-      const estateBlocksItems = []
-      estatesWithBlocks.forEach(estate => {
-        estateBlocksItems.push(...estate.estateblocks)
-      })
-      const estateBlocks = [
-        ...new Set(
-          estateBlocksItems
-            .map(item => item.estateblock)
-            .map(block =>
-              estateBlocksItems.find(eb => eb.estateblock === block)
-            )
-        )
-      ]
-
-      const foundedBlock = estateBlocks.find(eb => eb.estateblock === block)
+      const foundedBlock = findEstateBlock(block)
       const data = [...existingReplicatesInEstate]
       data[rowIndex].estateblock = block
       data[rowIndex].blockId = foundedBlock.id
@@ -506,9 +500,35 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
  }
 
   const handleChange = (replicate, key, value) => {
+    console.log({replicate, key, value})
     const nextData = Object.assign([], existingReplicatesInEstate)
+    if(key === "estateblock"){
+       const foundedBlock = findEstateBlock(value)
+       nextData.find(item => item.replicate === replicate)['soiltype'] = foundedBlock.soiltype
+
+    }
     nextData.find(item => item.replicate === replicate)[key] = value
     setExistingReplicatesInEstate(nextData)
+  }
+
+
+  const findEstateBlock = (value)=>{
+    const estateBlocksItems = []
+    estatesWithBlocks.forEach(estate => {
+      estateBlocksItems.push(...estate.estateblocks)
+    })
+    const estateBlocks = [
+      ...new Set(
+        estateBlocksItems
+          .map(item => item.estateblock)
+          .map(block =>
+            estateBlocksItems.find(eb => eb.estateblock === block)
+          )
+      )
+    ]
+
+    const foundedBlock = estateBlocks.find(eb => eb.estateblock === value)
+    return foundedBlock
   }
   const handleEditState = replicate => {
     const nextData = Object.assign([], existingReplicatesInEstate)
@@ -631,6 +651,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               size="lg"
               className="datePicker"
               placeholder="Enter Date"
+              value={trial.planteddate}
               format="MM/YYYY"
               style={styles}
               name="planteddate"
