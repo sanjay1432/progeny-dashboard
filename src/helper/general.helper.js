@@ -19,6 +19,10 @@ const generateArrayOfYears = (plusYearFromThisYear = 5) => {
   return years
 }
 
+const modifyDate = ({date})=>{
+  const someday = moment(date);
+  return someday.format('MMM - DD');
+}
 const chartDateFormatter = value => {
   // Formatted to be month/day; display year only in the first label
   if (value && value.toString().length <= 4) {
@@ -156,7 +160,8 @@ const GeneralHelper = {
   sortDataByStartDate,
   getColorOfPattern,
   timeToMinutes,
-  minutesToTime
+  minutesToTime,
+  modifyDate
 }
 
 export default GeneralHelper

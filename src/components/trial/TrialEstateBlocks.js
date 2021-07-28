@@ -78,13 +78,19 @@ const TrialEstateBlocks = ({
   useEffect(() => {
     async function fetchData() {
       // You can await here
-      let replicates = option.replicates
+      const trial =  option.trial;
+
+       
+      let replicates = trial.replicates
       console.log({ replicates })
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
         const blocks = reps.estateblocks
         if (blocks.length < 2) {
           reps.estateblock = blocks[0].name
+          reps.design = trial.design
+          reps.density = blocks[0].density
+          reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
         }
         if (blocks.length > 1) {
@@ -93,6 +99,9 @@ const TrialEstateBlocks = ({
           for (let i = 0; i < blocks.length; i++) {
             reps = {}
             reps["estateblock"] = blocks[i].name
+            reps.density = blocks[i].density
+            reps.soiltype = blocks[i].soiltype
+            reps.design = trial.design
             Object.keys(uni).forEach(key => (reps[key] = uni[key]));
             newSetOfReps.push(reps)
           }
@@ -128,7 +137,7 @@ const TrialEstateBlocks = ({
   async function getEstateBlocks() {
     const { data } = await EstateService.getUpdatedEstateBlocks()
     const ebs = []
-    option.estate.forEach(est => {
+    option.trial.estate.forEach(est => {
       const items = data.find(eb => eb.estate === est.name).estateblocks
       ebs.push(...items)
     })
@@ -202,7 +211,7 @@ const TrialEstateBlocks = ({
           <Message
             showIcon
             type="success"
-            description={`Replicate ${selectedReplicate.replicate} for Trial ${option.trial} has been successfully edited`}
+            description={`Replicate ${selectedReplicate.replicate} for Trial ${option.trial.trialCode} has been successfully edited`}
             onClick={() => {
               setebAdded(null)
             }}
@@ -220,12 +229,14 @@ const TrialEstateBlocks = ({
     }
   }
   const handleChange = (idx, key, value) => {
-    console.log(estateBlocks)
     const nextData = Object.assign([], filteredTableData)
+    if(key === "estateblock"){
+      const foundedBlock = blocksForEstate.find((block) => block.estateblock === value)
+      nextData.find((item, i) => i === idx)['soiltype'] = foundedBlock.soiltype
+   }
     nextData.find((item, i) => i === idx)[key] = value
     setFilteredTableData(nextData)
   }
-
   const handleEditState = (idx, save = false) => {
     const nextData = Object.assign([], filteredTableData)
     const activeItem = nextData.find((item, i) => i === idx)
@@ -331,7 +342,7 @@ const TrialEstateBlocks = ({
         estate,
         density,
         replicateId,
-        trialId: option.trial
+        trialId: option.trial.trialId
       }
       await TrialService.updateTrialReplicate(payload)
       setebAdded(true)
@@ -454,7 +465,7 @@ const TrialEstateBlocks = ({
             <UnderLinedText
               text={`Replicate ${selectedReplicate?.replicate}`}
             />{" "}
-            for <UnderLinedText text={`Trial  ${option.trial}`} /> &nbsp; from
+            for <UnderLinedText text={`Trial  ${option.trial.trialCode}`} /> &nbsp; from
             the list? This might change data that is associate with it as well!
           </Modal.Body>
           <Modal.Footer>
