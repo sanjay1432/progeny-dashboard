@@ -228,13 +228,13 @@ const listItems = [
                 disable: false
               },
               {
-                name: "uploadedby",
+                name: "uploadedBy",
                 label: "Uploaded By",
                 type: "select",
                 disable: false
               },
               {
-                name: "recordedby",
+                name: "recordedBy",
                 label: "Recorded By",
                 type: "select",
                 disable: false

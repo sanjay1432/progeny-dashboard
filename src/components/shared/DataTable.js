@@ -674,20 +674,24 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function StatusButton({ status }) {
     switch (status) {
-      case "Active":
+      case "active":
+      case "Active":  
         return <Button className="activeStatusButton">Active</Button>
       case "inactive":
+      case "Inactive":
         return <Button className="inavtiveStatusButton">Inactive</Button>
       case "canceled":
+      case "Canceled":
         return <Button className="canceledStatusButton">canceled</Button>
       case "pending":
+      case "Pending":  
         return <Button className="pendingStatusButton">pending</Button>
-
       case "finished":
+      case "Finished":  
         return <Button className="finishedStatusButton">finished</Button>
-      case "Closed":
+      case "closed":
+      case "Closed":  
         return <Button className="finishedStatusButton">Closed</Button>
-
       default:
         return null
     }
@@ -738,11 +742,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function savePlotData(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
     PlotService.updatePlot(confirmationData).then(
       data => {
+        const nextData = Object.assign([], tableData)
+        const activeItem = nextData.find(item => item.trialid === trialid)
+        activeItem.status = activeItem.status ? null : true
         setTableData(nextData)
         setConfirmationModal(false)
         setSuccessData(confirmationData)
@@ -785,9 +789,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function savePalmData(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
     const payload = {
       trialCode: confirmationData.trialCode,
       estate: confirmationData.estate,
@@ -798,6 +799,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
     PalmService.updatePalm(payload).then(
       data => {
+        const nextData = Object.assign([], tableData)
+        const activeItem = nextData.find(item => item.trialid === trialid)
+        activeItem.status = activeItem.status ? null : true
         setTableData(nextData)
         setConfirmationModal(false)
         setSuccessData(confirmationData)
