@@ -693,7 +693,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "Closed":  
         return <Button className="finishedStatusButton">Closed</Button>
       default:
-        return null
+        return <Button className="inavtiveStatusButton">Undefined</Button>
     }
   }
 
