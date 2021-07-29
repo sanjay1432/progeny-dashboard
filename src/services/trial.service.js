@@ -34,7 +34,7 @@ const updateTrialReplicate = body => {
 
 const updateTrialState = (trialId, state) => {
   return axiosApiInstance
-    .post(`${API_URL}/update-trial-state/${trialId}`, {state})
+    .post(`${API_URL}/update-trial-state?trialId=${trialId}`, {state})
     .then(response => {
       return response.data
     })

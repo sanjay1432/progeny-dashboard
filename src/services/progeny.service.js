@@ -19,7 +19,7 @@ const updateProgeny = payload => {
 
 const attachProgeny = (payload, trialId) => {
   return axiosApiInstance
-    .put(`${API_URL}/attach-progeny/${trialId}`, payload)
+    .put(`${API_URL}/attach-progeny?trialId=${trialId}`, payload)
     .then(response => {
       return response.data
     })

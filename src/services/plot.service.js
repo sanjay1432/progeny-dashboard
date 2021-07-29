@@ -9,7 +9,7 @@ const getPlotData = () => {
 
 const getQrCodeDataList = payload => {
   return axiosApiInstance
-    .get(`${API_URL}/plot/qrcode/${payload}`)
+    .get(`${API_URL}/plot/qrcode?plotId=${payload}`)
     .then(response => {
       return response.data
     })
@@ -24,7 +24,7 @@ const updatePlot = payload => {
 }
 const getTrialPlots = trialid => {
   return axiosApiInstance
-    .get(`${API_URL}/trial/replicates/plots/${trialid}`)
+    .get(`${API_URL}/trial/replicates/plots?trialId=${trialid}`)
     .then(response => {
       return response.data.data
     })
@@ -48,7 +48,7 @@ const editPalmInformation = payload => {
 
 const attachTrialPlots = (trialid, plots) => {
   return axiosApiInstance
-    .post(`${API_URL}/trial/replicates/plots/${trialid}`, plots)
+    .post(`${API_URL}/trial/replicates/plots?trialId=${trialid}`, plots)
     .then(response => {
       return response.data
     })
