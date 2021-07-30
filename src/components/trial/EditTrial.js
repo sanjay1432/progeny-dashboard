@@ -99,10 +99,14 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     []
   )
   const trialData = useSelector(state => state.dashboardDataReducer.result.trial)
-  useEffect(() => {
-
-    const data =  trialData.find((t)=> t.trialId === option.trial)
-      setTrial(data)
+  useEffect( () => {
+    EstateService.getDesigns().then(response => {
+      console.log({response})
+      const designsData =  response.data;
+      const data =  trialData.find((t)=> t.trialId === option.trial)
+      const designObj = designsData.find((t)=> t.design === data.design)
+      data.designId =  designObj.designId
+      setTrial(data) 
       setStatus(data.status)
 
       let replicates = data.replicates
@@ -112,6 +116,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         if (blocks.length < 2) {
           reps.estateblock = blocks[0].name
           reps.design = data.design
+          reps.designId = designObj.designId
           reps.density = blocks[0].density
           reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
@@ -125,13 +130,12 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             reps.density = blocks[i].density
             reps.soiltype = blocks[i].soiltype
             reps.design = data.design
+            reps.designId = designObj.designId
             Object.keys(uni).forEach(key => (reps[key] = uni[key]));
             newSetOfReps.push(reps)
           }
         }
       })
-
-      console.log({newSetOfReps})
       setExistingReplicatesInEstate(newSetOfReps)
       //Can be multiple estate in trial
       const estateReps = []
@@ -143,6 +147,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       })
 
       setReplicatesInEstate(estateReps)
+    })
+    
 
   }, [])
 
@@ -166,14 +172,12 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   async function fetchEstates() {
     const { data } = await EstateService.getUpdatedEstateBlocks()
-    console.log("EstatesWithBlocks", data)
     setEstatesWithBlocks(data)
     const mappedEstate = []
 
     for (let item in data) {
       mappedEstate.push({ label: data[item].estate, value: data[item].estate })
     }
-    console.log({ mappedEstate })
     setEstates(mappedEstate)
   }
   async function fetchDesigns() {
@@ -181,9 +185,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const mappedDesigns = []
 
     for (let item in data) {
-      mappedDesigns.push({ label: data[item].design, value: data[item].design })
+      mappedDesigns.push({ label: data[item].design, value: data[item].designId })
     }
-    console.log(mappedDesigns)
     setDesigns(mappedDesigns)
   }
   function onInput(e) {
@@ -242,8 +245,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     list.splice(index, 1)
     setReplicatesInEstate(list)
   }
-  function onSelectDesign(design) {
-    setTrial(() => ({ ...trial, design }))
+  function onSelectDesign(designId) {
+    const designLabel =  designs.find((design)=> design.value ==  designId)
+    setTrial(() => ({ ...trial, design: designLabel.label, designId }))
   }
 
   function onReGenerateTable() {
@@ -251,7 +255,6 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate([])
     for (let i = 0; i < replicatesInEstate.length; i++) {
       const noOfReps = parseInt(replicatesInEstate[i].replicate)
-      console.log({ noOfReps })
       for (let replicate = 0; replicate < noOfReps; replicate++) {
         const item = {
           estate: replicatesInEstate[i].estate,
@@ -259,16 +262,15 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           estateblock: "",
           density: trialData.density,
           design: trialData.design,
+          designId: trialData.designId,
           soiltype: ""
         }
-        console.log(item)
         setExistingReplicatesInEstate(oldtableData => [...oldtableData, item])
       }
     }
 
     trialData["replicates"] = existingReplicatesInEstate
 
-    console.log({ trialData })
     setRegenerateTable(true)
     setShowRegenerateWarning(false)
     setDisbaledANR(false)
@@ -375,11 +377,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate(data)
   }
   function onAddingNewReplicateVarient() {
-    console.log(checkStatusReplicates)
     const data = [...existingReplicatesInEstate]
-    console.log(data)
     for (let index in checkStatusReplicates) {
-      console.log(checkStatusReplicates[index])
       const repIndex = checkStatusReplicates[index]
       const existingRep = data[repIndex]
       const variant = {
@@ -394,7 +393,6 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       data.splice(repIndex + 1, 0, variant)
       setExistingReplicatesInEstate(data)
-      console.log(existingRep)
     }
   }
 
@@ -410,9 +408,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   function onSaveTrial() {
     setShow(false)
     trial["replicates"] = existingReplicatesInEstate
-    console.log(trial)
     trial.status = status
-    console.log({ disabled })
     if (disabled === "yes") {
       TrialService.saveTrial(trial).then(
         data => {
@@ -500,7 +496,6 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
  }
 
   const handleChange = (replicate, key, value) => {
-    console.log({replicate, key, value})
     const nextData = Object.assign([], existingReplicatesInEstate)
     if(key === "estateblock"){
        const foundedBlock = findEstateBlock(value)

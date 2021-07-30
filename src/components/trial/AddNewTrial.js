@@ -84,7 +84,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const mappedDesigns = []
 
     for (let item in data) {
-      mappedDesigns.push({ label: data[item].design, value: data[item].design })
+      mappedDesigns.push({ label: data[item].design, value: data[item].designId })
     }
     console.log(mappedDesigns)
     setDesigns(mappedDesigns)
@@ -153,8 +153,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     list.splice(index, 1)
     setInputListForTrialInEState(list)
   }
-  function onSelectDesign(design) {
-    setTrial(() => ({ ...trial, design }))
+  function onSelectDesign(designId) {
+    const designLabel =  designs.find((design)=> design.value ==  designId)
+    setTrial(() => ({ ...trial, design: designLabel.label, designId }))
     handleDisableState()
   }
 
@@ -189,6 +190,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           estateblock: "",
           density: trial.density,
           design: trial.design,
+          designId: trial.designId,
           soiltype: ""
         }
         console.log(item)
@@ -209,6 +211,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             estateblock: "",
             density: trial.density,
             design: trial.design,
+            designId: trial.designId,
             soiltype: ""
           }
           console.log(item)
