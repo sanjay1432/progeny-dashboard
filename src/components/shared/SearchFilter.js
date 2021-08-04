@@ -7,7 +7,6 @@ import React, {
 import { useDispatch, useSelector } from "react-redux"
 import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
-import Search from "../shared/Search"
 import Filter from "../shared/Filter"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
 let initialFilters = {}

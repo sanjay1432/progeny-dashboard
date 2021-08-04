@@ -1,5 +1,5 @@
 import { API_URL } from "../constants"
-import axiosApiInstance from "api/api"
+import axiosApiInstance from "../api/api"
 
 const createProgeny = payload => {
   return axiosApiInstance

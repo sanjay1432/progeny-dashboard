@@ -17,7 +17,7 @@ const GenerationQRCode = ({ option }) => {
       setQrData(data)
     }
     fetchData()
-  }, [])
+  }, [option.plotId])
   console.log(qrData)
 
   const CheckCell = ({ onChange, checkedKeys, data }) => {
@@ -74,7 +74,6 @@ const GenerationQRCode = ({ option }) => {
           <QRCode
             className="QRCode"
             size={290}
-            value="HIHI"
             value={`${zoomInData.trialId}-${zoomInData.plotId}-${zoomInData.estateblockId}-${zoomInData.palmId}`}
           />
           <p className="palm">

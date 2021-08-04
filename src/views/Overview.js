@@ -3,11 +3,9 @@ import { CANCEL_REQUEST } from "../constants"
 import { activeDashboard, progenySubject } from "../services/pubsub.service"
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
 import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
-import ShowChartIcon from "@material-ui/icons/ShowChart"
-import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
 import Insights_black from "../assets/img/icons/insights_black_24dp.svg"
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
-import logo from "assets/img/Progeny-logo/logoStyle02.png"
+import logo from "../assets/img/Progeny-logo/logoStyle02.png"
 // reactstrap components
 import { Container } from "reactstrap"
 
@@ -31,7 +29,7 @@ import TabPanel from "../components/shared/TabPanel"
 import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
-import SuccessMessage from "components/SharedComponent/SuccessMessage"
+import SuccessMessage from "../components/SharedComponent/SuccessMessage"
 
 const initialSidenavState = {
   expanded: true,

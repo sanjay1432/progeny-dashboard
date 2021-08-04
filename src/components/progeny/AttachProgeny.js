@@ -7,10 +7,8 @@ import {
   Grid,
   Row,
   Col,
-  Checkbox,
   Input,
   SelectPicker,
-  Pagination,
   Modal,
   ControlLabel
 } from "rsuite"
@@ -32,16 +30,16 @@ import SuccessMessage from "../../components/SharedComponent/SuccessMessage"
 
 import { publish } from "../../services/pubsub.service"
 const { Column, HeaderCell, Cell } = Table
-const initialState = {
-  displaylength: 10,
-  prev: true,
-  next: true,
-  first: false,
-  last: false,
-  ellipsis: true,
-  boundaryLinks: true,
-  activePage: 1
-}
+// const initialState = {
+//   displaylength: 10,
+//   prev: true,
+//   next: true,
+//   first: false,
+//   last: false,
+//   ellipsis: true,
+//   boundaryLinks: true,
+//   activePage: 1
+// }
 let progenyIdSet = []
 let replicateSelector = "All"
 const AttachProgeny = ({
@@ -62,7 +60,7 @@ const AttachProgeny = ({
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [quickSaveData, setQuickSaveData] = useState(null)
   const [successMessage, setSuccessMessage] = useState(false)
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   const [nPalm, setnPalm] = useState(16)
   const [nPalmValue, setNPalmValue] = useState(null)
   const [trialIds, setTrialIds] = useState([])
@@ -106,7 +104,6 @@ const AttachProgeny = ({
   }
   async function setProgeny() {
     const result = await DashboardService.getDashboardData("progeny")
-    console.log(result.data)
     setProgenies(result.data)
     const selectorProgenyIds = []
     result.data.forEach(progeny => {
@@ -209,7 +206,7 @@ const AttachProgeny = ({
     const { trialId } = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-    setLoading(true)
+    // setLoading(true)
     const data = await PlotService.getTrialPlots(trialId)
 
     data.forEach(item => {
@@ -218,14 +215,14 @@ const AttachProgeny = ({
     })
     console.log({ data })
 
-    if (replicateSelector != "All") {
+    if (replicateSelector !== "All") {
       console.log(replicateSelector)
       const filteredReps = data.filter(d => d.replicate === replicateSelector)
       return setTrialPlots(filteredReps)
     } else {
       setTrialPlots(data)
     }
-    setLoading(false)
+    // setLoading(false)
   }
 
   function handleProgenyChange(value, idx, replicate) {
@@ -320,20 +317,20 @@ const AttachProgeny = ({
   }
 
  
-  const containsAll = (obj, arr) => {
-    let contain = true
-    for(const str of arr){
-      console.log(obj, str)
-       if(Object.keys(obj).includes(str) ){
-          continue;
-       }else{
-         contain = false
-          break ;
+//   const containsAll = (obj, arr) => {
+//     let contain = true
+//     for(const str of arr){
+//       console.log(obj, str)
+//        if(Object.keys(obj).includes(str) ){
+//           continue;
+//        }else{
+//          contain = false
+//           break ;
          
-       }
-    }
-    return contain;
- };
+//        }
+//     }
+//     return contain;
+//  };
 
   function getEstateBlocksItem(items) {
     const blocks = []

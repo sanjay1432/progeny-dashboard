@@ -158,7 +158,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [isMultplicationValid, setMultplicationValid] = useState(null)
 
   const [checkStatusReplicates, setCheckStatusReplicate] = useState([])
-  const [estateblocks, setEstateblocks] = useState([])
+  // const [estateblocks, setEstateblocks] = useState([])
   const [disbaledANR, setDisbaledANR] = useState(true)
   const [disbaledANRV, setDisbaledANRV] = useState(true)
   const [disbaledRD, setDisbaledRD] = useState(true)
@@ -246,7 +246,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setReplicatesInEstate(list)
   }
   function onSelectDesign(designId) {
-    const designLabel =  designs.find((design)=> design.value ==  designId)
+    const designLabel =  designs.find((design)=> design.value ===  designId)
     setTrial(() => ({ ...trial, design: designLabel.label, designId }))
   }
 
@@ -329,10 +329,10 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function getEstateBlocks(estate) {
     let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
-    if (estateBlocks) {
-      estateBlocks = estateBlocks.estateblocks
-      setEstateblocks(estateBlocks)
-    }
+    // if (estateBlocks) {
+    //   estateBlocks = estateBlocks.estateblocks
+    //   setEstateblocks(estateBlocks)
+    // }
 
     const mappedEstateBlocks = []
     for (let item in estateBlocks) {

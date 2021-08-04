@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import {
   Table,
   FlexboxGrid,
-  Button,
   InputPicker,
   Grid,
   Row,
   Col,
-  Checkbox,
   Pagination,
-  Message,
-  Input,
-  IconButton,
-  Icon,
-  Tooltip,
-  Whisper,
   Panel
 } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
@@ -31,23 +23,18 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-let initialFilter = {}
-let selectedFilterArray = []
 
 const VerificationtableData = ({currentItem ,currentSubNavState}) => {
   useEffect(() => {
     fillIntableData()
   })
-
-  const [selectedFilters, setFilters] = useState(initialFilter)
   const [tableData, setTableData] = useState([]);
   const [pagination, setPagination] = useState(initialState);
   const { active } = currentSubNavState
   const { activePage, displaylength } = pagination
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
-  const filterData = useSelector(state => state.filterReducer)
-
+ 
   function fillIntableData() {
     const data = dashboardData.result[active]
     setTableData(data)
@@ -159,49 +146,49 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
     }
   }
 
-  const columns = [
-    {
-      name: "Trial ID",
-      dataKey: "trialCode",
-      flexGrow: 1,
-    },
-    {
-      name: "Trial",
-      dataKey: "trial",
-      flexGrow: 1,
-    },
-    {
-      name: "Form",
-      dataKey: "form",
-      flexGrow: 1,
-    },
-    {
-      name: "UploadedDate",
-      dataKey: "uploadedDate",
-      flexGrow: 1,
-    },
-    {
-      name: "Uploaded By",
-      dataKey: "uploadedBy",
-      flexGrow: 1,
-    },
-    {
-      name: "Record Date",
-      dataKey: "recordDate",
-      flexGrow: 1,
-    },
-    {
-      name: "Recorded By",
-      dataKey: "recordedBy",
-      flexGrow: 1,
-    },
-    {
-      name: "Action",
-      dataKey: "trialId",
-      width: 120,
-      customCell: ActionCell
-    },
-  ]
+  // const columns = [
+  //   {
+  //     name: "Trial ID",
+  //     dataKey: "trialCode",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Trial",
+  //     dataKey: "trial",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Form",
+  //     dataKey: "form",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "UploadedDate",
+  //     dataKey: "uploadedDate",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Uploaded By",
+  //     dataKey: "uploadedBy",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Record Date",
+  //     dataKey: "recordDate",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Recorded By",
+  //     dataKey: "recordedBy",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Action",
+  //     dataKey: "trialId",
+  //     width: 120,
+  //     customCell: ActionCell
+  //   },
+  // ]
 
   function getData(itemlength) {
     return tableData
@@ -250,7 +237,7 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
   }
 
   const getNoPages = () => {
-    const { displaylength } = pagination
+    // const { displaylength } = pagination
     //return Math.ceil(tableData.length / displaylength)
   }
 

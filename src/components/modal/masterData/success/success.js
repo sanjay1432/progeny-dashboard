@@ -1,6 +1,6 @@
 import React from "react"
 import { Modal, Button } from "rsuite"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setBreadcrumb } from "../../../../redux/actions/app.action"
 import TrialService from "../../../../services/trial.service"
 const SuccessModal = ({ show, hide, data, ...props }) => {

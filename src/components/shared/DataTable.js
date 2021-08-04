@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
 import GeneralHelper from "../../helper/general.helper"
-import AssignEstate from "../../components/modal/user/userAssignment/AssignEstate"
-import AssignUser from "../../components/modal/user/estateAssignment/AssignUser"
 import DeleteModal from "../../components/modal/DeleteModal"
 import SuccessModal from "../modal/masterData/success/success"
 import { progenySubject } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
-import SuccessMessage from "components/SharedComponent/SuccessMessage"
+import SuccessMessage from "../SharedComponent/SuccessMessage"
 import {
   Table,
   FlexboxGrid,
@@ -24,19 +22,16 @@ import {
   IconButton,
   Icon,
   Tooltip,
-  Whisper,
-  Panel
+  Whisper
 } from "rsuite"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import LinkIcon from "../../assets/img/icons/link_24px.svg"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
-import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
+// import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
 import ConfirmationModal from "../SharedComponent/ConfirmationModal"
-import PalmService from "services/palm.service"
-import PlotService from "services/plot.service"
-import EstateAssignmentService from "../../services/estateAssignment.service"
-import UserAssignmentService from "../../services/userAssignment.service"
+import PalmService from "../../services/palm.service"
+import PlotService from "../../services/plot.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -176,11 +171,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [confirmationModal, setConfirmationModal] = useState(false)
   const [confirmationData, setConfirmationData] = useState("")
   const [isSuccessModal, setSuccessModal] = useState(false)
-  const [assignUserModal, setAssignUserModal] = useState(false)
-  const [estate, setEstate] = useState("")
-  const [selectedItem, setSelectedItem] = useState([])
-  const [assignEstateModal, setAssignEstateModal] = useState(false)
-  const [username, setUsername] = useState("")
+  // const [assignUserModal, setAssignUserModal] = useState(false)
+  // const [estate, setEstate] = useState("")
+  // const [selectedItem, setSelectedItem] = useState([])
+  // const [assignEstateModal, setAssignEstateModal] = useState(false)
+  // const [username, setUsername] = useState("")
   const [isDeleteModal, setDeleteModal] = useState(false)
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [pagination, setPagination] = useState(initialState)
@@ -227,7 +222,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setSuccessData(payload.data)
         setSuccessMessage(true)
         console.log(payload.type)
-        break
+        break;
+      default:
+          return ('')
     }
   }
 
@@ -710,8 +707,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           const originalPalmData = response.data
           setOriginalData(originalPalmData)
         })
+        break
+        default:
+          return null
     }
-  }, [])
+  }, [active])
 
   const handlePlotEditChange = (trialid, key, value) => {
     const nextData = Object.assign([], tableData)
@@ -868,7 +868,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 />
               ) : (
                 <Whisper placement="left" trigger="hover" speaker={editProgeny}>
-                  <img src={CreateIcon} style={{ opacity: 0.2 }} />
+                  <img src={CreateIcon} style={{ opacity: 0.2 }} alt = "create"/>
                 </Whisper>
               )}
             </FlexboxGrid.Item>
@@ -876,6 +876,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               {data.isEditable ? (
                 <img
                   src={LinkIcon}
+                  alt = "edit"
                   onClick={() =>
                     handleActionExpand(
                       ["Trial and Replicate", `Attach Progenies`],
@@ -895,7 +896,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   trigger="hover"
                   speaker={attachProgeny}
                 >
-                  <img src={LinkIcon} style={{ opacity: 0.2 }} />
+                  <img src={LinkIcon} style={{ opacity: 0.2 }} alt = "link"/>
                 </Whisper>
               )}
             </FlexboxGrid.Item>
@@ -1047,93 +1048,93 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             />
           </span>
         )
-      case "estateAssignment":
-        function openAssignUserModal(data) {
-          setAssignUserModal(true)
-          setEstate(data)
-        }
+      // case "estateAssignment":
+      //   function openAssignUserModal(data) {
+      //     setAssignUserModal(true)
+      //     setEstate(data)
+      //   }
 
-        return (
-          <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
-            <FlexboxGrid.Item>
-              <img
-                src={OpenNew}
-                alt=""
-                onClick={() =>
-                  handleActionExpand(
-                    ["Estate Assignment", `Estate ${data.estate}`],
-                    {
-                      type: "check",
-                      estate: data.estate
-                    }
-                  )
-                }
-              />
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              <img
-                src={AccountCircle}
-                alt=""
-                onClick={() => openAssignUserModal(data.estate)}
-              />
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        )
-      case "userAssignment":
-        return (
-          <span>
-            <img
-              src={AccountCircle}
-              alt=""
-              onClick={() => openAssignEstateModal(data.username)}
-            />
-          </span>
-        )
+      //   return (
+      //     <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
+      //       <FlexboxGrid.Item>
+      //         <img
+      //           src={OpenNew}
+      //           alt=""
+      //           onClick={() =>
+      //             handleActionExpand(
+      //               ["Estate Assignment", `Estate ${data.estate}`],
+      //               {
+      //                 type: "check",
+      //                 estate: data.estate
+      //               }
+      //             )
+      //           }
+      //         />
+      //       </FlexboxGrid.Item>
+      //       <FlexboxGrid.Item>
+      //         <img
+      //           src={AccountCircle}
+      //           alt=""
+      //           onClick={() => openAssignUserModal(data.estate)}
+      //         />
+      //       </FlexboxGrid.Item>
+      //     </FlexboxGrid>
+      //   )
+      // case "userAssignment":
+      //   return (
+      //     <span>
+      //       <img
+      //         src={AccountCircle}
+      //         alt=""
+      //         onClick={() => openAssignEstateModal(data.username)}
+      //       />
+      //     </span>
+      //   )
       default:
         return null
     }
   }
 
-  const assignUserToEstate = () => {
-    const payload = {
-      estate: estate,
-      userId: selectedItem
-    }
-    console.log(payload)
-    EstateAssignmentService.assignUserToEstate(payload).then(
-      data => {
-        setAssignUserModal(false)
-        setAction("MULTIUSERTOESTATE_ASSIGN")
-        setSuccessMessage(true)
-      },
-      error => {}
-    )
-  }
+  // const assignUserToEstate = () => {
+  //   const payload = {
+  //     estate: estate,
+  //     userId: selectedItem
+  //   }
+  //   console.log(payload)
+  //   EstateAssignmentService.assignUserToEstate(payload).then(
+  //     data => {
+  //       setAssignUserModal(false)
+  //       setAction("MULTIUSERTOESTATE_ASSIGN")
+  //       setSuccessMessage(true)
+  //     },
+  //     error => {}
+  //   )
+  // }
 
-  const assignEstateToUser = () => {
-    const payload = {
-      username: username,
-      estate: selectedItem
-    }
-    console.log(payload)
-    UserAssignmentService.assignEstateToUser(payload).then(
-      data => {
-        setAssignEstateModal(false)
-        setAction("MULTIESTATETOUSER_ASSIGN")
-        setSuccessMessage(true)
-      },
-      error => {}
-    )
-  }
+  // const assignEstateToUser = () => {
+  //   const payload = {
+  //     username: username,
+  //     estate: selectedItem
+  //   }
+  //   console.log(payload)
+  //   UserAssignmentService.assignEstateToUser(payload).then(
+  //     data => {
+  //       setAssignEstateModal(false)
+  //       setAction("MULTIESTATETOUSER_ASSIGN")
+  //       setSuccessMessage(true)
+  //     },
+  //     error => {}
+  //   )
+  // }
 
   function handleActionExpand(breadcrumb, option) {
     dispatch(setBreadcrumb({ breadcrumb, option }))
   }
 
-  function openAssignEstateModal(data) {
-    setAssignEstateModal(true)
-    setUsername(data)
-  }
+  // function openAssignEstateModal(data) {
+  //   setAssignEstateModal(true)
+  //   setUsername(data)
+  // }
 
   function handleAddNewTrial(breadcrumb, option) {
     console.log({ breadcrumb }, { option })
@@ -1506,10 +1507,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <Row className="show-grid" id="dashboardTableSetting">
             
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({tableData.length})</b>
+              <b>Total records ({tableData.length})   {isSuccessModal+ ''}</b>
             </Col>
 
-            <FlexboxGrid justify="end">
+            <FlexboxGrid justify="end"> 
               <Col sm={5} md={5} lg={5} className="pageOptionLayout">
                 <FlexboxGrid.Item className="selectPage">
                   <InputPicker
@@ -1541,29 +1542,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
 
               <ErrorMessage activeNav={errorMessage} errorData={errorData} />
-
+            
               <SuccessModal
                 show={isSuccessModal}
                 hide={CloseSuccessModal}
                 data={successData}
               />
-              <AssignUser
+              {/* <AssignUser
                 estate={estate}
                 selectedItem={selectedItem}
                 show={assignUserModal}
                 hide={() => setAssignUserModal(false)}
                 setSelectedItem={setSelectedItem}
                 assignUserToEstate={assignUserToEstate}
-              />
+              /> */}
 
-              <AssignEstate
+              {/* <AssignEstate
                 username={username}
                 selectedItem={selectedItem}
                 show={assignEstateModal}
                 hide={() => setAssignEstateModal(false)}
                 setSelectedItem={setSelectedItem}
                 assignEstateToUser={assignEstateToUser}
-              />
+              /> */}
 
               <ConfirmationModal
                 show={confirmationModal}

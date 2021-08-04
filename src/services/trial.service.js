@@ -18,9 +18,9 @@ const editTrial = payload => {
 
 const getTrial = trialCode => {
   return axiosApiInstance
-    .get(`${API_URL}/trial/${trialCode}`)
+    .get(`${API_URL}/trial?trialCode='${trialCode}'`)
     .then(response => {
-      return response.data.data
+      return response.data.data[0]
     })
 }
 

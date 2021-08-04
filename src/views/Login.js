@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom"
 import Form from "react-validation/build/form"
 import CheckButton from "react-validation/build/button"
 import { login } from "../redux/actions/auth.action"
-import logo from "assets/img/Progeny-logo/logoStyle02.png"
+import logo from "../assets/img/Progeny-logo/logoStyle02.png"
 import { Loader, Input, Grid, Row, Col } from "rsuite"
 // reactstrap components
 import { Card, CardBody, Container } from "reactstrap"

@@ -2,16 +2,13 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom"
 import "rsuite/lib/styles/index.less"
-import "assets/scss/progeny.scss?v1.1.0"
+import "./assets/scss/progeny.scss"
 import { BASE_NAME, DASHBOARD_VERSION } from "./constants/index"
 import { Provider } from "react-redux"
 import configureAppStore from "./redux/store"
 import StateLoader from "./redux/StateLoader"
 import Login from "./views/Login"
 import Overview from "./views/Overview"
-import { AbilityContext } from "./config/Can"
-import ability from "./config/ability"
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration"
 import { Notification, ButtonToolbar, Button } from "rsuite"
 const stateLoader = new StateLoader()
 configureAppStore.subscribe(() => {
@@ -29,7 +26,6 @@ if (appVersion && appVersion !== DASHBOARD_VERSION) {
 
 ReactDOM.render(
   <Provider store={configureAppStore}>
-    <AbilityContext.Provider value={ability}>
       <BrowserRouter basename={`${BASE_NAME}`}>
         <Switch>
           <Route
@@ -41,7 +37,6 @@ ReactDOM.render(
           <Redirect to="/overview" />
         </Switch>
       </BrowserRouter>
-    </AbilityContext.Provider>
   </Provider>,
   document.getElementById("root")
 )
@@ -92,7 +87,3 @@ function open() {
   })
 }
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
-serviceWorkerRegistration.register({ notification: () => open() })

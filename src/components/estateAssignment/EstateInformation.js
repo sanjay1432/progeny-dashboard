@@ -139,6 +139,8 @@ const EstateInformation = ({ option }) => {
             </Button>
           </Cell>
         )
+        default:
+          return null
     }
   }
 
