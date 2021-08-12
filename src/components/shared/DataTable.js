@@ -1507,7 +1507,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           <Row className="show-grid" id="dashboardTableSetting">
             
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({tableData.length})   {isSuccessModal+ ''}</b>
+              <b>Total records ({tableData.length}) </b>
             </Col>
 
             <FlexboxGrid justify="end"> 

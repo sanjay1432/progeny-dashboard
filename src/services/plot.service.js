@@ -11,7 +11,7 @@ const getQrCodeDataList = payload => {
   return axiosApiInstance
     .get(`${API_URL}/plot/qrcode?plotId=${payload}`)
     .then(response => {
-      return response.data
+      return response.data.data
     })
 }
 

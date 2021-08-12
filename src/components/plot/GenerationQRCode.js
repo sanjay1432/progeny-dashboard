@@ -7,6 +7,7 @@ import { Panel, Grid, Row, Col, Button, Checkbox, Modal } from "rsuite"
 
 const GenerationQRCode = ({ option }) => {
   const [qrData, setQrData] = useState([])
+  const [plotInfo, setPlotInfo] = useState([])
   const [zoomInQR, setZoomInQR] = useState(false)
   const [zoomInData, setZoomInData] = useState("")
   const [checkStatus, setCheckStatus] = useState([])
@@ -14,7 +15,8 @@ const GenerationQRCode = ({ option }) => {
   useEffect(() => {
     async function fetchData() {
       const data = await PlotService.getQrCodeDataList(option.plotId)
-      setQrData(data)
+      setPlotInfo(data[0])
+      setQrData(data[0].palms)
     }
     fetchData()
   }, [option.plotId])
@@ -86,6 +88,7 @@ const GenerationQRCode = ({ option }) => {
         <PrintLayout
           ref={printRef}
           selectedItem={checkStatus}
+          plot = {plotInfo}
           data={qrData}
         />
       </div>
