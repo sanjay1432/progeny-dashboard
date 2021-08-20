@@ -957,11 +957,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       handleActionExpand(["Plot", "Edit Palms Information"], {
                         type: "edit",
                         trialCode: data.trialCode,
+                        trialId: data.trialId,
                         estate: data.estate,
                         replicate: data.replicate,
                         plot: data.plot
                       })
-                    }
+                    }  
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>

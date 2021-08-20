@@ -17,7 +17,7 @@ configureAppStore.subscribe(() => {
 
 const appVersion = localStorage.getItem("DASHBOARD-VERSION")
 if (appVersion && appVersion !== DASHBOARD_VERSION) {
-  console.error("test", appVersion)
+  // console.error("test", appVersion)
   localStorage.clear()
   localStorage.setItem("DASHBOARD-VERSION", DASHBOARD_VERSION)
 } else {

@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import GeneralHelper from "../../helper/general.helper"
-import { clearBreadcrumb } from "../../redux/actions/app.action"
-import PlotService from "../../services/plot.service"
-import { publish, changeActive } from "../../services/pubsub.service"
-import DataPicker from "../SharedComponent/DataPicker"
-import ConfirmationModal from "../SharedComponent/ConfirmationModal"
-import SuccessMessage from "../SharedComponent/SuccessMessage"
-import SearchMessage from "../../assets/img/SearchMessage.svg"
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import GeneralHelper from "../../helper/general.helper";
+import { clearBreadcrumb } from "../../redux/actions/app.action";
+import PlotService from "../../services/plot.service";
+import PalmService from "../../services/palm.service"
+import { publish, changeActive } from "../../services/pubsub.service";
+import ConfirmationModal from "../SharedComponent/ConfirmationModal";
+import SuccessMessage from "../SharedComponent/SuccessMessage";
+import SearchMessage from "../../assets/img/SearchMessage.svg";
 import {
   Table,
   FlexboxGrid,
   Grid,
   Row,
   Col,
+  SelectPicker,
   Input,
   ControlLabel,
-  Button
-} from "rsuite"
+  Button,
+} from "rsuite";
 
-const { Column, HeaderCell, Cell } = Table
+const { Column, HeaderCell, Cell } = Table;
 
 const EditableCell = ({
   rowData,
@@ -38,142 +39,251 @@ const EditableCell = ({
           "estate",
           "replicate",
           "estateblock",
-          "plot"
+          "plot",
         ].includes(dataKey)}
-        onChange={value =>
+        onChange={(value) =>
           handleEditChange &&
           handleEditChange(
             rowData.trialCode,
             rowData.estate,
             rowData.replicate,
             rowData.plot,
+            rowData.palmId,
             dataKey,
             value
           )
         }
       />
     </Cell>
-  )
-}
+  );
+};
 
 const EditPalmInformation = ({ option }) => {
   const initialFilterValue = {
     trialCode: option.trialCode,
-    estate: option.estate,
-    replicate: option.replicate,
-    plot: option.plot
-  }
+    estate: "All",
+    replicate: "All",
+    plotId: "All",
+    trialId: option.trialId,
+  };
 
-  const [initialData, setInitialData] = useState([])
-  const [appliedData, setAppliedData] = useState([])
-  const [filterValue, setFilterValue] = useState(initialFilterValue)
-  const [trialFilterData, setTrialFilterData] = useState([])
-  const [estateFilterData, setEstateFilterData] = useState([])
-  const [replicateFilterData, setReplicateFilterData] = useState([])
-  const [plotFilterData, setPlotFilterData] = useState([])
-  const [tableData, setTableData] = useState([])
-  const [successMessage, setSuccessMessage] = useState("")
-  const [confirmationModal, setConfirmationModal] = useState(false)
-  const dispatch = useDispatch()
+  const [initialData, setInitialData] = useState([]);
+  const [filterValue, setFilterValue] = useState(initialFilterValue);
+
+  const [tableData, setTableData] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const trialData = useSelector(
+    (state) => state.dashboardDataReducer.result.trial
+  );
+  const [trialIds, setTrialIds] = useState([]);
+  const [estates, setEstates] = useState([]);
+  const [plots, setPlots] = useState([]);
+  const [replicates, setReplicates] = useState([]);
+  const [dataToBeEdited, setDataToBeEdited] = useState([]);
+  const dispatch = useDispatch();
   useEffect(() => {
-    async function fetchData() {
-      const data = await PlotService.getPalmInformation()
-      const initialTableData = data.filter(
-        data =>
-          data.trialCode === filterValue.trialCode &&
-          data.estate === filterValue.estate &&
-          data.replicate === filterValue.replicate &&
-          data.plot === filterValue.plot
-      )
-      setTrialFilterData(data)
-      setEstateFilterData(data)
-      setReplicateFilterData(data)
-      setPlotFilterData(data)
-      setInitialData(data)
-      setTableData(initialTableData)
+    if (filterValue.trialId) {
+      setFilterTrialIds();
+      setTrials();
+      async function fetchData() {
+        const data = await PlotService.getPalmInformation(filterValue.trialId);
+        setPlotFilterData(data);
+        setReplicateFilterData(data);
+        setInitialData(data);
+        filterTableData(data);
+      }
+      fetchData();
     }
-    fetchData()
-  }, [])
+  }, [
+    filterValue.trialId,
+    filterValue.estate,
+    filterValue.plotId,
+    filterValue.replicate,
+  ]);
 
-  const { user } = useSelector(state => state.authReducer)
+  const { user } = useSelector((state) => state.authReducer);
 
   const userInfo = GeneralHelper.buildDisplayName(
     user.firstName,
     user.lastName,
     user.username
-  )
+  );
 
-  function handleTrialFilterChange(value) {
-    setFilterValue({ ...filterValue, trialCode: value })
-    const renewFilterData = initialData.filter(data => data.trialCode === value)
-    setEstateFilterData(renewFilterData)
-    setReplicateFilterData(renewFilterData)
-    setPlotFilterData(renewFilterData)
+  function setTrials() {
+    const selectedTrial = trialData.find(
+      (trial) => trial.trialCode === filterValue.trialCode
+    );
+    setTrialEstates(selectedTrial);
+  }
+  function setFilterTrialIds() {
+    const selectorTrialIds = [];
+    const trialIdxs = [...new Set(trialData.map((trial) => trial.trialCode))];
+    trialIdxs.forEach((id) => {
+      selectorTrialIds.push({
+        label: id,
+        value: id,
+      });
+    });
+    setTrialIds(selectorTrialIds);
   }
 
-  function handleEstateFilterChange(value) {
-    setFilterValue({ ...filterValue, estate: value })
-    const renewFilterData = initialData.filter(data => {
-      if (value === "all") {
-        return data.trialCode === filterValue.trialCode
-      } else {
-        return data.trialCode === filterValue.trialCode && data.estate === value
+  function setTrialEstates(trial) {
+    const trialEstate = [];
+    const trialEstateBlocks = [];
+    trialEstate.push({
+      label: "All Estate",
+      value: "All",
+    });
+    trial.estate.forEach((est) => {
+      trialEstate.push({
+        label: est.name,
+        value: est.name,
+      });
+      for (let i = 0; i < est.estateblocks.length; i++) {
+        trialEstateBlocks.push({
+          label: `${est.name} - ${est.estateblocks[i].estateblock}`,
+          id: est.estateblocks[i].blockId,
+          name: est.estateblocks[i].estateblock,
+          estate: est.name,
+          value: `${est.name} - ${est.estateblocks[i].estateblock}`,
+        });
       }
-    })
-    setReplicateFilterData(renewFilterData)
-    setPlotFilterData(renewFilterData)
+    });
+
+    // SET THE ESTATE BLOCKS WITH ESTATE NAME
+    console.log({ trialEstateBlocks });
+    setEstates(trialEstate);
   }
 
-  function handleReplicateFilterChange(value) {
-    setFilterValue({ ...filterValue, replicate: value })
-    const renewData = appliedData.filter(data => {
-      if (value === "all" && filterValue.plot === "all") {
-        return data
-      } else if (value !== "all" && filterValue.plot === "all") {
-        return data.replicate === value
-      } else if (value === "all" && filterValue.plot !== "all") {
-        return data.plot === filterValue.plot
-      } else {
-        return data.plot === value && data.replicate === filterValue.replicate
-      }
-    })
-    setPlotFilterData(renewData)
-    setTableData(renewData)
+  function setPlotFilterData(data) {
+    const trialPlots = [];
+    trialPlots.push({
+      label: "All Plots",
+      value: "All",
+    });
+    const trialPlotIdxs = [...new Set(data.map((plot) => plot.plotId))];
+    trialPlotIdxs.forEach((idx) => {
+      trialPlots.push({
+        label: data.find((plot) => plot.plotId === idx).plot,
+        value: idx,
+      });
+    });
+    console.log({ trialPlots });
+    setPlots(trialPlots);
+  }
+  function setReplicateFilterData(data) {
+    const trialReplicates = [];
+    trialReplicates.push({
+      label: "All Replicates",
+      value: "All",
+    });
+    const trialReplicateIdxs = [...new Set(data.map((plot) => plot.replicate))];
+    trialReplicateIdxs.forEach((idx) => {
+      trialReplicates.push({
+        label: idx,
+        value: idx,
+      });
+    });
+    console.log({ trialReplicates });
+    setReplicates(trialReplicates);
+  }
+  function setFilterData(value, name) {
+    console.log(value, name);
+    if (name === "trialCode") {
+      const selectedTrial = trialData.find(
+        (trial) => trial.trialCode === value
+      );
+      setTrialEstates(selectedTrial);
+      setFilterValue(() => ({ ...filterValue, [name]: value, estate: "All" }));
+    } else {
+      setFilterValue(() => ({ ...filterValue, [name]: value }));
+    }
   }
 
-  function handlePlotFilterChange(value) {
-    setFilterValue({ ...filterValue, plot: value })
-    const renewData = appliedData.filter(data => {
-      if (value === "all" && filterValue.replicate === "all") {
-        return data
-      } else if (value !== "all" && filterValue.replicate === "all") {
-        return data.plot === value
-      } else if (value === "all" && filterValue.replicate !== "all") {
-        return data.replicate === filterValue.replicate
-      } else {
-        return data.plot === value && data.replicate === filterValue.replicate
-      }
-    })
-    setReplicateFilterData(renewData)
-    setTableData(renewData)
+  function filterTableData(data) {
+    const { estate, replicate, plotId } = filterValue;
+    const tableInitialData = [...data];
+
+    // IF ALL VALUE IS SELECTED ALL
+    if (estate === "All" && replicate === "All" && plotId === "All") {
+      setTableData(tableInitialData);
+    }
+    // IF ALL VALUE IS NOT SELECTED ALL
+    if (estate !== "All" && replicate !== "All" && plotId !== "All") {
+      const result = tableInitialData.filter(
+        (data) =>
+          data.estate === filterValue.estate &&
+          data.replicate === filterValue.replicate &&
+          data.plotId === filterValue.plotId
+      );
+      setTableData(result);
+    }
+    // IF  estate === 'All' && (replicate && plotId !== 'All')
+    if (estate === "All" && replicate !== "All" && plotId !== "All") {
+      const result = tableInitialData.filter(
+        (data) =>
+          data.replicate === filterValue.replicate &&
+          data.plotId === filterValue.plotId
+      );
+      setTableData(result);
+    }
+    // IF  replicate === 'All' && (estate && plotId !== 'All')
+    if (estate !== "All" && replicate === "All" && plotId !== "All") {
+      const result = tableInitialData.filter(
+        (data) =>
+          data.estate === filterValue.estate &&
+          data.plotId === filterValue.plotId
+      );
+      setTableData(result);
+    }
+    // IF  plotId === 'All' && (estate && replicate !== 'All')
+    if (estate !== "All" && replicate !== "All" && plotId === "All") {
+      const result = tableInitialData.filter(
+        (data) =>
+          data.estate === filterValue.estate &&
+          data.replicate === filterValue.replicate
+      );
+      setTableData(result);
+    }
+    // IF  estate !== 'All' && (replicate && plotId === 'All')
+
+    if (estate !== "All" && replicate === "All" && plotId === "All") {
+      const result = tableInitialData.filter(
+        (data) => data.estate === filterValue.estate
+      );
+      setTableData(result);
+    }
+    // IF  replicate !== 'All' && (estate && plotId === 'All')
+
+    if (estate === "All" && replicate !== "All" && plotId === "All") {
+      const result = tableInitialData.filter(
+        (data) => data.replicate === filterValue.replicate
+      );
+      setTableData(result);
+    }
+    // IF  plotId !== 'All' && (estate && replicate === 'All')
+    if (estate === "All" && replicate === "All" && plotId !== "All") {
+      const result = tableInitialData.filter(
+        (data) => data.plotId === filterValue.plotId
+      );
+      setTableData(result);
+    }
+
+    console.log(tableData);
   }
+
 
   function applyFilter() {
-    setFilterValue({ ...filterValue, replicate: "all", plot: "all" })
-    const renewTableData = initialData.filter(data => {
-      if (filterValue.estate === "all") {
-        return data.trialCode === filterValue.trialCode
-      } else {
-        return (
-          data.trialCode === filterValue.trialCode &&
-          data.estate === filterValue.estate
-        )
-      }
-    })
-    setTableData(renewTableData)
-    setAppliedData(renewTableData)
-    setReplicateFilterData(renewTableData)
-    setPlotFilterData(renewTableData)
+    const selectedTrial = trialData.find(
+      (trial) => trial.trialCode === filterValue.trialCode
+    );
+    setFilterValue({
+      ...filterValue,
+      replicate: "All",
+      plot: "All",
+      trialId: selectedTrial.trialId,
+    });
   }
 
   function resetFilter() {
@@ -182,95 +292,70 @@ const EditPalmInformation = ({ option }) => {
       trialCode: "",
       estate: "",
       replicate: "",
-      plot: ""
-    })
-    setTableData([])
+      plot: "",
+      trialId: "",
+    });
+    setTableData([]);
+    setEstates([]);
+    setPlots([]);
+    setReplicates([]);
   }
 
   const columns = [
     {
       name: "Replicate",
       dataKey: "replicate",
-      flexGrow: 1
+      flexGrow: 1,
     },
     {
       name: "Estate Block",
       dataKey: "estateblock",
-      flexGrow: 1
+      flexGrow: 1,
     },
     {
       name: "Plot",
       dataKey: "plot",
-      flexGrow: 1
+      flexGrow: 1,
     },
     {
       name: "Palm Number",
       dataKey: "palmno",
-      flexGrow: 1
-    }
-  ]
+      flexGrow: 1,
+    },
+  ];
 
-  const handleEditChange = (trialCode, estate, replicate, plot, key, value) => {
-    var nextData = Object.assign([], tableData)
-    nextData.find(
-      item =>
-        item.trialCode === trialCode &&
-        item.estate === estate &&
-        item.replicate === replicate &&
-        item.plot === plot
-    )[key] = value
-    setTableData(nextData)
-    console.log(tableData)
-  }
+  const handleEditChange = (trialCode, estate, replicate, plot, palmId, key, value) => {
+    var nextData = Object.assign([], tableData);
+    nextData.find(item => item.palmId === palmId)[key] = value
+    setTableData(nextData);
+    const payload = {
+      trialCode,estate, 'palmno':value, palmId
+    }
+    const oldata =  [...dataToBeEdited.palmnos|| []]
+    const findIndex  = oldata.findIndex(x => x.palmId === palmId);
+    oldata[findIndex] = payload
+    if(findIndex === -1){
+    setDataToBeEdited(prevState => ({
+      palmnos: [...(prevState.palmnos|| []), payload]
+    }));
+    }else {
+      setDataToBeEdited({palmnos: oldata})
+    }
+  };
 
   const quickSaveEditedData = () => {
-    const payload = tableData.map(data => {
-      const savedData = {
-        trialCode: data.trialCode,
-        estate: data.estate,
-        palmno: data.palmno,
-        palmId: data.palmId,
-        updatedBy: userInfo,
-        updatedDate: new Date().toISOString()
-      }
-      return savedData
-    })
-    console.log(payload)
-     PlotService.updatePlot(payload).then(
-       data => {
-         setSuccessMessage(true)
-       },
-       error => {}
-     )
-  }
-
-  const completedEditData = () => {
-    PlotService.editPalmInformation(tableData).then(
-      data => {
-        const savedData = {
-          type: "MULTIPALMDATA_UPDATE",
-          data: tableData,
-          action: "UPDATE"
-        }
-        dispatch(clearBreadcrumb())
-        publish(savedData)
-        changeActive("palm")
+    dataToBeEdited['updatedBy'] = userInfo
+    dataToBeEdited['updatedDate'] = new Date().toISOString()
+    PalmService.updatePalm(dataToBeEdited).then(
+      (data) => {
+        setSuccessMessage(true);
       },
-      error => {
-        alert("Error 404")
-      }
-    )
-  }
+      (error) => {}
+    );
+  };
 
   return (
     <div id="TrialAction">
-      <ConfirmationModal
-        show={confirmationModal}
-        hide={() => setConfirmationModal(false)}
-        save={completedEditData}
-        data={filterValue}
-        action="MULTIPALMDATA_UPDATE"
-      />
 
       <SuccessMessage
         show={successMessage}
@@ -291,11 +376,11 @@ const EditPalmInformation = ({ option }) => {
             <Col md={4} lg={3} className="dashboardFilterLayout">
               <div className="show-col">
                 <ControlLabel className="labelFilter">Trial ID</ControlLabel>
-                <DataPicker
-                  dataType="trialCode"
-                  OriginalData={trialFilterData}
-                  dataValue={filterValue.trialCode}
-                  onChange={value => handleTrialFilterChange(value)}
+                <SelectPicker
+                  data={trialIds}
+                  className="dashboardSelectFilter"
+                  value={filterValue.trialCode}
+                  onChange={(value, e) => setFilterData(value, "trialCode")}
                 />
               </div>
             </Col>
@@ -304,12 +389,11 @@ const EditPalmInformation = ({ option }) => {
             <Col md={4} lg={3} className="dashboardFilterLayout">
               <div className="show-col">
                 <ControlLabel className="labelFilter">Estate</ControlLabel>
-                <DataPicker
-                  dataType="estate"
-                  selectAllData="All Estate"
-                  OriginalData={estateFilterData}
-                  dataValue={filterValue.estate}
-                  onChange={value => handleEstateFilterChange(value)}
+                <SelectPicker
+                  data={estates}
+                  className="dashboardSelectFilter"
+                  value={filterValue.estate}
+                  onChange={(value, e) => setFilterData(value, "estate")}
                 />
               </div>
             </Col>
@@ -320,6 +404,7 @@ const EditPalmInformation = ({ option }) => {
               appearance="primary"
               className="applyButton"
               onClick={applyFilter}
+              disabled = {!filterValue.trialCode}
             >
               Apply
             </Button>
@@ -363,21 +448,19 @@ const EditPalmInformation = ({ option }) => {
 
               <FlexboxGrid justify="end">
                 <Col mdOffset={6} md={4} lgOffset={9} lg={3}>
-                  <DataPicker
-                    dataType="replicate"
-                    selectAllData="All Replicate"
-                    OriginalData={replicateFilterData}
-                    dataValue={filterValue.replicate}
-                    onChange={value => handleReplicateFilterChange(value)}
+                  <SelectPicker
+                    data={replicates}
+                    className="dashboardSelectFilter"
+                    value={filterValue.replicate}
+                    onChange={(value, e) => setFilterData(value, "replicate")}
                   />
                 </Col>
                 <Col md={4} lg={3}>
-                  <DataPicker
-                    dataType="plot"
-                    selectAllData="All Plot"
-                    OriginalData={plotFilterData}
-                    dataValue={filterValue.plot}
-                    onChange={value => handlePlotFilterChange(value)}
+                  <SelectPicker
+                    data={plots}
+                    className="dashboardSelectFilter"
+                    value={filterValue.plotId}
+                    onChange={(value, e) => setFilterData(value, "plotId")}
                   />
                 </Col>
 
@@ -393,11 +476,19 @@ const EditPalmInformation = ({ option }) => {
               </FlexboxGrid>
             </Row>
           </Grid>
-          <Table id="dashboardTable" data={tableData} autoHeight wordWrap>
-            {columns.map(col => {
-              const width = col.width ? col.width : false
-              const flexGrow = col.flexGrow ? col.flexGrow : false
-              const fixed = col.fixed ? col.fixed : false
+          <Table
+            id="dashboardTable"
+            data={tableData}
+            virtualized
+            height={400}
+            rowHeight={55}
+            shouldUpdateScroll={false}
+            wordWrap
+          >
+            {columns.map((col) => {
+              const width = col.width ? col.width : false;
+              const flexGrow = col.flexGrow ? col.flexGrow : false;
+              const fixed = col.fixed ? col.fixed : false;
               return (
                 <Column width={width} flexGrow={flexGrow} fixed={fixed}>
                   <HeaderCell className="tableHeader">{col.name}</HeaderCell>
@@ -406,7 +497,7 @@ const EditPalmInformation = ({ option }) => {
                     handleEditChange={handleEditChange}
                   />
                 </Column>
-              )
+              );
             })}
           </Table>
 
@@ -424,25 +515,13 @@ const EditPalmInformation = ({ option }) => {
                     </Button>
                   </FlexboxGrid.Item>
                 </Col>
-                <Col md={5} lg={4} className="completeButtonLayout">
-                  <FlexboxGrid.Item>
-                    <Button
-                      className="saveButton"
-                      appearance="primary"
-                      onClick={() => setConfirmationModal(true)}
-                      type="button"
-                    >
-                      Complete
-                    </Button>
-                  </FlexboxGrid.Item>
-                </Col>
               </FlexboxGrid>
             </Row>
           </Grid>
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default EditPalmInformation
+export default EditPalmInformation;

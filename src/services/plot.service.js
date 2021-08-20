@@ -30,11 +30,11 @@ const getTrialPlots = trialid => {
     })
 }
 
-const getPalmInformation = () => {
+const getPalmInformation = (trialid) => {
   return axiosApiInstance
-    .get(`${API_URL}/plot/PalmInformation`)
+    .get(`${API_URL}/plot/PalmInformation?trialId=${trialid}`)
     .then(response => {
-      return response.data
+      return response.data.data
     })
 }
 

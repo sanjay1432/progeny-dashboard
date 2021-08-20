@@ -673,8 +673,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               style={{ color: "#353131f2" }}
             >
               {/* <Radio value="active">Active</Radio> */}
-              <Radio value="canceled">Canceled</Radio>
-              <Radio value="finished">Finished</Radio>
+              <Radio value="Canceled">Canceled</Radio>
+              <Radio value="Closed">Finished</Radio>
             </RadioGroup>
           </Col>
         </Row>
