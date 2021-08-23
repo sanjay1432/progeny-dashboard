@@ -674,7 +674,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             >
               {/* <Radio value="active">Active</Radio> */}
               <Radio value="Canceled">Canceled</Radio>
-              <Radio value="Closed">Finished</Radio>
+              <Radio value="Closed">Closed</Radio>
             </RadioGroup>
           </Col>
         </Row>

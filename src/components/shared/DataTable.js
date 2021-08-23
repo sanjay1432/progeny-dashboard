@@ -7,6 +7,7 @@ import SuccessModal from "../modal/masterData/success/success"
 import { progenySubject } from "../../services/pubsub.service"
 import DataPicker from "../SharedComponent/DataPicker"
 import SuccessMessage from "../SharedComponent/SuccessMessage"
+import SearchMessage from "../../assets/img/SearchMessage.svg";
 import {
   Table,
   FlexboxGrid,
@@ -449,11 +450,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function getNoPages() {
     const { displaylength } = pagination
-    return Math.ceil(tableData.length / displaylength)
+    return Math.ceil(getFilteredDataWithoutDisplayLength().length / displaylength)
   }
 
   const filterData = useSelector(state => state.filterReducer)
+   console.log({filterData})
+  
 
+  function showPalmRecord() {
+    if(filterData.filter.hasOwnProperty("trialCode") && filterData.filter.hasOwnProperty("estate")){
+      return true
+    } else {
+      return false
+    }
+
+  }
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
@@ -497,6 +508,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       const end = start + displaylength
       return i >= start && i < end
     })
+  }
+  function getFilteredDataWithoutDisplayLength() {
+    let currentTableData = [...tableData]
+    if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
+      currentTableData = filterTable(filterData.filter, currentTableData)
+    }
+    return currentTableData
   }
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -1503,12 +1521,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   return (
     <>
-      <div>
+    {active === 'palm' && !showPalmRecord() ? (
+        <div className="imageLayout">
+          <img src={SearchMessage} alt="" />
+          <p className="desc">
+            Please enter <b className="title">Trial ID and Estate</b> to view
+            records of Palms.
+          </p>
+        </div>
+      ) : (
+<div>
         <Grid fluid>
           <Row className="show-grid" id="dashboardTableSetting">
             
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({tableData.length}) </b>
+              <b>Total records ({getFilteredDataWithoutDisplayLength().length}) </b>
             </Col>
 
             <FlexboxGrid justify="end"> 
@@ -1582,6 +1609,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         <Table
           id="dashboardTable"
           wordWrap
+          virtualized
+          rowHeight={55}
           data={getData(displaylength)}
           autoHeight
         >
@@ -1646,6 +1675,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           />
         </div>
       </div>
+      )}
+      
     </>
   )
 }
