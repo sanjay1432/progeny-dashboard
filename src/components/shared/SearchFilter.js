@@ -70,6 +70,8 @@ const SearchFilter = forwardRef(
               filterData[filterName] = [
                 ...new Set(filterValues)]
             }
+          } else if (active === "palm") {
+             console.log({filterData})  
           } else {
             filterData[filterName] = filterdata
           }
@@ -112,21 +114,8 @@ const SearchFilter = forwardRef(
     function close() {
       setDrawer(false)
     }
-    // function SearchBox() {
-    //   if (filterList.search) {
-    //     return (
-    //       <Col sm={5} md={4} lg={3}>
-    //         <div className="show-col">
-    //           {" "}
-    //           <Search />
-    //         </div>
-    //       </Col>
-    //     )
-    //   }
-    //   return <></>
-    // }
+
     function MoreFilter() {
-      // const {show} = show;
       if (showMoreFiltersButton) {
         return (
           <Col sm={5} md={4} lg={3} className="multiFilterLayout">
@@ -146,6 +135,20 @@ const SearchFilter = forwardRef(
     }
 
     function onChange(e) {
+      // FIND THE ESTATE OF TRIAL CODE
+      if(active === 'palm'){
+        const trials = dashboardData.result['trial']
+ 
+        const trialEstates =  trials.find((trial)=> trial.trialCode ===  e.target.value)?.estate;
+
+        if(trialEstates){
+          const estates = trialEstates.map((te)=>te.name)
+
+          filterData['estate'] = estates
+        }
+     
+      }
+      
       if (!e.target.value) {
         //In case of checking the disable state
         const index = selectedFilterArray.indexOf(e.target.name)

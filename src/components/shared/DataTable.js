@@ -55,6 +55,7 @@ const EditableCell = ({
   OriginalData,
   ...cellProps
 }) => {
+  console.log(rowData)
   const editing = rowData.status === true
   switch (active) {
     case "trial":
@@ -120,7 +121,7 @@ const EditableCell = ({
               className="editTableInput"
               defaultValue={rowData[dataKey]}
               disabled={[
-                "trialid",
+                "trialCode",
                 "estate",
                 "replicate",
                 "estateblock",

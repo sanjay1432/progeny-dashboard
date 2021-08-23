@@ -32,10 +32,10 @@ const getTrialPlots = trialid => {
 
 const getPalmInformation = (trialid) => {
   return axiosApiInstance
-    .get(`${API_URL}/plot/PalmInformation?trialId=${trialid}`)
-    .then(response => {
-      return response.data.data
-    })
+  .get(`${API_URL}/palm?trialId=${trialid}`)
+  .then(response => {
+    return response.data.data
+  })
 }
 
 const editPalmInformation = payload => {
