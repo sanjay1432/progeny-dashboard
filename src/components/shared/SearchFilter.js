@@ -9,6 +9,7 @@ import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
 import Filter from "../shared/Filter"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
+import GeneralHelper from "../../helper/general.helper";
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}
@@ -55,10 +56,10 @@ const SearchFilter = forwardRef(
         //console.log("filter",filter)
         const filterName = filter.name
         if (filter.type === "select") {
-          const filterdata = [
+          let filterdata = [
             ...new Set(dashboardData.result[active].map(res => res[filterName]))
           ]
-
+          filterdata = filterdata.sort((a,b)=>a-b)
           console.log({ filterdata })
           if (active === "trial" && filter.name === "estate") {
             const filterValues = []
@@ -70,7 +71,14 @@ const SearchFilter = forwardRef(
               filterData[filterName] = [
                 ...new Set(filterValues)]
             }
-          } else if (active === "palm") {
+          } else if (active === "trial" && filter.name === "planteddate") {
+             const filterValues = []
+             filterdata.forEach(date => {
+              const d = GeneralHelper.modifyDate({date})  
+              filterValues.push(d)
+             });
+             filterData["planteddate"] = filterValues
+          }else if (active === "palm" && filter.name === "trialCode") {
              console.log({filterData})  
           } else {
             filterData[filterName] = filterdata

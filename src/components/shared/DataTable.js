@@ -55,7 +55,6 @@ const EditableCell = ({
   OriginalData,
   ...cellProps
 }) => {
-  console.log(rowData)
   const editing = rowData.status === true
   switch (active) {
     case "trial":
@@ -575,6 +574,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
          if(active === "trial" && eachKey === "estate") {
               const estates = eachObj[eachKey].map((est)=>est.name)
               return estates.includes( filters[eachKey])
+         }
+         if(active === "trial" && eachKey === "planteddate") {
+           const date   = eachObj[eachKey]
+          return GeneralHelper.modifyDate({date}) ===  filters[eachKey]
          }
         return eachObj[eachKey] === filters[eachKey]
       })

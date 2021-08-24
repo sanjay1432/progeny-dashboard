@@ -79,7 +79,7 @@ const GenerationQRCode = ({ option }) => {
             value={`${zoomInData.trialId}-${zoomInData.plotId}-${zoomInData.estateblockId}-${zoomInData.palmId}`}
           />
           <p className="palm">
-            Plam : <b className="palmData">{zoomInData.palmNo}</b>
+            Palm : <b className="palmData">{zoomInData.palmNo}</b>
           </p>
         </Modal.Body>
       </Modal>
@@ -131,11 +131,12 @@ const GenerationQRCode = ({ option }) => {
       </Grid>
       <div className="ContentLayout">
         {qrData.map(data => {
-          function ZoomInQRCode(trialId, plot, estateBlock, palmNo) {
+          function ZoomInQRCode(trialId,plotId, estateblockId, palmId, palmNo) {
             var Info = {
               trialId: trialId,
-              plot: plot,
-              estateBlock: estateBlock,
+              plotId: plotId,
+              estateblockId: estateblockId,
+              palmId:palmId,
               palmNo: palmNo
             }
 
@@ -145,15 +146,17 @@ const GenerationQRCode = ({ option }) => {
           }
           return (
             <div className="QrItemLayout">
+             
               <Panel shaded>
                 <QRCode
                   size={113}
-                  value={`${data.trialId}-${data.plotId}-${data.estateblockId}-${data.palmId}`}
+                  value={`${plotInfo.trialId}-${plotInfo.plotId}-${plotInfo.estateblockId}-${data.palmId}`}
                   onClick={() =>
                     ZoomInQRCode(
-                      data.trialId,
-                      data.plot,
-                      data.estateblock,
+                      plotInfo.trialId,
+                      plotInfo.plotId,
+                      plotInfo.estateblockId,
+                      data.palmId,
                       data.palmno
                     )
                   }
