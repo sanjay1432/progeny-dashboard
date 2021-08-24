@@ -24,6 +24,7 @@ const SearchFilter = forwardRef(
     const dispatch = useDispatch()
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
+    const [estates, setEstates] = useState([])
 
     const { active } = currentSubNavState
 
@@ -49,18 +50,15 @@ const SearchFilter = forwardRef(
     })
 
     let mainPageFilters = currentFilters
-    console.log({ mainPageFilters })
-
+ 
     if (dashboardData.result[active]) {
       mainPageFilters.forEach(filter => {
-        //console.log("filter",filter)
         const filterName = filter.name
         if (filter.type === "select") {
           let filterdata = [
             ...new Set(dashboardData.result[active].map(res => res[filterName]))
           ]
           filterdata = filterdata.sort((a,b)=>a-b)
-          console.log({ filterdata })
           if (active === "trial" && filter.name === "estate") {
             const filterValues = []
             if (filterdata) {
@@ -77,11 +75,13 @@ const SearchFilter = forwardRef(
               const d = GeneralHelper.modifyDate({date})  
               filterValues.push(d)
              });
-             filterData["planteddate"] = filterValues
-          }else if (active === "palm" && filter.name === "trialCode") {
-             console.log({filterData})  
-          } else {
+             filterData["planteddate"] = [
+              ...new Set(filterValues)]
+          }else {       
             filterData[filterName] = filterdata
+            if(active === "palm") {
+              filterData['estate'] = estates 
+            }          
           }
         }
       })
@@ -152,7 +152,7 @@ const SearchFilter = forwardRef(
         if(trialEstates){
           const estates = trialEstates.map((te)=>te.name)
 
-          filterData['estate'] = estates
+          setEstates(estates)
         }
      
       }
@@ -221,8 +221,6 @@ const SearchFilter = forwardRef(
     function onApply() {
       dispatch(setFilter(selectedFilters))
     }
-
-    //console.log("selectedFilters[filter.name]", selectedFilters[filter.name])
     return (
       <>
         <Grid fluid id="dashboardFilterPanel">

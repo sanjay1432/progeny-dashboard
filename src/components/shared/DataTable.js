@@ -567,7 +567,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function filterTable(filters, data) {
-    console.log({filters, data})
     var filterKeys = Object.keys(filters)
     return data.filter(function (eachObj) {
       return filterKeys.every(function (eachKey) {
