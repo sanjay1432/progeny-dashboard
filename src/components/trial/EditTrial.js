@@ -24,6 +24,8 @@ import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import TrialService from "../../services/trial.service"
 import { publish } from "../../services/pubsub.service"
+
+import SuccessModal from "../modal/masterData/success/success"
 const styles = { width: 280, display: "block", marginBottom: 10 }
 const { Column, HeaderCell, Cell } = Table
 const initializeTrailState = {
@@ -95,6 +97,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disabled, setDisabled] = useState("no")
   const [regenerateTable, setRegenerateTable] = useState(false)
   const [replicatesInEstate, setReplicatesInEstate] = useState([])
+
+  const [isSuccessModal, setSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState(null)
+
+
   const [existingReplicatesInEstate, setExistingReplicatesInEstate] = useState(
     []
   )
@@ -417,8 +424,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "CREATED"
           }
-          dispatch(clearBreadcrumb())
-          publish(savedData)
+          setSuccessModal(true)
+          setSuccessData(savedData)
         },
         err => console.log(err)
       )
@@ -430,8 +437,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "UPDATED"
           }
-          dispatch(clearBreadcrumb())
-          publish(savedData)
+          setSuccessModal(true)
+          setSuccessData(savedData)
         },
         err => console.log(err)
       )
@@ -552,6 +559,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const data = [...existingReplicatesInEstate]
     data[rowIndex][e.target.name] = e.target.value
     setExistingReplicatesInEstate(data)
+  }
+
+  function CloseSuccessModal() {
+    setSuccessModal(false)
+    dispatch(clearBreadcrumb())
   }
 
   function getMultipleEstateString(estates) {
@@ -1186,6 +1198,13 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Footer>
       </Modal>
       {/* EDIT CONFIRMATION MODEL END */}
+
+
+      <SuccessModal
+                show={isSuccessModal}
+                hide={CloseSuccessModal}
+                data={successData}
+              />
     </div>
   )
 }

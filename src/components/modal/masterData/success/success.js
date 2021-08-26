@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux"
 import { setBreadcrumb } from "../../../../redux/actions/app.action"
 import TrialService from "../../../../services/trial.service"
 const SuccessModal = ({ show, hide, data, ...props }) => {
-  console.log(data)
   const dispatch = useDispatch()
   async function attachProgeny() {
     const trial = await TrialService.getTrial(data.data.trialCode)
@@ -36,7 +35,6 @@ const SuccessModal = ({ show, hide, data, ...props }) => {
     )
   }
   function ShowModal() {
-    console.log()
     switch (data?.type && data.action) {
       case "TRIAL" && "CREATED":
         return (

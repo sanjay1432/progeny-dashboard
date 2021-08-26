@@ -171,7 +171,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [errorData, setErrorData] = useState("")
   const [confirmationModal, setConfirmationModal] = useState(false)
   const [confirmationData, setConfirmationData] = useState("")
-  const [isSuccessModal, setSuccessModal] = useState(false)
+  // const [isSuccessModal, setSuccessModal] = useState(false)
   // const [assignUserModal, setAssignUserModal] = useState(false)
   // const [estate, setEstate] = useState("")
   // const [selectedItem, setSelectedItem] = useState([])
@@ -204,11 +204,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   )
 
   function itemSaved(payload) {
-    console.log(payload)
     switch (payload.type) {
       case "TRIAL":
-        setSuccessData(payload)
-        setSuccessModal(true)
+        // setSuccessData(payload)
+        // setSuccessModal(true)
         break
       case "TRIAL_PLOTS_ATTACHED_TO_PROGENY":
         setAction(payload.action)
@@ -222,16 +221,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setAction(payload.type)
         setSuccessData(payload.data)
         setSuccessMessage(true)
-        console.log(payload.type)
         break;
       default:
           return ('')
     }
   }
 
-  function CloseSuccessModal() {
-    setSuccessModal(false)
-  }
+  // function CloseSuccessModal() {
+  //   setSuccessModal(false)
+  // }
 
   const tableDataFields = [
     {
@@ -454,9 +452,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const filterData = useSelector(state => state.filterReducer)
-   console.log({filterData})
-  
-
+ 
   function showPalmRecord() {
     if(filterData.filter.hasOwnProperty("trialCode") && filterData.filter.hasOwnProperty("estate")){
       return true
@@ -468,21 +464,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dashboardData = useSelector(state => state.dashboardDataReducer)
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
-      console.log(active, dashboardData.result[active])
-      // if(active === 'trial'){
-      //   const trials   = dashboardData.result[active];
-      //   trials.forEach(trial => {
-      //        if(trial.estates.length<2){
-      //          trial.estateId = trial.estates[0].id
-      //          trial.estate = trial.estates[0].name
-      //        }else {
-      //           for (let i = 0 ; i< trial.estates.length; i++){
-      //             trial.estate =
-      //           }
-      //        }
-
-      //   });
-      // }
       setTableData(dashboardData.result[active])
       const firstRow = dashboardData.result[active][0]
       const availableKeys = Object.keys(firstRow)
@@ -1159,20 +1140,16 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   // }
 
   function handleAddNewTrial(breadcrumb, option) {
-    console.log({ breadcrumb }, { option })
     dispatch(setBreadcrumb({ breadcrumb, option }))
   }
 
   function onDelete() {
-    console.log("checkStatus", checkStatus)
     const rows = tableData.filter((r, i) => checkStatus.includes(i))
-    console.log("row", rows)
     setRowsToDelete(rows)
     setDeleteModal(true)
   }
 
   function handleDeleteRecords() {
-    console.log(rowsToDelete)
     setTimeout(() => {
       // Deleted successfully
       // Close the modal
@@ -1574,11 +1551,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
               <ErrorMessage activeNav={errorMessage} errorData={errorData} />
             
-              <SuccessModal
+              {/* <SuccessModal
                 show={isSuccessModal}
                 hide={CloseSuccessModal}
                 data={successData}
-              />
+              /> */}
               {/* <AssignUser
                 estate={estate}
                 selectedItem={selectedItem}
