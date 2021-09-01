@@ -81,8 +81,8 @@ const AttachProgeny = ({
     
     if (option.trial) {
       setTrials()
-      setPlots()
       setProgeny()
+      setPlots()  
     }
   }, [])
 
@@ -130,9 +130,9 @@ const AttachProgeny = ({
 
   function onApply() {
     setTrials()
-    setPlots()
     setProgeny()
-
+    setPlots()
+  
     setTrialEstateReplicates()
   }
 
@@ -208,13 +208,23 @@ const AttachProgeny = ({
     )
     // setLoading(true)
     const data = await PlotService.getTrialPlots(trialId)
-
+    const progenyData = await DashboardService.getDashboardData("progeny")
     data.forEach(item => {
       item["blockId"] = item.estateblocks[0].id
       item["isUpdated"] = false
+      //IF PROGENY ID IS AVAILABLE, FILL THE PROGENY DATA
+      if(item.progenyId){
+        const foundedProgeny = progenyData.data.find(
+          pro => pro.progenyId === item.progenyId
+        )
+        item["progeny"] = foundedProgeny?.progeny
+        item["ortet"] = foundedProgeny?.ortet ? foundedProgeny.ortet : "-"
+        item["fp"] = foundedProgeny?.fp
+        item["mp"] = foundedProgeny?.mp
+      }
     })
     console.log({ data })
-
+      
     if (replicateSelector !== "All") {
       console.log(replicateSelector)
       const filteredReps = data.filter(d => d.replicate === replicateSelector)

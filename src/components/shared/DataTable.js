@@ -33,6 +33,8 @@ import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
 import ConfirmationModal from "../SharedComponent/ConfirmationModal"
 import PalmService from "../../services/palm.service"
 import PlotService from "../../services/plot.service"
+
+import AddEstateModal from "../../components/modal/estateModal/AddEstate"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -171,6 +173,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [errorData, setErrorData] = useState("")
   const [confirmationModal, setConfirmationModal] = useState(false)
   const [confirmationData, setConfirmationData] = useState("")
+  const [isModal, setModal] = useState(false)
   // const [isSuccessModal, setSuccessModal] = useState(false)
   // const [assignUserModal, setAssignUserModal] = useState(false)
   // const [estate, setEstate] = useState("")
@@ -563,9 +566,35 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       })
     })
   }
+  function OpenModal() {
+    setModal(!isModal)
+  }
 
+  function CloseModal() {
+    setModal(!isModal)
+  }
   function AddButton() {
     switch (active) {
+      // case "estate":
+      //   return (
+      //     <Col sm={5} md={5} lg={3}>
+      //       <FlexboxGrid.Item>
+      //         <Button
+      //           appearance="primary"
+      //           className="btnAddEstate"
+      //           onClick={OpenModal}
+      //         >
+      //           Map Estate
+      //         </Button>
+      //       </FlexboxGrid.Item>
+      //       <AddEstateModal
+      //           show={isModal}
+      //           hide={CloseModal}
+      //           currentSubNavState={currentSubNavState}
+      //           currentItem={currentItem}
+      //         />
+      //     </Col>
+      //   )
       case "trial":
         return (
           <Col sm={5} md={5} lg={4} className="addButtonLayout">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import {
   Table,
   FlexboxGrid,
@@ -24,6 +25,8 @@ import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24
 
 import TrialService from "../../services/trial.service"
 import { publish } from "../../services/pubsub.service"
+
+import SuccessModal from "../modal/masterData/success/success"
 const styles = { width: 280, display: "block", marginBottom: 10 }
 const { Column, HeaderCell, Cell } = Table
 const initializeTrailState = {
@@ -61,6 +64,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disbaledANRV, setDisbaledANRV] = useState(true)
   const [disbaledRD, setDisbaledRD] = useState(true)
   const [show, setShow] = useState(false)
+  const [isSuccessModal, setSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState(null)
   useEffect(() => {
     fetchEstates()
     fetchDesigns()
@@ -285,10 +290,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function getEstateBlocks(estate) {
     let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
-    // if (estateBlocks) {
-    //   estateBlocks = estateBlocks.estateblocks
-    //   setEstateblocks(estateBlocks)
-    // }
+    if (estateBlocks) {
+      estateBlocks = estateBlocks.estateblocks
+      // setEstateblocks(estateBlocks)
+    }
     const mappedEstateBlocks = []
     for (let item in estateBlocks) {
       mappedEstateBlocks.push({
@@ -392,8 +397,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           data: trial,
           action: "CREATED"
         }
-        dispatch(clearBreadcrumb())
-        publish(savedData)
+        setShow(false)
+        dispatch(getDashboardData('trial'))
+        setSuccessData(savedData)
+        setSuccessModal(true)
       },
       err => console.log(err)
     )
@@ -401,6 +408,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function hide() {
     setShow(false)
+  }
+
+  
+  function CloseSuccessModal() {
+    setSuccessModal(false)
+    dispatch(clearBreadcrumb())
   }
   return (
     <div id="TrialAction">
@@ -921,6 +934,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Footer>
       </Modal>
       {/* CONFIRMATION MODEL END */}
+
+      <SuccessModal
+                show={isSuccessModal}
+                hide={CloseSuccessModal}
+                data={successData}
+              />
     </div>
   )
 }

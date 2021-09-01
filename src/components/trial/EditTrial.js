@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
+
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import {
   Table,
   FlexboxGrid,
@@ -424,6 +426,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "CREATED"
           }
+          dispatch(getDashboardData('trial'))
           setSuccessModal(true)
           setSuccessData(savedData)
         },
@@ -437,6 +440,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "UPDATED"
           }
+          dispatch(getDashboardData('trial'))
           setSuccessModal(true)
           setSuccessData(savedData)
         },
