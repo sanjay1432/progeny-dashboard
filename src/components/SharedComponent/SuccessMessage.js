@@ -108,7 +108,7 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
             <Message
                 showIcon
                 type="success"
-                description={`${data?.nofplotAttached} out of ${data?.nofplot} Plots that are attached to Progenies 
+                description={`${data?data[0].nofprogenyAttached: null} out of ${data?.nofplot} Plots that are attached to Progenies 
                 have been saved in the system.`}
                 onClick={hide}
               />

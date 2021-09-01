@@ -881,7 +881,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable ? (
+              {data.isEditable === 'true' ? (
                 <img
                   src={CreateIcon}
                   alt=""
@@ -904,7 +904,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               )}
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable ? (
+              {data.isEditable === 'true'  ? (
                 <img
                   src={LinkIcon}
                   alt = "edit"
