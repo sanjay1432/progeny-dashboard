@@ -13,7 +13,7 @@ import {
   ControlLabel
 } from "rsuite"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
-
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import DashboardService from "../../services/dashboarddata.service"
 
 import TrialService from "../../services/trial.service"
@@ -372,7 +372,8 @@ const AttachProgeny = ({
       const {trialId} =  option
       await TrialService.updateTrialState(trialId, "Active")
       setShowConfirmation(false)
-
+        
+        dispatch(getDashboardData('trial'))
         const savedData = {
           type: "TRIAL_PLOTS_ATTACHED_TO_PROGENY",
           data: option,

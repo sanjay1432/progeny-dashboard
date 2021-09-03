@@ -33,8 +33,8 @@ import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
 import ConfirmationModal from "../SharedComponent/ConfirmationModal"
 import PalmService from "../../services/palm.service"
 import PlotService from "../../services/plot.service"
-
-import AddEstateModal from "../../components/modal/estateModal/AddEstate"
+import EstateBlockTable from "../../components/shared/EstateBlockTable"
+import MapEstates from "../../components/estate/MapEstates"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -166,6 +166,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   })
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>
   const editProgeny = <Tooltip>Data exists for Palms</Tooltip>
+  const closedTrial = <Tooltip>Trial has been Closed</Tooltip>
   const [successMessage, setSuccessMessage] = useState(false)
   const [successData, setSuccessData] = useState(null)
   const [action, setAction] = useState("")
@@ -188,7 +189,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const { active } = currentSubNavState
   const [tableData, setTableData] = useState([])
   const [originalData, setOriginalData] = useState([])
-
   useEffect(() => {
     function subscribedData(data) {
       itemSaved(data)
@@ -484,7 +484,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     let currentTableData = [...tableData]
     if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
       currentTableData = filterTable(filterData.filter, currentTableData)
+      return currentTableData
     }
+
     return currentTableData.filter((v, i) => {
       v["check"] = false
       v["rowNumber"] = i
@@ -566,35 +568,42 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       })
     })
   }
-  function OpenModal() {
+  async function OpenModal() {
     setModal(!isModal)
   }
 
-  function CloseModal() {
+  function CloseModal(message) {
+    if(typeof message !== 'object'){
+      setAction('ESTATE_MAPPED')
+      setSuccessData(message)
+      setSuccessMessage(true)
+    }
+
     setModal(!isModal)
   }
   function AddButton() {
     switch (active) {
-      // case "estate":
-      //   return (
-      //     <Col sm={5} md={5} lg={3}>
-      //       <FlexboxGrid.Item>
-      //         <Button
-      //           appearance="primary"
-      //           className="btnAddEstate"
-      //           onClick={OpenModal}
-      //         >
-      //           Map Estate
-      //         </Button>
-      //       </FlexboxGrid.Item>
-      //       <AddEstateModal
-      //           show={isModal}
-      //           hide={CloseModal}
-      //           currentSubNavState={currentSubNavState}
-      //           currentItem={currentItem}
-      //         />
-      //     </Col>
-      //   )
+      case "estate":
+        return (
+          <Col sm={5} md={5} lg={3}>
+            <FlexboxGrid.Item>
+              <Button
+                appearance="primary"
+                className="addTrialButton"
+                onClick={OpenModal}
+              >
+                Map Estate
+              </Button>
+            </FlexboxGrid.Item>
+            
+            <MapEstates
+                show={isModal}
+                hide={CloseModal}
+                currentSubNavState={currentSubNavState}
+                currentItem={currentItem}
+              />
+          </Col>
+        )
       case "trial":
         return (
           <Col sm={5} md={5} lg={4} className="addButtonLayout">
@@ -881,7 +890,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable === 'true' ? (
+              {data.isEditable === 'true' && data.status !== 'Closed' ? (
                 <img
                   src={CreateIcon}
                   alt=""
@@ -898,13 +907,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   }
                 />
               ) : (
-                <Whisper placement="left" trigger="hover" speaker={editProgeny}>
+                <Whisper placement="left" trigger="hover" speaker={data.status === 'Closed'? closedTrial: editProgeny}>
                   <img src={CreateIcon} style={{ opacity: 0.2 }} alt = "create"/>
                 </Whisper>
               )}
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable === 'true'  ? (
+              {data.isEditable === 'true' && data.status !== 'Closed' ? (
                 <img
                   src={LinkIcon}
                   alt = "edit"
@@ -925,7 +934,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <Whisper
                   placement="left"
                   trigger="hover"
-                  speaker={attachProgeny}
+                  speaker={data.status === 'Closed'? closedTrial: attachProgeny}
                 >
                   <img src={LinkIcon} style={{ opacity: 0.2 }} alt = "link"/>
                 </Whisper>

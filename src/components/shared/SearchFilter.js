@@ -221,6 +221,7 @@ const SearchFilter = forwardRef(
     function onApply() {
       dispatch(setFilter(selectedFilters))
     }
+
     return (
       <>
         <Grid fluid id="dashboardFilterPanel">
@@ -250,6 +251,7 @@ const SearchFilter = forwardRef(
                   className="applyButton"
                   appearance="primary"
                   onClick={onApply}
+                  disabled = {selectedFilters?!Object.keys(selectedFilters).length: true}
                 >
                   Apply
                 </Button>

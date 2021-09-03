@@ -18,7 +18,7 @@ const generateArrayOfYears = (plusYearFromThisYear = 5) => {
 
 const modifyDate = ({date})=>{
   const someday = moment(date);
-  return someday.format('MMM - DD');
+  return someday.format('MMM - YYYY');
 }
 const chartDateFormatter = value => {
   // Formatted to be month/day; display year only in the first label
