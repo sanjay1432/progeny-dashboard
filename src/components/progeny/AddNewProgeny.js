@@ -67,7 +67,8 @@ const AddNewProgeny = () => {
     e.persist()
     setFormData(() => ({
       ...formData,
-      mp: formData.mpFam + "," + e.target.value
+      mp: formData.mpFam + "," + e.target.value,
+      cross: formData.fp + " x " + formData.mp
     }))
   }
 
@@ -92,6 +93,11 @@ const AddNewProgeny = () => {
     )
   }
 
+  function checkDisableState() {
+    const length =  Object.keys(formData).length;
+    const filled = Object.keys(formData).filter((key, index) => formData[key]!= "")
+    return length === filled.length
+  }
   return (
     <div id="ProgenyAction">
       <ConfirmationModal
@@ -400,6 +406,7 @@ const AddNewProgeny = () => {
             <Button
               className="saveButton"
               appearance="primary"
+              disabled = {!checkDisableState()}
               onClick={() => setConfirmationModal(true)}
             >
               Save

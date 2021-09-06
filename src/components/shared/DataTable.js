@@ -5,6 +5,7 @@ import GeneralHelper from "../../helper/general.helper"
 import DeleteModal from "../../components/modal/DeleteModal"
 import SuccessModal from "../modal/masterData/success/success"
 import { progenySubject } from "../../services/pubsub.service"
+import ProgenyService from "../../services/progeny.service"
 import DataPicker from "../SharedComponent/DataPicker"
 import SuccessMessage from "../SharedComponent/SuccessMessage"
 import SearchMessage from "../../assets/img/SearchMessage.svg";
@@ -1188,14 +1189,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function handleDeleteRecords() {
-    setTimeout(() => {
-      // Deleted successfully
-      // Close the modal
-      setDeleteModal(false)
-      //Display success message
-      setSuccessMessage(true)
-      setAction("PROGENY_DELETE")
-    }, 500)
+    if(active === 'progeny') {
+      const progenyIds =  rowsToDelete.map((pId)=> pId.progenyId)
+      ProgenyService.deleteProgeny({progenyIds}).then(
+        data => {
+          setDeleteModal(false)
+          //Display success message
+          setSuccessMessage(true)
+          setAction("PROGENY_DELETE")
+        },
+        error => {
+          console.log(error.message)
+        }
+      )
+    }
+    
+    // setTimeout(() => {
+    //   // Deleted successfully
+    //   // Close the modal
+    //   setDeleteModal(false)
+    //   //Display success message
+    //   setSuccessMessage(true)
+    //   setAction("PROGENY_DELETE")
+    // }, 500)
   }
 
   function ErrorMessage({ activeNav, errorData }) {

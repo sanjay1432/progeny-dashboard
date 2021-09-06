@@ -8,7 +8,13 @@ const createProgeny = payload => {
       return response.data
     })
 }
-
+const deleteProgeny = payload => {
+  return axiosApiInstance
+    .post(`${API_URL}/delete-progeny`, payload)
+    .then(response => {
+      return response.data
+    })
+}
 const updateProgeny = payload => {
   return axiosApiInstance
     .put(`${API_URL}/update-progeny`, payload)
@@ -28,7 +34,8 @@ const attachProgeny = (payload, trialId) => {
 const ProgenyService = {
   createProgeny,
   updateProgeny,
-  attachProgeny
+  attachProgeny,
+  deleteProgeny
 }
 
 export default ProgenyService

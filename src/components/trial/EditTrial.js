@@ -102,7 +102,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   const [isSuccessModal, setSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState(null)
-
+  const [regenerateEnabled, setRegenerateEnabled] = useState(false)
 
   const [existingReplicatesInEstate, setExistingReplicatesInEstate] = useState(
     []
@@ -232,6 +232,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const list = [...replicatesInEstate]
     list[index][name] = value
     setReplicatesInEstate(list)
+    setRegenerateEnabled(true)
   }
   function verifyMultiplicationOfSubblockandPlot(name, value) {
     const { nofprogeny, nofsubblock, nofplot_subblock } = trial
@@ -873,7 +874,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           appearance="primary"
           className="generateTableButton"
           onClick={() => setShowRegenerateWarning(true)}
-          disabled={disabled === "no" || !isMultplicationValid}
+          disabled={disabled === "no"}
         >
           <Icon icon="table" /> Regenerate Table
         </Button>

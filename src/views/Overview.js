@@ -165,7 +165,7 @@ const listItems = [
             type: "text"
           },
           {
-            name: "fpfam",
+            name: "fpFam",
             label: "FP Fam",
             type: "text"
           },
@@ -175,7 +175,7 @@ const listItems = [
             type: "text"
           },
           {
-            name: "mpfam",
+            name: "mpFam",
             label: "MP Fam",
             type: "text"
           },
