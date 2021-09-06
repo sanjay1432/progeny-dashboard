@@ -6,7 +6,7 @@ const Filter = forwardRef(
     ref
   ) => {
     const dataToFilter = []
-
+   console.log({selected})
     if (filterData) {
       filterData.forEach(filter => {
         dataToFilter.push({
@@ -45,6 +45,7 @@ const Filter = forwardRef(
             id={filter.name}
             className="dashboardInputFilter"
             name={filter.name}
+            value={selected ? selected : null}
             placeholder={` Enter ${filter.label}`}
             onChange={(value, e) =>
               onUpdate({ target: { name: filter.name, value: value } })

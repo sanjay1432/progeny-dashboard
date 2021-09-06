@@ -12,7 +12,7 @@ export class PrintLayout extends PureComponent {
             <div className="block">
               <div className="QRCodeLayout"> 
                 <QRCode
-                  value={`${plot.trialId}-${plot.plotId}-${plot.estateblockId}-${data.palmId}`}
+                  value={`${plot.trialId}-${plot.plotId}-${plot.estateId}-${plot.estateblockId}-${data.palmId}`}
                   size={283.5}
                 />
                 <div className="descLayout">
