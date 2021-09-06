@@ -1419,69 +1419,70 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return palmfields
 
       case "progeny":
+        const fieldsTodisplay = []
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "progenyCode") {
             field.width = 200
-            currentTableDataFields[0] = field
+            fieldsTodisplay[0] = field
           }
           if (field.value === "popvar") {
             field.width = 170
-            currentTableDataFields[1] = field
+            fieldsTodisplay[1] = field
           }
           if (field.value === "origin") {
             field.width = 200
-            currentTableDataFields[2] = field
+            fieldsTodisplay[2] = field
           }
           if (field.value === "progenyremark") {
             field.width = 200
-            currentTableDataFields[3] = field
+            fieldsTodisplay[3] = field
           }
           if (field.value === "progeny") {
             field.width = 150
-            currentTableDataFields[4] = field
+            fieldsTodisplay[4] = field
           }
           if (field.value === "generation") {
             field.width = 170
-            currentTableDataFields[5] = field
+            fieldsTodisplay[5] = field
           }
           if (field.value === "ortet") {
             field.width = 170
-            currentTableDataFields[6] = field
+            fieldsTodisplay[6] = field
           }
           if (field.value === "fp") {
             field.width = 150
-            currentTableDataFields[7] = field
+            fieldsTodisplay[7] = field
           }
           if (field.value === "fpFam") {
             field.width = 150
-            currentTableDataFields[8] = field
+            fieldsTodisplay[8] = field
           }
           if (field.value === "fpVar") {
             field.width = 150
-            currentTableDataFields[9] = field
+            fieldsTodisplay[9] = field
           }
           if (field.value === "mp") {
             field.width = 150
-            currentTableDataFields[10] = field
+            fieldsTodisplay[10] = field
           }
           if (field.value === "mpFam") {
             field.width = 150
-            currentTableDataFields[11] = field
+            fieldsTodisplay[11] = field
           }
           if (field.value === "mpVar") {
             field.width = 150
-            currentTableDataFields[12] = field
+            fieldsTodisplay[12] = field
           }
           if (field.value === "cross") {
             field.width = 200
-            currentTableDataFields[13] = field
+            fieldsTodisplay[13] = field
           }
           if (field.value === "crossType") {
             field.width = 200
-            currentTableDataFields[14] = field
+            fieldsTodisplay[14] = field
           }
         })
-        return currentTableDataFields
+        return fieldsTodisplay
 
       case "userlist":
         currentTableDataFields.forEach((field, i) => {

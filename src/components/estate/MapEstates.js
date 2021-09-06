@@ -211,7 +211,7 @@ const MapEstates = ({
 
         delete estate.createdBy;
         delete estate.createdDate;
-        delete estate.updatedBy;
+        // delete estate.updatedBy;
         delete estate.updatedDate;
         estateToUp.push(estate);
       }

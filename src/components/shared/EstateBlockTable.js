@@ -49,6 +49,7 @@ const EstateBlockTable = ({
   const [updateDate, setUpdateDate] = useState(null)
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
+  const { user } = useSelector((state) => state.authReducer);
 
   const perpage = [
     {
@@ -177,7 +178,8 @@ const EstateBlockTable = ({
     const payload = {
       estate: option.estate,
       estateId: option.estateId,
-      blocks: estateBlocks
+      blocks: estateBlocks,
+      updatedBy: user.username
     }
     setModal(false)
     EstateService.assignEstateBlocksToEstate(payload).then(
