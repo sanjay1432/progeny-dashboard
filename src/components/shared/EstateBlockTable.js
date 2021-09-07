@@ -175,12 +175,12 @@ const EstateBlockTable = ({
         eb.assigned = false
       }
     })
-    const payload = {
+    const payload = [{
       estate: option.estate,
       estateId: option.estateId,
       blocks: estateBlocks,
       updatedBy: user.username
-    }
+    }]
     setModal(false)
     EstateService.assignEstateBlocksToEstate(payload).then(
       data => {

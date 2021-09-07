@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setBreadcrumb } from "../../redux/actions/app.action"
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import GeneralHelper from "../../helper/general.helper"
 import DeleteModal from "../../components/modal/DeleteModal"
 import SuccessModal from "../modal/masterData/success/success"
@@ -36,6 +37,7 @@ import PalmService from "../../services/palm.service"
 import PlotService from "../../services/plot.service"
 import EstateBlockTable from "../../components/shared/EstateBlockTable"
 import MapEstates from "../../components/estate/MapEstates"
+import DashboarddataService from "../../services/dashboarddata.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -1193,6 +1195,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       const progenyIds =  rowsToDelete.map((pId)=> pId.progenyId)
       ProgenyService.deleteProgeny({progenyIds}).then(
         data => {
+          dispatch(getDashboardData('progeny'))
           setDeleteModal(false)
           //Display success message
           setSuccessMessage(true)

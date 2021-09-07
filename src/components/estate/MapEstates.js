@@ -63,6 +63,7 @@ const MapEstates = ({
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([]);
   const [selectedEstate, setSelectedEstate] = useState(null);
   const [estateToUpdate, setEstateToUpdate] = useState([]);
+  const { user } = useSelector((state) => state.authReducer);
   useEffect(async () => {
     const { data, updatedDate } =
       await DashboardDataService.getUpdatedEstateBlocks();
@@ -211,8 +212,9 @@ const MapEstates = ({
 
         delete estate.createdBy;
         delete estate.createdDate;
-        // delete estate.updatedBy;
+        delete estate.updatedBy;
         delete estate.updatedDate;
+        estate['updatedBy'] =  user.username
         estateToUp.push(estate);
       }
     });
@@ -226,7 +228,7 @@ const MapEstates = ({
       estateToUpdate.length > 1
         ? `${estateToUpdate.length}  Estates has been mapped to the system`
         : `Estate ${estateToUpdate[0].estate} has been mapped to the system`;
-    EstateService.assignEstateBlocksToMultipleEstate(estateToUpdate).then(
+    EstateService.assignEstateBlocksToEstate(estateToUpdate).then(
       (data) => {
         dispatch(getDashboardData('estate'))
         hide(message);
