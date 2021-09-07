@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
   FlexboxGrid,
@@ -14,6 +14,7 @@ import {
   Message
 } from "rsuite"
 import DashboardDataService from "../../services/dashboarddata.service"
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import EstateService from "../../services/estate.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -34,7 +35,7 @@ const EstateBlockTable = ({
   option,
   ...props
 }) => {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   // useEffect(() => {
   //   currentTableDataFields = []
@@ -178,13 +179,14 @@ const EstateBlockTable = ({
     const payload = [{
       estate: option.estate,
       estateId: option.estateId,
-      blocks: estateBlocks,
+      estateblocks: estateBlocks,
       updatedBy: user.username
     }]
     setModal(false)
     EstateService.assignEstateBlocksToEstate(payload).then(
       data => {
         console.log("Success", data)
+        dispatch(getDashboardData('estate'))
         setebAdded(true)
       },
       err => {
