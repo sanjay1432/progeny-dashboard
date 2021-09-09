@@ -1,20 +1,6 @@
 const InitializeState = {
   appReducer: {
-    mill: {
-      millId: 1,
-      millCode: "KRC",
-      buId: 1,
-      logo: "Kerinci",
-      name: "Kerinci",
-      countryId: 1
-    },
-    mills: null,
     breadcrumb: {},
-    expandChart: {
-      show: false,
-      data: {},
-      title: "Chart"
-    }
   },
   authReducer: { isLoggedIn: false, user: null },
   dashboardDataReducer: { result: {} },

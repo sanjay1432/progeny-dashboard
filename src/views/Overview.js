@@ -130,18 +130,18 @@ const listItems = [
             type: "select",
             disable: false
           },
-          {
-            name: "replicate",
-            label: "Replicate",
-            type: "select",
-            disable: true
-          },
-          {
-            name: "plot",
-            label: "Plot",
-            type: "select",
-            disable: true
-          }
+          // {
+          //   name: "replicate",
+          //   label: "Replicate",
+          //   type: "select",
+          //   disable: true
+          // },
+          // {
+          //   name: "plot",
+          //   label: "Plot",
+          //   type: "select",
+          //   disable: true
+          // }
         ],
         search: false
       },
@@ -402,7 +402,10 @@ const Overview = props => {
   }
   function handleSelect(activeKey) {
     console.log({ activeKey })
-    dispatch(getDashboardData(activeKey))
+    if(activeKey != 'palm'){
+      dispatch(getDashboardData(activeKey))
+    }
+    
     setSubnavState(() => ({ ...subnavState, active: activeKey }))
   }
   function close() {
@@ -415,8 +418,11 @@ const Overview = props => {
       })
     } else {
       const { active } = subnavState
-
-      dispatch(getDashboardData(active))
+        console.log({active})
+        if(active !== 'palm'){
+          dispatch(getDashboardData(active))
+        }
+     
       const CancelToken = axios.CancelToken
       const source = CancelToken.source()
 

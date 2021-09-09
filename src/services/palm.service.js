@@ -9,8 +9,9 @@ const updatePalm = payload => {
     })
 }
 
-const getPalmData = () => {
-  return axiosApiInstance.get(`${API_URL}/palm`).then(response => {
+const getPalmData = (payload) => {
+  const {trialId, estateId} = payload
+  return axiosApiInstance.get(`${API_URL}/palm?trialId=${trialId}&estateId=${estateId}`).then(response => {
     return response.data
   })
 }

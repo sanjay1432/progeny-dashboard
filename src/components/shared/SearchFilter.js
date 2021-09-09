@@ -9,6 +9,7 @@ import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
 import Filter from "../shared/Filter"
 import { setFilter, clearFilter } from "../../redux/actions/filter.action"
+import { getPalmData } from "../../redux/actions/dashboarddata.action"
 import GeneralHelper from "../../helper/general.helper";
 let initialFilters = {}
 let currentFilters = []
@@ -56,7 +57,7 @@ const SearchFilter = forwardRef(
         const filterName = filter.name
         if (filter.type === "select") {
           let filterdata = [
-            ...new Set(dashboardData.result[active].map(res => res[filterName]))
+            ...new Set(dashboardData.result[active ==='palm'?'trial': active].map(res => res[filterName]))
           ]
           filterdata = filterdata.sort((a,b)=>a-b)
           if (active === "trial" && filter.name === "estate") {
@@ -78,10 +79,10 @@ const SearchFilter = forwardRef(
              filterData["planteddate"] = [
               ...new Set(filterValues)]
           }else {       
-            filterData[filterName] = filterdata
+            filterData[filterName] = filterdata       
             if(active === "palm") {
               filterData['estate'] = estates 
-            }          
+            }   
           }
         }
       })
@@ -146,14 +147,18 @@ const SearchFilter = forwardRef(
       // FIND THE ESTATE OF TRIAL CODE
       if(active === 'palm'){
         const trials = dashboardData.result['trial']
- 
+       if(trials){
         const trialEstates =  trials.find((trial)=> trial.trialCode ===  e.target.value)?.estate;
 
         if(trialEstates){
           const estates = trialEstates.map((te)=>te.name)
 
           setEstates(estates)
+
+          filterData['estate'] = estates
         }
+       }
+       
      
       }
       
@@ -219,6 +224,18 @@ const SearchFilter = forwardRef(
     }
 
     function onApply() {
+      //CALL API FOR ACTIVE TAB PALM
+      if(active === 'palm'){
+         //FETCH TRIAL ID & ESTATEID
+          const {trialCode, estate} =  selectedFilters
+        const foundTrial =  dashboardData.result['trial'].find((trial)=> trial.trialCode === trialCode)
+        const foundEstate =  foundTrial.estate.find((est)=> est.name === estate)
+        const payload = {
+          trialId: foundTrial.trialId,
+          estateId: foundEstate.id
+        }
+        dispatch(getPalmData(payload))
+      }
       dispatch(setFilter(selectedFilters))
     }
 
@@ -251,9 +268,9 @@ const SearchFilter = forwardRef(
                   className="applyButton"
                   appearance="primary"
                   onClick={onApply}
-                  disabled = {selectedFilters?!Object.keys(selectedFilters).length: true}
+                  disabled = {selectedFilters && active==='palm'?Object.keys(selectedFilters).length < 2: selectedFilters ? !Object.keys(selectedFilters).length: true}
                 >
-                  Apply
+                  Apply 
                 </Button>
               </div>
             </Col>

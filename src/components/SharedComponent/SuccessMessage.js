@@ -2,7 +2,6 @@ import React from "react"
 import { Message } from "rsuite"
 
 const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
-  console.log(data)
   if (show === true) {
     switch (action) {
       case "PLOTDATA_UPDATE":

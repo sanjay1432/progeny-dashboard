@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb } from "../../redux/actions/app.action"
-import { getDashboardData } from "../../redux/actions/dashboarddata.action"
-import GeneralHelper from "../../helper/general.helper"
-import DeleteModal from "../../components/modal/DeleteModal"
-import SuccessModal from "../modal/masterData/success/success"
-import { progenySubject } from "../../services/pubsub.service"
-import ProgenyService from "../../services/progeny.service"
-import DataPicker from "../SharedComponent/DataPicker"
-import SuccessMessage from "../SharedComponent/SuccessMessage"
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setBreadcrumb } from "../../redux/actions/app.action";
+import { setFilter, clearFilter } from "../../redux/actions/filter.action";
+import {
+  getDashboardData,
+  getPalmData,
+} from "../../redux/actions/dashboarddata.action";
+import GeneralHelper from "../../helper/general.helper";
+import DeleteModal from "../../components/modal/DeleteModal";
+import { progenySubject } from "../../services/pubsub.service";
+import ProgenyService from "../../services/progeny.service";
+import DataPicker from "../SharedComponent/DataPicker";
+import SuccessMessage from "../SharedComponent/SuccessMessage";
 import SearchMessage from "../../assets/img/SearchMessage.svg";
 import {
   Table,
@@ -23,22 +26,20 @@ import {
   Message,
   Input,
   IconButton,
+  SelectPicker,
   Icon,
   Tooltip,
-  Whisper
-} from "rsuite"
-import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
-import LinkIcon from "../../assets/img/icons/link_24px.svg"
-import CreateIcon from "../../assets/img/icons/create_24px.svg"
-import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg"
-// import AccountCircle from "../../assets/img/icons/account_circle_24px.svg"
-import ConfirmationModal from "../SharedComponent/ConfirmationModal"
-import PalmService from "../../services/palm.service"
-import PlotService from "../../services/plot.service"
-import EstateBlockTable from "../../components/shared/EstateBlockTable"
-import MapEstates from "../../components/estate/MapEstates"
-import DashboarddataService from "../../services/dashboarddata.service"
-const { Column, HeaderCell, Cell } = Table
+  Whisper,
+} from "rsuite";
+import OpenNew from "../../assets/img/icons/open_in_new_24px.svg";
+import LinkIcon from "../../assets/img/icons/link_24px.svg";
+import CreateIcon from "../../assets/img/icons/create_24px.svg";
+import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg";
+import ConfirmationModal from "../SharedComponent/ConfirmationModal";
+import PalmService from "../../services/palm.service";
+import PlotService from "../../services/plot.service";
+import MapEstates from "../../components/estate/MapEstates";
+const { Column, HeaderCell, Cell } = Table;
 const initialState = {
   displaylength: 10,
   prev: true,
@@ -47,8 +48,8 @@ const initialState = {
   last: false,
   ellipsis: true,
   boundaryLinks: true,
-  activePage: 1
-}
+  activePage: 1,
+};
 
 const EditableCell = ({
   rowData,
@@ -60,7 +61,7 @@ const EditableCell = ({
   OriginalData,
   ...cellProps
 }) => {
-  const editing = rowData.status === true
+  const editing = rowData.status === true;
   switch (active) {
     case "trial":
     case "userAssignment":
@@ -72,7 +73,7 @@ const EditableCell = ({
             <span>{rowData[dataKey]}</span>
           )}
         </Cell>
-      )
+      );
     case "plot":
       return (
         <>
@@ -83,8 +84,8 @@ const EditableCell = ({
                   OriginalData={OriginalData}
                   dataType="progenyCode"
                   dataValue={rowData[dataKey]}
-                  onChange={value =>
-                    handlePlotEditChange(rowData.trialid, dataKey, value)
+                  onChange={(value) =>
+                    handlePlotEditChange(rowData.plotId, dataKey, value)
                   }
                 />
               ) : (
@@ -102,10 +103,10 @@ const EditableCell = ({
                     "ortet",
                     "fp",
                     "mp",
-                    "noofPalm"
+                    "noofPalm",
                   ].includes(dataKey)}
-                  onChange={value =>
-                    handlePlotEditChange(rowData.trialid, dataKey, value)
+                  onChange={(value) =>
+                    handlePlotEditChange(rowData.plotId, dataKey, value)
                   }
                 />
               )}
@@ -116,11 +117,11 @@ const EditableCell = ({
             </Cell>
           )}
         </>
-      )
+      );
     case "palm":
       return (
         <Cell {...cellProps}>
-          {rowData.status === true ? (
+          {rowData['status'] ? (
             <Input
               className="editTableInput"
               defaultValue={rowData[dataKey]}
@@ -129,381 +130,429 @@ const EditableCell = ({
                 "estate",
                 "replicate",
                 "estateblock",
-                "plot"
+                "plot",
               ].includes(dataKey)}
               onChange={(value, e) =>
-                handlePalmEditChange(rowData.trialid, dataKey, e.target.value)
+                handlePalmEditChange(rowData.palmId, dataKey, e.target.value)
               }
             />
           ) : (
             <span>{rowData[dataKey]}</span>
           )}
         </Cell>
-      )
+      );
     default:
       return (
         <Cell {...cellProps}>
           <span>{rowData[dataKey]}</span>
         </Cell>
-      )
+      );
   }
-}
+};
 
 function getMultipleEstateString(estates) {
-  let estateString = ""
+  let estateString = "";
   estates.forEach((element, idx) => {
-    const pipe = estates.length - idx > 1 ? "|" : ""
-    estateString += ` ${element.name} ${pipe}`
-  })
+    const pipe = estates.length - idx > 1 ? "|" : "";
+    estateString += ` ${element.name} ${pipe}`;
+  });
 
-  return estateString
+  return estateString;
 }
 
-let currentTableDataFields = []
+let currentTableDataFields = [];
+let palmReplicates = [];
+let palmPlots = [];
+let replicateSelector = "All";
+let plotSelector = "All";
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  
+  const [toggle, setToggle] = useState(true);
   useEffect(() => {
-    currentTableDataFields = []
+    currentTableDataFields = [];
     // SET TABLE DATA
-    setCurrentTableData()
-  })
-  const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>
-  const editProgeny = <Tooltip>Data exists for Palms</Tooltip>
-  const closedTrial = <Tooltip>Trial has been Closed</Tooltip>
-  const [successMessage, setSuccessMessage] = useState(false)
-  const [successData, setSuccessData] = useState(null)
-  const [action, setAction] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
-  const [errorData, setErrorData] = useState("")
-  const [confirmationModal, setConfirmationModal] = useState(false)
-  const [confirmationData, setConfirmationData] = useState("")
-  const [isModal, setModal] = useState(false)
-  // const [isSuccessModal, setSuccessModal] = useState(false)
-  // const [assignUserModal, setAssignUserModal] = useState(false)
-  // const [estate, setEstate] = useState("")
-  // const [selectedItem, setSelectedItem] = useState([])
-  // const [assignEstateModal, setAssignEstateModal] = useState(false)
-  // const [username, setUsername] = useState("")
-  const [isDeleteModal, setDeleteModal] = useState(false)
-  const [rowsToDelete, setRowsToDelete] = useState([])
-  const [pagination, setPagination] = useState(initialState)
-  const [checkStatus, setCheckStatus] = useState([])
-  const { activePage, displaylength } = pagination
-  const { active } = currentSubNavState
-  const [tableData, setTableData] = useState([])
-  const [originalData, setOriginalData] = useState([])
+    setCurrentTableData();
+  });
+
+  const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
+  const editProgeny = <Tooltip>Data exists for Palms</Tooltip>;
+  const closedTrial = <Tooltip>Trial has been Closed</Tooltip>;
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [successData, setSuccessData] = useState(null);
+  const [action, setAction] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorData, setErrorData] = useState("");
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [confirmationData, setConfirmationData] = useState("");
+  const [isModal, setModal] = useState(false);
+  const [isDeleteModal, setDeleteModal] = useState(false);
+  const [rowsToDelete, setRowsToDelete] = useState([]);
+  const [pagination, setPagination] = useState(initialState);
+  const [checkStatus, setCheckStatus] = useState([]);
+  const { activePage, displaylength } = pagination;
+  const { active } = currentSubNavState;
+  const [tableData, setTableData] = useState([]);
+  const [activeRow, setActiveRow] = useState(null)
+
   useEffect(() => {
     function subscribedData(data) {
-      itemSaved(data)
+      itemSaved(data);
     }
-    progenySubject.subscribe(data => {
-      subscribedData(data)
-    })
-  }, [])
+    progenySubject.subscribe((data) => {
+      subscribedData(data);
+    });
+  }, []);
 
-  const { user } = useSelector(state => state.authReducer)
+  const { user } = useSelector((state) => state.authReducer);
 
   const userInfo = GeneralHelper.buildDisplayName(
     user.firstName,
     user.lastName,
     user.username
-  )
+  );
 
   function itemSaved(payload) {
     switch (payload.type) {
       case "TRIAL":
         // setSuccessData(payload)
         // setSuccessModal(true)
-        break
+        break;
       case "TRIAL_PLOTS_ATTACHED_TO_PROGENY":
-        setAction(payload.action)
-        setSuccessData(payload.data)
-        setSuccessMessage(true)
-        break
+        setAction(payload.action);
+        setSuccessData(payload.data);
+        setSuccessMessage(true);
+        break;
       case "PROGENY_CREATE":
       case "PROGENY_UPDATE":
       case "USER_CREATE":
       case "USER_UPDATE":
-        setAction(payload.type)
-        setSuccessData(payload.data)
-        setSuccessMessage(true)
+        setAction(payload.type);
+        setSuccessData(payload.data);
+        setSuccessMessage(true);
         break;
       default:
-          return ('')
+        return "";
     }
   }
 
-  // function CloseSuccessModal() {
-  //   setSuccessModal(false)
-  // }
 
   const tableDataFields = [
     {
       label: "Estate",
-      value: "estate"
+      value: "estate",
     },
     {
       label: "Estate Full Name",
-      value: "estatefullname"
+      value: "estatefullname",
     },
     {
       label: "No of Estate Block",
-      value: "noofestateblock"
+      value: "noofestateblock",
     },
     {
       label: "No. Trials on this Estate",
-      value: "nooftrails"
+      value: "nooftrails",
     },
     {
       label: "No. Trials on this Estate",
-      value: "nooftrails"
+      value: "nooftrails",
     },
     {
       label: "Trial ID",
-      value: "trialCode"
+      value: "trialCode",
     },
     {
       label: "Trial",
-      value: "trial"
+      value: "trial",
     },
     {
       label: "Trial Remarks",
-      value: "trialremark"
+      value: "trialremark",
     },
     {
       label: "Area (ha)",
-      value: "area"
+      value: "area",
     },
     {
       label: "Planted Date",
-      value: "planteddate"
+      value: "planteddate",
     },
     {
       label: "n Progeny",
-      value: "nofprogeny"
+      value: "nofprogeny",
     },
     {
       label: "n Of Replicate",
-      value: "nofreplicate"
+      value: "nofreplicate",
     },
     {
       label: "n Of Plot",
-      value: "nofplot"
+      value: "nofplot",
     },
     {
       label: "n Of Subblock/Rep",
-      value: "nofsubblock"
+      value: "nofsubblock",
     },
     {
       label: "n Of Plot/subblock",
-      value: "nofplot_subblock"
+      value: "nofplot_subblock",
     },
     {
       label: "Status",
-      value: "status"
+      value: "status",
     },
     {
       label: "Replicate",
-      value: "replicate"
+      value: "replicate",
     },
     {
       label: "Estate Block",
-      value: "estateblock"
+      value: "estateblock",
     },
     {
       label: "Design",
-      value: "design"
+      value: "design",
     },
     {
       label: "Density",
-      value: "density"
+      value: "density",
     },
     {
       label: "Plot",
-      value: "plot"
+      value: "plot",
     },
     {
       label: "Subblock",
-      value: "subblock"
+      value: "subblock",
     },
     {
       label: "Progeny ID",
-      value: "progenyCode"
+      value: "progenyCode",
     },
     {
       label: "Progeny",
-      value: "progeny"
+      value: "progeny",
     },
     {
       label: "Ortet",
-      value: "ortet"
+      value: "ortet",
     },
     {
       label: "FP",
-      value: "fp"
+      value: "fp",
     },
     {
       label: "MP",
-      value: "mp"
+      value: "mp",
     },
     {
       label: "nPalm",
-      value: "noofPalm"
+      value: "noofPalm",
     },
     {
       label: "Palm Number",
-      value: "palmno"
+      value: "palmno",
     },
     {
       label: "Progeny ID",
-      value: "progenyCode"
+      value: "progenyCode",
     },
     {
       label: "Pop Var",
-      value: "popvar"
+      value: "popvar",
     },
     {
       label: "Origin",
-      value: "origin"
+      value: "origin",
     },
     {
       label: "Progeny Remark",
-      value: "progenyremark"
+      value: "progenyremark",
     },
     {
       label: "Progeny Remark",
-      value: "progenyremark"
+      value: "progenyremark",
     },
     {
       label: "Generation",
-      value: "generation"
+      value: "generation",
     },
     {
       label: "FP Fam",
-      value: "fpFam"
+      value: "fpFam",
     },
     {
       label: "FP Var",
-      value: "fpVar"
+      value: "fpVar",
     },
     {
       label: "MP Fam",
-      value: "mpFam"
+      value: "mpFam",
     },
     {
       label: "MP Var",
-      value: "mpVar"
+      value: "mpVar",
     },
     {
       label: "Cross",
-      value: "cross"
+      value: "cross",
     },
     {
       label: "Cross Type",
-      value: "crossType"
+      value: "crossType",
     },
     {
       label: "User ID",
-      value: "userId"
+      value: "userId",
     },
     {
       label: "Username",
-      value: "username"
+      value: "username",
     },
     {
       label: "Position",
-      value: "position"
+      value: "position",
     },
     {
       label: "No. Trials on this Estate",
-      value: "noTrialOnHere"
+      value: "noTrialOnHere",
     },
     {
       label: "No.of Users Assigned",
-      value: "assignedUser"
-    }
-  ]
+      value: "assignedUser",
+    },
+  ];
 
   const perpage = [
     {
       label: "10",
-      value: "10"
+      value: "10",
     },
     {
       label: "20",
-      value: "20"
+      value: "20",
     },
     {
       label: "50",
-      value: "50"
+      value: "50",
     },
     {
       label: "100",
-      value: "100"
-    }
-  ]
+      value: "100",
+    },
+  ];
   function handleChangePage(dataKey) {
-    setPagination(() => ({ ...pagination, activePage: dataKey }))
+    setPagination(() => ({ ...pagination, activePage: dataKey }));
   }
   function handleChangeLength(dataKey) {
     setPagination(() => ({
       ...pagination,
-      displaylength: dataKey
-    }))
+      displaylength: dataKey,
+    }));
   }
 
   function getNoPages() {
-    const { displaylength } = pagination
-    return Math.ceil(getFilteredDataWithoutDisplayLength().length / displaylength)
+    const { displaylength } = pagination;
+    return Math.ceil(
+      getFilteredDataWithoutDisplayLength().length / displaylength
+    );
   }
 
-  const filterData = useSelector(state => state.filterReducer)
- 
-  function showPalmRecord() {
-    if(filterData.filter.hasOwnProperty("trialCode") && filterData.filter.hasOwnProperty("estate")){
-      return true
-    } else {
-      return false
+  const filterData = useSelector((state) => state.filterReducer);
+
+  function setTrialEstateReplicates() {
+    if (active === "palm") {
+      let currentPalmTableData = [...tableData];
+      palmReplicates = [];
+      palmPlots = [];
+      //SET REPLICATES
+      if (currentPalmTableData.length > 0) {
+        const reps = [
+          ...new Set(currentPalmTableData.map((palm) => palm.replicate)),
+        ];
+        const plots = [
+          ...new Set(currentPalmTableData.map((palm) => palm.plotId)),
+        ];
+        reps.forEach((rep) => {
+          palmReplicates.push({
+            label: rep,
+            value: rep,
+          });
+        });
+        palmReplicates.unshift({
+          label: `All Replicates`,
+          value: `All`,
+        });
+
+        plots.forEach((plot) => {
+          palmPlots.push({
+            label: plot,
+            value: plot,
+          });
+        });
+        palmPlots.unshift({
+          label: `All Plots`,
+          value: `All`,
+        });
+      }
     }
-
   }
-  const dashboardData = useSelector(state => state.dashboardDataReducer)
+
+  function showPalmRecord() {
+    if (
+      filterData.filter.hasOwnProperty("trialCode") &&
+      filterData.filter.hasOwnProperty("estate")
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  const dashboardData = useSelector((state) => state.dashboardDataReducer);
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
-      setTableData(dashboardData.result[active])
-      const firstRow = dashboardData.result[active][0]
-      const availableKeys = Object.keys(firstRow)
+      if(!activeRow){
+        setTableData(dashboardData.result[active]);
+      }
+      const firstRow = dashboardData.result[active][0];
+      const availableKeys = Object.keys(firstRow);
 
-      availableKeys.forEach(key => {
-        const field = tableDataFields.find(field => field.value === key)
+      availableKeys.forEach((key) => {
+        const field = tableDataFields.find((field) => field.value === key);
         if (field) {
-          currentTableDataFields.push(field)
+          currentTableDataFields.push(field);
         }
-      })
+      });
     }
   }
 
   function getData(displaylength) {
-    let currentTableData = [...tableData]
-    if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
-      currentTableData = filterTable(filterData.filter, currentTableData)
-      return currentTableData
+    let currentTableData = [...tableData];
+    setTrialEstateReplicates();
+    if (
+      Object.keys(filterData).length > 0 &&
+      filterData.filter !== "" &&
+      active != "palm"
+    ) {
+      currentTableData = filterTable(filterData.filter, currentTableData);
+      return currentTableData;
     }
 
     return currentTableData.filter((v, i) => {
-      v["check"] = false
-      v["rowNumber"] = i
-      const start = displaylength * (activePage - 1)
-      const end = start + displaylength
-      return i >= start && i < end
-    })
+      v["check"] = false;
+      v["rowNumber"] = i;
+      const start = displaylength * (activePage - 1);
+      const end = start + displaylength;
+      return i >= start && i < end;
+    });
   }
   function getFilteredDataWithoutDisplayLength() {
-    let currentTableData = [...tableData]
+    let currentTableData = [...tableData];
     if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
-      currentTableData = filterTable(filterData.filter, currentTableData)
+      currentTableData = filterTable(filterData.filter, currentTableData);
     }
-    return currentTableData
+    return currentTableData;
   }
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -513,76 +562,76 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           value={rowData[dataKey]}
           inline
           onChange={onChange}
-          checked={checkedKeys.some(item => item === rowData[dataKey])}
+          checked={checkedKeys.some((item) => item === rowData[dataKey])}
         />
       </div>
     </Cell>
-  )
+  );
 
-  let checked = false
-  let indeterminate = false
-  let disabled = true
+  let checked = false;
+  let indeterminate = false;
+  let disabled = true;
 
   if (checkStatus.length === 0) {
-    disabled = true
+    disabled = true;
   } else if (checkStatus.length > 0 && checkStatus.length < tableData.length) {
-    indeterminate = true
-    disabled = false
+    indeterminate = true;
+    disabled = false;
   } else if (checkStatus.length === tableData.length) {
-    checked = true
-    disabled = false
+    checked = true;
+    disabled = false;
   }
 
   const handleCheckAll = (value, checked) => {
-    const keys = checked ? tableData.map(item => item.rowNumber) : []
-    setCheckStatus(keys)
-  }
+    const keys = checked ? tableData.map((item) => item.rowNumber) : [];
+    setCheckStatus(keys);
+  };
 
   const handleCheck = (value, checked) => {
     const keys = checked
       ? [...checkStatus, value]
-      : checkStatus.filter(item => item !== value)
-    setCheckStatus(keys)
-  }
+      : checkStatus.filter((item) => item !== value);
+    setCheckStatus(keys);
+  };
 
   function openConfirmationModal(rowData) {
-    setConfirmationModal(true)
-    setConfirmationData(rowData)
+    setConfirmationModal(true);
+    setConfirmationData(rowData);
   }
 
   function closeConfirmationModal() {
-    setConfirmationModal(false)
-    setErrorMessage("")
+    setConfirmationModal(false);
+    setErrorMessage("");
   }
 
   function filterTable(filters, data) {
-    var filterKeys = Object.keys(filters)
+    var filterKeys = Object.keys(filters);
     return data.filter(function (eachObj) {
       return filterKeys.every(function (eachKey) {
-         if(active === "trial" && eachKey === "estate") {
-              const estates = eachObj[eachKey].map((est)=>est.name)
-              return estates.includes( filters[eachKey])
-         }
-         if(active === "trial" && eachKey === "planteddate") {
-           const date   = eachObj[eachKey]
-          return GeneralHelper.modifyDate({date}) ===  filters[eachKey]
-         }
-        return eachObj[eachKey] === filters[eachKey]
-      })
-    })
+        if (active === "trial" && eachKey === "estate") {
+          const estates = eachObj[eachKey].map((est) => est.name);
+          return estates.includes(filters[eachKey]);
+        }
+        if (active === "trial" && eachKey === "planteddate") {
+          const date = eachObj[eachKey];
+          return GeneralHelper.modifyDate({ date }) === filters[eachKey];
+        }
+        return eachObj[eachKey] === filters[eachKey];
+      });
+    });
   }
   async function OpenModal() {
-    setModal(!isModal)
+    setModal(!isModal);
   }
 
   function CloseModal(message) {
-    if(typeof message !== 'object'){
-      setAction('ESTATE_MAPPED')
-      setSuccessData(message)
-      setSuccessMessage(true)
+    if (typeof message !== "object") {
+      setAction("ESTATE_MAPPED");
+      setSuccessData(message);
+      setSuccessMessage(true);
     }
 
-    setModal(!isModal)
+    setModal(!isModal);
   }
   function AddButton() {
     switch (active) {
@@ -598,15 +647,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 Map Estate
               </Button>
             </FlexboxGrid.Item>
-            
+
             <MapEstates
-                show={isModal}
-                hide={CloseModal}
-                currentSubNavState={currentSubNavState}
-                currentItem={currentItem}
-              />
+              show={isModal}
+              hide={CloseModal}
+              currentSubNavState={currentSubNavState}
+              currentItem={currentItem}
+            />
           </Col>
-        )
+        );
       case "trial":
         return (
           <Col sm={5} md={5} lg={4} className="addButtonLayout">
@@ -619,7 +668,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     ["Trial and Replicate", `Add New Trial & Replicate`],
                     {
                       trial: null,
-                      type: "create"
+                      type: "create",
                     }
                   )
                 }
@@ -628,7 +677,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               </Button>
             </FlexboxGrid.Item>
           </Col>
-        )
+        );
       case "plot":
         return (
           <Col sm={5} md={5} lg={5} className="addButtonLayout">
@@ -641,7 +690,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     // trial: data.trialCode,
                     // trialId: data.trialId,
                     // estate: data.estate,
-                    type: "attach"
+                    type: "attach",
                   })
                 }
               >
@@ -649,7 +698,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               </Button>
             </FlexboxGrid.Item>
           </Col>
-        )
+        );
       case "progeny":
         return (
           <Col sm={5} md={6} lg={5} className="addButtonLayout">
@@ -659,7 +708,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 className="addProgenyButton"
                 onClick={() =>
                   handleAddNewTrial(["Progeny", `Add New Progeny`], {
-                    type: "add"
+                    type: "add",
                   })
                 }
               >
@@ -667,10 +716,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               </Button>
             </FlexboxGrid.Item>
           </Col>
-        )
+        );
       case "userlist":
         function openPage() {
-          handleActionExpand(["User List", "Add New User"], {})
+          handleActionExpand(["User List", "Add New User"], {});
         }
         return (
           <Col sm={5} md={5} lg={4} className="addButtonLayout">
@@ -684,9 +733,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               </Button>
             </FlexboxGrid.Item>
           </Col>
-        )
+        );
       default:
-        return null
+        return null;
     }
   }
 
@@ -706,152 +755,166 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </div>
           </FlexboxGrid.Item>
         </Col>
-      )
+      );
     } else {
-      return null
+      return null;
     }
   }
 
   function StatusButton({ status }) {
     switch (status) {
       case "Active":
-        return <Button className="activeStatusButton">Active</Button>
+        return <Button className="activeStatusButton">Active</Button>;
       case "inactive":
-        return <Button className="inavtiveStatusButton">Inactive</Button>
+        return <Button className="inavtiveStatusButton">Inactive</Button>;
       case "canceled":
-        return <Button className="canceledStatusButton">canceled</Button>
+        return <Button className="canceledStatusButton">canceled</Button>;
       case "pending":
-        return <Button className="pendingStatusButton">pending</Button>
+        return <Button className="pendingStatusButton">pending</Button>;
 
       case "finished":
-        return <Button className="finishedStatusButton">finished</Button>
+        return <Button className="finishedStatusButton">finished</Button>;
       case "Closed":
-        return <Button className="finishedStatusButton">Closed</Button>
+        return <Button className="finishedStatusButton">Closed</Button>;
 
       default:
-        return null
+        return null;
     }
   }
 
   function PlantedDate(date) {
-      return GeneralHelper.modifyDate(date)
+    return GeneralHelper.modifyDate(date);
   }
 
   useEffect(() => {
     switch (active) {
-      case "plot":
-        PlotService.getPlotData().then(response => {
-          const originalPlotData = response.data
-          setOriginalData(originalPlotData)
-        })
-        break
-      case "palm":
-        PalmService.getPalmData().then(response => {
-          const originalPalmData = response.data
-          setOriginalData(originalPalmData)
-        })
-        break
-        default:
-          return null
+      // case "plot":
+      //   PlotService.getPlotData().then(response => {
+      //     const originalPlotData = response.data
+      //     setOriginalData(originalPlotData)
+      //   })
+      //   break
+      // case "palm":
+      //   PalmService.getPalmData().then(response => {
+      //     const originalPalmData = response.data
+      //     setOriginalData(originalPalmData)
+      //   })
+      //   break
+      default:
+        return null;
     }
-  }, [active])
+  }, [active]);
 
-  const handlePlotEditChange = (trialid, key, value) => {
-    const nextData = Object.assign([], tableData)
-    nextData.find(item => item.trialid === trialid)[key] = value
-    setTableData(nextData)
+  const handlePlotEditChange = (plotId, key, value) => {
+    const nextData = Object.assign([], tableData);
+    nextData.find((item) => item.plotId === plotId)[key] = value;
+    setTableData(nextData);
+  };
+
+  function handlePlotEditStatus(plotId) {
+    const nextData = Object.assign([], tableData);
+    const activeItem = nextData.find((item) => item.plotId === plotId);
+    setActiveRow({...activeItem})
+    activeItem.status = activeItem.status ? null : true;
+    setTableData(nextData);
   }
 
-  function handlePlotEditStatus(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
-    setTableData(nextData)
+  function cancelPlotData(plotId) {
+    const nextData = Object.assign([], tableData);
+    const activeItemIdx = nextData.findIndex((item) => item.plotId === plotId);
+    if(activeRow){    
+    nextData[activeItemIdx] = activeRow
+    }
+    nextData[activeItemIdx]['status'] = false
+    // const nextData2 = Object.assign([], originalData);
+    // const activeItem2 = nextData2.find((item) => item.trialId === trialId);
+    // activeItem.status = null;
+    // activeItem.palmno = activeItem2.palmno;
+    setTableData(nextData);
+    setActiveRow(null)
   }
 
-  function cancelPlotData(trialCode) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialCode === trialCode)
-    const nextData2 = Object.assign([], originalData)
-    const activeItem2 = nextData2.find(item => item.trialCode === trialCode)
-    activeItem.status = null
-    activeItem.plot = activeItem2.plot
-    activeItem.progenyCode = activeItem2.progenyCode
-    setTableData(nextData2)
-  }
-
-  function savePlotData(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
+  function savePlotData(plotId) {
+    const nextData = Object.assign([], tableData);
+    const activeItem = nextData.find((item) => item.plotId === plotId);
+    activeItem.status = activeItem.status ? null : true;
     PlotService.updatePlot(confirmationData).then(
-      data => {
-        setTableData(nextData)
-        setConfirmationModal(false)
-        setSuccessData(confirmationData)
-        setAction("PLOTDATA_UPDATE")
-        setSuccessMessage(true)
+      (data) => {
+        setTableData(nextData);
+        setConfirmationModal(false);
+        setSuccessData(confirmationData);
+        setAction("PLOTDATA_UPDATE");
+        setSuccessMessage(true);
+        setActiveRow(null)
       },
-      error => {
-        setErrorMessage(active)
-        setErrorData(error.message)
+      (error) => {
+        setErrorMessage(active);
+        setErrorData(error.message);
       }
-    )
+    );
   }
 
-  const handlePalmEditChange = (trialid, key, value) => {
-    const nextData = Object.assign([], tableData)
-    if (key === "palmno") {
-      nextData.find(item => item.trialid === trialid)[key] = parseInt(value)
-      setTableData(nextData)
-    } else {
-      nextData.find(item => item.trialid === trialid)[key] = value
-      setTableData(nextData)
+  const handlePalmEditChange = (palmId, key, value) => {
+    const nextData = Object.assign([], tableData);
+    const activeItem = nextData.find((item) => item.palmId === palmId);
+  
+    activeItem[key] = value;
+    setTableData(nextData);
+    // if (key === "palmno") {
+    //   nextData.find((item) => item.trialId === trialId)[key] = value;
+    //   setTableData(nextData);
+    // } else {
+    //   nextData.find((item) => item.trialId === trialId)[key] = value;
+    //   setTableData(nextData);
+    // }
+  };
+
+  function handlePalmEditStatus(palmId) {
+    const nextData = Object.assign([], tableData);
+    const activeItem = nextData.find((item) => item.palmId === palmId);
+    setActiveRow({...activeItem})
+    activeItem.status = activeItem.status ? false : true;
+    setTableData(nextData);
+    
+  }
+
+  function cancelPalmData(palmId) {
+    const nextData = Object.assign([], tableData);
+    const activeItemIdx = nextData.findIndex((item) => item.palmId === palmId);
+    if(activeRow){    
+    nextData[activeItemIdx] = activeRow
     }
+    nextData[activeItemIdx]['status'] = false
+    setTableData(nextData);
+    setActiveRow(null)
   }
 
-  function handlePalmEditStatus(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
-    setTableData(nextData)
-  }
-
-  function cancelPalmData(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    const nextData2 = Object.assign([], originalData)
-    const activeItem2 = nextData2.find(item => item.trialid === trialid)
-    activeItem.status = null
-    activeItem.palmno = activeItem2.palmno
-    setTableData(nextData2)
-  }
-
-  function savePalmData(trialid) {
-    const nextData = Object.assign([], tableData)
-    const activeItem = nextData.find(item => item.trialid === trialid)
-    activeItem.status = activeItem.status ? null : true
+  function savePalmData(trialId) {
+    const nextData = Object.assign([], tableData);
+    const activeItem = nextData.find((item) => item.trialId === trialId);
+    activeItem.status = activeItem.status ? null : true;
     const payload = {
       trialCode: confirmationData.trialCode,
       estate: confirmationData.estate,
       palmno: confirmationData.palmno,
       palmId: confirmationData.palmId,
       updatedBy: userInfo,
-      updatedDate: new Date().toISOString()
-    }
+      updatedDate: new Date().toISOString(),
+    };
     PalmService.updatePalm(payload).then(
-      data => {
-        setTableData(nextData)
-        setConfirmationModal(false)
-        setSuccessData(confirmationData)
-        setAction("PALMDATA_UPDATE")
-        setSuccessMessage(true)
+      (data) => {
+        setTableData(nextData);
+        setConfirmationModal(false);
+        setSuccessData(confirmationData);
+        setAction("PALMDATA_UPDATE");
+        setSuccessMessage(true);
+        setActiveRow(null)
       },
-      error => {
-        setErrorMessage(active)
-        setErrorData(error.message)
+      (error) => {
+        setErrorMessage(active);
+        setErrorData(error.message);
       }
-    )
+    );
   }
 
   function ActionButtons({ data }) {
@@ -866,12 +929,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 handleActionExpand(["Estate", `Estate ${data.estate}`], {
                   type: "add",
                   estate: data.estate,
-                  estateId: data.estateId
+                  estateId: data.estateId,
                 })
               }
             />
           </span>
-        )
+        );
       case "trial":
         return (
           <FlexboxGrid className="spaceBetweenThree" justify="space-between">
@@ -886,14 +949,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       trial: data,
                       // estate: data.estate,
                       // replicates:data.replicates,
-                      type: "expand"
+                      type: "expand",
                     }
                   )
                 }
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable === 'true' && data.status !== 'Closed' ? (
+              {data.isEditable === "true" && data.status !== "Closed" ? (
                 <img
                   src={CreateIcon}
                   alt=""
@@ -903,32 +966,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       {
                         trial: data.trialId,
                         estate: data.estate,
-                        replicates:data.replicates,
-                        type: "edit"
-                      }
-                    )
-                  }
-                />
-              ) : (
-                <Whisper placement="left" trigger="hover" speaker={data.status === 'Closed'? closedTrial: editProgeny}>
-                  <img src={CreateIcon} style={{ opacity: 0.2 }} alt = "create"/>
-                </Whisper>
-              )}
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item>
-              {data.isEditable === 'true' && data.status !== 'Closed' ? (
-                <img
-                  src={LinkIcon}
-                  alt = "edit"
-                  onClick={() =>
-                    handleActionExpand(
-                      ["Trial and Replicate", `Attach Progenies`],
-                      {
-                        trial: data.trialCode,
-                        trialId: data.trialId,
-                        estate: data.estate,
-                        replicates:data.replicates,
-                        type: "attach"
+                        replicates: data.replicates,
+                        type: "edit",
                       }
                     )
                   }
@@ -937,14 +976,44 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <Whisper
                   placement="left"
                   trigger="hover"
-                  speaker={data.status === 'Closed'? closedTrial: attachProgeny}
+                  speaker={data.status === "Closed" ? closedTrial : editProgeny}
                 >
-                  <img src={LinkIcon} style={{ opacity: 0.2 }} alt = "link"/>
+                  <img src={CreateIcon} style={{ opacity: 0.2 }} alt="create" />
+                </Whisper>
+              )}
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item>
+              {data.isEditable === "true" && data.status !== "Closed" ? (
+                <img
+                  src={LinkIcon}
+                  alt="edit"
+                  onClick={() =>
+                    handleActionExpand(
+                      ["Trial and Replicate", `Attach Progenies`],
+                      {
+                        trial: data.trialCode,
+                        trialId: data.trialId,
+                        estate: data.estate,
+                        replicates: data.replicates,
+                        type: "attach",
+                      }
+                    )
+                  }
+                />
+              ) : (
+                <Whisper
+                  placement="left"
+                  trigger="hover"
+                  speaker={
+                    data.status === "Closed" ? closedTrial : attachProgeny
+                  }
+                >
+                  <img src={LinkIcon} style={{ opacity: 0.2 }} alt="link" />
                 </Whisper>
               )}
             </FlexboxGrid.Item>
           </FlexboxGrid>
-        )
+        );
       case "plot":
         return (
           <>
@@ -965,7 +1034,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="red"
                     size="xs"
                     icon={<Icon icon="close" />}
-                    onClick={() => cancelPlotData(data.trialCode)}
+                    onClick={() => cancelPlotData(data.plotId)}
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
@@ -980,7 +1049,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                         type: "generate QR",
                         plotId: data.plotId,
                         trialCode: data.trialCode,
-                        plot: data.plot
+                        plot: data.plot,
                       })
                     }
                   />
@@ -989,7 +1058,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={CreateIcon}
                     alt=""
-                    onClick={() => handlePlotEditStatus(data.trialid)}
+                    onClick={() => handlePlotEditStatus(data.plotId)}
                   />
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
@@ -1003,15 +1072,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                         trialId: data.trialId,
                         estate: data.estate,
                         replicate: data.replicate,
-                        plot: data.plot
+                        plot: data.plot,
                       })
-                    }  
+                    }
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
             )}
           </>
-        )
+        );
       case "palm":
         return (
           <>
@@ -1032,7 +1101,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     color="red"
                     size="xs"
                     icon={<Icon icon="close" />}
-                    onClick={() => cancelPalmData(data.trialid)}
+                    onClick={() => cancelPalmData(data.palmId)}
                   />
                 </FlexboxGrid.Item>
               </FlexboxGrid>
@@ -1040,11 +1109,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <img
                 src={CreateIcon}
                 alt=""
-                onClick={() => handlePalmEditStatus(data.trialid)}
+                onClick={() => handlePalmEditStatus(data.palmId)}
               />
             )}
           </>
-        )
+        );
 
       case "progeny":
         return (
@@ -1069,12 +1138,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   mpFam: data.mpFam,
                   mpVar: data.mpVar,
                   cross: data.cross,
-                  crossType: data.crossType
+                  crossType: data.crossType,
                 })
               }
             />
           </span>
-        )
+        );
       case "userlist":
         return (
           <span>
@@ -1086,135 +1155,49 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   userId: data.userId,
                   username: data.username,
                   position: data.position,
-                  status: data.status
+                  status: data.status,
                 })
               }
             />
           </span>
-        )
-      // case "estateAssignment":
-      //   function openAssignUserModal(data) {
-      //     setAssignUserModal(true)
-      //     setEstate(data)
-      //   }
-
-      //   return (
-      //     <FlexboxGrid className="spaceBetweenTwo" justify="space-between">
-      //       <FlexboxGrid.Item>
-      //         <img
-      //           src={OpenNew}
-      //           alt=""
-      //           onClick={() =>
-      //             handleActionExpand(
-      //               ["Estate Assignment", `Estate ${data.estate}`],
-      //               {
-      //                 type: "check",
-      //                 estate: data.estate
-      //               }
-      //             )
-      //           }
-      //         />
-      //       </FlexboxGrid.Item>
-      //       <FlexboxGrid.Item>
-      //         <img
-      //           src={AccountCircle}
-      //           alt=""
-      //           onClick={() => openAssignUserModal(data.estate)}
-      //         />
-      //       </FlexboxGrid.Item>
-      //     </FlexboxGrid>
-      //   )
-      // case "userAssignment":
-      //   return (
-      //     <span>
-      //       <img
-      //         src={AccountCircle}
-      //         alt=""
-      //         onClick={() => openAssignEstateModal(data.username)}
-      //       />
-      //     </span>
-      //   )
+        );
       default:
-        return null
+        return null;
     }
   }
 
-  // const assignUserToEstate = () => {
-  //   const payload = {
-  //     estate: estate,
-  //     userId: selectedItem
-  //   }
-  //   console.log(payload)
-  //   EstateAssignmentService.assignUserToEstate(payload).then(
-  //     data => {
-  //       setAssignUserModal(false)
-  //       setAction("MULTIUSERTOESTATE_ASSIGN")
-  //       setSuccessMessage(true)
-  //     },
-  //     error => {}
-  //   )
-  // }
-
-  // const assignEstateToUser = () => {
-  //   const payload = {
-  //     username: username,
-  //     estate: selectedItem
-  //   }
-  //   console.log(payload)
-  //   UserAssignmentService.assignEstateToUser(payload).then(
-  //     data => {
-  //       setAssignEstateModal(false)
-  //       setAction("MULTIESTATETOUSER_ASSIGN")
-  //       setSuccessMessage(true)
-  //     },
-  //     error => {}
-  //   )
-  // }
-
+ 
   function handleActionExpand(breadcrumb, option) {
-    dispatch(setBreadcrumb({ breadcrumb, option }))
+    dispatch(setBreadcrumb({ breadcrumb, option }));
   }
 
-  // function openAssignEstateModal(data) {
-  //   setAssignEstateModal(true)
-  //   setUsername(data)
-  // }
 
   function handleAddNewTrial(breadcrumb, option) {
-    dispatch(setBreadcrumb({ breadcrumb, option }))
+    dispatch(setBreadcrumb({ breadcrumb, option }));
   }
 
   function onDelete() {
-    const rows = tableData.filter((r, i) => checkStatus.includes(i))
-    setRowsToDelete(rows)
-    setDeleteModal(true)
+    const rows = tableData.filter((r, i) => checkStatus.includes(i));
+    setRowsToDelete(rows);
+    setDeleteModal(true);
   }
 
   function handleDeleteRecords() {
-    if(active === 'progeny') {
-      const progenyIds =  rowsToDelete.map((pId)=> pId.progenyId)
-      ProgenyService.deleteProgeny({progenyIds}).then(
-        data => {
-          dispatch(getDashboardData('progeny'))
-          setDeleteModal(false)
+    if (active === "progeny") {
+      const progenyIds = rowsToDelete.map((pId) => pId.progenyId);
+      ProgenyService.deleteProgeny({ progenyIds }).then(
+        (data) => {
+          dispatch(getDashboardData("progeny"));
+          setDeleteModal(false);
           //Display success message
-          setSuccessMessage(true)
-          setAction("PROGENY_DELETE")
+          setSuccessMessage(true);
+          setAction("PROGENY_DELETE");
         },
-        error => {
-          console.log(error.message)
+        (error) => {
+          console.log(error.message);
         }
-      )
+      );
     }
-    
-    // setTimeout(() => {
-    //   // Deleted successfully
-    //   // Close the modal
-    //   setDeleteModal(false)
-    //   //Display success message
-    //   setSuccessMessage(true)
-    //   setAction("PROGENY_DELETE")
-    // }, 500)
   }
 
   function ErrorMessage({ activeNav, errorData }) {
@@ -1227,11 +1210,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               type="error"
               description={`${errorData} is the problem unable to edit plot`}
               onClick={() => {
-                setErrorMessage("")
+                setErrorMessage("");
               }}
             />
           </>
-        )
+        );
       case "palm" && errorData !== undefined:
         return (
           <>
@@ -1240,13 +1223,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               type="error"
               description={`${errorData} is the problem unable to edit palm.`}
               onClick={() => {
-                setErrorMessage("")
+                setErrorMessage("");
               }}
             />
           </>
-        )
+        );
       default:
-        return <></>
+        return <></>;
     }
   }
 
@@ -1255,311 +1238,311 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "estate":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "estate") {
-            field.flexGrow = 1
-            currentTableDataFields[0] = field
+            field.flexGrow = 1;
+            currentTableDataFields[0] = field;
           }
           if (field.value === "estatefullname") {
-            field.flexGrow = 1
-            currentTableDataFields[1] = field
+            field.flexGrow = 1;
+            currentTableDataFields[1] = field;
           }
           if (field.value === "noofestateblock") {
-            field.flexGrow = 1
-            currentTableDataFields[2] = field
+            field.flexGrow = 1;
+            currentTableDataFields[2] = field;
           }
           if (field.value === "nooftrails") {
-            field.flexGrow = 1
-            currentTableDataFields[3] = field
+            field.flexGrow = 1;
+            currentTableDataFields[3] = field;
           }
-        })
-        return currentTableDataFields
+        });
+        return currentTableDataFields;
 
       case "trial":
-        const trialfields = []
+        const trialfields = [];
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
-            field.width = 120
-            trialfields[0] = field
+            field.width = 120;
+            trialfields[0] = field;
           }
           if (field.value === "trial") {
-            field.width = 200
-            trialfields[1] = field
+            field.width = 200;
+            trialfields[1] = field;
           }
           if (field.value === "trialremark") {
-            field.width = 500
-            trialfields[2] = field
+            field.width = 500;
+            trialfields[2] = field;
           }
           if (field.value === "area") {
-            field.width = 120
-            trialfields[3] = field
+            field.width = 120;
+            trialfields[3] = field;
           }
           if (field.value === "planteddate") {
-            field.width = 200
-            trialfields[4] = field
+            field.width = 200;
+            trialfields[4] = field;
           }
           if (field.value === "nofprogeny") {
-            field.width = 120
-            trialfields[5] = field
+            field.width = 120;
+            trialfields[5] = field;
           }
           if (field.value === "estate") {
-            field.width = 120
-            trialfields[6] = field
+            field.width = 120;
+            trialfields[6] = field;
           }
           if (field.value === "nofreplicate") {
-            field.width = 140
-            trialfields[7] = field
+            field.width = 140;
+            trialfields[7] = field;
           }
           if (field.value === "nofplot") {
-            field.width = 120
-            trialfields[9] = field
+            field.width = 120;
+            trialfields[9] = field;
           }
           if (field.value === "nofplot_subblock") {
-            field.width = 170
-            trialfields[10] = field
+            field.width = 170;
+            trialfields[10] = field;
           }
           if (field.value === "nofsubblock") {
-            field.width = 170
-            trialfields[11] = field
+            field.width = 170;
+            trialfields[11] = field;
           }
           if (field.value === "status") {
-            field.width = 130
-            field.align = "center"
-            field.fixed = "right"
-            trialfields[12] = field
+            field.width = 130;
+            field.align = "center";
+            field.fixed = "right";
+            trialfields[12] = field;
           }
-        })
-        return trialfields
+        });
+        return trialfields;
 
       case "plot":
-        const plotfields = []
+        const plotfields = [];
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
-            field.width = 140
-            plotfields[0] = field
+            field.width = 140;
+            plotfields[0] = field;
           }
           if (field.value === "estate") {
-            field.width = 140
-            plotfields[1] = field
+            field.width = 140;
+            plotfields[1] = field;
           }
           if (field.value === "replicate") {
-            field.width = 140
-            plotfields[2] = field
+            field.width = 140;
+            plotfields[2] = field;
           }
           if (field.value === "estateblock") {
-            field.width = 140
-            plotfields[3] = field
+            field.width = 140;
+            plotfields[3] = field;
           }
           if (field.value === "design") {
-            field.width = 140
-            plotfields[4] = field
+            field.width = 140;
+            plotfields[4] = field;
           }
           if (field.value === "density") {
-            field.width = 140
-            plotfields[5] = field
+            field.width = 140;
+            plotfields[5] = field;
           }
           if (field.value === "plot") {
-            field.width = 140
-            plotfields[6] = field
+            field.width = 140;
+            plotfields[6] = field;
           }
           if (field.value === "subblock") {
-            field.width = 140
-            plotfields[7] = field
+            field.width = 140;
+            plotfields[7] = field;
           }
           if (field.value === "progenyCode") {
-            field.width = 140
-            plotfields[8] = field
+            field.width = 140;
+            plotfields[8] = field;
           }
           if (field.value === "progeny") {
-            field.width = 140
-            plotfields[9] = field
+            field.width = 140;
+            plotfields[9] = field;
           }
           if (field.value === "ortet") {
-            field.width = 140
-            plotfields[10] = field
+            field.width = 140;
+            plotfields[10] = field;
           }
           if (field.value === "fp") {
-            field.width = 140
-            plotfields[11] = field
+            field.width = 140;
+            plotfields[11] = field;
           }
           if (field.value === "mp") {
-            field.width = 140
-            plotfields[12] = field
+            field.width = 140;
+            plotfields[12] = field;
           }
           if (field.value === "noofPalm") {
-            field.width = 140
-            plotfields[13] = field
+            field.width = 140;
+            plotfields[13] = field;
           }
-        })
-        return plotfields
+        });
+        return plotfields;
 
       case "palm":
-        const palmfields = []
+        const palmfields = [];
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
-            field.flexGrow = 1
-            palmfields[0] = field
+            field.flexGrow = 1;
+            palmfields[0] = field;
           }
           if (field.value === "estate") {
-            field.flexGrow = 1
-            palmfields[1] = field
+            field.flexGrow = 1;
+            palmfields[1] = field;
           }
           if (field.value === "replicate") {
-            field.flexGrow = 1
-            palmfields[2] = field
+            field.flexGrow = 1;
+            palmfields[2] = field;
           }
           if (field.value === "estateblock") {
-            field.flexGrow = 1
-            palmfields[3] = field
+            field.flexGrow = 1;
+            palmfields[3] = field;
           }
           if (field.value === "plot") {
-            field.flexGrow = 1
-            palmfields[4] = field
+            field.flexGrow = 1;
+            palmfields[4] = field;
           }
           if (field.value === "palmno") {
-            field.flexGrow = 1
-            palmfields[5] = field
+            field.flexGrow = 1;
+            palmfields[5] = field;
           }
-        })
-        return palmfields
+        });
+        return palmfields;
 
       case "progeny":
-        const fieldsTodisplay = []
+        const fieldsTodisplay = [];
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "progenyCode") {
-            field.width = 200
-            fieldsTodisplay[0] = field
+            field.width = 200;
+            fieldsTodisplay[0] = field;
           }
           if (field.value === "popvar") {
-            field.width = 170
-            fieldsTodisplay[1] = field
+            field.width = 170;
+            fieldsTodisplay[1] = field;
           }
           if (field.value === "origin") {
-            field.width = 200
-            fieldsTodisplay[2] = field
+            field.width = 200;
+            fieldsTodisplay[2] = field;
           }
           if (field.value === "progenyremark") {
-            field.width = 200
-            fieldsTodisplay[3] = field
+            field.width = 200;
+            fieldsTodisplay[3] = field;
           }
           if (field.value === "progeny") {
-            field.width = 150
-            fieldsTodisplay[4] = field
+            field.width = 150;
+            fieldsTodisplay[4] = field;
           }
           if (field.value === "generation") {
-            field.width = 170
-            fieldsTodisplay[5] = field
+            field.width = 170;
+            fieldsTodisplay[5] = field;
           }
           if (field.value === "ortet") {
-            field.width = 170
-            fieldsTodisplay[6] = field
+            field.width = 170;
+            fieldsTodisplay[6] = field;
           }
           if (field.value === "fp") {
-            field.width = 150
-            fieldsTodisplay[7] = field
+            field.width = 150;
+            fieldsTodisplay[7] = field;
           }
           if (field.value === "fpFam") {
-            field.width = 150
-            fieldsTodisplay[8] = field
+            field.width = 150;
+            fieldsTodisplay[8] = field;
           }
           if (field.value === "fpVar") {
-            field.width = 150
-            fieldsTodisplay[9] = field
+            field.width = 150;
+            fieldsTodisplay[9] = field;
           }
           if (field.value === "mp") {
-            field.width = 150
-            fieldsTodisplay[10] = field
+            field.width = 150;
+            fieldsTodisplay[10] = field;
           }
           if (field.value === "mpFam") {
-            field.width = 150
-            fieldsTodisplay[11] = field
+            field.width = 150;
+            fieldsTodisplay[11] = field;
           }
           if (field.value === "mpVar") {
-            field.width = 150
-            fieldsTodisplay[12] = field
+            field.width = 150;
+            fieldsTodisplay[12] = field;
           }
           if (field.value === "cross") {
-            field.width = 200
-            fieldsTodisplay[13] = field
+            field.width = 200;
+            fieldsTodisplay[13] = field;
           }
           if (field.value === "crossType") {
-            field.width = 200
-            fieldsTodisplay[14] = field
+            field.width = 200;
+            fieldsTodisplay[14] = field;
           }
-        })
-        return fieldsTodisplay
+        });
+        return fieldsTodisplay;
 
       case "userlist":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "userId") {
-            field.flexGrow = 1
-            currentTableDataFields[0] = field
+            field.flexGrow = 1;
+            currentTableDataFields[0] = field;
           }
           if (field.value === "username") {
-            field.flexGrow = 1
-            currentTableDataFields[1] = field
+            field.flexGrow = 1;
+            currentTableDataFields[1] = field;
           }
           if (field.value === "position") {
-            field.flexGrow = 4
-            currentTableDataFields[2] = field
+            field.flexGrow = 4;
+            currentTableDataFields[2] = field;
           }
           if (field.value === "status") {
-            field.width = 130
-            field.align = "center"
-            field.fixed = "right"
-            currentTableDataFields[3] = field
+            field.width = 130;
+            field.align = "center";
+            field.fixed = "right";
+            currentTableDataFields[3] = field;
           }
-        })
-        return currentTableDataFields
+        });
+        return currentTableDataFields;
 
       case "estateAssignment":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "estate") {
-            field.flexGrow = 2
-            currentTableDataFields[0] = field
+            field.flexGrow = 2;
+            currentTableDataFields[0] = field;
           }
           if (field.value === "estatefullname") {
-            field.flexGrow = 2
-            currentTableDataFields[1] = field
+            field.flexGrow = 2;
+            currentTableDataFields[1] = field;
           }
           if (field.value === "noTrialOnHere") {
-            field.flexGrow = 2
-            currentTableDataFields[2] = field
+            field.flexGrow = 2;
+            currentTableDataFields[2] = field;
           }
           if (field.value === "assignedUser") {
-            field.flexGrow = 3
-            currentTableDataFields[3] = field
+            field.flexGrow = 3;
+            currentTableDataFields[3] = field;
           }
-        })
-        return currentTableDataFields
+        });
+        return currentTableDataFields;
 
       case "userAssignment":
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "userId") {
-            field.flexGrow = 1
-            currentTableDataFields[0] = field
+            field.flexGrow = 1;
+            currentTableDataFields[0] = field;
           }
           if (field.value === "username") {
-            field.flexGrow = 1
-            currentTableDataFields[1] = field
+            field.flexGrow = 1;
+            currentTableDataFields[1] = field;
           }
           if (field.value === "position") {
-            field.flexGrow = 1
-            currentTableDataFields[2] = field
+            field.flexGrow = 1;
+            currentTableDataFields[2] = field;
           }
           if (field.value === "estate") {
-            field.flexGrow = 4
-            currentTableDataFields[3] = field
+            field.flexGrow = 4;
+            currentTableDataFields[3] = field;
           }
-        })
-        return currentTableDataFields
+        });
+        return currentTableDataFields;
 
       default:
-        return currentTableDataFields
+        return currentTableDataFields;
     }
-  }
+  };
 
   return (
     <>
-    {active === 'palm' && !showPalmRecord() ? (
+      {active === "palm" && !showPalmRecord() ? (
         <div className="imageLayout">
           <img src={SearchMessage} alt="" />
           <p className="desc">
@@ -1568,155 +1551,215 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </p>
         </div>
       ) : (
-<div>
-        <Grid fluid>
-          <Row className="show-grid" id="dashboardTableSetting">
-            
-            <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({getFilteredDataWithoutDisplayLength().length}) </b>
-            </Col>
-
-            <FlexboxGrid justify="end"> 
-              <Col sm={5} md={5} lg={5} className="pageOptionLayout">
-                <FlexboxGrid.Item className="selectPage">
-                  <InputPicker
-                    className="option"
-                    data={perpage}
-                    defaultValue={"10"}
-                    onChange={handleChangeLength}
-                  />{" "}
-                  <b className="page">per page</b>
-                </FlexboxGrid.Item>
+        <div>
+          <Grid fluid>
+            <Row className="show-grid" id="dashboardTableSetting">
+              <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+                <b>
+                  Total records ({getFilteredDataWithoutDisplayLength().length}){" "}
+                </b>
               </Col>
 
-              <AddButton />
+              <FlexboxGrid justify="end">
+                {active === "palm" && palmReplicates.length ? (
+                  <>
+                    <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
+                      {/* <ControlLabel className="labelFilter">Replicate</ControlLabel> */}
+                      <FlexboxGrid.Item>
+                        <SelectPicker
+                          data={palmReplicates}
+                          className="dashboardSelectFilter"
+                          value={replicateSelector}
+                          onChange={(value, e) => {
+                            filterData.filter["replicate"] = value;
+                            if (value === "All") {
+                              delete filterData.filter.replicate;
+                              const foundTrial = dashboardData.result[
+                                "trial"
+                              ].find(
+                                (trial) =>
+                                  trial.trialCode ===
+                                  filterData.filter.trialCode
+                              );
+                              const foundEstate = foundTrial.estate.find(
+                                (est) => est.name === filterData.filter.estate
+                              );
+                              const payload = {
+                                trialId: foundTrial.trialId,
+                                estateId: foundEstate.id,
+                              };
+                              dispatch(getPalmData(payload), () => {
+                                dispatch(setFilter(filterData.filter));
+                              });
+                            } else {
+                              dispatch(setFilter(filterData.filter));
+                            }
+                            replicateSelector = value;
+                          }}
+                        />
+                      </FlexboxGrid.Item>
+                    </Col>
 
-              <DeleteButton />
-              <DeleteModal
-                show={isDeleteModal}
-                hide={() => setDeleteModal(false)}
-                deleteRecord={handleDeleteRecords}
-                activeNav={active}
-                rows={rowsToDelete}
-              />
-              <SuccessMessage
-                rowsToDelete={rowsToDelete}
-                data={successData}
-                show={successMessage}
-                hide={() => setSuccessMessage("")}
-                action={action}
-              />
+                    <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
+                      <FlexboxGrid.Item>
+                        <SelectPicker
+                          data={palmPlots}
+                          className="dashboardSelectFilter"
+                          value={plotSelector}
+                          onChange={(value, e) => {
+                            filterData.filter["plotId"] = value;
+                            if (value === "All") {
+                              delete filterData.filter.plotId;
+                              const foundTrial = dashboardData.result[
+                                "trial"
+                              ].find(
+                                (trial) =>
+                                  trial.trialCode ===
+                                  filterData.filter.trialCode
+                              );
+                              const foundEstate = foundTrial.estate.find(
+                                (est) => est.name === filterData.filter.estate
+                              );
+                              const payload = {
+                                trialId: foundTrial.trialId,
+                                estateId: foundEstate.id,
+                              };
+                              dispatch(getPalmData(payload), () => {
+                                dispatch(setFilter(filterData.filter));
+                              });
+                            } else {
+                              dispatch(setFilter(filterData.filter));
+                            }
 
-              <ErrorMessage activeNav={errorMessage} errorData={errorData} />
-            
-              {/* <SuccessModal
-                show={isSuccessModal}
-                hide={CloseSuccessModal}
-                data={successData}
-              /> */}
-              {/* <AssignUser
-                estate={estate}
-                selectedItem={selectedItem}
-                show={assignUserModal}
-                hide={() => setAssignUserModal(false)}
-                setSelectedItem={setSelectedItem}
-                assignUserToEstate={assignUserToEstate}
-              /> */}
+                            plotSelector = value;
+                          }}
+                        />
+                      </FlexboxGrid.Item>
+                    </Col>
+                  </>
+                ) : (
+                  ""
+                )}
 
-              {/* <AssignEstate
-                username={username}
-                selectedItem={selectedItem}
-                show={assignEstateModal}
-                hide={() => setAssignEstateModal(false)}
-                setSelectedItem={setSelectedItem}
-                assignEstateToUser={assignEstateToUser}
-              /> */}
+                <Col sm={5} md={5} lg={5} className="pageOptionLayout">
+                  <FlexboxGrid.Item className="selectPage">
+                    <InputPicker
+                      className="option"
+                      data={perpage}
+                      defaultValue={"10"}
+                      onChange={handleChangeLength}
+                    />{" "}
+                    <b className="page">per page</b>
+                  </FlexboxGrid.Item>
+                </Col>
 
-              <ConfirmationModal
-                show={confirmationModal}
-                hide={closeConfirmationModal}
-                data={confirmationData}
-                savePlotData={savePlotData}
-                savePalmData={savePalmData}
-                action={active}
-              />
-            </FlexboxGrid>
-          </Row>
-        </Grid>
+                <AddButton />
 
-        <Table
-          id="dashboardTable"
-          wordWrap
-          virtualized
-          rowHeight={55}
-          data={getData(displaylength)}
-          autoHeight
-        >
-          {active === "progeny" ? (
-            <Column width={70} align="center" fixed>
-              <HeaderCell className="tableHeader">
-                <Checkbox
-                  checked={checked}
-                  indeterminate={indeterminate}
-                  onChange={handleCheckAll}
+                <DeleteButton />
+                <DeleteModal
+                  show={isDeleteModal}
+                  hide={() => setDeleteModal(false)}
+                  deleteRecord={handleDeleteRecords}
+                  activeNav={active}
+                  rows={rowsToDelete}
                 />
-              </HeaderCell>
-              <CheckCell
-                dataKey="rowNumber"
-                checkedKeys={checkStatus}
-                onChange={handleCheck}
-              />
-            </Column>
-          ) : null}
-          {reArrangeTableFields().map((field, i) => (
-            <Column
-              width={field.width ? field.width : null}
-              flexGrow={field.flexGrow ? field.flexGrow : null}
-              align={field.align ? field.align : "left"}
-              fixed={field.fixed ? field.fixed : null}
-              key={i}
-            >
-              <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-              {field.value === "status" ? (
-                <Cell align="center" {...props}>
-                  {rowData => <StatusButton status={rowData.status} />}
-                </Cell>
-              ): field.value === "planteddate" ? (<Cell align="center" {...props}>
-              {rowData =>    <PlantedDate date = {rowData.planteddate}/> }
-            </Cell>) : (
-                <EditableCell
-                  dataKey={field.value}
-                  OriginalData={originalData}
-                  handlePalmEditChange={handlePalmEditChange}
-                  handlePlotEditChange={handlePlotEditChange}
-                  active={active}
+                <SuccessMessage
+                  rowsToDelete={rowsToDelete}
+                  data={successData}
+                  show={successMessage}
+                  hide={() => setSuccessMessage("")}
+                  action={action}
                 />
-              )}
+
+                <ErrorMessage activeNav={errorMessage} errorData={errorData} />
+
+              
+                <ConfirmationModal
+                  show={confirmationModal}
+                  hide={closeConfirmationModal}
+                  data={confirmationData}
+                  savePlotData={savePlotData}
+                  savePalmData={savePalmData}
+                  action={active}
+                />
+              </FlexboxGrid>
+            </Row>
+          </Grid>
+
+          <Table
+            id="dashboardTable"
+            wordWrap
+            virtualized
+            rowHeight={55}
+            data={getData(displaylength)}
+            autoHeight
+          >
+            {active === "progeny" ? (
+              <Column width={70} align="center" fixed>
+                <HeaderCell className="tableHeader">
+                  <Checkbox
+                    checked={checked}
+                    indeterminate={indeterminate}
+                    onChange={handleCheckAll}
+                  />
+                </HeaderCell>
+                <CheckCell
+                  dataKey="rowNumber"
+                  checkedKeys={checkStatus}
+                  onChange={handleCheck}
+                />
+              </Column>
+            ) : null}
+            {reArrangeTableFields().map((field, i) => (
+              <Column
+                width={field.width ? field.width : null}
+                flexGrow={field.flexGrow ? field.flexGrow : null}
+                align={field.align ? field.align : "left"}
+                fixed={field.fixed ? field.fixed : null}
+                key={i}
+              >
+                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
+                {field.value === "status" ? (
+                  <Cell align="center" {...props}>
+                    {(rowData) => <StatusButton status={rowData.status} />}
+                  </Cell>
+                ) : field.value === "planteddate" ? (
+                  <Cell align="center" {...props}>
+                    {(rowData) => <PlantedDate date={rowData.planteddate} />}
+                  </Cell>
+                ) : (
+                  <EditableCell
+                    dataKey={field.value}
+                    OriginalData={tableData}
+                    handlePalmEditChange={handlePalmEditChange}
+                    handlePlotEditChange={handlePlotEditChange}
+                    active={active}
+                  />
+                )}
+              </Column>
+            ))}
+
+            <Column width={130} align="center" fixed="right">
+              <HeaderCell className="tableHeader">Action</HeaderCell>
+              <Cell align="center" {...props}>
+                {(rowData) => <ActionButtons data={rowData} />}
+              </Cell>
             </Column>
-          ))}
+          </Table>
 
-          <Column width={130} align="center" fixed="right">
-            <HeaderCell className="tableHeader">Action</HeaderCell>
-            <Cell align="center" {...props}>
-              {rowData => <ActionButtons data={rowData} />}
-            </Cell>
-          </Column>
-        </Table>
-
-        <div className="pagination">
-          <Pagination
-            {...pagination}
-            pages={getNoPages()}
-            maxButtons={2}
-            activePage={activePage}
-            onSelect={handleChangePage}
-          />
+          <div className="pagination">
+            <Pagination
+              {...pagination}
+              pages={getNoPages()}
+              maxButtons={2}
+              activePage={activePage}
+              onSelect={handleChangePage}
+            />
+          </div>
         </div>
-      </div>
       )}
-      
     </>
-  )
-}
+  );
+};
 
-export default DataTable
+export default DataTable;

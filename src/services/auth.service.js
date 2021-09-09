@@ -9,6 +9,7 @@ import StateLoader from "../redux/StateLoader"
 var bcrypt = require('bcryptjs');
 var salt = bcrypt.genSaltSync(10);
 const stateLoader = new StateLoader()
+const KEY = "progeny-app-state"
 const login = (username, password) =>
   new Promise((resolve, reject) => {
     if (username && password) {
@@ -38,7 +39,9 @@ const refreshToken = () => {
 }
 const logout = () => {
   localStorage.clear()
-  stateLoader.initializeState()
+  window.localStorage.clear() 
+  localStorage.removeItem(KEY)
+  // stateLoader.initializeState()
 }
 
 const AuthService = {

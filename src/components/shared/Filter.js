@@ -6,7 +6,6 @@ const Filter = forwardRef(
     ref
   ) => {
     const dataToFilter = []
-   console.log({selected})
     if (filterData) {
       filterData.forEach(filter => {
         dataToFilter.push({
