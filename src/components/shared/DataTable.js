@@ -866,13 +866,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
     PlotService.updatePlot(payload).then(
       (data) => {
+        dispatch(getDashboardData('plot'))
         setActiveRow(null)
         setTableData(nextData);
         setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PLOTDATA_UPDATE");
         setSuccessMessage(true);
-       
+        
       },
       (error) => {
         setErrorMessage(active);
