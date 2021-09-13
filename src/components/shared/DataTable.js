@@ -857,7 +857,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const {plot, progenyCode} = confirmationData
 
     const payload = {
-      plotId,
+      plotid:plotId,
       progenyid:progenyCode,
       plotno: plot,
       updatedBy: userInfo,
