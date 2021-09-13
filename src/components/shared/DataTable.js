@@ -917,6 +917,16 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setActiveRow(null)
   }
 
+  function fetchCurrentTrialPalmData(){
+    const foundTrial = dashboardData.result["trial"].find((trial) => trial.trialCode === filterData.filter.trialCode);
+    const foundEstate = foundTrial.estate.find((est) => est.name === filterData.filter.estate);
+    const payload = {
+      trialId: foundTrial.trialId,
+      estateId: foundEstate.id,
+    };
+    dispatch(getPalmData(payload))
+  }
+  
   function savePalmData(trialId) {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.trialId === trialId);
@@ -939,6 +949,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);
         setActiveRow(null)
+        fetchCurrentTrialPalmData()
       },
       (error) => {
         setErrorMessage(active);
