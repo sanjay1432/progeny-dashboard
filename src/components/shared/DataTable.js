@@ -38,6 +38,7 @@ import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg";
 import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import PalmService from "../../services/palm.service";
 import PlotService from "../../services/plot.service";
+import DashboardDataService from "../../services/dashboarddata.service"
 import MapEstates from "../../components/estate/MapEstates";
 const { Column, HeaderCell, Cell } = Table;
 const initialState = {
@@ -58,6 +59,7 @@ const EditableCell = ({
   handlePlotEditChange,
   handlePalmEditChange,
   active,
+  progenies,
   OriginalData,
   ...cellProps
 }) => {
@@ -77,17 +79,16 @@ const EditableCell = ({
     case "plot":
       return (
         <>
-          {editing ? (
+          {rowData['status'] ? (
             <Cell {...cellProps}>
               {dataKey === "progenyCode" ? (
-                <DataPicker
-                  OriginalData={OriginalData}
-                  dataType="progenyCode"
-                  dataValue={rowData[dataKey]}
-                  onChange={(value) =>
-                    handlePlotEditChange(rowData.plotId, dataKey, value)
-                  }
-                />
+                <SelectPicker
+                data={progenies}
+                value={rowData[dataKey]}
+                onChange={(value, event) =>
+                  handlePlotEditChange(rowData.plotId, dataKey, value)
+                }
+              />
               ) : (
                 <Input
                   defaultValue={rowData[dataKey]}
@@ -194,14 +195,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const { active } = currentSubNavState;
   const [tableData, setTableData] = useState([]);
   const [activeRow, setActiveRow] = useState(null)
+  const [progenies, setProgenies] = useState([]);
 
-  useEffect(() => {
+  useEffect(async () => {
     function subscribedData(data) {
       itemSaved(data);
     }
     progenySubject.subscribe((data) => {
       subscribedData(data);
     });
+    if(active === 'plot') {   
+      const progenies =  await DashboardDataService.getDashboardData('progeny');
+      if(progenies){
+        const {data} =  progenies;
+        let selectionData = [];
+        data.forEach(progeny => {
+          selectionData.push({
+          label: progeny.progenyCode, value: progeny.progenyId
+          })
+        });
+        setProgenies(selectionData)
+      }      
+    }
+  
   }, []);
 
   const { user } = useSelector((state) => state.authReducer);
@@ -831,21 +847,32 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     // activeItem.status = null;
     // activeItem.palmno = activeItem2.palmno;
     setTableData(nextData);
-    setActiveRow(null)
+    // setActiveRow(null)
   }
 
   function savePlotData(plotId) {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.plotId === plotId);
     activeItem.status = activeItem.status ? null : true;
-    PlotService.updatePlot(confirmationData).then(
+    const {plot, progenyCode} = confirmationData
+
+    const payload = {
+      plotId,
+      progenyid:progenyCode,
+      plotno: plot,
+      updatedBy: userInfo,
+      updatedDate: new Date().toISOString(),
+    }
+
+    PlotService.updatePlot(payload).then(
       (data) => {
+        setActiveRow(null)
         setTableData(nextData);
         setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PLOTDATA_UPDATE");
         setSuccessMessage(true);
-        setActiveRow(null)
+       
       },
       (error) => {
         setErrorMessage(active);
@@ -894,10 +921,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const activeItem = nextData.find((item) => item.trialId === trialId);
     activeItem.status = activeItem.status ? null : true;
     const payload = {
-      trialCode: confirmationData.trialCode,
-      estate: confirmationData.estate,
-      palmno: confirmationData.palmno,
-      palmId: confirmationData.palmId,
+      palmnos: [{
+        trialCode: confirmationData.trialCode,
+        estate: confirmationData.estate,
+        palmno: confirmationData.palmno,
+        palmId: confirmationData.palmId
+      }],
       updatedBy: userInfo,
       updatedDate: new Date().toISOString(),
     };
@@ -1734,6 +1763,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     handlePalmEditChange={handlePalmEditChange}
                     handlePlotEditChange={handlePlotEditChange}
                     active={active}
+                    progenies = {progenies}
                   />
                 )}
               </Column>
