@@ -95,6 +95,7 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
 const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
+  const [trialTypes, setTrialTypes] = useState([])
   const [status, setStatus] = useState("")
   const [disabled, setDisabled] = useState("no")
   const [regenerateTable, setRegenerateTable] = useState(false)
@@ -175,6 +176,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [activeRow, setActiveRow] = useState(null)
   const [showRegenerateWarning, setShowRegenerateWarning] = useState(false)
   useEffect(() => {
+    fetchTypes()
     fetchEstates()
     fetchDesigns()
   }, [isMultplicationValid, trial])
@@ -189,6 +191,15 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     }
     setEstates(mappedEstate)
   }
+  async function fetchTypes() {
+    const { data } = await TrialService.getTrialTypes()
+    const mappedTypes = []
+
+    for (let item in data) {
+      mappedTypes.push({ label: data[item].trialType, value: data[item].trialType })
+    }
+    setTrialTypes(mappedTypes)
+  } 
   async function fetchDesigns() {
     const { data } = await EstateService.getDesigns()
     const mappedDesigns = []
@@ -260,6 +271,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setTrial(() => ({ ...trial, design: designLabel.label, designId }))
   }
 
+  function onSelectType(type){
+    setTrial(() => ({ ...trial, type }))
+  }
   function onReGenerateTable() {
     const trialData = { ...trial }
     setExistingReplicatesInEstate([])
@@ -607,6 +621,23 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
+        <Row className="show-grid TrialFormLayout">
+          <Col md={9} lg={8}>
+            <p className="labelForm">Type</p>
+          </Col>
+          <Col md={10} lg={10}>
+            <SelectPicker
+              id="type"
+              className="designPicker"
+              data={trialTypes}
+              defaultValue={trial.type}
+              onSelect={type => onSelectType(type)}
+              placeholder="Select Type"
+              block
+            />{" "}
+          </Col>
+        </Row>
+
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Trail</p>

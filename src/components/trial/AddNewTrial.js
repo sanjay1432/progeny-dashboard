@@ -45,6 +45,7 @@ const initializeTrailState = {
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
+  const [trialTypes, setTrialTypes] = useState([])
   const [disabledGenerateTable, setDisabledGenerateTable] = useState(true)
   const [estates, setEstates] = useState([])
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
@@ -68,6 +69,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [successData, setSuccessData] = useState(null)
   useEffect(() => {
     fetchEstates()
+    fetchTypes()
     fetchDesigns()
     handleDisableState()
   }, [isMultplicationValid, trial, radioInputForSameDensity, tableData])
@@ -84,6 +86,17 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     console.log("mappedEstate", data)
     setEstates(mappedEstate)
   }
+
+  async function fetchTypes() {
+    const { data } = await TrialService.getTrialTypes()
+    const mappedTypes = []
+
+    for (let item in data) {
+      mappedTypes.push({ label: data[item].trialType, value: data[item].trialType })
+    }
+    setTrialTypes(mappedTypes)
+  } 
+
   async function fetchDesigns() {
     const { data } = await EstateService.getDesigns()
     const mappedDesigns = []
@@ -162,6 +175,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const designLabel =  designs.find((design)=> design.value ===  designId)
     setTrial(() => ({ ...trial, design: designLabel.label, designId }))
     handleDisableState()
+  }
+
+  function onSelectType(type){
+    setTrial(() => ({ ...trial, type }))
   }
 
   function onSelectEstate(estate) {
@@ -439,6 +456,23 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
+
+        <Row className="show-grid TrialFormLayout">
+          <Col md={9} lg={8}>
+            <p className="labelForm">Type</p>
+          </Col>
+          <Col md={10} lg={10}>
+            <SelectPicker
+              id="type"
+              className="designPicker"
+              data={trialTypes}
+              onSelect={type => onSelectType(type)}
+              placeholder="Select Type"
+              block
+            />{" "}
+          </Col>
+        </Row>
+
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Trail</p>

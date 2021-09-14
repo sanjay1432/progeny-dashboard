@@ -66,16 +66,29 @@ const EditableCell = ({
   const editing = rowData.status === true;
   switch (active) {
     case "trial":
-    case "userAssignment":
-      return (
+        return (
         <Cell {...cellProps}>
           {dataKey === "estate" ? (
             <span>{getMultipleEstateString(rowData.estate)}</span>
-          ) : (
+          ) : 
+          dataKey === "planteddate" ? (
+            <span>{GeneralHelper.modifyDate({date: rowData[dataKey]}) }</span>
+          ) :  
+          (
             <span>{rowData[dataKey]}</span>
           )}
         </Cell>
       );
+    // case "userAssignment":
+    //   return (
+    //     <Cell {...cellProps}>
+    //       {dataKey === "estate" ? (
+    //         <span>{getMultipleEstateString(rowData.estate)}</span>
+    //       ) : (
+    //         <span>{rowData[dataKey]}</span>
+    //       )}
+    //     </Cell>
+    //   );
     case "plot":
       return (
         <>
@@ -197,6 +210,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [activeRow, setActiveRow] = useState(null)
   const [progenies, setProgenies] = useState([]);
 
+
+  const [sortColumn, setSortColumn] = useState('')
+  const [sortType, setSortType] = useState('asc')
+  const [loading, setLoading] = useState(false);
   useEffect(async () => {
     function subscribedData(data) {
       itemSaved(data);
@@ -281,6 +298,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     {
       label: "Trial",
       value: "trial",
+    },
+    {
+      label: "Type",
+      value: "type",
     },
     {
       label: "Trial Remarks",
@@ -543,6 +564,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
+  function calculateStringCharAtCode(string){
+       const stringArray = string.split('')
+       let sum = 0;
+       for(let i = 0; i< stringArray.length; i++){
+        const size =  stringArray[i].charCodeAt();
+        sum+=size
+      }
+
+      return sum
+  }
+
   function getData(displaylength) {
     let currentTableData = [...tableData];
     setTrialEstateReplicates();
@@ -553,6 +585,27 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     ) {
       currentTableData = filterTable(filterData.filter, currentTableData);
       return currentTableData;
+    }
+
+
+    if (sortColumn && sortType) {
+       currentTableData.sort((a, b) => {
+        let x = a[sortColumn];
+        let y = b[sortColumn];
+        if (typeof x === 'string') {
+          // x = x.charCodeAt();
+          x =  calculateStringCharAtCode(x)
+        }
+        if (typeof y === 'string') {
+          // y = y.charCodeAt();
+          y =  calculateStringCharAtCode(y)
+        }
+        if (sortType === 'asc') {
+          return x - y;
+        } else {
+          return y - x;
+        }
+      });
     }
 
     return currentTableData.filter((v, i) => {
@@ -798,29 +851,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  function PlantedDate(date) {
-    return GeneralHelper.modifyDate(date);
-  }
-
-  useEffect(() => {
-    switch (active) {
-      // case "plot":
-      //   PlotService.getPlotData().then(response => {
-      //     const originalPlotData = response.data
-      //     setOriginalData(originalPlotData)
-      //   })
-      //   break
-      // case "palm":
-      //   PalmService.getPalmData().then(response => {
-      //     const originalPalmData = response.data
-      //     setOriginalData(originalPalmData)
-      //   })
-      //   break
-      default:
-        return null;
-    }
-  }, [active]);
-
   const handlePlotEditChange = (plotId, key, value) => {
     const nextData = Object.assign([], tableData);
     nextData.find((item) => item.plotId === plotId)[key] = value;
@@ -842,12 +872,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     nextData[activeItemIdx] = activeRow
     }
     nextData[activeItemIdx]['status'] = false
-    // const nextData2 = Object.assign([], originalData);
-    // const activeItem2 = nextData2.find((item) => item.trialId === trialId);
-    // activeItem.status = null;
-    // activeItem.palmno = activeItem2.palmno;
     setTableData(nextData);
-    // setActiveRow(null)
   }
 
   function savePlotData(plotId) {
@@ -1280,18 +1305,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "estate") {
             field.flexGrow = 1;
+            field.sorting = true
             currentTableDataFields[0] = field;
           }
           if (field.value === "estatefullname") {
             field.flexGrow = 1;
+            field.sorting = false
             currentTableDataFields[1] = field;
           }
           if (field.value === "noofestateblock") {
             field.flexGrow = 1;
+            field.sorting = true
             currentTableDataFields[2] = field;
           }
           if (field.value === "nooftrails") {
             field.flexGrow = 1;
+            field.sorting = true
             currentTableDataFields[3] = field;
           }
         });
@@ -1302,46 +1331,57 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
             field.width = 120;
+            field.sorting = true
             trialfields[0] = field;
           }
-          if (field.value === "trial") {
+          if (field.value === "type") {
             field.width = 200;
             trialfields[1] = field;
           }
+          if (field.value === "trial") {
+            field.width = 200;
+            trialfields[2] = field;
+          }
           if (field.value === "trialremark") {
             field.width = 500;
-            trialfields[2] = field;
+            trialfields[3] = field;
           }
           if (field.value === "area") {
             field.width = 120;
-            trialfields[3] = field;
+            trialfields[4] = field;
           }
           if (field.value === "planteddate") {
+            field.sorting = true
             field.width = 200;
-            trialfields[4] = field;
+            trialfields[5] = field;
           }
           if (field.value === "nofprogeny") {
             field.width = 120;
-            trialfields[5] = field;
+            field.sorting = true
+            trialfields[6] = field;
           }
           if (field.value === "estate") {
             field.width = 120;
-            trialfields[6] = field;
+            trialfields[7] = field;
           }
           if (field.value === "nofreplicate") {
             field.width = 140;
-            trialfields[7] = field;
+            field.sorting = true
+            trialfields[8] = field;
           }
           if (field.value === "nofplot") {
             field.width = 120;
+            field.sorting = true
             trialfields[9] = field;
           }
           if (field.value === "nofplot_subblock") {
             field.width = 170;
+            field.sorting = true
             trialfields[10] = field;
           }
           if (field.value === "nofsubblock") {
             field.width = 170;
+            field.sorting = true
             trialfields[11] = field;
           }
           if (field.value === "status") {
@@ -1358,6 +1398,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
             field.width = 140;
+            field.sorting = true
             plotfields[0] = field;
           }
           if (field.value === "estate") {
@@ -1366,6 +1407,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "replicate") {
             field.width = 140;
+            field.sorting = true
             plotfields[2] = field;
           }
           if (field.value === "estateblock") {
@@ -1374,22 +1416,27 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "design") {
             field.width = 140;
+            field.sorting = true
             plotfields[4] = field;
           }
           if (field.value === "density") {
             field.width = 140;
+            field.sorting = true
             plotfields[5] = field;
           }
           if (field.value === "plot") {
             field.width = 140;
+            field.sorting = true
             plotfields[6] = field;
           }
           if (field.value === "subblock") {
             field.width = 140;
+            field.sorting = true
             plotfields[7] = field;
           }
           if (field.value === "progenyCode") {
             field.width = 140;
+            field.sorting = true
             plotfields[8] = field;
           }
           if (field.value === "progeny") {
@@ -1410,6 +1457,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "noofPalm") {
             field.width = 140;
+            field.sorting = true
             plotfields[13] = field;
           }
         });
@@ -1420,6 +1468,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
             field.flexGrow = 1;
+            field.sorting = true
             palmfields[0] = field;
           }
           if (field.value === "estate") {
@@ -1428,6 +1477,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "replicate") {
             field.flexGrow = 1;
+            field.sorting = true
             palmfields[2] = field;
           }
           if (field.value === "estateblock") {
@@ -1436,10 +1486,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "plot") {
             field.flexGrow = 1;
+            field.sorting = true
             palmfields[4] = field;
           }
           if (field.value === "palmno") {
             field.flexGrow = 1;
+            field.sorting = true
             palmfields[5] = field;
           }
         });
@@ -1450,6 +1502,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "progenyCode") {
             field.width = 200;
+            field.sorting = true
             fieldsTodisplay[0] = field;
           }
           if (field.value === "popvar") {
@@ -1580,6 +1633,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return currentTableDataFields;
     }
   };
+
+  function handleSortColumn(sortColumn, sortType) {
+    setSortType(sortType)
+    setSortColumn(sortColumn)
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+    }, 500);
+  }
 
   return (
     <>
@@ -1733,6 +1795,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             virtualized
             rowHeight={55}
             data={getData(displaylength)}
+            sortColumn={sortColumn}
+            sortType={sortType}
+            loading={loading}
+            onSortColumn={handleSortColumn}
             autoHeight
           >
             {active === "progeny" ? (
@@ -1758,17 +1824,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 align={field.align ? field.align : "left"}
                 fixed={field.fixed ? field.fixed : null}
                 key={i}
+                sortable = {field.sorting}
               >
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
                 {field.value === "status" ? (
                   <Cell align="center" {...props}>
                     {(rowData) => <StatusButton status={rowData.status} />}
                   </Cell>
-                ) : field.value === "planteddate" ? (
-                  <Cell align="center" {...props}>
-                    {(rowData) => <PlantedDate date={rowData.planteddate} />}
-                  </Cell>
-                ) : (
+                )
+                : (
                   <EditableCell
                     dataKey={field.value}
                     OriginalData={tableData}

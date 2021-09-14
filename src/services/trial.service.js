@@ -24,6 +24,14 @@ const getTrial = trialCode => {
     })
 }
 
+const getTrialTypes = () => {
+  return axiosApiInstance
+    .get(`${API_URL}/trial-types`)
+    .then(response => {
+      return response.data
+    })
+}
+
 const updateTrialReplicate = body => {
   return axiosApiInstance
     .put(`${API_URL}/trial/replicate`, body)
@@ -43,6 +51,7 @@ const TrialService = {
   saveTrial,
   editTrial,
   getTrial,
+  getTrialTypes,
   updateTrialReplicate,
   updateTrialState
 }
