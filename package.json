@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.0.2",
     "customize-cra": "^1.0.0",
+    "keycloak-js": "^15.0.2",
     "less": "^4.1.1",
     "less-loader": "^7.3.0",
     "lodash": "^4.17.20",
