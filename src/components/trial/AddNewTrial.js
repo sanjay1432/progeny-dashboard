@@ -88,11 +88,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   async function fetchTypes() {
-    const { data } = await TrialService.getTrialTypes()
+    const types = await TrialService.getTrialTypes()
     const mappedTypes = []
 
-    for (let item in data) {
-      mappedTypes.push({ label: data[item].trialType, value: data[item].trialType })
+    for (let item in types) {
+      mappedTypes.push({ label: types[item], value: types[item] })
     }
     setTrialTypes(mappedTypes)
   } 

@@ -28,7 +28,9 @@ const getTrialTypes = () => {
   return axiosApiInstance
     .get(`${API_URL}/trial-types`)
     .then(response => {
-      return response.data
+      const {data} = response.data;
+      const types = [...new Set(data.map((type) => type.trialType))];
+      return types;
     })
 }
 

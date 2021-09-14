@@ -192,14 +192,14 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setEstates(mappedEstate)
   }
   async function fetchTypes() {
-    const { data } = await TrialService.getTrialTypes()
+    const types = await TrialService.getTrialTypes()
     const mappedTypes = []
 
-    for (let item in data) {
-      mappedTypes.push({ label: data[item].trialType, value: data[item].trialType })
+    for (let item in types) {
+      mappedTypes.push({ label: types[item], value: types[item] })
     }
     setTrialTypes(mappedTypes)
-  } 
+  }  
   async function fetchDesigns() {
     const { data } = await EstateService.getDesigns()
     const mappedDesigns = []
@@ -630,7 +630,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               id="type"
               className="designPicker"
               data={trialTypes}
-              defaultValue={trial.type}
+              value={trial.type}
               onSelect={type => onSelectType(type)}
               placeholder="Select Type"
               block
