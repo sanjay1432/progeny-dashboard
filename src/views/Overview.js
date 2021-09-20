@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from "react"
-import { CANCEL_REQUEST, FREQUENCY_SELECT_OPTS } from "../constants"
-import classnames from "classnames"
-import logo from "assets/img/RGE-logo/dmp-square.svg"
+import { CANCEL_REQUEST } from "../constants"
+import { activeDashboard, progenySubject } from "../services/pubsub.service"
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
+import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
+import Insights_black from "../assets/img/icons/insights_black_24dp.svg"
+import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
+import logo from "../assets/img/Progeny-logo/logoStyle02.png"
 // reactstrap components
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  TabContent,
-  TabPane,
-  NavLink,
-  NavItem,
-  Nav
-} from "reactstrap"
+import { Container } from "reactstrap"
 
 import {
   Loader,
-  Alert,
   Header,
   Navbar,
   Icon,
@@ -26,43 +18,411 @@ import {
   Nav as NavRS,
   Container as ContainerRS,
   Dropdown,
-  InputPicker
+  Drawer,
+  Sidenav
 } from "rsuite"
 import { useDispatch, useSelector } from "react-redux"
-import { setBreadcrumb } from "../redux/actions/app.action"
+import { getDashboardData } from "../redux/actions/dashboarddata.action"
 import axios from "axios"
-import BreadcrumbProgeny from "../components/nav/BreadcrumbProgeny"
+import ProgenySubNavBar from "../components/nav/ProgenySubNavBar"
+import TabPanel from "../components/shared/TabPanel"
 import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
-
-const headerStyles = {
-  padding: 8,
-  paddingLeft: 16,
-  height: 56,
-  color: "#333",
-  whiteSpace: "nowrap",
-  overflow: "hidden"
+import SuccessMessage from "../components/SharedComponent/SuccessMessage"
+import { useKeycloak } from '@react-keycloak/web';
+const initialSidenavState = {
+  expanded: true,
+  activeKey: "1"
 }
+const initialSubnavState = {
+  active: "estate"
+}
+const listItems = [
+  {
+    name: "Master Data",
+    customClass: "master",
+    customIcon: ImportantDevicesRoundedIcon,
+    eventKey: "1",
+    sublist: [
+      {
+        name: "Estate",
+        eventKey: "estate",
+        filters: [
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select",
+            disable: false
+          },
+          {
+            name: "estatefullname",
+            label: "Estate Full Name",
+            type: "select",
+            disable: false
+          }
+        ],
+        search: true
+      },
+      {
+        name: "Trial and Replicate",
+        eventKey: "trial",
+        filters: [
+          {
+            name: "trialCode",
+            label: "Trial Id",
+            type: "select",
+            disable: false
+          },
+          {
+            name: "planteddate",
+            label: "Planted Date (year)",
+            type: "select",
+            disable: false
+          },
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select",
+            disable: false
+          }
+        ],
+        search: false
+      },
+      {
+        name: "Plot",
+        eventKey: "plot",
+        filters: [
+          {
+            name: "trialCode",
+            label: "Trial Id",
+            type: "select",
+            disable: false
+          },
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select",
+            disable: false
+          },
+          {
+            name: "replicate",
+            label: "Replicate",
+            type: "select",
+            disable: true
+          }
+        ],
+        search: false
+      },
+      {
+        name: "Palm",
+        eventKey: "palm",
+        filters: [
+          {
+            name: "trialCode",
+            label: "Trial Id",
+            type: "select",
+            disable: false
+          },
+          {
+            name: "estate",
+            label: "Estate",
+            type: "select",
+            disable: false
+          },
+          // {
+          //   name: "replicate",
+          //   label: "Replicate",
+          //   type: "select",
+          //   disable: true
+          // },
+          // {
+          //   name: "plot",
+          //   label: "Plot",
+          //   type: "select",
+          //   disable: true
+          // }
+        ],
+        search: false
+      },
+      {
+        name: "Progeny",
+        eventKey: "progeny",
+        filters: [
+          {
+            name: "progenyCode",
+            label: "Progeny ID",
+            type: "text"
+          },
+          {
+            name: "progeny",
+            label: "Progeny",
+            type: "text"
+          },
+          {
+            name: "fp",
+            label: "FP",
+            type: "text"
+          },
+          {
+            name: "fpFam",
+            label: "FP Fam",
+            type: "text"
+          },
+          {
+            name: "mp",
+            label: "MP",
+            type: "text"
+          },
+          {
+            name: "mpFam",
+            label: "MP Fam",
+            type: "text"
+          },
+          {
+            name: "orlet",
+            label: "Orlet",
+            type: "text"
+          }
+        ],
+        search: false
+      }
+    ],
+    type: "single"
+  },
+  {
+    name: "Statistician",
+    customClass: "master",
+    customIcon: Insights_black,
+    eventKey: "2",
+    subItems: [
+      {
+        name: "Verification",
+        customClass: "master",
+        customIcon: null,
+        eventKey: "2-1",
+        sublist: [
+          {
+            name: "Yearly Verification",
+            eventKey: "yearlyverification",
+            filters: [
+              {
+                name: "year",
+                label: "Year",
+                type: "select",
+                disable: false
+              }
+            ],
+            search: true
+          },
+          {
+            name: "Verify Forms",
+            eventKey: "verifyforms",
+            filters: [
+              {
+                name: "trialCode",
+                label: "Trial Id",
+                type: "select",
+                disable: false
+              },
+              {
+                name: "uploadedby",
+                label: "Uploaded By",
+                type: "select",
+                disable: false
+              },
+              {
+                name: "recordedby",
+                label: "Recorded By",
+                type: "select",
+                disable: false
+              }
+            ],
+            search: false
+          }
+        ]
+      },
+      {
+        name: "Data List",
+        customClass: "master",
+        customIcon: null,
+        eventKey: "2-2",
+        sublist: [
+          {
+            name: "Form Data",
+            eventKey: "formdata",
+            filters: [],
+            search: true
+          }
+        ]
+      }
+    ],
+    type: "multiple"
+  }
+  // {
+  //   name: "User Management",
+  //   icon: "group",
+  //   customIcon: SupervisedUserCircleRoundedIcon,
+  //   customClass: "master",
+  //   eventKey: "2",
+  //   sublist: [
+  //     {
+  //       name: "User List",
+  //       eventKey: "userlist",
+  //       filters: [
+  //         {
+  //           name: "username",
+  //           label: "Username",
+  //           type: "text"
+  //         },
+  //         {
+  //           name: "position",
+  //           label: "Position",
+  //           type: "select"
+  //         }
+  //       ],
+  //       search: true
+  //     },
+  //     {
+  //       name: "Estate Assignment",
+  //       eventKey: "estateAssignment",
+  //       filters: [
+  //         {
+  //           name: "estate",
+  //           label: "Estate",
+  //           type: "select"
+  //         },
+  //         {
+  //           name: "estatefullname",
+  //           label: "Estate Full Name",
+  //           type: "select",
+  //           disable: false
+  //         }
+  //       ],
+  //       search: true
+  //     },
+  //     {
+  //       name: "User Assignment",
+  //       eventKey: "userAssignment",
+  //       filters: [
+  //         {
+  //           name: "username",
+  //           label: "Username",
+  //           type: "text"
+  //         },
+  //         {
+  //           name: "estate",
+  //           label: "Estate",
+  //           type: "select"
+  //         },
+  //         {
+  //           name: "position",
+  //           label: "Position",
+  //           type: "select"
+  //         }
+  //       ],
+  //       search: true
+  //     }
+  //   ]
+  // }
+]
 
 const Overview = props => {
-  const [activeTab, setActiveTab] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isDrawer, setDrawer] = useState(false)
+  const [sidenavState, setSidenavState] = useState(initialSidenavState)
+  const [subnavState, setSubnavState] = useState(initialSubnavState)
+  const [successMessage, setSuccessMessage] = useState(false)
+  const [action, setAction] = useState("")
   const dispatch = useDispatch()
+  // const { keycloak } = useKeycloak()
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
-  const history = useHistory()
-  const toggleNavs = (e, index) => {
-    e.preventDefault()
-    setActiveTab(index)
+
+  useEffect(() => {
+    function subscribedData(data) {
+      handleSelect(data)
+    }
+
+    activeDashboard.subscribe(data => {
+      subscribedData(data)
+    })
+  }, [])
+
+  useEffect(() => {
+    function Success(data) {
+      itemSaved(data)
+    }
+
+    progenySubject.subscribe(data => {
+      Success(data)
+    })
+  }, [])
+
+  function itemSaved(data) {
+    setAction(data.type)
+    setSuccessMessage(true)
   }
 
+  const history = useHistory()
+
+  const mainKey = sidenavState.activeKey.split("-")[0]
+  let currentSideItem
+  if (mainKey === sidenavState.activeKey) {
+    currentSideItem = listItems.find(
+      item => item.eventKey === sidenavState.activeKey
+    )
+  } else {
+    const mainItem = listItems.find(item => item.eventKey === mainKey)
+
+    currentSideItem = mainItem.subItems.find(
+      item => item.eventKey === sidenavState.activeKey
+    )
+  }
+
+  function toggleDrawer() {
+    setDrawer(true)
+  }
+  function handleSelectTab(eventKey) {
+    setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }))
+    if (eventKey === "1") {
+      setSubnavState(() => ({ ...subnavState, active: "estate" }))
+      handleSelect("estate")
+    } else if (eventKey === "2") {
+      setSubnavState(() => ({ ...subnavState, active: "userlist" }))
+      handleSelect("userlist")
+    } else if (eventKey === "2-1") {
+      setSubnavState(() => ({ ...subnavState, active: "yearlyverification" }))
+      handleSelect("yearlyverification")
+    } else if (eventKey === "2-2") {
+      setSubnavState(() => ({ ...subnavState, active: "formdata" }))
+      handleSelect("formdata")
+    }
+
+    close()
+  }
+  function handleSelect(activeKey) {
+    console.log({ activeKey })
+    if(activeKey != 'palm'){
+      dispatch(getDashboardData(activeKey))
+    }
+    
+    setSubnavState(() => ({ ...subnavState, active: activeKey }))
+  }
+  function close() {
+    setDrawer(false)
+  }
   useEffect(() => {
     if (!isLoggedIn) {
       history.push({
         pathname: "/login"
       })
     } else {
-      dispatch(setBreadcrumb(["Progeny", "Overview"]))
+      const { active } = subnavState
+        console.log({active})
+        if(active !== 'palm'){
+          dispatch(getDashboardData(active))
+        }
+     
       const CancelToken = axios.CancelToken
       const source = CancelToken.source()
 
@@ -75,66 +435,164 @@ const Overview = props => {
         source.cancel(CANCEL_REQUEST)
       }
     }
-  }, [dispatch, history, isLoggedIn, props.location.state, user])
+  // }, [dispatch, history, isLoggedIn, props.location.state, user, keycloak])
+}, [dispatch, history, isLoggedIn, props.location.state, user])
 
   if (isLoading) {
     return <Loader center content="Loading" />
   }
+  const { activeKey, expanded } = sidenavState
+  const { active } = subnavState
   return (
     <>
+      <SuccessMessage
+        action={action}
+        show={successMessage}
+        hide={() => setSuccessMessage("")}
+      />
       {isLoggedIn && (
-        <div className="sidebar-page">
-          <ContainerRS>
-            <ContainerRS>
-              <Header>
-                <Navbar className="custom-navs">
-                  <Navbar.Header>
-                    <div style={headerStyles}>
-                      <img alt="RGE" height={40} src={logo} />
-                    </div>
-                  </Navbar.Header>
-                  <Navbar.Body>
-                    <NavRS>
-                      <BreadcrumbProgeny />
-                    </NavRS>
-                    <NavRS pullRight>
-                      <Dropdown
-                        icon={<Icon icon="user-o" />}
-                        title={GeneralHelper.buildDisplayName(
-                          user.firstName,
-                          user.lastName,
-                          user.username
-                        )}
+        <ContainerRS>
+          <Header>
+            <Navbar>
+              <Navbar.Header id="header">
+                <div className="headerLayout">
+                  <MenuRoundedIcon
+                    className="toggle"
+                    onClick={() => toggleDrawer()}
+                  />
+                  <img
+                    className="progenyLogo"
+                    alt="Progeny Management System"
+                    src={logo}
+                  />
+
+                  <p className="title">Progeny Management System</p>
+
+                  <NavRS pullRight className="logoutToggle">
+                    <Dropdown
+                      icon={<AccountCircleRoundedIcon className="logoutLogo" />}
+                      title={GeneralHelper.buildDisplayName(
+                        user.firstName,
+                        user.lastName,
+                        user.username
+                      )}
+                    >
+                      <Dropdown.Item
+                        icon={<Icon icon="sign-out" />}
+                        onClick={() => dispatch(logout())}
                       >
-                        <Dropdown.Item
-                          icon={<Icon icon="sign-out" />}
-                          onClick={() => dispatch(logout())}
-                        >
-                          Logout
-                        </Dropdown.Item>
-                      </Dropdown>
+                        Logout
+                      </Dropdown.Item>
+                      {/* <Dropdown.Item
+                        icon={<Icon icon="sign-out" />}
+                        onClick={() => {keycloak.logout()}}
+                      >
+                        Logout Keycloak
+                      </Dropdown.Item> */}
+                    </Dropdown>
+                  </NavRS>
+                </div>
+              </Navbar.Header>
+            </Navbar>
+
+            <div id="subNavigation">
+              <ProgenySubNavBar
+                active={active}
+                onSelect={handleSelect}
+                currentItem={currentSideItem}
+              />
+            </div>
+          </Header>
+
+          <Content>
+            <main id="contentSection">
+              <div className="content">
+                <section id="overview">
+                  {isLoading ? (
+                    <Loader center content="Loading" />
+                  ) : (
+                    <Container fluid>
+                      {/* MAIN COMPOENTS */}
+                      <TabPanel
+                        currentSubNavState={subnavState}
+                        currentItem={currentSideItem}
+                      />
+                    </Container>
+                  )}
+                </section>
+              </div>
+            </main>
+            <NavRS pullRight></NavRS>
+          </Content>
+
+          <Drawer
+            id="sideNavigation"
+            size="xs"
+            placement="left"
+            backdrop
+            show={isDrawer}
+            onHide={close}
+          >
+            <Drawer.Header>
+              <img src={logo} className="progenyLogo" />
+              <div className="title">
+                <b className="titleContent">Progeny</b>
+                <b className="titleContent">Management System</b>
+              </div>
+            </Drawer.Header>
+            <Drawer.Body>
+              <div style={{ width: "100% " }}>
+                <Sidenav
+                  expanded={expanded}
+                  activeKey={activeKey}
+                  onSelect={handleSelectTab}
+                >
+                  <Sidenav.Body>
+                    <NavRS>
+                      {listItems.map((item, i) => {
+                        if (item.type === "multiple") {
+                          return (
+                            <Dropdown
+                              eventKey={item.eventKey}
+                              title={<p>{item.name}</p>}
+                              icon={
+                                <img src={item.customIcon} alt=""
+                                  key={i}
+                                />
+                              }
+                            >
+                              {item.subItems.map((subitem, idx) => {
+                                return (
+                                  <Dropdown.Item eventKey={subitem.eventKey} key = {idx}>
+                                    <p>{subitem.name}</p>
+                                  </Dropdown.Item>
+                                )
+                              })}
+                            </Dropdown>
+                          )
+                        } else {
+                          return (
+                            <NavRS.Item
+                              eventKey={item.eventKey}
+                              icon={
+                                <item.customIcon
+                                  className="contentIcon"
+                                  key={i}
+                                />
+                              }
+                            >
+                              <p>{item.name}</p>
+                            </NavRS.Item>
+                          )
+                        }
+                      })}
                     </NavRS>
-                  </Navbar.Body>
-                </Navbar>
-              </Header>
-              <Content>
-                <main>
-                  <section id="overview" className="main-section">
-                    {isLoading ? (
-                      <Loader center content="Loading" />
-                    ) : (
-                      <Container fluid>
-                        <Row className="justify-content-center">
-                          {/* MAIN COMPOENTS */}
-                        </Row>
-                      </Container>
-                    )}
-                  </section>
-                </main>
-              </Content>
-            </ContainerRS>
-          </ContainerRS>
-        </div>
+                  </Sidenav.Body>
+                </Sidenav>
+              </div>
+            </Drawer.Body>
+          </Drawer>
+        </ContainerRS>
       )}
     </>
   )

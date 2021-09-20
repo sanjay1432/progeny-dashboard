@@ -6,12 +6,9 @@ Open file `.env.local` and update the content:
 PORT=3000
 NODE_PATH=./src
 REACT_APP_DEBUG=true
-REACT_APP_API_URL=http://localhost:8000/api
-REACT_APP_API_URL_MOCK=http://localhost:8000/api
-REACT_APP_LOSTCOOK_API_URL=http://localhost:8000/api
-REACT_APP_SSO_WEB_LOGIN=http://localhost:8000/opex/login
-REACT_APP_BASE_NAME=/dmp/#
-REACT_APP_VERSION=$npm_package_version
+REACT_APP_API_URL=http://localhost:8000/admin
+REACT_APP_SSO_WEB_LOGIN = http://localhost:8000
+REACT_APP_BASE_NAME=/#
 ```
 
 ### Step1: Start frontend

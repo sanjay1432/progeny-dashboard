@@ -1,0 +1,219 @@
+#dashboardTableSetting {
+  margin: 0px 0px 20px 0px;
+
+  .totalRecordLayout {
+    margin-top: 10px;
+    
+    b {
+      pointer-events: none;
+    }
+  }
+
+  .pageOptionLayout {
+    min-width: 155px;
+    max-width: 155px;    
+
+    .selectPage {
+      float: right;
+      
+      .option {
+        width: 60px;
+  
+        .rs-picker-toggle-clean {
+          display: none;
+        }
+  
+        .rs-picker-toggle-value {
+          width: 30px;
+        }
+  
+        .rs-picker-toggle-caret {
+          right: 8px;
+        }
+      }
+  
+      .page {
+        margin-left: 3px;
+        pointer-events: none;
+      }
+    }
+  }
+
+
+
+  .addButtonLayout {
+    min-width: 160px;
+    max-width: 180px;
+    text-align: center;
+  }
+
+  .addEstateButton {
+    width: 116px;
+    float: right;
+  }
+
+  .addTrialButton {
+    width: 123px;
+    float: right;
+  }
+
+  .attachProgeniesButton {
+    width: 138px;
+    float: right;
+  }
+
+  .addProgenyButton {
+    width: 142px;
+  }
+
+  .addUserButton {
+    width: 125px;
+    float: right;
+  }
+  
+  .nPalmButton {
+    width: 125px;
+    float: right;
+  }
+
+  .quickSaveButton {
+    float: right;
+  }
+
+  .deleteButtonLayout {
+    max-width: 130px;
+    float: right;
+
+    .deleteButton {
+      width: 116px;
+      color: white;
+      background-color: $primary-red;
+    }
+
+    .rs-btn-disabled {
+      width: 116px;
+      color: $primary-grey;
+      background-color: $secondary-grey;
+    }
+  }
+}
+
+#dashboardTable {
+  .rs-table-row-header {
+    .rs-table-cell {
+      background-color: $secondary-green;
+    }
+
+    .rs-table-cell-content {
+      padding: 5px 10px 10px 20px;
+      font-size: 16px;
+
+      .rs-checkbox-wrapper {
+        background-color: white;
+        border-radius: 6px;
+        top: 6px;
+      }
+    }
+  }
+
+  .rs-table-body-info {
+    color: black;
+  }
+
+  .rs-table-body-wheel-area {
+    .rs-table-row:nth-child(even) > .rs-table-cell-group > .rs-table-cell {
+          background-color: $table-color-even;
+        }
+
+    .rs-table-row {
+      border-bottom: none;
+  
+      .rs-table-cell-content {
+        padding-left: 20px;
+      }
+  
+      .rs-checkbox-inline {
+        margin-left: 0px;
+      }
+    }
+  }
+
+  .rs-table-cell-wrap{
+    .activeStatusButton {
+      width: 80px;
+      height: 30px;
+      padding: 0px;
+      color: white;
+      background-color: #2AC769;
+    }
+  
+    .inavtiveStatusButton{
+      width: 90px;
+      height: 30px;
+      padding: 0px;
+      color: white;
+      background-color: #FB4E4E;
+    }
+  
+    .canceledStatusButton {
+      width: 90px;
+      height: 30px;
+      padding: 0px;
+      color: white;
+      background-color: #FB4E4E;
+    }
+  
+    .pendingStatusButton {
+      width: 80px;
+      height: 30px;
+      padding: 0px;
+      color: white;
+      background-color: #F6A609;
+    }
+
+    .finishedStatusButton {
+      width: 85px;
+      height: 30px;
+      padding: 0px;
+      color: white;
+      background-color: #2F80ED;
+    }
+  }
+
+  .spaceBetweenThree {
+    padding: 0px 12px;
+  }
+
+  .spaceBetweenTwo {
+    padding: 0px 12px;
+  }
+}
+
+
+.pagination {
+  float: right;
+  padding: 1rem 0rem 1rem 1rem;
+
+  .rs-pagination{
+    color: black;
+  }
+  .rs-pagination-btn> a{
+      color: $primary-black;
+      font-weight: 700;
+      border: solid 1px $secondary-grey;
+      margin-left: 10px !important;
+
+      .rs-icon {
+        font-weight: 700;
+      }
+  }
+
+  .rs-pagination > li.rs-pagination-btn-active > a:hover{
+      color: #fff;
+      background-color: #1a201e;
+  }
+  .rs-pagination > li.rs-pagination-btn-active > a{
+      color: #fff;
+      background-color: $secondary-green;
+  }
+}

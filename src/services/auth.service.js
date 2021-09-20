@@ -1,39 +1,31 @@
 import axios from "axios"
-import { API_URL, REFRESH_TOKEN_NAME, TOKEN_NAME } from "../constants"
+import {
+  API_URL,
+  REFRESH_TOKEN_NAME,
+  SSO_WEB_LOGIN,
+  TOKEN_NAME
+} from "../constants"
 import StateLoader from "../redux/StateLoader"
+var bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
 const stateLoader = new StateLoader()
-
-const login = (username, password) => {
-  return axios
-    .post(`${API_URL}/v1/general/login/user-login`, {
-      username,
-      password
-    })
-    .then(response => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data))
-        localStorage.setItem(TOKEN_NAME, response.data.token)
-      }
-      return response.data
-    })
-}
-const loginSSO = ssoToken => {
-  return axios
-    .post(`${API_URL}/v1/general/login/sso-login`, {
-      ssoToken: ssoToken
-    })
+const KEY = "progeny-app-state"
+const login = (username, password) =>
+  new Promise((resolve, reject) => {
+    if (username && password) {
+      var hash = bcrypt.hashSync(password, salt);
+      return axios
+    .get(`${SSO_WEB_LOGIN}/account/login?username=${username}&password=${hash}`)
     .then(response => {
       if (response.data.response) {
         localStorage.setItem("user", JSON.stringify(response.data.response))
         localStorage.setItem(TOKEN_NAME, response.data.response.token)
-        localStorage.setItem(
-          REFRESH_TOKEN_NAME,
-          response.data.response.refresh_token
-        )
-      }
-      return response.data
-    })
-}
+        resolve(response.data.response)
+      }}) 
+    } else {
+      reject()
+    }
+  })
 
 const refreshToken = () => {
   const refresh_token = localStorage.getItem(REFRESH_TOKEN_NAME)
@@ -47,12 +39,15 @@ const refreshToken = () => {
 }
 const logout = () => {
   localStorage.clear()
-  stateLoader.initializeState()
+  window.localStorage.clear() 
+  localStorage.removeItem(KEY)
+  // stateLoader.initializeState()
 }
 
-export default {
+const AuthService = {
   login,
   logout,
-  loginSSO,
   refreshToken
 }
+
+export default AuthService

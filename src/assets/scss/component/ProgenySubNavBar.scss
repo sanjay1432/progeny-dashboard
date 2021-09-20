@@ -1,0 +1,68 @@
+.navigationList {
+  
+  .navigationBackground {
+    background-color: white;
+
+    .title, .symbol {
+      pointer-events: none;
+    }
+
+    .rs-navbar-body {
+      .rs-nav-horizontal {
+        ul > b {
+          font-size: 18px;
+          margin-right: 20px;
+        }
+    
+        ul {
+          display: flex;
+          flex-direction: row;
+
+          .rs-breadcrumb {
+            padding: 1px;
+
+            .rs-breadcrumb-item {
+              margin-right: 15px;
+            }
+
+            .rs-breadcrumb-separator {
+              margin-right: 15px;
+
+              .rs-icon {
+                font-size: 22px;
+                font-weight: 700;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .rs-navbar-nav .rs-nav-item > .rs-nav-item-content {
+    height: 45px;
+    padding: 3px 16px;
+  }
+
+  .rs-nav-item-active {
+    .rs-nav-item-content::before {
+      left: 30% !important;
+      right: 30% !important;
+    }
+    .item {
+      font-weight: 700;
+      color: $primary-green;
+    }
+  } 
+
+
+
+  .rs-nav-subtle.rs-nav-horizontal .rs-nav-item-active > .rs-nav-item-content::before {
+    height: 3px;
+    font-weight: 700;
+  }
+
+  .rs-nav-subtle.rs-nav-horizontal .rs-nav-waterline {
+    border-top: none;
+  }
+}

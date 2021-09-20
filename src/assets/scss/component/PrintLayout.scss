@@ -1,0 +1,43 @@
+
+
+@media print {
+  #PrintLayout {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+    .block {
+      width: 50%;
+      height: 50%;
+      text-align: center;
+
+      .QRCodeLayout {
+        width: 399.9px;
+        height: 500px;
+        border: 1px solid $print-grey;
+        padding-top: 20px;
+        margin: 1px 0px 0px 1px;
+    
+        .descLayout {
+          margin-top: 35px;
+    
+          p + p {
+            margin-top: 0px;
+          }
+    
+          .trialId, .plotId, .palmNumber {
+            font-size: 28px;
+            margin-bottom: 0px;
+
+            .data {
+              font-size: 35px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+

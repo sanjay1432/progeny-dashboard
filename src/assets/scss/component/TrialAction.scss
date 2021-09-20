@@ -1,0 +1,148 @@
+#TrialAction {
+  padding: 11px 22px;
+
+  .title {
+    margin-bottom: 20px;
+    .desc {
+      color: $primary-green;
+    }
+
+    .purpose {
+      color: $primary-black;
+    }
+  }
+
+  .labelForm {
+    font-weight: 700;
+    color: $primary-black;
+  }
+
+  .TrialFormLayout {
+    margin-bottom: 20px;
+  }
+
+  .formField {
+      width: 100%;
+  }
+
+  .trialRemark {
+      height: 120px;
+  }
+
+  .subPlotInput {
+    width: 95%;
+  }
+
+  .plotInput {
+    width: 95%;
+    float: right;
+  }
+
+  .datePicker > .rs-picker-toggle {
+    width: 95%;
+  }
+
+  .statusSelection {
+    display: flex;
+  }
+
+  .estatePicker > .rs-picker-toggle {
+    width: 95%;
+    float: right;
+  }
+
+  .estatePickerwithNo > .rs-picker-toggle {
+    width: 95%;
+  }
+
+  .replicateInput {
+    width: 95%;
+    float: right;
+  }
+
+  .densityInput {
+    width: 95%;
+    float: right;
+  }
+
+  .designPicker > .rs-picker-toggle {
+    width: 100%;
+  }
+
+  .buttonLayout {
+    float: right;
+
+    .generateTableButton {
+      width: 150px;
+    }
+
+    .replicateButton {
+      width: 157px;
+    }
+
+    .variantButton {
+      width: 175px;
+    }
+
+    .deleteButton {
+      width: 116px;
+      color: white;
+      background-color: $primary-red;
+    }
+
+    .rs-btn-disabled {
+      color: $primary-grey;
+      background-color: $secondary-grey;
+    }
+  }
+  //Only for AttachProgeny
+  .attachProgeny {
+    margin-top: 120px !important;
+  }
+
+  .footerLayout {
+    margin: 30px 0px 20px;
+
+    .cancelButtonLayout, .completeButtonLayout {
+      max-width: 200px;
+
+      .saveButton, .yesButton {
+        width: 170px;
+        height: 42px;
+        float: right;
+      }
+  
+      .cancelButton, .noButton {
+        width: 170px;
+        height: 42px;
+        float: right;
+      }
+    }
+  }
+}
+
+#SaveTrialModal {
+  .title {
+    color: $primary-green;
+  }
+
+  .body {
+    color: black;
+
+    .description {
+      font-size: 16px;
+    }
+  }
+
+  .rs-modal-footer {
+    .noButton {
+      width: 142px;
+      height: 40px;
+    }
+
+    .yesButton {
+      width: 142px;
+      height: 40px;
+    }
+  }
+}

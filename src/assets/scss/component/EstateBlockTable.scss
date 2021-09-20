@@ -1,0 +1,64 @@
+//table will follow as dashboardTable(DataTable.scss)
+#EstateBlockTable {
+  margin-top: 20px;
+
+  .estateBlockButtonLayout {
+    text-align: center;
+
+    .addEstateBlockButton {
+      width: 145px;
+    }
+  }
+
+  #estateBlockModal {
+    .rs-modal-dialog > .rs-modal-content {
+      .rs-modal-header {
+        .rs-modal-header-close {
+          display: none;
+        }
+        
+        .title {
+          font-size: 18px;
+          font-weight: 700;
+          color: $primary-green;
+        }
+      }
+  
+  
+      .body {
+          margin-top: 8px;
+  
+          .lastUpdate, .estateName, .totalEstateBlock {
+              color: black;
+              margin-bottom: 8px;
+          }
+      }
+    }
+  }
+}  
+
+#modalEstateTable {
+  .rs-table-row-header {
+    .rs-table-cell-content {
+      font-size: 16px;
+      padding: 5px 10px 10px 10px;
+
+      .rs-checkbox-wrapper {
+        left: 22px;
+        border-radius: 6px;
+        background-color: white;
+        top: 4px;
+      }
+    }
+  }
+
+  .rs-body-row-header {
+    .rs-table-cell-content {
+      font-size: 16px;
+
+      .rs-table-cell-wrap > .rs-checkbox-inline {
+        margin-left: 2px;
+      } 
+    }
+  }
+}

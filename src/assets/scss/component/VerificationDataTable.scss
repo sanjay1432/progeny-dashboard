@@ -1,0 +1,30 @@
+.OverviewVerification {
+  .lineBetweenFilter  {
+    border-top: 2px solid #BDBDBD;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 500;
+    color: $primary-black;
+
+  }
+
+  .yearlyVerPanel {
+    padding: 20px 25px;
+    margin: 30px 0px;
+  
+    .rs-panel-heading {
+      font-size: 35px;
+      font-weight: 700;
+      color: $primary-green;
+      padding: 0px;
+    }
+  
+    .rs-panel-body {
+      font-size: 20px;
+      color: $primary-black;
+      padding: 0px;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+.labelFilter {
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: 3px;
+}
+  .dashboardFilterLayout {
+    min-width: 165px;
+    max-width: 180px;
+
+    .dashboardSelectFilter {
+      width: 95%;
+      height: 42px;
+  
+      .rs-picker-toggle {
+        width: 94%;
+        height: 40px;
+        border-radius: 8px;
+  
+        .rs-picker-toggle-placeholder, .rs-picker-toggle-value, .rs-picker-toggle-caret {
+          padding-top: 1px;
+        }
+      }
+    }
+  }
+
+
+
+.dashboardInputFilter {
+  width: 140px;
+  height: 40px;
+  border-radius: 8px;
+}

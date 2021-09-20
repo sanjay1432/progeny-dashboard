@@ -1,0 +1,38 @@
+.dataPicker {
+  width: 138px;
+  height: 40px;
+}
+
+.lineBetweenStep {
+  border-top: 2px solid rgba(0,0,0,0.1);
+  margin: 40px 0px;
+}
+
+.imageLayout {
+  text-align: center;
+  margin: 100px 0px 300px 0px;
+
+  .desc {
+    font-size: 25px;
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    
+    .title {
+      color: $primary-green;
+    }
+  }
+}
+
+.replicateFilterLayout, .plotFilterLayout {
+  max-width: 190px;
+}
+
+.nPalmLayout, .quickSaveLayout {
+  min-width: 120px;
+  max-width: 120px;
+}
+
+.editTableInput {
+  max-width: 170px;
+}

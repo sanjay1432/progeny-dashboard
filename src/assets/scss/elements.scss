@@ -1,0 +1,13 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background-color: $body-color !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+label, b, p, a {
+  color: black;
+}
