@@ -834,15 +834,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (status) {
       case "Active":
         return <Button className="activeStatusButton">Active</Button>;
-      case "inactive":
+      case "Inactive":
         return <Button className="inavtiveStatusButton">Inactive</Button>;
-      case "canceled":
-        return <Button className="canceledStatusButton">canceled</Button>;
-      case "pending":
-        return <Button className="pendingStatusButton">pending</Button>;
+      case "Canceled":
+        return <Button className="canceledStatusButton">Canceled</Button>;
+      case "Pending":
+        return <Button className="pendingStatusButton">Pending</Button>;
 
-      case "finished":
-        return <Button className="finishedStatusButton">finished</Button>;
+      case "Finished":
+        return <Button className="finishedStatusButton">Finished</Button>;
       case "Closed":
         return <Button className="finishedStatusButton">Closed</Button>;
 

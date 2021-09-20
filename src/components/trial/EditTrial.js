@@ -71,7 +71,7 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
           )}
           onChange={event => {
             onChange &&
-              onChange(rowData.replicate, dataKey, event.target.value)
+              onChange(rowData.replicate,rowData.estate, dataKey, event.target.value)
           }}
         />
       ) : editing && dataKey === "estateblock" ? (
@@ -81,7 +81,7 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
           placeholder="-"
           value={rowData.estateblock}
           onChange={value => {
-            onChange && onChange(rowData.replicate, dataKey, value)
+            onChange && onChange(rowData.replicate,rowData.estate, dataKey, value)
           }}
         />
       ) : (
@@ -175,6 +175,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [show, setShow] = useState(false)
   const [activeRow, setActiveRow] = useState(null)
   const [showRegenerateWarning, setShowRegenerateWarning] = useState(false)
+
+  const dashboardData = useSelector((state) => state.dashboardDataReducer);
+
   useEffect(() => {
     fetchTypes()
     fetchEstates()
@@ -182,12 +185,13 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }, [isMultplicationValid, trial])
 
   async function fetchEstates() {
-    const { data } = await EstateService.getUpdatedEstateBlocks()
-    setEstatesWithBlocks(data)
+    // const { data } = await EstateService.getUpdatedEstateBlocks()
+    const mappedEstates =  dashboardData.result['estate']
+    setEstatesWithBlocks(mappedEstates)
     const mappedEstate = []
 
-    for (let item in data) {
-      mappedEstate.push({ label: data[item].estate, value: data[item].estate })
+    for (let item in mappedEstates) {
+      mappedEstate.push({ label: mappedEstates[item].estate, value: mappedEstates[item].estate })
     }
     setEstates(mappedEstate)
   }
@@ -486,7 +490,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               color="green"
               size="xs"
               onClick={() => {
-                onClick && onClick(rowData.replicate)
+                onClick && onClick(rowData.replicate, rowData.estate)
               }}
             />
             &nbsp;
@@ -506,7 +510,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             src={CreateIcon}
             alt=""
             onClick={() => {
-              onClick && onClick(rowData.replicate)
+              onClick && onClick(rowData.replicate, rowData.estate)
             }}
           />
         )}
@@ -521,14 +525,14 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate(nextData)
  }
 
-  const handleChange = (replicate, key, value) => {
+  const handleChange = (replicate,estate, key, value) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
     if(key === "estateblock"){
        const foundedBlock = findEstateBlock(value)
        nextData.find(item => item.replicate === replicate)['soiltype'] = foundedBlock.soiltype
 
     }
-    nextData.find(item => item.replicate === replicate)[key] = value
+    nextData.find(item => item.replicate === replicate && item.estate === estate)[key] = value
     setExistingReplicatesInEstate(nextData)
   }
 
@@ -551,9 +555,10 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const foundedBlock = estateBlocks.find(eb => eb.estateblock === value)
     return foundedBlock
   }
-  const handleEditState = replicate => {
+  const handleEditState = (replicate, estate) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
-    const activeItem = nextData.find(item => item.replicate === replicate)
+    nextData.map((row)=>(row.replicate === replicate && row.estate === estate)?row.status = row.status : row.status = null)
+    const activeItem = nextData.find(item => item.replicate === replicate && item.estate === estate)
     setActiveRow({...activeItem})
     activeItem.status = activeItem.status ? null : "EDIT"
     setExistingReplicatesInEstate(nextData)

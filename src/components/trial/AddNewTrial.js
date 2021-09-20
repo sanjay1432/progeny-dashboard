@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import {
@@ -52,21 +52,19 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [tableData, setTableData] = useState([])
   const [designs, setDesigns] = useState([])
   const [isMultplicationValid, setMultplicationValid] = useState(null)
-  const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
-    useState("yes")
+  const [radioInputForTrialInEState, setRadioInputForTrialInEState] = useState("yes")
   const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
-  const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
-    { estate: "", estatenofreplicate: "" }
-  ])
-
+  const [inputListForTrialInEState, setInputListForTrialInEState] = useState([{ estate: "", estatenofreplicate: "" }])
   const [checkStatusReplicates, setCheckStatusReplicate] = useState([])
-  // const [estateblocks, setEstateblocks] = useState([])
   const [disbaledANR, setDisbaledANR] = useState(true)
   const [disbaledANRV, setDisbaledANRV] = useState(true)
   const [disbaledRD, setDisbaledRD] = useState(true)
   const [show, setShow] = useState(false)
   const [isSuccessModal, setSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState(null)
+
+  const dashboardData = useSelector((state) => state.dashboardDataReducer);
+
   useEffect(() => {
     fetchEstates()
     fetchTypes()
@@ -74,16 +72,18 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     handleDisableState()
   }, [isMultplicationValid, trial, radioInputForSameDensity, tableData])
   async function fetchEstates() {
-    const { data } = await EstateService.getUpdatedEstateBlocks()
-    setEstatesWithBlocks(data)
+    // const { data } = await EstateService.getUpdatedEstateBlocks()
+   
+    const mappedEstates =  dashboardData.result['estate']
+    setEstatesWithBlocks(mappedEstates)
     const mappedEstate = []
-    for (let item in data) {
+    for (let item in mappedEstates) {
       mappedEstate.push({
-        label: data[item].estate,
-        value: data[item].estateId
+        label: mappedEstates[item].estate,
+        value: mappedEstates[item].estateId
       })
     }
-    console.log("mappedEstate", data)
+    console.log("mappedEstate", mappedEstate)
     setEstates(mappedEstate)
   }
 
