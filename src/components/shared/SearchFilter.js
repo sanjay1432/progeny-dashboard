@@ -64,7 +64,7 @@ const SearchFilter = forwardRef(
             const filterValues = []
             if (filterdata) {
               filterdata.forEach(estate => {
-                const est = estate.map(estateObj => estateObj.name)
+                const est = estate.map(estateObj => estateObj.name?estateObj.name:null)
                 filterValues.push(...est)
               })
               filterData[filterName] = [

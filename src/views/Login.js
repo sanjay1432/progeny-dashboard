@@ -1,12 +1,11 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useCallback, useEffect  } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router-dom"
-//import { Redirect, useHistory } from "react-router-dom"
 import Form from "react-validation/build/form"
 import CheckButton from "react-validation/build/button"
 import { login } from "../redux/actions/auth.action"
 import logo from "../assets/img/Progeny-logo/logoStyle02.png"
-import { Loader, Input, Grid, Row, Col } from "rsuite"
+import { Loader, Input, Grid, Row, Col, Button } from "rsuite"
 // reactstrap components
 import { Card, CardBody, Container } from "reactstrap"
 
@@ -19,42 +18,23 @@ const required = value => {
     )
   }
 }
-
-// const LOGIN_METHOD = {
-//   sso: "sso",
-//   normal: "normal"
-// }
-
 const Login = props => {
   const form = useRef()
   const checkBtn = useRef()
-  //const history = useHistory()
-
   const [username, setUsername] = useState("")
-  //const [ssoUsername, setSsoUsername] = useState("")
-  //const [ssoToken, setSsoToken] = useState("")
+
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  //const [loginMethod, setLoginMethod] = useState(null)
 
   const { isLoggedIn } = useSelector(state => state.authReducer)
   const { message } = useSelector(state => state.messageReducer)
-
+ 
   const dispatch = useDispatch()
 
-  // useEffect(() => {
-  //   if (history.location.search) {
-  //     const urlParams = new URLSearchParams(history.location.search)
-  //     const usernameSSO = urlParams.get("username")
-  //     const token = urlParams.get("token")
-  //     if (usernameSSO) {
-  //       setLoginMethod(LOGIN_METHOD.sso)
-  //       setSsoUsername(usernameSSO)
-  //       setSsoToken(token)
-  //     }
-  //   }
-  // }, [history])
 
+  useEffect(() => {
+    localStorage.clear()
+  },[])
   const onChangeUsername = e => {
     setUsername(e.target.value)
   }
@@ -86,12 +66,6 @@ const Login = props => {
   if (isLoggedIn) {
     return <Redirect to="/overview" />
   }
-
-  // const backToLogin = () => {
-  //   setLoginMethod(null)
-  //   setSsoUsername("")
-  //   setSsoToken("")
-  // }
 
   return (
     <>
@@ -153,6 +127,7 @@ const Login = props => {
                       )}
                       <span>Login</span>
                     </button>
+                   
                   </Grid>
 
                   {message && (
@@ -164,10 +139,12 @@ const Login = props => {
                   )}
                   <CheckButton style={{ display: "none" }} ref={checkBtn} />
                 </Form>
-                {/* )} */}
+
               </CardBody>
             </Card>
             <p>
+      
+
               {loading && (
                 <Loader
                   backdrop

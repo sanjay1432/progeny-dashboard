@@ -445,7 +445,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       <Grid fluid>
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
-            <p className="labelForm">Trail ID</p>
+            <p className="labelForm">Trial ID</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -475,7 +475,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
-            <p className="labelForm">Trail</p>
+            <p className="labelForm">Trial</p>
           </Col>
           <Col md={10} lg={10}>
             <Input

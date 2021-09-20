@@ -1310,7 +1310,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "estatefullname") {
             field.flexGrow = 1;
-            field.sorting = false
+            field.sorting = true
             currentTableDataFields[1] = field;
           }
           if (field.value === "noofestateblock") {
@@ -1336,10 +1336,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "type") {
             field.width = 200;
+            field.sorting = true
             trialfields[1] = field;
           }
           if (field.value === "trial") {
             field.width = 200;
+            field.sorting = true
             trialfields[2] = field;
           }
           if (field.value === "trialremark") {
@@ -1347,7 +1349,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             trialfields[3] = field;
           }
           if (field.value === "area") {
-            field.width = 120;
+            field.width = 500;
+            field.sorting = true
             trialfields[4] = field;
           }
           if (field.value === "planteddate") {
@@ -1362,6 +1365,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "estate") {
             field.width = 120;
+            field.sorting = true
             trialfields[7] = field;
           }
           if (field.value === "nofreplicate") {
@@ -1441,18 +1445,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "progeny") {
             field.width = 140;
+            field.sorting = true
             plotfields[9] = field;
           }
           if (field.value === "ortet") {
             field.width = 140;
+            field.sorting = true
             plotfields[10] = field;
           }
           if (field.value === "fp") {
             field.width = 140;
+            field.sorting = true
             plotfields[11] = field;
           }
           if (field.value === "mp") {
             field.width = 140;
+            field.sorting = true
             plotfields[12] = field;
           }
           if (field.value === "noofPalm") {
@@ -1468,7 +1476,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
             field.flexGrow = 1;
-            field.sorting = true
             palmfields[0] = field;
           }
           if (field.value === "estate") {
@@ -1482,6 +1489,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "estateblock") {
             field.flexGrow = 1;
+            field.sorting = true
             palmfields[3] = field;
           }
           if (field.value === "plot") {
@@ -1507,58 +1515,72 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "popvar") {
             field.width = 170;
+            field.sorting = true
             fieldsTodisplay[1] = field;
           }
           if (field.value === "origin") {
             field.width = 200;
+            field.sorting = true
             fieldsTodisplay[2] = field;
           }
           if (field.value === "progenyremark") {
             field.width = 200;
+            field.sorting = true
             fieldsTodisplay[3] = field;
           }
           if (field.value === "progeny") {
             field.width = 150;
+            field.sorting = true
             fieldsTodisplay[4] = field;
           }
           if (field.value === "generation") {
             field.width = 170;
+            field.sorting = true
             fieldsTodisplay[5] = field;
           }
           if (field.value === "ortet") {
             field.width = 170;
+            field.sorting = true
             fieldsTodisplay[6] = field;
           }
           if (field.value === "fp") {
             field.width = 150;
+            field.sorting = true
             fieldsTodisplay[7] = field;
           }
           if (field.value === "fpFam") {
             field.width = 150;
+            field.sorting = true
             fieldsTodisplay[8] = field;
           }
           if (field.value === "fpVar") {
             field.width = 150;
+            field.sorting = true
             fieldsTodisplay[9] = field;
           }
           if (field.value === "mp") {
             field.width = 150;
+            field.sorting = true
             fieldsTodisplay[10] = field;
           }
           if (field.value === "mpFam") {
             field.width = 150;
+            field.sorting = true
             fieldsTodisplay[11] = field;
           }
           if (field.value === "mpVar") {
+            field.sorting = true
             field.width = 150;
             fieldsTodisplay[12] = field;
           }
           if (field.value === "cross") {
             field.width = 200;
+            field.sorting = true
             fieldsTodisplay[13] = field;
           }
           if (field.value === "crossType") {
             field.width = 200;
+            field.sorting = true
             fieldsTodisplay[14] = field;
           }
         });

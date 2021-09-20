@@ -30,7 +30,7 @@ import { useHistory } from "react-router-dom"
 import { logout } from "../redux/actions/auth.action"
 import GeneralHelper from "../helper/general.helper"
 import SuccessMessage from "../components/SharedComponent/SuccessMessage"
-
+import { useKeycloak } from '@react-keycloak/web';
 const initialSidenavState = {
   expanded: true,
   activeKey: "1"
@@ -335,7 +335,7 @@ const Overview = props => {
   const [successMessage, setSuccessMessage] = useState(false)
   const [action, setAction] = useState("")
   const dispatch = useDispatch()
-
+  // const { keycloak } = useKeycloak()
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
 
   useEffect(() => {
@@ -435,7 +435,8 @@ const Overview = props => {
         source.cancel(CANCEL_REQUEST)
       }
     }
-  }, [dispatch, history, isLoggedIn, props.location.state, user])
+  // }, [dispatch, history, isLoggedIn, props.location.state, user, keycloak])
+}, [dispatch, history, isLoggedIn, props.location.state, user])
 
   if (isLoading) {
     return <Loader center content="Loading" />
@@ -482,6 +483,12 @@ const Overview = props => {
                       >
                         Logout
                       </Dropdown.Item>
+                      {/* <Dropdown.Item
+                        icon={<Icon icon="sign-out" />}
+                        onClick={() => {keycloak.logout()}}
+                      >
+                        Logout Keycloak
+                      </Dropdown.Item> */}
                     </Dropdown>
                   </NavRS>
                 </div>
