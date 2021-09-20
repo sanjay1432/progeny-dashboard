@@ -537,22 +537,23 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
 
-  const findEstateBlock = (value)=>{
+  const findEstateBlock = async (value)=>{
     const estateBlocksItems = []
-    estatesWithBlocks.forEach(estate => {
+    const { data } = await EstateService.getUpdatedEstateBlocks()
+    data.forEach(estate => {
       estateBlocksItems.push(...estate.estateblocks)
     })
-    const estateBlocks = [
-      ...new Set(
-        estateBlocksItems
-          .map(item => item.estateblock)
-          .map(block =>
-            estateBlocksItems.find(eb => eb.estateblock === block)
-          )
-      )
-    ]
+    // const estateBlocks = [
+    //   ...new Set(
+    //     estateBlocksItems
+    //       .map(item => item.estateblock)
+    //       // .map(block =>
+    //       //   estateBlocksItems.find(eb => eb.estateblock === block)
+    //       // )
+    //   )
+    // ]
 
-    const foundedBlock = estateBlocks.find(eb => eb.estateblock === value)
+    const foundedBlock = estateBlocksItems.find(eb => eb.estateblock === value)
     return foundedBlock
   }
   const handleEditState = (replicate, estate) => {
