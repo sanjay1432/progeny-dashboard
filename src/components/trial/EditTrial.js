@@ -48,10 +48,11 @@ const initializeTrailState = {
 function findEstateBlocks(ebs, estate) {
   let estateBlocks = ebs.find(row => row.estate === estate)?.estateblocks
   const mappedEstateBlocks = []
-  for (let item in estateBlocks) {
+  const uniqueEBs =  [...new Set(estateBlocks.map((eb)=> eb.estateblock))]
+  for (let item in uniqueEBs) {
     mappedEstateBlocks.push({
-      label: estateBlocks[item].estateblock,
-      value: estateBlocks[item].estateblock
+      label: uniqueEBs[item],
+      value: uniqueEBs[item]
     })
   }
   return mappedEstateBlocks
@@ -357,10 +358,10 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function getEstateBlocks(estate) {
     let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
-    // if (estateBlocks) {
-    //   estateBlocks = estateBlocks.estateblocks
-    //   setEstateblocks(estateBlocks)
-    // }
+    if (estateBlocks) {
+      estateBlocks = estateBlocks.estateblocks
+      // setEstateblocks(estateBlocks)
+    }
 
     const mappedEstateBlocks = []
     for (let item in estateBlocks) {
@@ -372,9 +373,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     return mappedEstateBlocks
   }
 
-  function handleEstateBlockChange(block, replicate, rowIndex) {
+  async function handleEstateBlockChange(block, replicate, rowIndex) {
     if (block) {
-      const foundedBlock = findEstateBlock(block)
+      const foundedBlock = await findEstateBlock(block)
       const data = [...existingReplicatesInEstate]
       data[rowIndex].estateblock = block
       data[rowIndex].blockId = foundedBlock.id
@@ -525,10 +526,10 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate(nextData)
  }
 
-  const handleChange = (replicate,estate, key, value) => {
+  const handleChange = async (replicate,estate, key, value) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
     if(key === "estateblock"){
-       const foundedBlock = findEstateBlock(value)
+       const foundedBlock = await findEstateBlock(value)
        nextData.find(item => item.replicate === replicate)['soiltype'] = foundedBlock.soiltype
 
     }
