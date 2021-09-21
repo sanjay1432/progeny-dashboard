@@ -274,7 +274,7 @@ const EstateBlockTable = ({
               </p>
               <p>List of Estate Blocks ({estateBlocks.length})</p>
             </div>
-            <Table wordWrap data={estateBlocks} id="modalEstateTable">
+            <Table wordWrap data={estateBlocks} id="modalEstateTable" autoHeight>
               <Column width={80}>
                 <HeaderCell>
                   <Checkbox

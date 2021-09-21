@@ -55,6 +55,7 @@ const MapEstates = ({
   ...props
 }) => {
   const dispatch = useDispatch()
+  const [reset, setReset] = useState(false);
   const [updateDate, setUpdateDate] = useState(null);
   const [estatesList, setEstates] = useState([]);
   const [estateFilterData, setEstateFilterData] = useState([]);
@@ -63,6 +64,7 @@ const MapEstates = ({
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([]);
   const [selectedEstate, setSelectedEstate] = useState(null);
   const [estateToUpdate, setEstateToUpdate] = useState([]);
+  const [rowExpandedHeight, setRowExpandedHeight] = useState(200);
   const { user } = useSelector((state) => state.authReducer);
   useEffect(async () => {
     const { data, updatedDate } =
@@ -70,7 +72,6 @@ const MapEstates = ({
     const arrayUniqueByKey = [
       ...new Map(data.map((item) => [item["estateId"], item])).values(),
     ];
-    console.log({ arrayUniqueByKey });
     setEstates(arrayUniqueByKey);
     setUpdateDate(updatedDate);
     const estates = [...new Set(data.map((row) => row.estate))];
@@ -92,7 +93,7 @@ const MapEstates = ({
         setCheckStatusEstate([estate.estateId]);
       }
     });
-  }, []);
+  }, [reset]);
 
   function onApply() {
     console.log(selectedEstate);
@@ -104,12 +105,9 @@ const MapEstates = ({
   }
 
   async function onReset() {
+    setExpandedRowKeys(null)
     setSelectedEstate(null);
-    const { data } = await DashboardDataService.getUpdatedEstateBlocks();
-    const arrayUniqueByKey = [
-      ...new Map(data.map((item) => [item["estateId"], item])).values(),
-    ];
-    setEstates(arrayUniqueByKey);
+    setReset(!reset)
   }
 
   function handleExpanded(rowData, dataKey) {
@@ -136,6 +134,21 @@ const MapEstates = ({
     <Cell {...props} style={{ padding: 0 }}>
       <div>
         <Checkbox
+         disabled
+          value={rowData[dataKey]}
+          inline
+          onChange={onChange}
+          checked={checkedKeys.some((item) => item === rowData[dataKey])}
+        />
+      </div>
+    </Cell>
+  );
+
+  const ExpandedRowCheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
+    <Cell {...props} style={{ padding: 0 }}>
+      <div>
+        <Checkbox
+        //  disabled
           value={rowData[dataKey]}
           inline
           onChange={onChange}
@@ -313,21 +326,27 @@ const MapEstates = ({
           wordWrap
           height={400}
           data={estatesList}
-          // autoHeight
+          autoHeight
           rowKey={rowKey}
           expandedRowKeys={[expandedRowKeys]}
-          rowExpandedHeight={200}
+          rowExpandedHeight={rowExpandedHeight}
           renderRowExpanded={(rowData) => {
+            setRowExpandedHeight(rowData.estateblocks.length*50)
             return (
-              <div>
+              <div style = {{
+                border: "solid green 1px",
+                borderRadius: "5px",
+                marginTop: "-5px"
+              }}>
                 <Table
                   showHeader={false}
                   data={rowData.estateblocks}
                   id="modalEstateTable"
+                  autoHeight
                 >
                   <Column width={80}>
                     <HeaderCell></HeaderCell>
-                    <CheckCell
+                    <ExpandedRowCheckCell
                       dataKey="estateblock"
                       checkedKeys={checkStatusEstateBlock}
                       onChange={handleCheckEstateBlocks}
@@ -346,6 +365,7 @@ const MapEstates = ({
           <Column width={80}>
             <HeaderCell>
               <Checkbox
+              disabled
                 checked={estatechecked}
                 indeterminate={estateindeterminate}
                 onChange={handleCheckAllEstate}
