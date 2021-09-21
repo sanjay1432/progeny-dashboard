@@ -1349,7 +1349,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             trialfields[3] = field;
           }
           if (field.value === "area") {
-            field.width = 500;
+            field.width = 300;
             field.sorting = true
             trialfields[4] = field;
           }
