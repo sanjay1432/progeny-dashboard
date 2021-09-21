@@ -48,13 +48,21 @@ const initializeTrailState = {
 function findEstateBlocks(ebs, estate) {
   let estateBlocks = ebs.find(row => row.estate === estate)?.estateblocks
   const mappedEstateBlocks = []
-  const uniqueEBs =  [...new Set(estateBlocks.map((eb)=> eb.estateblock))]
-  for (let item in uniqueEBs) {
-    mappedEstateBlocks.push({
-      label: uniqueEBs[item],
-      value: uniqueEBs[item]
-    })
+  if(estateBlocks) {
+    const assignedEstateBlocks = []
+    estateBlocks.forEach(eb => {
+      if(eb.assigned){
+       assignedEstateBlocks.push(eb)
+      }
+    });
+    for (let item in assignedEstateBlocks) {
+      mappedEstateBlocks.push({
+        label: assignedEstateBlocks[item].estateblock,
+        value: assignedEstateBlocks[item].estateblock
+      })
+    }
   }
+ 
   return mappedEstateBlocks
 }
 
@@ -101,7 +109,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disabled, setDisabled] = useState("no")
   const [regenerateTable, setRegenerateTable] = useState(false)
   const [replicatesInEstate, setReplicatesInEstate] = useState([])
-
+  const [ebList, setEbList] = useState([]);
   const [isSuccessModal, setSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState(null)
   const [regenerateEnabled, setRegenerateEnabled] = useState(false)
@@ -186,7 +194,6 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }, [isMultplicationValid, trial])
 
   async function fetchEstates() {
-    // const { data } = await EstateService.getUpdatedEstateBlocks()
     const mappedEstates =  dashboardData.result['estate']
     setEstatesWithBlocks(mappedEstates)
     const mappedEstate = []
@@ -198,6 +205,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
   async function fetchTypes() {
     const types = await TrialService.getTrialTypes()
+    const { data } = await EstateService.getUpdatedEstateBlocks()
+    setEbList(data)
     const mappedTypes = []
 
     for (let item in types) {
@@ -357,20 +366,25 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function getEstateBlocks(estate) {
-    let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
+    let estateBlocks = ebList.find((row) => row.estate === estate);
+    const assignedEstateBlocks = []
     if (estateBlocks) {
-      estateBlocks = estateBlocks.estateblocks
+      estateBlocks = estateBlocks.estateblocks;
+      estateBlocks.forEach(eb => {
+       if(eb.assigned){
+        assignedEstateBlocks.push(eb)
+       }
+     });
       // setEstateblocks(estateBlocks)
     }
-
-    const mappedEstateBlocks = []
-    for (let item in estateBlocks) {
+    const mappedEstateBlocks = [];
+    for (let item in assignedEstateBlocks) {
       mappedEstateBlocks.push({
-        label: estateBlocks[item].estateblock,
-        value: estateBlocks[item].estateblock
-      })
+        label: assignedEstateBlocks[item].estateblock,
+        value: assignedEstateBlocks[item].estateblock,
+      });
     }
-    return mappedEstateBlocks
+    return mappedEstateBlocks;
   }
 
   async function handleEstateBlockChange(block, replicate, rowIndex) {
@@ -1115,31 +1129,31 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           >
             <Column width={200}>
               <HeaderCell>Estate</HeaderCell>
-              <EditCell dataKey="estate" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="estate" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={200}>
               <HeaderCell>Replicate</HeaderCell>
-              <EditCell dataKey="replicate" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="replicate" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Estate Block</HeaderCell>
-              <EditCell dataKey="estateblock" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="estateblock" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Density</HeaderCell>
-              <EditCell dataKey="density" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="density" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Design</HeaderCell>
-              <EditCell dataKey="design" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="design" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
             <Column width={250}>
               <HeaderCell>Soil Type</HeaderCell>
-              <EditCell dataKey="soiltype" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="soiltype" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
             <Column width={130}>
               <HeaderCell>Action</HeaderCell>

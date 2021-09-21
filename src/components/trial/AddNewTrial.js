@@ -25,7 +25,6 @@ import EstateService from "../../services/estate.service";
 import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24px.svg";
 
 import TrialService from "../../services/trial.service";
-import { publish } from "../../services/pubsub.service";
 
 import SuccessModal from "../modal/masterData/success/success";
 const styles = { width: 280, display: "block", marginBottom: 10 };
@@ -51,6 +50,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disabledGenerateTable, setDisabledGenerateTable] = useState(true);
   const [estates, setEstates] = useState([]);
   const [estatesWithBlocks, setEstatesWithBlocks] = useState([]);
+  const [ebList, setEbList] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [designs, setDesigns] = useState([]);
   const [isMultplicationValid, setMultplicationValid] = useState(null);
@@ -78,8 +78,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     handleDisableState();
   }, [isMultplicationValid, trial, radioInputForSameDensity, tableData]);
   async function fetchEstates() {
-    // const { data } = await EstateService.getUpdatedEstateBlocks()
-
+    const { data } = await EstateService.getUpdatedEstateBlocks()
+    setEbList(data)
     const mappedEstates = dashboardData.result["estate"];
     setEstatesWithBlocks(mappedEstates);
     const mappedEstate = [];
@@ -314,17 +314,23 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setDisbaledRD(!checked);
   };
 
-  function getEstateBlocks(estate) {
-    let estateBlocks = estatesWithBlocks.find((row) => row.estate === estate);
+ function getEstateBlocks(estate) {
+    let estateBlocks = ebList.find((row) => row.estate === estate);
+    const assignedEstateBlocks = []
     if (estateBlocks) {
       estateBlocks = estateBlocks.estateblocks;
+      estateBlocks.forEach(eb => {
+       if(eb.assigned){
+        assignedEstateBlocks.push(eb)
+       }
+     });
       // setEstateblocks(estateBlocks)
     }
     const mappedEstateBlocks = [];
-    for (let item in estateBlocks) {
+    for (let item in assignedEstateBlocks) {
       mappedEstateBlocks.push({
-        label: estateBlocks[item].estateblock,
-        value: estateBlocks[item].estateblock,
+        label: assignedEstateBlocks[item].estateblock,
+        value: assignedEstateBlocks[item].estateblock,
       });
     }
     return mappedEstateBlocks;
@@ -924,7 +930,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Column>
 
         <Column width={200} align="left">
-          <HeaderCell className="tableHeader">Estate Block</HeaderCell>
+          <HeaderCell className="tableHeader">Estate Block </HeaderCell>
           <Cell>
             {(rowData, i) => {
               return (

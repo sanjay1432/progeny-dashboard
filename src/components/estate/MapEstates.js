@@ -107,6 +107,7 @@ const MapEstates = ({
   async function onReset() {
     setExpandedRowKeys(null)
     setSelectedEstate(null);
+    setEstateToUpdate([]);
     setReset(!reset)
   }
 
