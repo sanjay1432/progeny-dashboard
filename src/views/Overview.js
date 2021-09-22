@@ -70,13 +70,13 @@ const listItems = [
         filters: [
           {
             name: "trialCode",
-            label: "Trial Id",
+            label: "Trial ID",
             type: "select",
             disable: false
           },
           {
             name: "planteddate",
-            label: "Planted Date (year)",
+            label: "Planted Date (Year)",
             type: "select",
             disable: false
           },

@@ -833,18 +833,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function StatusButton({ status }) {
     switch (status) {
       case "Active":
-        return <Button className="activeStatusButton">Active</Button>;
+        return <Button className="activeStatusButton" style = {{cursor: "default"}}>Active</Button>;
       case "Inactive":
-        return <Button className="inavtiveStatusButton">Inactive</Button>;
+        return <Button className="inavtiveStatusButton" style = {{cursor: "default"}}>Inactive</Button>;
       case "Canceled":
-        return <Button className="canceledStatusButton">Canceled</Button>;
+        return <Button className="canceledStatusButton" style = {{cursor: "default"}}>Canceled</Button>;
       case "Pending":
-        return <Button className="pendingStatusButton">Pending</Button>;
+        return <Button className="pendingStatusButton" style = {{cursor: "default"}}>Pending</Button>;
 
       case "Finished":
-        return <Button className="finishedStatusButton">Finished</Button>;
+        return <Button className="finishedStatusButton" style = {{cursor: "default"}}>Finished</Button>;
       case "Closed":
-        return <Button className="finishedStatusButton">Closed</Button>;
+        return <Button className="finishedStatusButton" style = {{cursor: "default"}}>Closed</Button>;
 
       default:
         return null;
@@ -987,7 +987,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (active) {
       case "estate":
         return (
-          <span>
+          <span  style = {{cursor: "pointer"}}>
             <img
               src={OpenNew}
               alt=""
@@ -1008,6 +1008,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <img
                 src={OpenNew}
                 alt=""
+                style = {{cursor: "pointer"}}
                 onClick={() =>
                   handleActionExpand(
                     ["Trial and Replicate", `Trial ${data.trialCode}`],
@@ -1026,6 +1027,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <img
                   src={CreateIcon}
                   alt=""
+                  style = {{cursor: "pointer"}}
                   onClick={() =>
                     handleActionExpand(
                       ["Trial and Replicate", `Edit Trial and Replicate`],
@@ -1053,6 +1055,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <img
                   src={LinkIcon}
                   alt="edit"
+                  style = {{cursor: "pointer"}}
                   onClick={() =>
                     handleActionExpand(
                       ["Trial and Replicate", `Attach Progenies`],
@@ -1110,6 +1113,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={QrCodeScanner}
                     alt=""
+                    style = {{cursor: "pointer"}}
                     onClick={() =>
                       handleActionExpand(["Plot", "Generate QR Code"], {
                         type: "generate QR",
@@ -1124,6 +1128,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={CreateIcon}
                     alt=""
+                    style = {{cursor: "pointer"}}
                     onClick={() => handlePlotEditStatus(data.plotId)}
                   />
                 </FlexboxGrid.Item>
@@ -1131,6 +1136,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={LinkIcon}
                     alt=""
+                    style = {{cursor: "pointer"}}
                     onClick={() =>
                       handleActionExpand(["Plot", "Edit Palms Information"], {
                         type: "edit",
@@ -1175,6 +1181,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <img
                 src={CreateIcon}
                 alt=""
+                style = {{cursor: "pointer"}}
                 onClick={() => handlePalmEditStatus(data.palmId)}
               />
             )}
@@ -1187,6 +1194,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <img
               src={CreateIcon}
               alt=""
+              style = {{cursor: "pointer"}}
               onClick={() =>
                 handleActionExpand(["Progeny", "Edit Progeny"], {
                   type: "edit",
@@ -1378,16 +1386,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.sorting = true
             trialfields[9] = field;
           }
-          if (field.value === "nofplot_subblock") {
+          if (field.value === "nofsubblock") {
             field.width = 170;
             field.sorting = true
             trialfields[10] = field;
           }
-          if (field.value === "nofsubblock") {
+          if (field.value === "nofplot_subblock") {
             field.width = 170;
             field.sorting = true
             trialfields[11] = field;
           }
+         
           if (field.value === "status") {
             field.width = 130;
             field.align = "center";
