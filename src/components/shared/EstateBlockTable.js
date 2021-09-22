@@ -346,23 +346,27 @@ const EstateBlockTable = ({
           id="dashboardTable"
           wordWrap
           data={getData(displaylength)}
-          onRowClick={data1 => {}}
           autoHeight
         >
 
-          <Column flexGrow={1} align="left">
+          <Column flexGrow={2} align="left">
             <HeaderCell className="tableHeader">Estate Block</HeaderCell>
             <Cell dataKey="estateblock" />
           </Column>
 
-          <Column flexGrow={1} align="left">
+          <Column flexGrow={2} align="left">
             <HeaderCell className="tableHeader">Size (ha)</HeaderCell>
             <Cell dataKey="size" />
           </Column>
 
-          <Column flexGrow={4} align="left">
+          <Column flexGrow={2} align="left">
             <HeaderCell className="tableHeader">Density (p/ha)</HeaderCell>
             <Cell dataKey="density" />
+          </Column>
+
+          <Column flexGrow={2} align="left">
+            <HeaderCell className="tableHeader">Trial ID</HeaderCell>
+            <Cell dataKey="trialCode" />
           </Column>
         </Table>
         <SuccessMessage />

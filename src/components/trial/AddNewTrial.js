@@ -18,6 +18,7 @@ import {
   RadioGroup,
   SelectPicker,
   Modal,
+  InputNumber ,
   Tag,
 } from "rsuite";
 import EstateService from "../../services/estate.service";
@@ -469,11 +470,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col>
+          {/* <Col>
             {trial.trialCode === "" ? (
               <Tag color="red">Trial Code is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -490,11 +491,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               block
             />{" "}
           </Col>
-          <Col>
+          {/* <Col>
             {trial.type === "" ? (
               <Tag color="red">Trial type is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -509,11 +510,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col>
+          {/* <Col>
             {trial.trial === "" ? (
               <Tag color="red">Trial is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
@@ -529,11 +530,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col>
+          {/* <Col>
             {trial.trialremark === "" ? (
               <Tag color="red">Trial Remark is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -545,14 +546,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               placeholder="Key in Area"
               className="formField"
               name="area"
+              type = "number"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col>
+          {/* <Col>
             {trial.area === "" ? (
               <Tag color="red">Trial Area is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -573,11 +575,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               }
             />
           </Col>
-          <Col>
+          {/* <Col>
             {trial.planteddate === "" ? (
               <Tag color="red">Trial planted date is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -585,18 +587,20 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Progeny</p>
           </Col>
           <Col md={10} lg={10}>
-            <Input
+            <InputNumber 
               placeholder="Key in No.of Progeny"
               className="formField"
               name="nofprogeny"
+              min="1"
+              step="1"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
-          <Col>
+          {/* <Col>
             {trial.nofprogeny === 0 || trial.nofprogeny === ""? (
               <Tag color="red">Trial No of Progenies is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -608,6 +612,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               placeholder="No. of Subblock"
               className="subPlotInput"
               name="nofsubblock"
+              type="number"
+              min="1"
+              step="1"
+              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
@@ -616,6 +624,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               placeholder="No. of Plot/Subblock "
               className="plotInput"
               name="nofplot_subblock"
+              type="number"
+              min="1"
+              step="1"
+              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
               onChange={(value, e) => onInput(e)}
             />
             {isMultplicationValid === false ? (
@@ -740,11 +752,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 onChange={(value, e) => onInput(e)}
               />
             </Col>
-            <Col>
+            {/* <Col>
             {trial.nofreplicate === "" ? (
               <Tag color="red">Trial no of replicate is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
           </Row>
         ) : (
           ""
@@ -775,12 +787,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               <Input
                 placeholder="Enter Density"
                 name="density"
+                type = "number"
                 className="densityInput"
                 onChange={(value, e) => onInput(e)}
               />
-               {trial.density === "" ? (
+               {/* {trial.density === "" ? (
               <Tag color="red">Trial density is Required!</Tag>
-            ) : null}
+            ) : null} */}
             </Col>
             
           ) : (
@@ -802,11 +815,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               block
             />{" "}
           </Col>
-          <Col>
+          {/* <Col>
             {trial.design === "" ? (
               <Tag color="red">Trial Design is Required!</Tag>
             ) : null}
-          </Col>
+          </Col> */}
         </Row>
       </Grid>
 

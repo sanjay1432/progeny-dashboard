@@ -140,6 +140,7 @@ const MapEstates = ({
           inline
           onChange={onChange}
           checked={checkedKeys.some((item) => item === rowData[dataKey])}
+          indeterminate={checkedKeys.length && !checkedKeys.some((item) => item === rowData[dataKey])}
         />
       </div>
     </Cell>
