@@ -17,7 +17,7 @@ const deleteProgeny = payload => {
 }
 const updateProgeny = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-progeny`, payload)
+    .post(`${API_URL}/update-progeny`, payload)
     .then(response => {
       return response.data
     })
@@ -25,7 +25,7 @@ const updateProgeny = payload => {
 
 const attachProgeny = (payload, trialId) => {
   return axiosApiInstance
-    .put(`${API_URL}/attach-progeny?trialCode=${trialId}`, payload)
+    .post(`${API_URL}/attach-progeny?trialCode=${trialId}`, payload)
     .then(response => {
       return response.data
     })

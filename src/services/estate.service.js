@@ -17,7 +17,7 @@ const getDesigns = () => {
 
 const assignEstateBlocksToEstate = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/estate/map-estate-blocks`, payload)
+    .post(`${API_URL}/estate/map-estate-blocks`, payload)
     .then((response, err) => {
       if (err) return err
       return response.data
@@ -25,7 +25,7 @@ const assignEstateBlocksToEstate = payload => {
 }
 const assignEstateBlocksToMultipleEstate = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/estate/map-multiple-estate-blocks`, payload)
+    .post(`${API_URL}/estate/map-multiple-estate-blocks`, payload)
     .then((response, err) => {
       if (err) return err
       return response.data

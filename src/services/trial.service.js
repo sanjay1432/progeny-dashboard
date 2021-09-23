@@ -10,7 +10,7 @@ const saveTrial = payload => {
 }
 const editTrial = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-trial`, payload)
+    .post(`${API_URL}/update-trial`, payload)
     .then(response => {
       return response.data
     })
@@ -36,7 +36,7 @@ const getTrialTypes = () => {
 
 const updateTrialReplicate = body => {
   return axiosApiInstance
-    .put(`${API_URL}/trial/replicate`, body)
+    .post(`${API_URL}/trial/replicate`, body)
     .then(response => {
       return response.data
     })

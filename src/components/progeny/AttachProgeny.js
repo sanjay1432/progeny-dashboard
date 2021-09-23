@@ -84,11 +84,12 @@ const AttachProgeny = ({
       setProgeny()
       setPlots()  
     }
-  }, [])
+  }, [trialPlots])
 
   function onReset() {
     setFilters(() => ({ ...filters, trialCode: null, estate: null }))
     setTrialPlots([])
+    replicateSelector = 'All'
   }
 
   function setFilterTrialIds() {
@@ -145,8 +146,8 @@ const AttachProgeny = ({
     const selectedTrial = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-
-    setEditableTrial(selectedTrial.isEditable)
+    const isEditableTrial =  selectedTrial.isEditable === "true"?true: false;
+    setEditableTrial(isEditableTrial)
     setTrialEstates(selectedTrial)
   }
   function setTrialEstates(trial) {

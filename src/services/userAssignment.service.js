@@ -11,7 +11,7 @@ export const getEstateList = () => {
 
 const assignEstateToUser = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/assign-estate-to-user`, payload)
+    .post(`${API_URL}/assign-estate-to-user`, payload)
     .then(response => {
       return response.data
     })
