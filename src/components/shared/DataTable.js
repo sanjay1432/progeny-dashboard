@@ -104,7 +104,7 @@ const EditableCell = ({
               />
               ) : (
                 <Input
-                  defaultValue={rowData[dataKey]}
+                  value={rowData[dataKey]}
                   disabled={[
                     "trialCode",
                     "estate",
@@ -187,6 +187,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     currentTableDataFields = [];
     // SET TABLE DATA
     setCurrentTableData();
+  
   });
 
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
@@ -209,7 +210,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [tableData, setTableData] = useState([]);
   const [activeRow, setActiveRow] = useState(null)
   const [progenies, setProgenies] = useState([]);
-
+  const [progenyData, setProgenyData] = useState([]);
 
   const [sortColumn, setSortColumn] = useState('')
   const [sortType, setSortType] = useState('asc')
@@ -225,6 +226,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       const progenies =  await DashboardDataService.getDashboardData('progeny');
       if(progenies){
         const {data} =  progenies;
+        setProgenyData(data)
         let selectionData = [];
         data.forEach(progeny => {
           selectionData.push({
@@ -537,14 +539,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function showPalmRecord() {
-    if (
-      filterData.filter.hasOwnProperty("trialCode") &&
-      filterData.filter.hasOwnProperty("estate")
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    return  filterData.filter.hasOwnProperty("trialCode") && filterData.filter.hasOwnProperty("estate")
   }
   const dashboardData = useSelector((state) => state.dashboardDataReducer);
   function setCurrentTableData() {
@@ -611,6 +606,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;
+      if(filterData.reset){
+        delete v.status;
+      }
       const start = displaylength * (activePage - 1);
       const end = start + displaylength;
       return i >= start && i < end;
@@ -852,12 +850,24 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const handlePlotEditChange = (plotId, key, value) => {
+   
     const nextData = Object.assign([], tableData);
     nextData.find((item) => item.plotId === plotId)[key] = value;
+
+    if(key === 'progenyCode'){
+      // Set the progeny values values 
+      const progeny =  progenyData.find((p)=>p.progenyId === value)
+      nextData.find((item) => item.plotId === plotId)['progeny'] = progeny.progeny;
+      nextData.find((item) => item.plotId === plotId)['fp'] = progeny.fp;
+      nextData.find((item) => item.plotId === plotId)['mp'] = progeny.mp;
+      nextData.find((item) => item.plotId === plotId)['ortet'] = progeny.ortet;
+    }
     setTableData(nextData);
   };
 
   function handlePlotEditStatus(plotId) {
+    dispatch(clearFilter())
+    setSuccessMessage(false);
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.plotId === plotId);
     setActiveRow({...activeItem})
@@ -923,6 +933,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   };
 
   function handlePalmEditStatus(palmId) {
+    setSuccessMessage(false);
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.palmId === palmId);
     setActiveRow({...activeItem})
