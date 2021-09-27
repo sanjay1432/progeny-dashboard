@@ -187,7 +187,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     currentTableDataFields = [];
     // SET TABLE DATA
     setCurrentTableData();
-  
   });
 
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
@@ -236,6 +235,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setProgenies(selectionData)
       }      
     }
+   
   
   }, []);
 
@@ -571,6 +571,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function getData(displaylength) {
+
     let currentTableData = [...tableData];
     setTrialEstateReplicates();
     if (
@@ -907,7 +908,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PLOTDATA_UPDATE");
-        setSuccessMessage(true);
+        setSuccessMessage(true); 
         
       },
       (error) => {
@@ -984,6 +985,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setSuccessData(confirmationData);
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);
+        setTimeout(()=>{
+          setSuccessMessage(false);
+        }, 3000) 
         setActiveRow(null)
         fetchCurrentTrialPalmData()
       },

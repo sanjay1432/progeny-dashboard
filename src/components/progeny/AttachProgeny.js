@@ -226,6 +226,8 @@ const AttachProgeny = ({
     })
     console.log({ data })
       
+    // CHECK IF ALL PLOTS ARE MAPPED WITH PROGENY ID & PALM NUMBER
+     setCompleteState(isPlotsMapped(data))
     if (replicateSelector !== "All") {
       console.log(replicateSelector)
       const filteredReps = data.filter(d => d.replicate === replicateSelector)
@@ -236,6 +238,15 @@ const AttachProgeny = ({
     // setLoading(false)
   }
 
+  const isPlotsMapped = (data)=>{
+     let isMapped =  false;
+     for (let i = 0 ; i< data.length; i++){
+       const obj =  data[i];
+       isMapped = obj.hasOwnProperty('progenyId') && obj.progenyId  && obj.hasOwnProperty('nPalm') && obj.nPalm
+     }
+
+     return isMapped
+  } 
   function handleProgenyChange(value, idx, replicate) {
     console.log({ disabledRepIds })
     const existingProgenies = [...progenies]
