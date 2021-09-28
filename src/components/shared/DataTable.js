@@ -1214,6 +1214,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 handleActionExpand(["Progeny", "Edit Progeny"], {
                   type: "edit",
                   progenyId: data.progenyId,
+                  progenyCode: data.progenyCode,
                   popvar: data.popvar,
                   origin: data.origin,
                   progenyremark: data.progenyremark,

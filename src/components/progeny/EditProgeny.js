@@ -9,6 +9,7 @@ import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 const EditProgeny = ({ option, ...props }) => {
   const initialForm = {
     progenyId: option.progenyId,
+    progenyCode: option.progenyCode,
     popvar: option.popvar,
     origin: option.origin,
     progeny: option.progeny,
@@ -100,8 +101,8 @@ const EditProgeny = ({ option, ...props }) => {
           </Col>
           <Col md={10} lg={10} className="inputLayout">
             <Input
-              value={formData.progenyId}
-              name="progenyId"
+              value={formData.progenyCode}
+              name="progenyCode"
               onChange={(value, e) => handleChange(e)}
               placeholder="Key in Progeny ID"
             />

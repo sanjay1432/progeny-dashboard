@@ -9,7 +9,7 @@ import { publish } from "../../services/pubsub.service";
 import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 const AddNewProgeny = () => {
   const initialForm = {
-    progenyId: "",
+    progenyCode: "",
     popvar: "",
     origin: "",
     progenyremark: "",
@@ -130,7 +130,7 @@ const AddNewProgeny = () => {
           </Col>
           <Col md={10} lg={10} className="inputLayout">
             <Input
-              name="progenyId"
+              name="progenyCode"
               onChange={(value, e) => handleChange(e)}
               placeholder="Key in Progeny ID"
             />
