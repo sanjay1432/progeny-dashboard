@@ -5,7 +5,7 @@ import { Grid, Row, Col, Input, Button } from "rsuite"
 import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
-
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 const EditProgeny = ({ option, ...props }) => {
   const initialForm = {
     progenyId: option.progenyId,
@@ -81,6 +81,7 @@ const EditProgeny = ({ option, ...props }) => {
           data: formData,
           action: "UPDATE"
         }
+        dispatch(getDashboardData('progeny'))
         dispatch(clearBreadcrumb())
         publish(savedData)
       },
