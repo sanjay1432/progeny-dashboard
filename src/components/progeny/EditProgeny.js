@@ -6,6 +6,7 @@ import DataPicker from "../SharedComponent/DataPicker"
 import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
 import { getDashboardData } from "../../redux/actions/dashboarddata.action"
+import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 const EditProgeny = ({ option, ...props }) => {
   const initialForm = {
     progenyId: option.progenyId,
@@ -25,7 +26,7 @@ const EditProgeny = ({ option, ...props }) => {
     cross: option.cross,
     crossType: option.crossType
   }
-
+  const [confirmationModal, setConfirmationModal] = useState(false);
   const [formData, setFormData] = useState(initialForm)
   const dispatch = useDispatch()
   const ProgenyData = useSelector(
@@ -94,6 +95,13 @@ const EditProgeny = ({ option, ...props }) => {
 
   return (
     <div id="ProgenyAction">
+      <ConfirmationModal
+        show={confirmationModal}
+        hide={() => setConfirmationModal(false)}
+        save={updateProgeny}
+        data={formData}
+        action="PROGENY_EDIT"
+      />
       <Grid fluid>
         <Row>
           <Col md={5} lg={5}>
@@ -104,6 +112,7 @@ const EditProgeny = ({ option, ...props }) => {
               value={formData.progenyCode}
               name="progenyCode"
               onChange={(value, e) => handleChange(e)}
+              disabled
               placeholder="Key in Progeny ID"
             />
           </Col>
@@ -406,7 +415,7 @@ const EditProgeny = ({ option, ...props }) => {
             <Button
               className="saveButton"
               appearance="primary"
-              onClick={updateProgeny}
+              onClick={() => setConfirmationModal(true)}
             >
               Save
             </Button>
