@@ -985,9 +985,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setSuccessData(confirmationData);
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);
-        setTimeout(()=>{
-          setSuccessMessage(false);
-        }, 3000) 
+        // setTimeout(()=>{
+        //   setSuccessMessage(false);
+        // }, 3000) 
         setActiveRow(null)
         fetchCurrentTrialPalmData()
       },

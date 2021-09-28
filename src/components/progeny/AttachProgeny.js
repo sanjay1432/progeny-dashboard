@@ -239,10 +239,12 @@ const AttachProgeny = ({
   }
 
   const isPlotsMapped = (data)=>{
-     let isMapped =  false;
+     let isMapped =  true;
      for (let i = 0 ; i< data.length; i++){
        const obj =  data[i];
-       isMapped = obj.hasOwnProperty('progenyId') && obj.progenyId  && obj.hasOwnProperty('nPalm') && obj.nPalm
+      if(obj.hasOwnProperty('progenyId') && obj.progenyId  && obj.hasOwnProperty('nPalm') && obj.nPalm){
+        isMapped = false
+      }
      }
 
      return isMapped

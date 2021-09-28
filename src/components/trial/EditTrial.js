@@ -74,6 +74,7 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
       {editing && dataKey !== "estateblock" ? (
         <input
           className="rs-input"
+          type = "number"
           defaultValue={rowData[dataKey]}
           disabled={["estate", "replicate", "design", "soiltype"].includes(
             dataKey
