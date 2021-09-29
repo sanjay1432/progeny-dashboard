@@ -38,7 +38,7 @@ import QrCodeScanner from "../../assets/img/icons/qr_code_scanner_24px.svg";
 import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import PalmService from "../../services/palm.service";
 import PlotService from "../../services/plot.service";
-import DashboardDataService from "../../services/dashboarddata.service"
+import DashboardDataService from "../../services/dashboarddata.service";
 import MapEstates from "../../components/estate/MapEstates";
 const { Column, HeaderCell, Cell } = Table;
 const initialState = {
@@ -66,15 +66,13 @@ const EditableCell = ({
   const editing = rowData.status === true;
   switch (active) {
     case "trial":
-        return (
+      return (
         <Cell {...cellProps}>
           {dataKey === "estate" ? (
             <span>{getMultipleEstateString(rowData.estate)}</span>
-          ) : 
-          dataKey === "planteddate" ? (
-            <span>{GeneralHelper.modifyDate({date: rowData[dataKey]}) }</span>
-          ) :  
-          (
+          ) : dataKey === "planteddate" ? (
+            <span>{GeneralHelper.modifyDate({ date: rowData[dataKey] })}</span>
+          ) : (
             <span>{rowData[dataKey]}</span>
           )}
         </Cell>
@@ -92,16 +90,16 @@ const EditableCell = ({
     case "plot":
       return (
         <>
-          {rowData['status'] ? (
+          {rowData["status"] ? (
             <Cell {...cellProps}>
               {dataKey === "progenyCode" ? (
                 <SelectPicker
-                data={progenies}
-                value={rowData[dataKey]}
-                onChange={(value, event) =>
-                  handlePlotEditChange(rowData.plotId, dataKey, value)
-                }
-              />
+                  data={progenies}
+                  value={rowData[dataKey]}
+                  onChange={(value, event) =>
+                    handlePlotEditChange(rowData.plotId, dataKey, value)
+                  }
+                />
               ) : (
                 <Input
                   value={rowData[dataKey]}
@@ -135,7 +133,7 @@ const EditableCell = ({
     case "palm":
       return (
         <Cell {...cellProps}>
-          {rowData['status'] ? (
+          {rowData["status"] ? (
             <Input
               className="editTableInput"
               defaultValue={rowData[dataKey]}
@@ -181,7 +179,7 @@ let replicateSelector = "All";
 let plotSelector = "All";
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch();
-  
+
   const [toggle, setToggle] = useState(true);
   useEffect(() => {
     currentTableDataFields = [];
@@ -207,36 +205,36 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const { activePage, displaylength } = pagination;
   const { active } = currentSubNavState;
   const [tableData, setTableData] = useState([]);
-  const [activeRow, setActiveRow] = useState(null)
+  const [activeRow, setActiveRow] = useState(null);
   const [progenies, setProgenies] = useState([]);
   const [progenyData, setProgenyData] = useState([]);
 
-  const [sortColumn, setSortColumn] = useState('')
-  const [sortType, setSortType] = useState('asc')
+  const [sortColumn, setSortColumn] = useState("");
+  const [sortType, setSortType] = useState("asc");
   const [loading, setLoading] = useState(false);
   useEffect(async () => {
     function subscribedData(data) {
       itemSaved(data);
+      handleChangeLength(1)
     }
     progenySubject.subscribe((data) => {
       subscribedData(data);
     });
-    if(active === 'plot') {   
-      const progenies =  await DashboardDataService.getDashboardData('progeny');
-      if(progenies){
-        const {data} =  progenies;
-        setProgenyData(data)
+    if (active === "plot") {
+      const progenies = await DashboardDataService.getDashboardData("progeny");
+      if (progenies) {
+        const { data } = progenies;
+        setProgenyData(data);
         let selectionData = [];
-        data.forEach(progeny => {
+        data.forEach((progeny) => {
           selectionData.push({
-          label: progeny.progenyCode, value: progeny.progenyId
-          })
+            label: progeny.progenyCode,
+            value: progeny.progenyId,
+          });
         });
-        setProgenies(selectionData)
-      }      
+        setProgenies(selectionData);
+      }
     }
-   
-  
   }, []);
 
   const { user } = useSelector((state) => state.authReducer);
@@ -270,7 +268,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return "";
     }
   }
-
 
   const tableDataFields = [
     {
@@ -486,7 +483,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
   function handleChangeLength(dataKey) {
     setPagination(() => ({
-      ...pagination,
+      ...pagination, 
       displaylength: dataKey,
     }));
   }
@@ -539,12 +536,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function showPalmRecord() {
-    return  filterData.filter.hasOwnProperty("trialCode") && filterData.filter.hasOwnProperty("estate")
+    return (
+      filterData.filter.hasOwnProperty("trialCode") &&
+      filterData.filter.hasOwnProperty("estate")
+    );
   }
   const dashboardData = useSelector((state) => state.dashboardDataReducer);
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
-      if(!activeRow){
+      if (!activeRow) {
         setTableData(dashboardData.result[active]);
       }
       const firstRow = dashboardData.result[active][0];
@@ -559,19 +559,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  function calculateStringCharAtCode(string){
-       const stringArray = string.split('')
-       let sum = 0;
-       for(let i = 0; i< stringArray.length; i++){
-        const size =  stringArray[i].charCodeAt();
-        sum+=size
-      }
+  function calculateStringCharAtCode(string) {
+    const stringArray = string.split("");
+    let sum = 0;
+    for (let i = 0; i < stringArray.length; i++) {
+      const size = stringArray[i].charCodeAt();
+      sum += size;
+    }
 
-      return sum
+    return sum;
   }
 
   function getData(displaylength) {
-
     let currentTableData = [...tableData];
     setTrialEstateReplicates();
     if (
@@ -583,20 +582,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       return currentTableData;
     }
 
-
     if (sortColumn && sortType) {
-       currentTableData.sort((a, b) => {
+      currentTableData.sort((a, b) => {
         let x = a[sortColumn];
         let y = b[sortColumn];
-        if (typeof x === 'string') {
+        if (typeof x === "string") {
           // x = x.charCodeAt();
-          x =  calculateStringCharAtCode(x)
+          x = calculateStringCharAtCode(x);
         }
-        if (typeof y === 'string') {
+        if (typeof y === "string") {
           // y = y.charCodeAt();
-          y =  calculateStringCharAtCode(y)
+          y = calculateStringCharAtCode(y);
         }
-        if (sortType === 'asc') {
+        if (sortType === "asc") {
           return x - y;
         } else {
           return y - x;
@@ -607,7 +605,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;
-      if(filterData.reset){
+      if (filterData.reset) {
         delete v.status;
       }
       const start = displaylength * (activePage - 1);
@@ -675,7 +673,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function filterTable(filters, data) {
     var filterKeys = Object.keys(filters);
     return data.filter(function (eachObj) {
-      return filterKeys.every(function (eachKey) {
+      return filterKeys.some(function (eachKey) {
         if (active === "trial" && eachKey === "estate") {
           const estates = eachObj[eachKey].map((est) => est.name);
           return estates.includes(filters[eachKey]);
@@ -832,18 +830,54 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function StatusButton({ status }) {
     switch (status) {
       case "Active":
-        return <Button className="activeStatusButton" style = {{cursor: "default"}}>Active</Button>;
+        return (
+          <Button className="activeStatusButton" style={{ cursor: "default" }}>
+            Active
+          </Button>
+        );
       case "Inactive":
-        return <Button className="inavtiveStatusButton" style = {{cursor: "default"}}>Inactive</Button>;
+        return (
+          <Button
+            className="inavtiveStatusButton"
+            style={{ cursor: "default" }}
+          >
+            Inactive
+          </Button>
+        );
       case "Canceled":
-        return <Button className="canceledStatusButton" style = {{cursor: "default"}}>Canceled</Button>;
+        return (
+          <Button
+            className="canceledStatusButton"
+            style={{ cursor: "default" }}
+          >
+            Canceled
+          </Button>
+        );
       case "Pending":
-        return <Button className="pendingStatusButton" style = {{cursor: "default"}}>Pending</Button>;
+        return (
+          <Button className="pendingStatusButton" style={{ cursor: "default" }}>
+            Pending
+          </Button>
+        );
 
       case "Finished":
-        return <Button className="finishedStatusButton" style = {{cursor: "default"}}>Finished</Button>;
+        return (
+          <Button
+            className="finishedStatusButton"
+            style={{ cursor: "default" }}
+          >
+            Finished
+          </Button>
+        );
       case "Closed":
-        return <Button className="finishedStatusButton" style = {{cursor: "default"}}>Closed</Button>;
+        return (
+          <Button
+            className="finishedStatusButton"
+            style={{ cursor: "default" }}
+          >
+            Closed
+          </Button>
+        );
 
       default:
         return null;
@@ -851,27 +885,27 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const handlePlotEditChange = (plotId, key, value) => {
-   
     const nextData = Object.assign([], tableData);
     nextData.find((item) => item.plotId === plotId)[key] = value;
 
-    if(key === 'progenyCode'){
-      // Set the progeny values values 
-      const progeny =  progenyData.find((p)=>p.progenyId === value)
-      nextData.find((item) => item.plotId === plotId)['progeny'] = progeny.progeny;
-      nextData.find((item) => item.plotId === plotId)['fp'] = progeny.fp;
-      nextData.find((item) => item.plotId === plotId)['mp'] = progeny.mp;
-      nextData.find((item) => item.plotId === plotId)['ortet'] = progeny.ortet;
+    if (key === "progenyCode") {
+      // Set the progeny values values
+      const progeny = progenyData.find((p) => p.progenyId === value);
+      nextData.find((item) => item.plotId === plotId)["progeny"] =
+        progeny.progeny;
+      nextData.find((item) => item.plotId === plotId)["fp"] = progeny.fp;
+      nextData.find((item) => item.plotId === plotId)["mp"] = progeny.mp;
+      nextData.find((item) => item.plotId === plotId)["ortet"] = progeny.ortet;
     }
     setTableData(nextData);
   };
 
   function handlePlotEditStatus(plotId) {
-    dispatch(clearFilter())
+    dispatch(clearFilter());
     setSuccessMessage(false);
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.plotId === plotId);
-    setActiveRow({...activeItem})
+    setActiveRow({ ...activeItem });
     activeItem.status = activeItem.status ? null : true;
     setTableData(nextData);
   }
@@ -879,10 +913,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function cancelPlotData(plotId) {
     const nextData = Object.assign([], tableData);
     const activeItemIdx = nextData.findIndex((item) => item.plotId === plotId);
-    if(activeRow){    
-    nextData[activeItemIdx] = activeRow
+    if (activeRow) {
+      nextData[activeItemIdx] = activeRow;
     }
-    nextData[activeItemIdx]['status'] = false
+    nextData[activeItemIdx]["status"] = false;
     setTableData(nextData);
   }
 
@@ -890,26 +924,25 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.plotId === plotId);
     activeItem.status = activeItem.status ? null : true;
-    const {plot, progenyCode} = confirmationData
+    const { plot, progenyCode } = confirmationData;
 
     const payload = {
-      plotid:plotId,
-      progenyid:progenyCode,
+      plotid: plotId,
+      progenyid: progenyCode,
       plotno: plot,
       updatedBy: userInfo,
       updatedDate: new Date().toISOString(),
-    }
+    };
 
     PlotService.updatePlot(payload).then(
       (data) => {
-        dispatch(getDashboardData('plot'))
-        setActiveRow(null)
+        dispatch(getDashboardData("plot"));
+        setActiveRow(null);
         setTableData(nextData);
         setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PLOTDATA_UPDATE");
-        setSuccessMessage(true); 
-        
+        setSuccessMessage(true);
       },
       (error) => {
         setErrorMessage(active);
@@ -921,7 +954,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const handlePalmEditChange = (palmId, key, value) => {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.palmId === palmId);
-  
+
     activeItem[key] = value;
     setTableData(nextData);
     // if (key === "palmno") {
@@ -937,44 +970,49 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setSuccessMessage(false);
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.palmId === palmId);
-    setActiveRow({...activeItem})
+    setActiveRow({ ...activeItem });
     activeItem.status = activeItem.status ? false : true;
     setTableData(nextData);
-    
   }
 
   function cancelPalmData(palmId) {
     const nextData = Object.assign([], tableData);
     const activeItemIdx = nextData.findIndex((item) => item.palmId === palmId);
-    if(activeRow){    
-    nextData[activeItemIdx] = activeRow
+    if (activeRow) {
+      nextData[activeItemIdx] = activeRow;
     }
-    nextData[activeItemIdx]['status'] = false
+    nextData[activeItemIdx]["status"] = false;
     setTableData(nextData);
-    setActiveRow(null)
+    setActiveRow(null);
   }
 
-  function fetchCurrentTrialPalmData(){
-    const foundTrial = dashboardData.result["trial"].find((trial) => trial.trialCode === filterData.filter.trialCode);
-    const foundEstate = foundTrial.estate.find((est) => est.name === filterData.filter.estate);
+  function fetchCurrentTrialPalmData() {
+    const foundTrial = dashboardData.result["trial"].find(
+      (trial) => trial.trialCode === filterData.filter.trialCode
+    );
+    const foundEstate = foundTrial.estate.find(
+      (est) => est.name === filterData.filter.estate
+    );
     const payload = {
       trialId: foundTrial.trialId,
       estateId: foundEstate.id,
     };
-    dispatch(getPalmData(payload))
+    dispatch(getPalmData(payload));
   }
-  
+
   function savePalmData(trialId) {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.trialId === trialId);
     activeItem.status = activeItem.status ? null : true;
     const payload = {
-      palmnos: [{
-        trialCode: confirmationData.trialCode,
-        estate: confirmationData.estate,
-        palmno: confirmationData.palmno,
-        palmId: confirmationData.palmId
-      }],
+      palmnos: [
+        {
+          trialCode: confirmationData.trialCode,
+          estate: confirmationData.estate,
+          palmno: confirmationData.palmno,
+          palmId: confirmationData.palmId,
+        },
+      ],
       updatedBy: userInfo,
       updatedDate: new Date().toISOString(),
     };
@@ -987,9 +1025,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setSuccessMessage(true);
         // setTimeout(()=>{
         //   setSuccessMessage(false);
-        // }, 3000) 
-        setActiveRow(null)
-        fetchCurrentTrialPalmData()
+        // }, 3000)
+        setActiveRow(null);
+        fetchCurrentTrialPalmData();
       },
       (error) => {
         setErrorMessage(active);
@@ -1002,7 +1040,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (active) {
       case "estate":
         return (
-          <span  style = {{cursor: "pointer"}}>
+          <span style={{ cursor: "pointer" }}>
             <img
               src={OpenNew}
               alt=""
@@ -1023,7 +1061,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <img
                 src={OpenNew}
                 alt=""
-                style = {{cursor: "pointer"}}
+                style={{ cursor: "pointer" }}
                 onClick={() =>
                   handleActionExpand(
                     ["Trial and Replicate", `Trial ${data.trialCode}`],
@@ -1042,7 +1080,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <img
                   src={CreateIcon}
                   alt=""
-                  style = {{cursor: "pointer"}}
+                  style={{ cursor: "pointer" }}
                   onClick={() =>
                     handleActionExpand(
                       ["Trial and Replicate", `Edit Trial and Replicate`],
@@ -1070,7 +1108,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <img
                   src={LinkIcon}
                   alt="edit"
-                  style = {{cursor: "pointer"}}
+                  style={{ cursor: "pointer" }}
                   onClick={() =>
                     handleActionExpand(
                       ["Trial and Replicate", `Attach Progenies`],
@@ -1128,7 +1166,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={QrCodeScanner}
                     alt=""
-                    style = {{cursor: "pointer"}}
+                    style={{ cursor: "pointer" }}
                     onClick={() =>
                       handleActionExpand(["Plot", "Generate QR Code"], {
                         type: "generate QR",
@@ -1143,7 +1181,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={CreateIcon}
                     alt=""
-                    style = {{cursor: "pointer"}}
+                    style={{ cursor: "pointer" }}
                     onClick={() => handlePlotEditStatus(data.plotId)}
                   />
                 </FlexboxGrid.Item>
@@ -1151,7 +1189,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   <img
                     src={LinkIcon}
                     alt=""
-                    style = {{cursor: "pointer"}}
+                    style={{ cursor: "pointer" }}
                     onClick={() =>
                       handleActionExpand(["Plot", "Edit Palms Information"], {
                         type: "edit",
@@ -1196,7 +1234,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               <img
                 src={CreateIcon}
                 alt=""
-                style = {{cursor: "pointer"}}
+                style={{ cursor: "pointer" }}
                 onClick={() => handlePalmEditStatus(data.palmId)}
               />
             )}
@@ -1209,7 +1247,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             <img
               src={CreateIcon}
               alt=""
-              style = {{cursor: "pointer"}}
+              style={{ cursor: "pointer" }}
               onClick={() =>
                 handleActionExpand(["Progeny", "Edit Progeny"], {
                   type: "edit",
@@ -1256,11 +1294,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
- 
   function handleActionExpand(breadcrumb, option) {
     dispatch(setBreadcrumb({ breadcrumb, option }));
   }
-
 
   function handleAddNewTrial(breadcrumb, option) {
     dispatch(setBreadcrumb({ breadcrumb, option }));
@@ -1329,22 +1365,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "estate") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             currentTableDataFields[0] = field;
           }
           if (field.value === "estatefullname") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             currentTableDataFields[1] = field;
           }
           if (field.value === "noofestateblock") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             currentTableDataFields[2] = field;
           }
           if (field.value === "nooftrails") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             currentTableDataFields[3] = field;
           }
         });
@@ -1355,17 +1391,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
             field.width = 120;
-            field.sorting = true
+            field.sorting = true;
             trialfields[0] = field;
           }
           if (field.value === "type") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             trialfields[1] = field;
           }
           if (field.value === "trial") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             trialfields[2] = field;
           }
           if (field.value === "trialremark") {
@@ -1374,45 +1410,45 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "area") {
             field.width = 300;
-            field.sorting = true
+            field.sorting = true;
             trialfields[4] = field;
           }
           if (field.value === "planteddate") {
-            field.sorting = true
+            field.sorting = true;
             field.width = 200;
             trialfields[5] = field;
           }
           if (field.value === "nofprogeny") {
             field.width = 120;
-            field.sorting = true
+            field.sorting = true;
             trialfields[6] = field;
           }
           if (field.value === "estate") {
             field.width = 120;
-            field.sorting = true
+            field.sorting = true;
             trialfields[7] = field;
           }
           if (field.value === "nofreplicate") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             trialfields[8] = field;
           }
           if (field.value === "nofplot") {
             field.width = 120;
-            field.sorting = true
+            field.sorting = true;
             trialfields[9] = field;
           }
           if (field.value === "nofsubblock") {
             field.width = 170;
-            field.sorting = true
+            field.sorting = true;
             trialfields[10] = field;
           }
           if (field.value === "nofplot_subblock") {
             field.width = 170;
-            field.sorting = true
+            field.sorting = true;
             trialfields[11] = field;
           }
-         
+
           if (field.value === "status") {
             field.width = 130;
             field.align = "center";
@@ -1427,7 +1463,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "trialCode") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[0] = field;
           }
           if (field.value === "estate") {
@@ -1436,7 +1472,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "replicate") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[2] = field;
           }
           if (field.value === "estateblock") {
@@ -1445,52 +1481,52 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "design") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[4] = field;
           }
           if (field.value === "density") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[5] = field;
           }
           if (field.value === "plot") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[6] = field;
           }
           if (field.value === "subblock") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[7] = field;
           }
           if (field.value === "progenyCode") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[8] = field;
           }
           if (field.value === "progeny") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[9] = field;
           }
           if (field.value === "ortet") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[10] = field;
           }
           if (field.value === "fp") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[11] = field;
           }
           if (field.value === "mp") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[12] = field;
           }
           if (field.value === "noofPalm") {
             field.width = 140;
-            field.sorting = true
+            field.sorting = true;
             plotfields[13] = field;
           }
         });
@@ -1509,22 +1545,22 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "replicate") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             palmfields[2] = field;
           }
           if (field.value === "estateblock") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             palmfields[3] = field;
           }
           if (field.value === "plot") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             palmfields[4] = field;
           }
           if (field.value === "palmno") {
             field.flexGrow = 1;
-            field.sorting = true
+            field.sorting = true;
             palmfields[5] = field;
           }
         });
@@ -1535,77 +1571,77 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         currentTableDataFields.forEach((field, i) => {
           if (field.value === "progenyCode") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[0] = field;
           }
           if (field.value === "popvar") {
             field.width = 170;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[1] = field;
           }
           if (field.value === "origin") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[2] = field;
           }
           if (field.value === "progenyremark") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[3] = field;
           }
           if (field.value === "progeny") {
             field.width = 150;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[4] = field;
           }
           if (field.value === "generation") {
             field.width = 170;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[5] = field;
           }
           if (field.value === "ortet") {
             field.width = 170;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[6] = field;
           }
           if (field.value === "fp") {
             field.width = 150;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[7] = field;
           }
           if (field.value === "fpFam") {
             field.width = 150;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[8] = field;
           }
           if (field.value === "fpVar") {
             field.width = 150;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[9] = field;
           }
           if (field.value === "mp") {
             field.width = 150;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[10] = field;
           }
           if (field.value === "mpFam") {
             field.width = 150;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[11] = field;
           }
           if (field.value === "mpVar") {
-            field.sorting = true
+            field.sorting = true;
             field.width = 150;
             fieldsTodisplay[12] = field;
           }
           if (field.value === "cross") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[13] = field;
           }
           if (field.value === "crossType") {
             field.width = 200;
-            field.sorting = true
+            field.sorting = true;
             fieldsTodisplay[14] = field;
           }
         });
@@ -1682,11 +1718,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   };
 
   function handleSortColumn(sortColumn, sortType) {
-    setSortType(sortType)
-    setSortColumn(sortColumn)
-    setLoading(true)
+    setSortType(sortType);
+    setSortColumn(sortColumn);
+    setLoading(true);
     setTimeout(() => {
-      setLoading(false)
+      setLoading(false);
     }, 500);
   }
 
@@ -1823,7 +1859,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
                 <ErrorMessage activeNav={errorMessage} errorData={errorData} />
 
-              
                 <ConfirmationModal
                   show={confirmationModal}
                   hide={closeConfirmationModal}
@@ -1871,22 +1906,21 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 align={field.align ? field.align : "left"}
                 fixed={field.fixed ? field.fixed : null}
                 key={i}
-                sortable = {field.sorting}
+                sortable={field.sorting}
               >
                 <HeaderCell className="tableHeader">{field.label}</HeaderCell>
                 {field.value === "status" ? (
                   <Cell align="center" {...props}>
                     {(rowData) => <StatusButton status={rowData.status} />}
                   </Cell>
-                )
-                : (
+                ) : (
                   <EditableCell
                     dataKey={field.value}
                     OriginalData={tableData}
                     handlePalmEditChange={handlePalmEditChange}
                     handlePlotEditChange={handlePlotEditChange}
                     active={active}
-                    progenies = {progenies}
+                    progenies={progenies}
                   />
                 )}
               </Column>
