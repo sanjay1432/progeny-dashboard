@@ -129,7 +129,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       setMultplicationValid(isValid);
     }
     e.persist();
-    setTrial(() => ({ ...trial, [e.target.name]: e.target.value }));
+    const val =  e.target.value % 1 > 0 && ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name) ? parseInt(e.target.value): e.target.value
+    setTrial(() => ({ ...trial, [e.target.name]: val }));
     handleDisableState();
   }
   // handle input change
@@ -140,7 +141,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       value = e;
     } else {
       name = e.target.name;
-      value = e.target.value;
+      value = e.target.value?parseInt(e.target.value): 1;
 
       //UPDATE THE number of Replicare in Trial
       const currentnoOfRep =
@@ -356,7 +357,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       const foundedBlock = estateBlocks.find((eb) => eb.estateblock === block);
       const data = [...tableData];
       data[rowIndex].estateblock = block;
-      data[rowIndex].blockId = foundedBlock.id;
+      data[rowIndex].blockId = foundedBlock.blockId;
       data[rowIndex].soiltype = foundedBlock.soiltype;
       setTableData(data);
     } else {
@@ -593,6 +594,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               name="nofprogeny"
               min="1"
               step="1"
+              value = {trial.nofprogeny}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
@@ -608,26 +610,24 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Subblock and No.of Plot/Subblock</p>
           </Col>
           <Col md={5} lg={5}>
-            <Input
+            <InputNumber
               placeholder="No. of Subblock"
               className="subPlotInput"
               name="nofsubblock"
-              type="number"
               min="1"
               step="1"
-              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+              value = {trial.nofsubblock}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
           <Col md={5} lg={5}>
-            <Input
+            <InputNumber
               placeholder="No. of Plot/Subblock "
               className="plotInput"
               name="nofplot_subblock"
-              type="number"
               min="1"
               step="1"
-              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+              value = {trial.nofplot_subblock}
               onChange={(value, e) => onInput(e)}
             />
             {isMultplicationValid === false ? (
@@ -696,6 +696,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                         className="estatePickerwithNo"
                         data={estates}
                         placeholder="Select Estate"
+                        value = {input.estate}
                         onChange={(value, event) =>
                           handleTrialInEStateInputChange(value, i, "select")
                         }
@@ -703,10 +704,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                       />
                     </Col>
                     <Col md={5} lg={5}>
-                      <Input
+                      <InputNumber
                         placeholder="Select No of Replicate"
                         className="replicateInput"
                         name="estatenofreplicate"
+                        value = {input.estatenofreplicate}
                         onChange={(value, e) =>
                           handleTrialInEStateInputChange(e, i, "input")
                         }
@@ -749,6 +751,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 placeholder="Enter Number of Replicate for this Trial"
                 className="formField"
                 name="nofreplicate"
+                value = {trial.nofreplicate}
                 onChange={(value, e) => onInput(e)}
               />
             </Col>

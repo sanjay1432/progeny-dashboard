@@ -160,13 +160,13 @@ const listItems = [
             type: "text"
           },
           {
-            name: "fp",
-            label: "FP",
+            name: "fpFam",
+            label: "FP Fam",
             type: "text"
           },
           {
-            name: "fpFam",
-            label: "FP Fam",
+            name: "mpFam",
+            label: "MP Fam",
             type: "text"
           },
           {
@@ -175,10 +175,11 @@ const listItems = [
             type: "text"
           },
           {
-            name: "mpFam",
-            label: "MP Fam",
+            name: "fp",
+            label: "FP",
             type: "text"
           },
+          
           {
             name: "orlet",
             label: "Orlet",

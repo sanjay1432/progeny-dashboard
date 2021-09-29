@@ -18,7 +18,8 @@ import {
   Radio,
   RadioGroup,
   SelectPicker,
-  Modal
+  Modal,
+  InputNumber
 } from "rsuite"
 import EstateService from "../../services/estate.service"
 
@@ -74,7 +75,7 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
       {editing && dataKey !== "estateblock" ? (
         <input
           className="rs-input"
-          type = "number"
+          type = {dataKey === "density"?"number":"text"}
           defaultValue={rowData[dataKey]}
           disabled={["estate", "replicate", "design", "soiltype"].includes(
             dataKey
@@ -237,7 +238,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       setMultplicationValid(isValid)
     }
     e.persist()
-    setTrial(() => ({ ...trial, [e.target.name]: e.target.value }))
+    const val =  e.target.value % 1 > 0 && ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name) ? parseInt(e.target.value): e.target.value
+    setTrial(() => ({ ...trial, [e.target.name]: val }));
   }
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
@@ -247,7 +249,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       value = e
     } else {
       name = e.target.name
-      value = e.target.value
+      value = e.target.value?parseInt(e.target.value): 1;
 
       //UPDATE THE number of Replicare in Trial
       const currentnoOfRep =
@@ -545,8 +547,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
     if(key === "estateblock"){
        const foundedBlock = await findEstateBlock(value)
+       console.log({foundedBlock})
        nextData.find(item => item.replicate === replicate)['soiltype'] = foundedBlock.soiltype
-
+       nextData.find(item => item.replicate === replicate)['blockId'] = foundedBlock.id
     }
     nextData.find(item => item.replicate === replicate && item.estate === estate)[key] = value
     setExistingReplicatesInEstate(nextData)
@@ -853,7 +856,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                       />
                     </Col>
                     <Col md={5} lg={5}>
-                      <Input
+                      <InputNumber
                         placeholder="Select No of Replicate"
                         className="formField"
                         value={input.replicate}
