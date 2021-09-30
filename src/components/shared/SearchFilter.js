@@ -53,7 +53,7 @@ const SearchFilter = forwardRef(
 
     let mainPageFilters = currentFilters
  
-    if (dashboardData.result[active]) {
+    if (dashboardData.result[active]|| active === 'palm') {
       mainPageFilters.forEach(filter => {
         const filterName = filter.name
         if (filter.type === "select") {

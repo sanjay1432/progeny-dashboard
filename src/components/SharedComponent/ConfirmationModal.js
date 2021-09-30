@@ -22,7 +22,7 @@ const ConfirmationModal = ({
             <Modal.Body>
               <p>
                 Are you sure to edit
-                <b className="targetName"> {data.plot}</b> for
+                <b className="targetName"> Plot {data.plot}</b> for
                 <b className="targetName"> Replicate {data.replicate}</b> at
                 <b className="targetName"> Trial {data.trialCode}</b> from the
                 list? This might change data that is associate with it as well.
@@ -55,8 +55,8 @@ const ConfirmationModal = ({
             <Modal.Body>
               <p>
                 Are you sure edit
-                <b className="targetName"> {data.palmno}</b> for
-                <b className="targetName"> {data.plot}</b> for
+                <b className="targetName"> Palm {data.palmno}</b> for
+                <b className="targetName"> Plot {data.plot}</b> for
                 <b className="targetName"> Replicate {data.replicate}</b> at
                 <b className="targetName"> Trial {data.trialCode}</b> from the
                 list? This might change data that is associate with it as well.

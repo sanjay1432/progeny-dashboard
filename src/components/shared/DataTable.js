@@ -1045,14 +1045,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     };
     PalmService.updatePalm(payload).then(
       (data) => {
-        setTableData(nextData);
+        // setTableData(nextData);
         setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);
-        // setTimeout(()=>{
-        //   setSuccessMessage(false);
-        // }, 3000)
         setActiveRow(null);
         fetchCurrentTrialPalmData();
       },

@@ -62,7 +62,6 @@ function loginErr(error, dispatch) {
 
 export const logout = () => dispatch => {
   AuthService.logout()
-
   dispatch({
     type: LOGOUT
   })

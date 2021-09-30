@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom"
 import Form from "react-validation/build/form"
 import CheckButton from "react-validation/build/button"
 import { login } from "../redux/actions/auth.action"
+import { clearDashboardData } from "../redux/actions/dashboarddata.action"
 import logo from "../assets/img/Progeny-logo/logoStyle02.png"
 import { Loader, Input, Grid, Row, Col, Button } from "rsuite"
 // reactstrap components
@@ -31,7 +32,7 @@ const Login = props => {
  
   const dispatch = useDispatch()
 
-
+  dispatch(clearDashboardData())
   useEffect(() => {
     localStorage.clear()
   },[])

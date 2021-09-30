@@ -1,4 +1,4 @@
-import { SET_MESSAGE, DASHBOARDDATA_FAIL, DASHBOARDDATA_SUCCESS } from "./types"
+import { SET_MESSAGE, DASHBOARDDATA_FAIL, DASHBOARDDATA_CLEAR, DASHBOARDDATA_SUCCESS } from "./types"
 import store from "../store"
 import DashboardDataService from "../../services/dashboarddata.service"
 import PalmService from "../../services/palm.service"
@@ -53,3 +53,7 @@ function getErr(error, dispatch) {
     payload: message
   })
 }
+
+export const clearDashboardData = () => ({
+  type: DASHBOARDDATA_CLEAR
+})

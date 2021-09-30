@@ -338,7 +338,7 @@ const Overview = props => {
   const dispatch = useDispatch()
   // const { keycloak } = useKeycloak()
   const { isLoggedIn, user } = useSelector(state => state.authReducer)
-
+  dispatch(getDashboardData('trial'))
   useEffect(() => {
     function subscribedData(data) {
       handleSelect(data)
