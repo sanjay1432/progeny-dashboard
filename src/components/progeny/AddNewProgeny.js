@@ -79,7 +79,7 @@ const AddNewProgeny = () => {
     e.persist();
     setFormData(() => ({
       ...formData,
-      mp: formData.mpFam + "," + e.target.value,
+      mp: formData.mpFam + "." + e.target.value,
       cross: formData.fp + " x " + formData.mp,
     }));
   }

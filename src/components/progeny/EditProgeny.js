@@ -67,7 +67,7 @@ const EditProgeny = ({ option, ...props }) => {
     e.persist()
     setFormData(() => ({
       ...formData,
-      [e.target.name]: formData.mpFam + "," + e.target.value
+      [e.target.name]: formData.mpFam + "." + e.target.value
     }))
   }
 
@@ -328,7 +328,7 @@ const EditProgeny = ({ option, ...props }) => {
               <Input
                 className="mpInput"
                 name="mp"
-                value={formData.mp.split(",")[1]}
+                value={formData.mp.split(".")[1]}
                 placeholder="Palm Number"
                 onChange={(value, e) => handleMpChange(e)}
               />

@@ -5,6 +5,7 @@ const InitializeState = {
   authReducer: { isLoggedIn: false, user: null },
   dashboardDataReducer: { result: {} },
   userReducer: { result: {} },
+  filterReducer: {filter: ""},
   dashboardReducer: {
     displayAsDate: null,
     latestDate: null,

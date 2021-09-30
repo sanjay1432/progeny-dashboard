@@ -587,11 +587,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         let x = a[sortColumn];
         let y = b[sortColumn];
         if (typeof x === "string") {
-          // x = x.charCodeAt();
           x = calculateStringCharAtCode(x);
         }
         if (typeof y === "string") {
-          // y = y.charCodeAt();
           y = calculateStringCharAtCode(y);
         }
         if (sortType === "asc") {
@@ -605,9 +603,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;
-      if (filterData.reset) {
-        delete v.status;
-      }
+      // if (filterData.reset) {
+      //   delete v.status;
+      // }
       const start = displaylength * (activePage - 1);
       const end = start + displaylength;
       return i >= start && i < end;
@@ -901,9 +899,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   };
 
   function handlePlotEditStatus(plotId) {
-    dispatch(clearFilter());
     setSuccessMessage(false);
     const nextData = Object.assign([], tableData);
+    nextData.forEach(item => {
+      if( item.plotId !== plotId){
+         delete item.status;
+      }
+    });
     const activeItem = nextData.find((item) => item.plotId === plotId);
     setActiveRow({ ...activeItem });
     activeItem.status = activeItem.status ? null : true;
@@ -916,7 +918,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     if (activeRow) {
       nextData[activeItemIdx] = activeRow;
     }
-    nextData[activeItemIdx]["status"] = false;
+    delete nextData[activeItemIdx].status
     setTableData(nextData);
   }
 
@@ -969,9 +971,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function handlePalmEditStatus(palmId) {
     setSuccessMessage(false);
     const nextData = Object.assign([], tableData);
+    nextData.forEach(item => {
+      if( item.palmId !== palmId){
+         delete item.status;
+      }
+    });
     const activeItem = nextData.find((item) => item.palmId === palmId);
     setActiveRow({ ...activeItem });
-    activeItem.status = activeItem.status ? false : true;
+    activeItem.status = activeItem.status ? null : true;
     setTableData(nextData);
   }
 
@@ -981,7 +988,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     if (activeRow) {
       nextData[activeItemIdx] = activeRow;
     }
-    nextData[activeItemIdx]["status"] = false;
+    delete nextData[activeItemIdx].status
     setTableData(nextData);
     setActiveRow(null);
   }

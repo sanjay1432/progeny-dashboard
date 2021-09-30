@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
 import Filter from "../shared/Filter"
-import { setFilter, clearFilter, setResetFilter} from "../../redux/actions/filter.action"
+import { setFilter, clearFilter} from "../../redux/actions/filter.action"
 import { getPalmData } from "../../redux/actions/dashboarddata.action"
 import GeneralHelper from "../../helper/general.helper";
 import { publish } from "../../services/pubsub.service"
@@ -201,8 +201,8 @@ const SearchFilter = forwardRef(
 
     useImperativeHandle(ref, () => ({
       onResetRef() {
-        // onReset()
-        dispatch(clearFilter())
+        onReset()
+        // dispatch(clearFilter())
       }
     }))
 
@@ -212,7 +212,7 @@ const SearchFilter = forwardRef(
       )
       setFilters(null)
       selectedFilterArray = []
-      dispatch(setResetFilter())
+      dispatch(clearFilter())
       
       /*********************************/
       /*RESET THE filters disbale value*/
@@ -223,7 +223,6 @@ const SearchFilter = forwardRef(
       })
       /*RESET THE filters disbale value*/
       /*********************************/
-      publish('reset')
     }
 
     function onApply() {
