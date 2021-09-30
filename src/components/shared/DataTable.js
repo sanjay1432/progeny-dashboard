@@ -208,7 +208,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [activeRow, setActiveRow] = useState(null);
   const [progenies, setProgenies] = useState([]);
   const [progenyData, setProgenyData] = useState([]);
-
+  const [palmFilter, setPalmFilter] = useState(false);
   const [sortColumn, setSortColumn] = useState("");
   const [sortType, setSortType] = useState("asc");
   const [loading, setLoading] = useState(false);
@@ -479,12 +479,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
   ];
   function handleChangePage(dataKey) {
+    console.log({pagination})
     setPagination(() => ({ ...pagination, activePage: dataKey }));
   }
   function handleChangeLength(dataKey) {
     setPagination(() => ({
       ...pagination, 
-      displaylength: dataKey,
+      displaylength: parseInt(dataKey),
     }));
   }
 
@@ -516,6 +517,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             value: rep,
           });
         });
+
+        palmReplicates =  palmReplicates.sort((a,b)=> a.value - b.value)
         palmReplicates.unshift({
           label: `All Replicates`,
           value: `All`,
@@ -527,6 +530,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             value: plot,
           });
         });
+        palmPlots =  palmPlots.sort((a,b)=> a.value - b.value)
         palmPlots.unshift({
           label: `All Plots`,
           value: `All`,
@@ -581,6 +585,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       currentTableData = filterTable(filterData.filter, currentTableData);
       return currentTableData;
     }
+      if(palmFilter) {
+        currentTableData = filterTable(filterData.filter, currentTableData);
+        // return currentTableData;
+      }
 
     if (sortColumn && sortType) {
       currentTableData.sort((a, b) => {
@@ -603,9 +611,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;
-      // if (filterData.reset) {
-      //   delete v.status;
-      // }
       const start = displaylength * (activePage - 1);
       const end = start + displaylength;
       return i >= start && i < end;
@@ -671,17 +676,32 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function filterTable(filters, data) {
     var filterKeys = Object.keys(filters);
     return data.filter(function (eachObj) {
-      return filterKeys.some(function (eachKey) {
-        if (active === "trial" && eachKey === "estate") {
-          const estates = eachObj[eachKey].map((est) => est.name);
-          return estates.includes(filters[eachKey]);
-        }
-        if (active === "trial" && eachKey === "planteddate") {
-          const date = eachObj[eachKey];
-          return GeneralHelper.modifyDate({ date }) === filters[eachKey];
-        }
-        return eachObj[eachKey] === filters[eachKey];
-      });
+      if(active === "palm"){
+        return filterKeys.every(function (eachKey) {
+          if (active === "trial" && eachKey === "estate") {
+            const estates = eachObj[eachKey].map((est) => est.name);
+            return estates.includes(filters[eachKey]);
+          }
+          if (active === "trial" && eachKey === "planteddate") {
+            const date = eachObj[eachKey];
+            return GeneralHelper.modifyDate({ date }) === filters[eachKey];
+          }
+          return eachObj[eachKey] === filters[eachKey];
+        });
+      }else {
+        return filterKeys.some(function (eachKey) {
+          if (active === "trial" && eachKey === "estate") {
+            const estates = eachObj[eachKey].map((est) => est.name);
+            return estates.includes(filters[eachKey]);
+          }
+          if (active === "trial" && eachKey === "planteddate") {
+            const date = eachObj[eachKey];
+            return GeneralHelper.modifyDate({ date }) === filters[eachKey];
+          }
+          return eachObj[eachKey] === filters[eachKey];
+        });
+      }
+     
     });
   }
   async function OpenModal() {
@@ -1785,6 +1805,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                                 dispatch(setFilter(filterData.filter));
                               });
                             } else {
+                              setPalmFilter(true)
                               dispatch(setFilter(filterData.filter));
                             }
                             replicateSelector = value;
@@ -1821,6 +1842,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                                 dispatch(setFilter(filterData.filter));
                               });
                             } else {
+                              setPalmFilter(true)
                               dispatch(setFilter(filterData.filter));
                             }
 
