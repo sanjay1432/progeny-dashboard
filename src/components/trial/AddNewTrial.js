@@ -338,26 +338,38 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     return mappedEstateBlocks;
   }
 
-  function handleEstateBlockChange(block, replicate, rowIndex) {
+  function handleEstateBlockChange(block, estate, rowIndex) {
     if (block) {
-      const estateBlocksItems = [];
-      estatesWithBlocks.forEach((estate) => {
-        estateBlocksItems.push(...estate.estateblocks);
-      });
-      const estateBlocks = [
-        ...new Set(
-          estateBlocksItems
-            .map((item) => item.estateblock)
-            .map((block) =>
-              estateBlocksItems.find((eb) => eb.estateblock === block)
-            )
-        ),
-      ];
 
-      const foundedBlock = estateBlocks.find((eb) => eb.estateblock === block);
+      let estateBlocks = ebList.find((row) => row.estate === estate);
+
+      const assignedEstateBlocks = []
+      if (estateBlocks) {
+        estateBlocks = estateBlocks.estateblocks;
+        estateBlocks.forEach(eb => {
+        if(eb.assigned){
+          assignedEstateBlocks.push(eb)
+        }
+      });
+      }
+      // const estateBlocksItems = [];
+      // estatesWithBlocks.forEach((estate) => {
+      //   estateBlocksItems.push(...estate.estateblocks);
+      // });
+      // const estateBlocks = [
+      //   ...new Set(
+      //     estateBlocksItems
+      //       .map((item) => item.estateblock)
+      //       .map((block) =>
+      //         estateBlocksItems.find((eb) => eb.estateblock === block)
+      //       )
+      //   ),
+      // ];
+
+      const foundedBlock = assignedEstateBlocks.find((eb) => eb.estateblock === block);
       const data = [...tableData];
       data[rowIndex].estateblock = block;
-      data[rowIndex].blockId = foundedBlock.blockId;
+      data[rowIndex].blockId = foundedBlock.id;
       data[rowIndex].soiltype = foundedBlock.soiltype;
       setTableData(data);
     } else {
@@ -956,7 +968,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                   placeholder="-"
                   value={rowData.estateblock}
                   onChange={(value, event) =>
-                    handleEstateBlockChange(value, rowData.replicate, i)
+                    handleEstateBlockChange(value, rowData.estate, i)
                   }
                 />
               );
