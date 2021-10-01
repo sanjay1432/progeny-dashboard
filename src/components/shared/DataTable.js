@@ -1060,6 +1060,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     );
   }
 
+  function getTrailEditStatus(trialId){
+    const trails = dashboardData.result['trial']
+    const {isEditable, status}  = trails.find((trial)=> trial.trialId === trialId)
+     return {isEditable, status}
+  }
   function ActionButtons({ data }) {
     switch (active) {
       case "estate":
@@ -1201,15 +1206,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     }
                   />
                 </FlexboxGrid.Item>
+
+               
                 <FlexboxGrid.Item>
+                {getTrailEditStatus(data.trialId).isEditable === "true" && getTrailEditStatus(data.trialId).status !== "Closed" ?(
                   <img
-                    src={CreateIcon}
-                    alt=""
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handlePlotEditStatus(data.plotId)}
-                  />
+                  src={CreateIcon}
+                  alt=""
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handlePlotEditStatus(data.plotId)}
+                />
+                  ):(
+                    <Whisper
+                    placement="left"
+                    trigger="hover"
+                    speaker={data.status === "Closed" ? closedTrial : editProgeny}
+                  >
+                    <img src={CreateIcon} style={{ opacity: 0.2 }} alt="create" />
+                  </Whisper>
+                  )}
+                  
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
+                {getTrailEditStatus(data.trialId).isEditable === "true" && getTrailEditStatus(data.trialId).status !== "Closed" ?(
                   <img
                     src={LinkIcon}
                     alt=""
@@ -1225,6 +1244,17 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       })
                     }
                   />
+                ):(
+                  <Whisper
+                  placement="left"
+                  trigger="hover"
+                  speaker={
+                    data.status === "Closed" ? closedTrial : attachProgeny
+                  }
+                >
+                  <img src={LinkIcon} style={{ opacity: 0.2 }} alt="link" />
+                </Whisper>
+                )}
                 </FlexboxGrid.Item>
               </FlexboxGrid>
             )}
