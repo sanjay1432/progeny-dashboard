@@ -548,8 +548,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     if(key === "estateblock"){
        const foundedBlock = await findEstateBlock(value)
        console.log({foundedBlock})
+       const trialReplicate  = nextData.find(item => item.replicate === replicate)
+       trialReplicate.estateblocks[0].id = foundedBlock.id
+       trialReplicate.estateblocks[0].name = foundedBlock.estateblock
        nextData.find(item => item.replicate === replicate)['soiltype'] = foundedBlock.soiltype
-       nextData.find(item => item.replicate === replicate)['blockId'] = foundedBlock.id
+      //  nextData.find(item => item.replicate === replicate)['blockId'] = foundedBlock.id
     }
     nextData.find(item => item.replicate === replicate && item.estate === estate)[key] = value
     setExistingReplicatesInEstate(nextData)
