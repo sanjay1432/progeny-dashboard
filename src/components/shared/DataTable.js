@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumb } from "../../redux/actions/app.action";
 import { setFilter, clearFilter } from "../../redux/actions/filter.action";
+import { clearReset} from "../../redux/actions/reset.action"
 import {
   getDashboardData,
   getPalmData,
@@ -178,12 +179,11 @@ let replicateSelector = "All";
 let plotSelector = "All";
 const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const dispatch = useDispatch();
-
-  const [toggle, setToggle] = useState(true);
   useEffect(() => {
     currentTableDataFields = [];
     // SET TABLE DATA
     setCurrentTableData();
+
   });
 
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
@@ -498,7 +498,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const filterData = useSelector((state) => state.filterReducer);
-
+  const resetData = useSelector((state) => state.resetReducer);
   function setTrialEstateReplicates() {
     if (active === "palm") {
       let currentPalmTableData = [...tableData];
@@ -577,6 +577,16 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function getData(displaylength) {
     let currentTableData = [...tableData];
+
+    if(resetData){
+      currentTableData.forEach((row, i) => {
+        delete row.status;
+        if(i===currentTableData.length-1){
+          
+           dispatch(clearReset())
+        }
+      });
+    }
     setTrialEstateReplicates();
     if (
       Object.keys(filterData).length > 0 &&
@@ -608,7 +618,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         }
       });
     }
-
+    console.log({resetData})
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;
@@ -1480,7 +1490,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           }
           if (field.value === "estate") {
             field.width = 120;
-            field.sorting = true;
+            if(active!=='trial'){
+              field.sorting = true;
+            }
+           
             trialfields[7] = field;
           }
           if (field.value === "nofreplicate") {

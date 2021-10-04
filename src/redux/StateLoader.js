@@ -13,7 +13,8 @@ const InitializeState = {
     displayProcessLine: {},
     displayPeriods: []
   },
-  trialReducer: {}
+  trialReducer: {},
+  resetReducer: false
 }
 
 const KEY = "progeny-app-state"

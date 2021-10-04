@@ -9,6 +9,7 @@ import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
 import Filter from "../shared/Filter"
 import { setFilter, clearFilter} from "../../redux/actions/filter.action"
+import { setReset} from "../../redux/actions/reset.action"
 import { getPalmData } from "../../redux/actions/dashboarddata.action"
 import GeneralHelper from "../../helper/general.helper";
 let initialFilters = {}
@@ -222,6 +223,8 @@ const SearchFilter = forwardRef(
       })
       /*RESET THE filters disbale value*/
       /*********************************/
+      dispatch(setReset())
+
     }
 
     function onApply() {
