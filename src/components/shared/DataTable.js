@@ -578,7 +578,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function getData(displaylength) {
     let currentTableData = [...tableData];
 
-    if(resetData){
+    if(resetData && active !== 'trial'){
       currentTableData.forEach((row, i) => {
         delete row.status;
         if(i===currentTableData.length-1){
@@ -594,7 +594,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       active != "palm"
     ) {
       currentTableData = filterTable(filterData.filter, currentTableData);
-      return currentTableData;
+      // return currentTableData;
     }
       if(palmFilter) {
         currentTableData = filterTable(filterData.filter, currentTableData);

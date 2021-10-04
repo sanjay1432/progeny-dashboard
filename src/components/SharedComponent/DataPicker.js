@@ -28,6 +28,8 @@ const DataPicker = ({
   const pureData = SelectionData[Picker]
   let DataInPicker = []
   if (pureData) {
+    var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
+    pureData.sort(collator.compare)
     pureData.forEach(data => {
       if(data){
         DataInPicker.push({
@@ -37,6 +39,8 @@ const DataPicker = ({
       }
     
     })
+
+    
     if (selectAllData !== undefined) {
       DataInPicker.unshift({
         label: selectAllData,

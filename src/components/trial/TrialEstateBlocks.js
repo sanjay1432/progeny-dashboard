@@ -87,14 +87,14 @@ const TrialEstateBlocks = ({
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
         const blocks = reps.estateblocks
-        if (blocks.length < 2) {
+        if (blocks && blocks.length < 2) {
           reps.estateblock = blocks[0].name
           reps.design = trial.design
           reps.density = blocks[0].density
           reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
         }
-        if (blocks.length > 1) {
+        if (blocks && blocks.length > 1) {
           const uni = reps
           delete uni.estateblock
           for (let i = 0; i < blocks.length; i++) {
@@ -397,7 +397,7 @@ const TrialEstateBlocks = ({
           </Row>
           <Row className="show-grid" id="dashboardTableSetting">
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({tableData ? tableData.length : null})</b>
+              <b>Total records ({filteredTableData ? filteredTableData.length : null})</b>
             </Col>
 
             <FlexboxGrid justify="end">
