@@ -29,10 +29,13 @@ const DataPicker = ({
   let DataInPicker = []
   if (pureData) {
     pureData.forEach(data => {
-      DataInPicker.push({
-        label: data,
-        value: data
-      })
+      if(data){
+        DataInPicker.push({
+          label: data,
+          value: data
+        })
+      }
+    
     })
     if (selectAllData !== undefined) {
       DataInPicker.unshift({
@@ -46,7 +49,7 @@ const DataPicker = ({
       value: "no data"
     })
   }
-
+  
   function handleChange(value) {
     props.onChange(value)
   }

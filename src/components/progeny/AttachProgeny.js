@@ -84,7 +84,7 @@ const AttachProgeny = ({
       setProgeny()
       setPlots()  
     }
-  }, [trialPlots])
+  }, [])
 
   function onReset() {
     setFilters(() => ({ ...filters, trialCode: null, estate: null }))

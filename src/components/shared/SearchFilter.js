@@ -11,7 +11,6 @@ import Filter from "../shared/Filter"
 import { setFilter, clearFilter} from "../../redux/actions/filter.action"
 import { getPalmData } from "../../redux/actions/dashboarddata.action"
 import GeneralHelper from "../../helper/general.helper";
-import { publish } from "../../services/pubsub.service"
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}

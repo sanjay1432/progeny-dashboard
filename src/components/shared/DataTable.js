@@ -8,9 +8,8 @@ import {
 } from "../../redux/actions/dashboarddata.action";
 import GeneralHelper from "../../helper/general.helper";
 import DeleteModal from "../../components/modal/DeleteModal";
-import { progenySubject } from "../../services/pubsub.service";
+import { progenySubject, resetSubject } from "../../services/pubsub.service";
 import ProgenyService from "../../services/progeny.service";
-import DataPicker from "../SharedComponent/DataPicker";
 import SuccessMessage from "../SharedComponent/SuccessMessage";
 import SearchMessage from "../../assets/img/SearchMessage.svg";
 import {
@@ -212,6 +211,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [sortColumn, setSortColumn] = useState("");
   const [sortType, setSortType] = useState("asc");
   const [loading, setLoading] = useState(false);
+
   useEffect(async () => {
     function subscribedData(data) {
       itemSaved(data);
@@ -220,6 +220,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     progenySubject.subscribe((data) => {
       subscribedData(data);
     });
+    
     if (active === "plot") {
       const progenies = await DashboardDataService.getDashboardData("progeny");
       if (progenies) {
@@ -1937,7 +1938,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             sortType={sortType}
             loading={loading}
             onSortColumn={handleSortColumn}
-            autoHeight
+            // autoHeight
+            height = {500}
           >
             {active === "progeny" ? (
               <Column width={70} align="center" fixed>

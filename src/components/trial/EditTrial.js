@@ -120,6 +120,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     []
   )
   const trialData = useSelector(state => state.dashboardDataReducer.result.trial)
+
   useEffect( () => {
     EstateService.getDesigns().then(response => {
       console.log({response})
@@ -240,6 +241,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     e.persist()
     const val =  e.target.value % 1 > 0 && ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name) ? parseInt(e.target.value): e.target.value
     setTrial(() => ({ ...trial, [e.target.name]: val }));
+    handleDisableState()
   }
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
@@ -261,6 +263,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     list[index][name] = value
     setReplicatesInEstate(list)
     setRegenerateEnabled(true)
+    handleDisableState()
   }
   function verifyMultiplicationOfSubblockandPlot(name, value) {
     const { nofprogeny, nofsubblock, nofplot_subblock } = trial
@@ -624,6 +627,26 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
     return estateString
   }
+
+   function handleDisableState() {
+    const isEmpty = checkProperties(trial);
+    let isEmptyreplicatesInEstate =  false
+    replicatesInEstate.forEach(rpEs => {
+      isEmptyreplicatesInEstate = checkProperties(rpEs);
+    });
+    // if (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate) {
+    //   return true
+    // } else {
+    //   return false
+    // }
+    return (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate)?true:false
+  }
+  function checkProperties(obj) {
+    for (var key in obj) {
+      if (obj[key] === null || obj[key] === "") return true;
+    }
+    return false;
+  }
   return (
     <div id="TrialAction">
       {/* STEP 1 Edit Trial START*/}
@@ -933,7 +956,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           appearance="primary"
           className="generateTableButton"
           onClick={() => setShowRegenerateWarning(true)}
-          disabled={disabled === "no"}
+          disabled={handleDisableState()}
         >
           <Icon icon="table" /> Regenerate Table
         </Button>

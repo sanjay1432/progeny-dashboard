@@ -18,7 +18,7 @@ import {
   RadioGroup,
   SelectPicker,
   Modal,
-  InputNumber ,
+  InputNumber,
   Tag,
 } from "rsuite";
 import EstateService from "../../services/estate.service";
@@ -33,7 +33,7 @@ const { Column, HeaderCell, Cell } = Table;
 const initializeTrailState = {
   trialCode: "",
   trial: "",
-  type:"",
+  type: "",
   trialremark: "",
   area: "",
   planteddate: "",
@@ -77,10 +77,16 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     fetchTypes();
     fetchDesigns();
     handleDisableState();
-  }, [isMultplicationValid, trial, radioInputForSameDensity, tableData]);
+  }, [
+    isMultplicationValid,
+    trial,
+    radioInputForSameDensity,
+    tableData,
+    inputListForTrialInEState,
+  ]);
   async function fetchEstates() {
-    const { data } = await EstateService.getUpdatedEstateBlocks()
-    setEbList(data)
+    const { data } = await EstateService.getUpdatedEstateBlocks();
+    setEbList(data);
     const mappedEstates = dashboardData.result["estate"];
     setEstatesWithBlocks(mappedEstates);
     const mappedEstate = [];
@@ -129,9 +135,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       setMultplicationValid(isValid);
     }
     e.persist();
-    const val =  e.target.value % 1 > 0 && ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name) ? parseInt(e.target.value): e.target.value
+    const val =
+      e.target.value % 1 > 0 &&
+      ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name)
+        ? parseInt(e.target.value)
+        : e.target.value;
     setTrial(() => ({ ...trial, [e.target.name]: val }));
-    handleDisableState();
+    // handleDisableState();
   }
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
@@ -141,7 +151,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       value = e;
     } else {
       name = e.target.name;
-      value = e.target.value?parseInt(e.target.value): 1;
+      value = e.target.value ? parseInt(e.target.value) : 1;
 
       //UPDATE THE number of Replicare in Trial
       const currentnoOfRep =
@@ -163,6 +173,14 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     return parseInt(progenyNo) === multi;
   }
   function onRadioInputTrialInEState(e) {
+    if (e === "no") {
+      console.log(e);
+      setTrial(() => ({ ...trial, estate: "" }));
+    }
+    if (e === "yes") {
+      console.log(e);
+      setInputListForTrialInEState([{ estate: "", estatenofreplicate: "" }]);
+    }
     setRadioInputForTrialInEState(e);
   }
   function onRadioInputSameDensity(e) {
@@ -176,16 +194,18 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       ...inputListForTrialInEState,
       { estate: "", estatenofreplicate: "" },
     ]);
+    // handleDisableState();
   }
   function onRemoveTrialInEstate(index) {
     const list = [...inputListForTrialInEState];
     list.splice(index, 1);
     setInputListForTrialInEState(list);
+    // handleDisableState();
   }
   function onSelectDesign(designId) {
     const designLabel = designs.find((design) => design.value === designId);
     setTrial(() => ({ ...trial, design: designLabel.label, designId }));
-    handleDisableState();
+    // handleDisableState();
   }
 
   function onSelectType(type) {
@@ -194,7 +214,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function onSelectEstate(estate) {
     setTrial(() => ({ ...trial, estate }));
-    handleDisableState();
+    // handleDisableState();
   }
   async function handleDisableState() {
     console.log(trial);
@@ -202,12 +222,31 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     if (radioInputForSameDensity === "no") {
       delete trial["density"];
     }
+
+    console.log({ trial });
     const isEmpty = checkProperties(trial);
-    console.log({ isEmpty });
-    if (isEmpty || !isMultplicationValid) {
-      setDisabledGenerateTable(true);
+
+    if (radioInputForTrialInEState === "no") {
+      trial.nofreplicate = "";
+      const trialToCheck = { ...trial };
+      delete trialToCheck["nofreplicate"];
+      delete trialToCheck["estate"];
+      const isEmptyTrial = checkProperties(trialToCheck);
+      let isEmptyreplicatesInEstate = false;
+      inputListForTrialInEState.forEach((rpEs) => {
+        isEmptyreplicatesInEstate = checkProperties(rpEs);
+      });
+      if (isEmptyTrial || !isMultplicationValid || isEmptyreplicatesInEstate) {
+        setDisabledGenerateTable(true);
+      } else {
+        setDisabledGenerateTable(false);
+      }
     } else {
-      setDisabledGenerateTable(false);
+      if (isEmpty || !isMultplicationValid) {
+        setDisabledGenerateTable(true);
+      } else {
+        setDisabledGenerateTable(false);
+      }
     }
   }
   function onGenerateTable() {
@@ -316,16 +355,16 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setDisbaledRD(!checked);
   };
 
- function getEstateBlocks(estate) {
+  function getEstateBlocks(estate) {
     let estateBlocks = ebList.find((row) => row.estate === estate);
-    const assignedEstateBlocks = []
+    const assignedEstateBlocks = [];
     if (estateBlocks) {
       estateBlocks = estateBlocks.estateblocks;
-      estateBlocks.forEach(eb => {
-       if(eb.assigned){
-        assignedEstateBlocks.push(eb)
-       }
-     });
+      estateBlocks.forEach((eb) => {
+        if (eb.assigned) {
+          assignedEstateBlocks.push(eb);
+        }
+      });
       // setEstateblocks(estateBlocks)
     }
     const mappedEstateBlocks = [];
@@ -340,17 +379,16 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function handleEstateBlockChange(block, estate, rowIndex) {
     if (block) {
-
       let estateBlocks = ebList.find((row) => row.estate === estate);
 
-      const assignedEstateBlocks = []
+      const assignedEstateBlocks = [];
       if (estateBlocks) {
         estateBlocks = estateBlocks.estateblocks;
-        estateBlocks.forEach(eb => {
-        if(eb.assigned){
-          assignedEstateBlocks.push(eb)
-        }
-      });
+        estateBlocks.forEach((eb) => {
+          if (eb.assigned) {
+            assignedEstateBlocks.push(eb);
+          }
+        });
       }
       // const estateBlocksItems = [];
       // estatesWithBlocks.forEach((estate) => {
@@ -366,7 +404,9 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       //   ),
       // ];
 
-      const foundedBlock = assignedEstateBlocks.find((eb) => eb.estateblock === block);
+      const foundedBlock = assignedEstateBlocks.find(
+        (eb) => eb.estateblock === block
+      );
       const data = [...tableData];
       data[rowIndex].estateblock = block;
       data[rowIndex].blockId = foundedBlock.id;
@@ -559,7 +599,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               placeholder="Key in Area"
               className="formField"
               name="area"
-              type = "number"
+              type="number"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
@@ -600,13 +640,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Progeny</p>
           </Col>
           <Col md={10} lg={10}>
-            <InputNumber 
+            <InputNumber
               placeholder="Key in No.of Progeny"
               className="formField"
               name="nofprogeny"
               min="1"
               step="1"
-              value = {trial.nofprogeny}
+              value={trial.nofprogeny}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
@@ -628,7 +668,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               name="nofsubblock"
               min="1"
               step="1"
-              value = {trial.nofsubblock}
+              value={trial.nofsubblock}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
@@ -639,7 +679,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               name="nofplot_subblock"
               min="1"
               step="1"
-              value = {trial.nofplot_subblock}
+              value={trial.nofplot_subblock}
               onChange={(value, e) => onInput(e)}
             />
             {isMultplicationValid === false ? (
@@ -708,7 +748,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                         className="estatePickerwithNo"
                         data={estates}
                         placeholder="Select Estate"
-                        value = {input.estate}
+                        value={input.estate}
                         onChange={(value, event) =>
                           handleTrialInEStateInputChange(value, i, "select")
                         }
@@ -720,7 +760,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                         placeholder="Select No of Replicate"
                         className="replicateInput"
                         name="estatenofreplicate"
-                        value = {input.estatenofreplicate}
+                        value={input.estatenofreplicate}
                         onChange={(value, e) =>
                           handleTrialInEStateInputChange(e, i, "input")
                         }
@@ -763,7 +803,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 placeholder="Enter Number of Replicate for this Trial"
                 className="formField"
                 name="nofreplicate"
-                value = {trial.nofreplicate}
+                value={trial.nofreplicate}
                 onChange={(value, e) => onInput(e)}
               />
             </Col>
@@ -802,15 +842,14 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               <Input
                 placeholder="Enter Density"
                 name="density"
-                type = "number"
+                type="number"
                 className="densityInput"
                 onChange={(value, e) => onInput(e)}
               />
-               {/* {trial.density === "" ? (
+              {/* {trial.density === "" ? (
               <Tag color="red">Trial density is Required!</Tag>
             ) : null} */}
             </Col>
-            
           ) : (
             ""
           )}
