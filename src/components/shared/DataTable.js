@@ -1381,6 +1381,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           dispatch(getDashboardData("progeny"));
           setDeleteModal(false);
           //Display success message
+          setCheckStatus([])
           setSuccessMessage(true);
           setAction("PROGENY_DELETE");
         },

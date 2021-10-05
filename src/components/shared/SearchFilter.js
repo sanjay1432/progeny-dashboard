@@ -68,6 +68,8 @@ const SearchFilter = forwardRef(
                 const est = estate.map(estateObj => estateObj.name?estateObj.name:null)
                 filterValues.push(...est)
               })
+              filterValues.filter(item => item);
+              filterValues.sort()
               filterData[filterName] = [
                 ...new Set(filterValues)]
             }
@@ -77,9 +79,11 @@ const SearchFilter = forwardRef(
               const d = GeneralHelper.modifyDate({date})  
               filterValues.push(d)
              });
+             filterValues.filter(item => item);
              filterData["planteddate"] = [
               ...new Set(filterValues)]
           }else {       
+            filterdata.filter(item => item);
             filterData[filterName] = filterdata       
             if(active === "palm") {
               filterData['estate'] = estates 

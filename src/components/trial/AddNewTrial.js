@@ -137,7 +137,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     e.persist();
     const val =
       e.target.value % 1 > 0 &&
-      ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name)
+      ["nofprogeny", "nofsubblock", "nofplot_subblock","nofreplicate"].includes(e.target.name)
         ? parseInt(e.target.value)
         : e.target.value;
     setTrial(() => ({ ...trial, [e.target.name]: val }));
