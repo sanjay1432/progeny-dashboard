@@ -72,6 +72,7 @@ const MapEstates = ({
     const arrayUniqueByKey = [
       ...new Map(data.map((item) => [item["estateId"], item])).values(),
     ];
+    arrayUniqueByKey.sort((a,b)=> a.estate.charCodeAt() -b.estate.charCodeAt())
     setEstates(arrayUniqueByKey);
     setUpdateDate(updatedDate);
     const estates = [...new Set(data.map((row) => row.estate))];
@@ -253,6 +254,10 @@ const MapEstates = ({
       }
     );
   }
+
+  function getSortedBlocks(blocks) {
+      return  blocks.sort((a,b)=> a.estateblock.charCodeAt() -b.estateblock.charCodeAt())
+  }
   return (
     <Modal id="addEstate" size="sm" show={show} onHide={hide}>
       <Modal.Header>
@@ -342,7 +347,7 @@ const MapEstates = ({
               }}>
                 <Table
                   showHeader={false}
-                  data={rowData.estateblocks}
+                  data={getSortedBlocks(rowData.estateblocks)}
                   id="modalEstateTable"
                   autoHeight
                 >
