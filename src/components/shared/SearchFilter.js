@@ -12,6 +12,7 @@ import { setFilter, clearFilter} from "../../redux/actions/filter.action"
 import { setReset} from "../../redux/actions/reset.action"
 import { getPalmData } from "../../redux/actions/dashboarddata.action"
 import GeneralHelper from "../../helper/general.helper";
+import { publish } from "../../services/pubsub.service"
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}
@@ -60,7 +61,6 @@ const SearchFilter = forwardRef(
           let filterdata = [
             ...new Set(dashboardData.result[active ==='palm'?'trial': active].map(res => res[filterName]))
           ]
-          filterdata = filterdata.sort((a,b)=>a-b)
           if (active === "trial" && filter.name === "estate") {
             const filterValues = []
             if (filterdata) {
@@ -68,34 +68,29 @@ const SearchFilter = forwardRef(
                 const est = estate.map(estateObj => estateObj.name?estateObj.name:null)
                 filterValues.push(...est)
               })
-              filterValues.filter(function( element ) {
-                return element !== undefined;
-              });
-              filterValues.sort()
+              const nonNullValues = filterValues.filter((item)=>item);
+              nonNullValues.sort()
               filterData[filterName] = [
-                ...new Set(filterValues)]
+                ...new Set(nonNullValues)]
             }
           } else if (active === "trial" && filter.name === "planteddate") {
              const filterValues = []
+             filterdata.sort((a,b)=> new Date(a)- new Date(b))
              filterdata.forEach(date => {
               const d = GeneralHelper.modifyDate({date})  
               filterValues.push(d)
              });
-             filterValues.filter(function( element ) {
-              return element !== undefined;
-             });
+             const nonNullValues = filterValues.filter((item)=>item);
              filterData["planteddate"] = [
-              ...new Set(filterValues)]
+              ...new Set(nonNullValues)]
           }else {       
-            filterdata.filter(function( element ) {
-              return element !== undefined;
-            });
-            filterData[filterName] = filterdata       
+            const nonNullValues = filterdata.filter((item)=>item);
+            filterData[filterName] = nonNullValues 
+            nonNullValues.sort()      
             if(active === "palm") {
-              estates.filter(function( element ) {
-                return element !== undefined;
-              });
-              filterData['estate'] = estates 
+              const nonNullValues = estates.filter((item)=>item);
+              nonNullValues.sort()  
+              filterData['estate'] = nonNullValues 
             }   
           }
         }

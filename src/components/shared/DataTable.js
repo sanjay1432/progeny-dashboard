@@ -185,6 +185,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     setCurrentTableData();
 
   });
+  const resetData = useSelector((state) => state.resetReducer);
 
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
   const editProgeny = <Tooltip>Data exists for Palms</Tooltip>;
@@ -498,7 +499,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   const filterData = useSelector((state) => state.filterReducer);
-  const resetData = useSelector((state) => state.resetReducer);
+
   function setTrialEstateReplicates() {
     if (active === "palm") {
       let currentPalmTableData = [...tableData];
@@ -579,6 +580,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     let currentTableData = [...tableData];
 
     if(resetData && active !== 'trial'){
+      handleChangePage(1)
       currentTableData.forEach((row, i) => {
         delete row.status;
         if(i===currentTableData.length-1){
@@ -587,20 +589,26 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         }
       });
     }
-    setTrialEstateReplicates();
-    if (
-      Object.keys(filterData).length > 0 &&
-      filterData.filter !== "" &&
-      active != "palm"
-    ) {
-      currentTableData = filterTable(filterData.filter, currentTableData);
-      // return currentTableData;
+    if(resetData && active === 'trial'){
+      handleChangePage(1)
+       dispatch(clearReset())
     }
-      if(palmFilter) {
-        currentTableData = filterTable(filterData.filter, currentTableData);
-        // return currentTableData;
-      }
-
+    setTrialEstateReplicates();
+    // if (
+    //   Object.keys(filterData).length > 0 &&
+    //   filterData.filter !== "" &&
+    //   active != "palm"
+    // ) {
+    //   currentTableData = filterTable(filterData.filter, currentTableData);
+    //   // return currentTableData;
+    // }
+    //   if(palmFilter) {
+    //     currentTableData = filterTable(filterData.filter, currentTableData);
+    //     // return currentTableData;
+    //   }
+    if( filterData.filter !== "") {
+     return currentTableData = filterTable(filterData.filter, currentTableData);
+    }
     if (sortColumn && sortType) {
       currentTableData.sort((a, b) => {
         let x = a[sortColumn];
