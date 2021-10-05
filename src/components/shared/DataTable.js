@@ -510,9 +510,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         const reps = [
           ...new Set(currentPalmTableData.map((palm) => palm.replicate)),
         ];
-        const plots = [
-          ...new Set(currentPalmTableData.map((palm) => palm.plotId)),
-        ];
+        // const plots = [
+        //   ...new Set(currentPalmTableData.map((palm) => palm.plotId)),
+        // ];
+        const plots =  [...new Map(currentPalmTableData.map(item =>
+          [item['plotId'], item])).values()];
         reps.forEach((rep) => {
           palmReplicates.push({
             label: rep,
@@ -528,8 +530,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
         plots.forEach((plot) => {
           palmPlots.push({
-            label: plot,
-            value: plot,
+            label: plot.plot,
+            value: plot.plotId,
           });
         });
         palmPlots =  palmPlots.sort((a,b)=> a.value - b.value)
@@ -580,7 +582,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     let currentTableData = [...tableData];
 
     if(resetData && active !== 'trial'){
-      handleChangePage(1)
       currentTableData.forEach((row, i) => {
         delete row.status;
         if(i===currentTableData.length-1){
@@ -589,7 +590,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         }
       });
     }
-    if(resetData && active === 'trial'){
+    if(resetData && (active === 'trial' || active === 'estate' ||active === 'plot'||active === 'progeny')){
       handleChangePage(1)
        dispatch(clearReset())
     }
