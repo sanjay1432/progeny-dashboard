@@ -135,7 +135,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
         const blocks = reps.estateblocks
-        if (blocks.length < 2) {
+        if (blocks && blocks.length < 2) {
           reps.estateblock = blocks[0].name
           reps.design = data.design
           reps.designId = designObj.designId
@@ -143,7 +143,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
         }
-        if (blocks.length > 1) {
+        if (blocks && blocks.length > 1) {
           const uni = reps
           delete uni.estateblock
           for (let i = 0; i < blocks.length; i++) {
