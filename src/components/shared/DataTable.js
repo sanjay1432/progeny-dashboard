@@ -506,9 +506,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function setTrialEstateReplicates() {
     if (active === "palm") {
-      let currentPalmTableData = [...tableData];
+      let currentPalmTableData = [...dashboardData.result[active]];
       palmReplicates = [];
       palmPlots = [];
+      replicateSelector = "All";
+      plotSelector = "All";
       //SET REPLICATES
       if (currentPalmTableData.length > 0) {
         const reps = [
@@ -596,7 +598,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
     if(resetData && (active === 'trial' || active === 'estate' ||active === 'plot'||active === 'progeny')){
       handleChangePage(1)
-       dispatch(clearReset())
+      dispatch(clearReset())
     }
     setTrialEstateReplicates();
     // if (
