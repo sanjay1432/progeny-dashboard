@@ -227,7 +227,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const isEmpty = checkProperties(trial);
 
     if (radioInputForTrialInEState === "no") {
-      trial.nofreplicate = "";
+      // trial.nofreplicate = "";
       const trialToCheck = { ...trial };
       delete trialToCheck["nofreplicate"];
       delete trialToCheck["estate"];
