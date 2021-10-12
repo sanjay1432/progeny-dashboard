@@ -9,7 +9,7 @@ import logo from "../assets/img/Progeny-logo/logoStyle02.png"
 import { Loader, Input, Grid, Row, Col, Button } from "rsuite"
 // reactstrap components
 import { Card, CardBody, Container } from "reactstrap"
-
+import { useKeycloak } from "@react-keycloak/web";
 const required = value => {
   if (!value) {
     return (
@@ -63,10 +63,24 @@ const Login = props => {
       setLoading(false)
     }
   }
-
-  if (isLoggedIn) {
-    return <Redirect to="/overview" />
-  }
+  const { keycloak } = useKeycloak();
+  const isAutherized = (roles) => {
+    if (keycloak && roles) {
+      return roles.some((r) => {
+        const realm = keycloak.hasRealmRole(r);
+        const resource = keycloak.hasResourceRole(r);
+        return realm || resource;
+      });
+    }
+    return false;
+  };
+  console.log(isAutherized(['Supervisor']))
+  // if(isAutherized(['Supervisor'])){
+  //   return <Redirect to="/dashboard" /> 
+  // }
+  // if (isLoggedIn) {
+  //   return <Redirect to="/overview" />
+  // }
 
   return (
     <>

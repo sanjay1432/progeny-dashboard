@@ -38,18 +38,18 @@ const tokenLogger = (tokens) => {
 };
 
 ReactDOM.render(
-  // <ReactKeycloakProvider
-  //   authClient={keycloak}
-  //   onEvent={eventLogger}
-  //   onTokens={tokenLogger}
-  //   initOptions={{
-  //     onLoad: "login-required",
-  //   }}
-  // >
+  <ReactKeycloakProvider
+    authClient={keycloak}
+    onEvent={eventLogger}
+    onTokens={tokenLogger}
+    initOptions={{
+      onLoad: "login-required",
+    }}
+  >
     <Provider store={configureAppStore}>
       <AppRouter />
     </Provider>
-  // </ReactKeycloakProvider>
+  </ReactKeycloakProvider>
   ,
   document.getElementById("root")
 );
