@@ -497,19 +497,19 @@ const Overview = (props) => {
                           user.username
                         )}
                       >
-                        <Dropdown.Item
+                        {/* <Dropdown.Item
                           icon={<Icon icon="sign-out" />}
                           onClick={() => dispatch(logout())}
                         >
                           Logout
-                        </Dropdown.Item>
+                        </Dropdown.Item> */}
                         <Dropdown.Item
                           icon={<Icon icon="sign-out" />}
                           onClick={() => {
                             keycloak.logout();
                           }}
                         >
-                          Logout Keycloak
+                          Logout
                         </Dropdown.Item>
                       </Dropdown>
                     </NavRS>

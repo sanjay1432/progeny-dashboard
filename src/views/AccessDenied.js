@@ -1,24 +1,16 @@
-import { Container, FlexboxGrid, Content, Panel } from "rsuite";
 
+import NoAccess from "../assets/img/icons/noaccess_icon.svg";
 const AccessDenied = (props) => {
   return (
-    <div className="show-fake-browser login-page">
-      <Container>
-        <Content style={{ margin: "201px", padding: "20px" }}>
-          <FlexboxGrid justify="center">
-            <FlexboxGrid.Item
-              colspan={12}
-              style={{ background: "#009d57", borderRadius: "5px" }}
-            >
-              <Panel header={<h3>Access Denied ☹</h3>} bordered>
-                <h1>
-                  <span>&#9888;</span> Not Authorized to access this page!{" "}
-                </h1>
-              </Panel>
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-        </Content>
-      </Container>
+    <div className="imageLayout">
+      <img src={NoAccess} alt="" />
+      <p className="desc">
+        User is{" "}
+        <b className="title">
+          not authorized <br /> to access this page
+        </b>
+        .
+      </p>
     </div>
   );
 };
