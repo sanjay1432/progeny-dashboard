@@ -41,7 +41,7 @@ export const AppRouter = () => {
           render={(props) => <Overview {...props} />}
         />
 
-        <Route path="/login" exact render={(props) => <Login {...props} />} />
+        {/* <Route path="/login" exact render={(props) => <Login {...props} />} /> */}
         <Redirect to="/overview" />
       </Switch>
     </BrowserRouter>

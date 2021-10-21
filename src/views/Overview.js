@@ -98,7 +98,7 @@ const listItems = [
         filters: [
           {
             name: "trialCode",
-            label: "Trial Id",
+            label: "Trial ID",
             type: "select",
             disable: false,
           },
@@ -123,7 +123,7 @@ const listItems = [
         filters: [
           {
             name: "trialCode",
-            label: "Trial Id",
+            label: "Trial ID",
             type: "select",
             disable: false,
           },
@@ -225,7 +225,7 @@ const listItems = [
             filters: [
               {
                 name: "trialCode",
-                label: "Trial Id",
+                label: "Trial ID",
                 type: "select",
                 disable: false,
               },
@@ -429,7 +429,7 @@ const Overview = (props) => {
   useEffect(() => {
     if (!isLoggedIn) {
       history.push({
-        pathname: "/login",
+        pathname: "/",
       });
     } else {
       const { active } = subnavState;

@@ -346,7 +346,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
     {
       label: "Replicate",
-      value: "replicateno",
+      value: "replicateId",
     },
     {
       label: "Estate Block",
@@ -1627,7 +1627,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.flexGrow = 1;
             palmfields[1] = field;
           }
-          if (field.value === "replicateno") {
+          if (field.value === "replicateId") {
             field.flexGrow = 1;
             field.sorting = true;
             palmfields[2] = field;

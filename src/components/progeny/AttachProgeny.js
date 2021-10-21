@@ -230,7 +230,7 @@ const AttachProgeny = ({
      setCompleteState(isPlotsMapped(data))
     if (replicateSelector !== "All") {
       console.log(replicateSelector)
-      const filteredReps = data.filter(d => d.replicate === replicateSelector)
+      const filteredReps = data.filter(d => d.replicateId === replicateSelector)
       return setTrialPlots(filteredReps)
     } else {
       setTrialPlots(data)
