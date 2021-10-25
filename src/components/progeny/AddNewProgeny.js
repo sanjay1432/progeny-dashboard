@@ -53,11 +53,10 @@ const AddNewProgeny = () => {
   });
 
   function handleChange(e) {
-    console.log(e.target.value);
     //CHECK FOR EXISTING PROGENY ID
     checkDups(e.target.value);
     e.persist();
-    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }));
+    setFormData(() => ({ ...formData, [e.target.name]: e.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') }));
   }
 
   function checkDups(value) {
@@ -131,6 +130,7 @@ const AddNewProgeny = () => {
           <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progenyCode"
+              value = {formData.progenyCode}
               onChange={(value, e) => handleChange(e)}
               placeholder="Key in Progeny ID"
             />

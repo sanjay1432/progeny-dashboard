@@ -115,8 +115,8 @@ const ConfirmationModal = ({
             </Modal.Header>
             <Modal.Body>
               <p>
-                Are you sure want to savethis Progeny
-                <b className="targetName"> {data.progenyId}</b>? This Progeny
+                Are you sure want to save this Progeny
+                <b className="targetName"> {data.progenyCode}</b>? This Progeny
                 will be created inside the system.
               </p>
             </Modal.Body>
