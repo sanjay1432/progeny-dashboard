@@ -1097,7 +1097,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         return (
           <span style={{ cursor: "pointer" }}>
             <img
-              src={OpenNew}
+              src={CreateIcon}
               alt=""
               onClick={() =>
                 handleActionExpand(["Estate", `Estate ${data.estate}`], {

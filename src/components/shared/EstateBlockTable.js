@@ -44,7 +44,8 @@ const EstateBlockTable = ({
   const [isModal, setModal] = useState(false)
   const [ebAdded, setebAdded] = useState(null)
   const [ebDeleted, setebDeleted] = useState(null)
-  const [pagination, setPagination] = useState(initialState)
+  const [pagination, setPagination] = useState(initialState) 
+  const [originalCheckStatusEstateBlock, setOriginalCheckStatusEstateBlock] = useState([])
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
   const [estateBlocks, setEstateBlocks] = useState([])
   const [updateDate, setUpdateDate] = useState(null)
@@ -111,7 +112,7 @@ const EstateBlockTable = ({
     const { estateblocks } = estatedata
     setEstateBlocks(estateblocks)
     const keys = estateblocks.map(eb => (eb.assigned ? eb.estateblock : null))
-
+    setOriginalCheckStatusEstateBlock(keys.filter(key => key))
     setCheckStatusEstateBlock(keys.filter(key => key))
   }
 
@@ -168,6 +169,14 @@ const EstateBlockTable = ({
   }
 
   function onAddEB() {
+    let saveMessage = "";
+    if(checkStatusEstateBlock.length >= originalCheckStatusEstateBlock.length) {
+      saveMessage = "add"
+    }
+    else if(checkStatusEstateBlock.length < originalCheckStatusEstateBlock.length) {
+      saveMessage = "delete"
+    }
+    
     estateBlocks.forEach(eb => {
       if (checkStatusEstateBlock.includes(eb.estateblock)) {
         eb.assigned = true
@@ -175,6 +184,7 @@ const EstateBlockTable = ({
         eb.assigned = false
       }
     })
+
     const payload = [{
       estate: option.estate,
       estateId: option.estateId,
@@ -182,75 +192,120 @@ const EstateBlockTable = ({
       updatedBy: user.username
     }]
     setModal(false)
-    EstateService.assignEstateBlocksToEstate(payload).then(
-      data => {
-        console.log("Success", data)
-        dispatch(getDashboardData('estate'))
-        setebAdded(true)
-      },
-      err => {
-        console.log("Error", err)
-        setebAdded(false)
-      }
-    )
+     EstateService.assignEstateBlocksToEstate(payload).then(
+       data => {
+         console.log("Success", data)
+         dispatch(getDashboardData('estate'))
+         setebAdded(saveMessage)
+       },
+       err => {
+         console.log("Error", err)
+         setebAdded("error")
+       }
+     )
   }
 
-
-  function SuccessMessage() {
-    if (ebAdded === true) {
-      return (
-        <>
-          <Message
-            showIcon
-            type="success"
-            description="Estate Blocks have been added to the system."
-            onClick={() => {
-              setebAdded(null)
-            }}
-          />
-        </>
-      )
-    } else if (ebAdded === false) {
-      return (
-        <>
-          <h1>ERROR</h1>
-        </>
-      )
-    } else {
-      return <></>
+  function EbSaveMessage() {
+    switch(ebAdded){
+      case ("add"):
+        return(
+          <>
+            <Message
+              showIcon
+              type="success"
+              description="Estate Blocks have been added to the system."
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      case ("delete"):
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description="Estate Blocks have been deleted to the system."
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      case ("error"):
+        return (
+          <>
+            <Message
+              showIcon
+              type="error"
+              description="Error 404"
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      default:
+        return null;        
     }
   }
 
-  function EbDeletionMessage() {
-    if (ebDeleted === true) {
-      return (
-        <>
-          <Message
-            showIcon
-            type="success"
-            description="Estate Blocks have been deleted from the system."
-            onClick={() => {
-              setebDeleted(null)
-            }}
-          />
-        </>
-      )
-    } else if (ebDeleted === false) {
-      return (
-        <>
-          <h1>ERROR</h1>
-        </>
-      )
-    } else {
-      return <></>
-    }
-  }
+  // function SuccessMessage() {
+  //   if (ebAdded === true) {
+  //     return (
+  //       <>
+  //         <Message
+  //           showIcon
+  //           type="success"
+  //           description="Estate Blocks have been added to the system."
+  //           onClick={() => {
+  //             setebAdded(null)
+  //           }}
+  //         />
+  //       </>
+  //     )
+  //   } else if (ebAdded === false) {
+  //     return (
+  //       <>
+  //         <h1>ERROR</h1>
+  //       </>
+  //     )
+  //   } else {
+  //     return <></>
+  //   }
+  // }
+
+  // function EbDeletionMessage() {
+  //   if (ebDeleted === true) {
+  //     return (
+  //       <>
+  //         <Message
+  //           showIcon
+  //           type="success"
+  //           description="Estate Blocks have been deleted from the system."
+  //           onClick={() => {
+  //             setebDeleted(null)
+  //           }}
+  //         />
+  //       </>
+  //     )
+  //   } else if (ebDeleted === false) {
+  //     return (
+  //       <>
+  //         <h1>ERROR</h1>
+  //       </>
+  //     )
+  //   } else {
+  //     return <></>
+  //   }
+  // }
 
   return (
     <>
       <div id="EstateBlockTable">
         {/* Add Estate Block MODAL STARTED */}
-        <Modal id="estateBlockModal" show={isModal} onHide={close}>
+        <Modal id="estateBlockModal" show={isModal} onHide={close} backdrop="static">
           <Modal.Header>
             <Modal.Title className="title">Add Estate Block</Modal.Title>
           </Modal.Header>
@@ -368,8 +423,9 @@ const EstateBlockTable = ({
             <Cell dataKey="trialCode" />
           </Column>
         </Table>
-        <SuccessMessage />
-        <EbDeletionMessage />
+        {/* <SuccessMessage />
+        <EbDeletionMessage /> */}
+        <EbSaveMessage />
 
         <Pagination
           className="pagination"
