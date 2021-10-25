@@ -8,7 +8,6 @@ const DeleteModal = ({
   rows,
   ...props
 }) => {
-  console.log({ activeNav, rows })
   function Message() {
     switch (activeNav) {
       case "estate":

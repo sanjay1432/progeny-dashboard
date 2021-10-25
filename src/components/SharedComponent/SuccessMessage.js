@@ -2,7 +2,7 @@ import React from "react"
 import { Message } from "rsuite"
 
 const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
-  console.log(data)
+ setTimeout(()=> hide() ,3000)
   if (show === true) {
     switch (action) {
       case "PLOTDATA_UPDATE":
@@ -19,13 +19,13 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
           </>
         )
 
-      case "MULTIPALMDATA_UPDATE":
+      case "ESTATE_MAPPED":
         return (
           <>
             <Message
               showIcon
               type="success"
-              description={`Palms have been successfully named and numbered.`}
+              description={`${data}`}
               onClick={hide}
             />
           </>
@@ -108,7 +108,7 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
             <Message
                 showIcon
                 type="success"
-                description={`${data?.nofplotAttached} out of ${data?.nofplot} Plots that are attached to Progenies 
+                description={`${data?data[0].nofprogenyAttached: null} out of ${data?.nofplot} Plots that are attached to Progenies 
                 have been saved in the system.`}
                 onClick={hide}
               />

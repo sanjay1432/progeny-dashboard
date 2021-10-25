@@ -22,9 +22,9 @@ const ConfirmationModal = ({
             <Modal.Body>
               <p>
                 Are you sure to edit
-                <b className="targetName"> {data.plot}</b> for
+                <b className="targetName"> Plot {data.plot}</b> for
                 <b className="targetName"> Replicate {data.replicate}</b> at
-                <b className="targetName"> Trial {data.trialid}</b> from the
+                <b className="targetName"> Trial {data.trialCode}</b> from the
                 list? This might change data that is associate with it as well.
               </p>
             </Modal.Body>
@@ -35,7 +35,7 @@ const ConfirmationModal = ({
               </Button>
               <Button
                 className="yesButton"
-                onClick={() => savePlotData(data.trialid)}
+                onClick={() => savePlotData(data.plotId)}
                 appearance="primary"
               >
                 Yes
@@ -56,9 +56,9 @@ const ConfirmationModal = ({
               <p>
                 Are you sure edit
                 <b className="targetName"> Palm {data.palmno}</b> for
-                <b className="targetName"> {data.plot}</b> for
+                <b className="targetName"> Plot {data.plot}</b> for
                 <b className="targetName"> Replicate {data.replicate}</b> at
-                <b className="targetName"> Trial {data.trialid}</b> from the
+                <b className="targetName"> Trial {data.trialCode}</b> from the
                 list? This might change data that is associate with it as well.
               </p>
             </Modal.Body>
@@ -69,7 +69,7 @@ const ConfirmationModal = ({
               </Button>
               <Button
                 className="yesButton"
-                onClick={() => savePalmData(data.trialid)}
+                onClick={() => savePalmData(data.trialId)}
                 appearance="primary"
               >
                 Yes
@@ -131,6 +131,32 @@ const ConfirmationModal = ({
           </Modal>
         </>
       )
+
+    case "PROGENY_EDIT":
+        return (
+          <>
+            <Modal id="confirmationModal" show={show} onHide={hide}>
+              <Modal.Header>
+                <b className="title">Edit Progeny</b>
+              </Modal.Header>
+              <Modal.Body>
+                <p>
+                  Are you sure want to edit  Progeny ID
+                  <b className="targetName"> {data.progenyCode}</b>? This might 
+                  change data that is associate with it as well!.
+                </p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button className="noButton" onClick={hide} appearance="subtle">
+                  No
+                </Button>
+                <Button className="yesButton" appearance="primary" onClick={save}>
+                  Yes
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
+        )
     default:
       return null
   }

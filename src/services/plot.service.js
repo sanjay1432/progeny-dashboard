@@ -11,7 +11,7 @@ const getQrCodeDataList = payload => {
   return axiosApiInstance
     .get(`${API_URL}/plot/qrcode?plotId=${payload}`)
     .then(response => {
-      return response.data
+      return response.data.data
     })
 }
 
@@ -30,12 +30,12 @@ const getTrialPlots = trialid => {
     })
 }
 
-const getPalmInformation = () => {
+const getPalmInformation = (trialid) => {
   return axiosApiInstance
-    .get(`${API_URL}/plot/PalmInformation`)
-    .then(response => {
-      return response.data
-    })
+  .get(`${API_URL}/palm?trialId=${trialid}`)
+  .then(response => {
+    return response.data.data
+  })
 }
 
 const editPalmInformation = payload => {

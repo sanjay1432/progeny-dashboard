@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
 import {
   Table,
   FlexboxGrid,
-  Button,
   InputPicker,
   Grid,
   Row,
   Col,
-  Checkbox,
   Pagination,
-  Message,
-  Input,
-  IconButton,
-  Icon,
-  Tooltip,
-  Whisper,
   Panel
 } from "rsuite"
 const { Column, HeaderCell, Cell } = Table
@@ -31,30 +23,25 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1
 }
-let initialFilter = {}
-let selectedFilterArray = []
 
 const VerificationtableData = ({currentItem ,currentSubNavState}) => {
   useEffect(() => {
     fillIntableData()
   })
-
-  const [selectedFilters, setFilters] = useState(initialFilter)
   const [tableData, setTableData] = useState([]);
   const [pagination, setPagination] = useState(initialState);
   const { active } = currentSubNavState
   const { activePage, displaylength } = pagination
 
   const dashboardData = useSelector(state => state.dashboardDataReducer)
-  const filterData = useSelector(state => state.filterReducer)
-
+ 
   function fillIntableData() {
     const data = dashboardData.result[active]
     setTableData(data)
   }
 
   const ActionCell = ({dataKey, props}) => (
-    <Cell dataKey={dataKey}>
+    <Cell {...props} style={{ padding: 0 }}>
       <span>
         <img
           src={OpenNew}
@@ -64,10 +51,51 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
   </Cell>
   )
 
-  const columns = () => {
+  const columns_new = () => {
     switch(active){
       case "yearlyverification":
         const columns_yearly = [
+          {
+            name: "Trial ID",
+            dataKey: "trialCode",
+            flexGrow: 1,
+          },
+          {
+            name: "Trial",
+            dataKey: "trial",
+            flexGrow: 1,
+          },
+          {
+            name: "Form",
+            dataKey: "form",
+            flexGrow: 1,
+          },
+          {
+            name: "UploadedDate",
+            dataKey: "uploadedDate",
+            flexGrow: 1,
+          },
+          {
+            name: "Uploaded By",
+            dataKey: "uploadedBy",
+            flexGrow: 1,
+          },
+          {
+            name: "Record Date",
+            dataKey: "recordDate",
+            flexGrow: 1,
+          },
+          {
+            name: "Recorded By",
+            dataKey: "recordedBy",
+            flexGrow: 1,
+          },
+          {
+            name: "Action",
+            dataKey: "trialId",
+            width: 120,
+            customCell: ActionCell
+          },
         ]
         return columns_yearly
       case "verifyforms":
@@ -115,35 +143,72 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
           },
         ]
         return columns_verify
-      default:
-        return null;  
     }
   }
+
+  // const columns = [
+  //   {
+  //     name: "Trial ID",
+  //     dataKey: "trialCode",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Trial",
+  //     dataKey: "trial",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Form",
+  //     dataKey: "form",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "UploadedDate",
+  //     dataKey: "uploadedDate",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Uploaded By",
+  //     dataKey: "uploadedBy",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Record Date",
+  //     dataKey: "recordDate",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Recorded By",
+  //     dataKey: "recordedBy",
+  //     flexGrow: 1,
+  //   },
+  //   {
+  //     name: "Action",
+  //     dataKey: "trialId",
+  //     width: 120,
+  //     customCell: ActionCell
+  //   },
+  // ]
 
   function getData(itemlength) {
-    if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
-      tableData = filterTable(filterData.filter, tableData)
-    }
-    return tableData.filter((v, i) => {
-      const start = itemlength * (activePage - 1)
-      const end = start + itemlength
-      return i >= start && i < end
-    })
+    return tableData
+    // return tableData.filter((v, i) => {
+    //   const start = displaylength * (activePage - 1);
+    //   const end = start + displaylength;
+    //   return i >= start && i < end;
+    // })
+    //return tableData
+    // if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
+    //   tableData = filterTable(filterData.filter, tableData)
+    // }
+    // return tableData.filter((v, i) => {
+    //   const start = itemlength * (activePage - 1)
+    //   const end = start + itemlength
+    //   return i >= start && i < end
+    // })
   }
 
-  function filterTable(filters, data) {
-    console.log({filters, data})
-    var filterKeys = Object.keys(filters)
-    return data.filter(function (eachObj) {
-      return filterKeys.every(function (eachKey) {
-         if(active === "trial" && eachKey === "estate") {
-              const estates = eachObj[eachKey].map((est)=>est.name)
-              return estates.includes( filters[eachKey])
-         }
-        return eachObj[eachKey] === filters[eachKey]
-      })
-    })
-  }
+
 
   const perPage = [
     {
@@ -172,8 +237,8 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
   }
 
   const getNoPages = () => {
-    const { displaylength } = pagination
-    return Math.ceil(tableData.length / displaylength)
+    // const { displaylength } = pagination
+    //return Math.ceil(tableData.length / displaylength)
   }
 
   const handleChangePage = (data) => {
@@ -252,7 +317,7 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
           wordWrap
           autoHeight
         >
-          {columns().map(col => {
+          {columns_new().map(col => {
             const width = col.width ? col.width : false
             const flexGrow = col.flexGrow ? col.flexGrow : false
             const fixed = col.fixed ? col.fixed : false

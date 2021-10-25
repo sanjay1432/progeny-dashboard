@@ -7,9 +7,12 @@ import React, {
 import { useDispatch, useSelector } from "react-redux"
 import { Grid, Row, Col, Button, Drawer, FlexboxGrid } from "rsuite"
 import { useMediaQuery } from "react-responsive"
-import Search from "../shared/Search"
 import Filter from "../shared/Filter"
-import { setFilter, clearFilter } from "../../redux/actions/filter.action"
+import { setFilter, clearFilter} from "../../redux/actions/filter.action"
+import { setReset} from "../../redux/actions/reset.action"
+import { getPalmData } from "../../redux/actions/dashboarddata.action"
+import GeneralHelper from "../../helper/general.helper";
+import { publish } from "../../services/pubsub.service"
 let initialFilters = {}
 let currentFilters = []
 let filterData = {}
@@ -24,6 +27,7 @@ const SearchFilter = forwardRef(
     const dispatch = useDispatch()
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
+    const [estates, setEstates] = useState([])
 
     const { active } = currentSubNavState
 
@@ -49,30 +53,45 @@ const SearchFilter = forwardRef(
     })
 
     let mainPageFilters = currentFilters
-    console.log({ mainPageFilters })
-
-    if (dashboardData.result[active]) {
+ 
+    if (dashboardData.result[active]|| active === 'palm') {
       mainPageFilters.forEach(filter => {
-        //console.log("filter",filter)
         const filterName = filter.name
         if (filter.type === "select") {
-          const filterdata = [
-            ...new Set(dashboardData.result[active].map(res => res[filterName]))
+          let filterdata = [
+            ...new Set(dashboardData.result[active ==='palm'?'trial': active].map(res => res[filterName]))
           ]
-
-          console.log({ filterdata })
           if (active === "trial" && filter.name === "estate") {
             const filterValues = []
             if (filterdata) {
               filterdata.forEach(estate => {
-                const est = estate.map(estateObj => estateObj.name)
+                const est = estate.map(estateObj => estateObj.name?estateObj.name:null)
                 filterValues.push(...est)
               })
+              const nonNullValues = filterValues.filter((item)=>item);
+              nonNullValues.sort()
               filterData[filterName] = [
-                ...new Set(filterValues)]
+                ...new Set(nonNullValues)]
             }
-          } else {
-            filterData[filterName] = filterdata
+          } else if (active === "trial" && filter.name === "planteddate") {
+             const filterValues = []
+             filterdata.sort((a,b)=> new Date(a)- new Date(b))
+             filterdata.forEach(date => {
+              const d = GeneralHelper.modifyDate({date})  
+              filterValues.push(d)
+             });
+             const nonNullValues = filterValues.filter((item)=>item);
+             filterData["planteddate"] = [
+              ...new Set(nonNullValues)]
+          }else {       
+            const nonNullValues = filterdata.filter((item)=>item);
+            filterData[filterName] = nonNullValues 
+            nonNullValues.sort()      
+            if(active === "palm") {
+              const nonNullValues = estates.filter((item)=>item);
+              nonNullValues.sort()  
+              filterData['estate'] = nonNullValues 
+            }   
           }
         }
       })
@@ -113,21 +132,8 @@ const SearchFilter = forwardRef(
     function close() {
       setDrawer(false)
     }
-    // function SearchBox() {
-    //   if (filterList.search) {
-    //     return (
-    //       <Col sm={5} md={4} lg={3}>
-    //         <div className="show-col">
-    //           {" "}
-    //           <Search />
-    //         </div>
-    //       </Col>
-    //     )
-    //   }
-    //   return <></>
-    // }
+
     function MoreFilter() {
-      // const {show} = show;
       if (showMoreFiltersButton) {
         return (
           <Col sm={5} md={4} lg={3} className="multiFilterLayout">
@@ -147,6 +153,24 @@ const SearchFilter = forwardRef(
     }
 
     function onChange(e) {
+      // FIND THE ESTATE OF TRIAL CODE
+      if(active === 'palm'){
+        const trials = dashboardData.result['trial']
+       if(trials){
+        const trialEstates =  trials.find((trial)=> trial.trialCode ===  e.target.value)?.estate;
+
+        if(trialEstates){
+          const estates = trialEstates.map((te)=>te.name)
+
+          setEstates(estates)
+
+          filterData['estate'] = estates
+        }
+       }
+       
+     
+      }
+      
       if (!e.target.value) {
         //In case of checking the disable state
         const index = selectedFilterArray.indexOf(e.target.name)
@@ -186,6 +210,7 @@ const SearchFilter = forwardRef(
     useImperativeHandle(ref, () => ({
       onResetRef() {
         onReset()
+        // dispatch(clearFilter())
       }
     }))
 
@@ -196,7 +221,7 @@ const SearchFilter = forwardRef(
       setFilters(null)
       selectedFilterArray = []
       dispatch(clearFilter())
-
+      
       /*********************************/
       /*RESET THE filters disbale value*/
       mainPageFilters.forEach(item => {
@@ -206,13 +231,26 @@ const SearchFilter = forwardRef(
       })
       /*RESET THE filters disbale value*/
       /*********************************/
+      dispatch(setReset())
+
     }
 
     function onApply() {
+      //CALL API FOR ACTIVE TAB PALM
+      if(active === 'palm'){
+         //FETCH TRIAL ID & ESTATEID
+          const {trialCode, estate} =  selectedFilters
+        const foundTrial =  dashboardData.result['trial'].find((trial)=> trial.trialCode === trialCode)
+        const foundEstate =  foundTrial.estate.find((est)=> est.name === estate)
+        const payload = {
+          trialId: foundTrial.trialId,
+          estateId: foundEstate.id
+        }
+        dispatch(getPalmData(payload))
+      }
       dispatch(setFilter(selectedFilters))
     }
 
-    //console.log("selectedFilters[filter.name]", selectedFilters[filter.name])
     return (
       <>
         <Grid fluid id="dashboardFilterPanel">
@@ -242,8 +280,9 @@ const SearchFilter = forwardRef(
                   className="applyButton"
                   appearance="primary"
                   onClick={onApply}
+                  disabled = {selectedFilters && active==='palm'?Object.keys(selectedFilters).length < 2: selectedFilters ? !Object.keys(selectedFilters).length: true}
                 >
-                  Apply
+                  Apply 
                 </Button>
               </div>
             </Col>

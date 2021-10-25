@@ -7,15 +7,13 @@ import {
   Grid,
   Row,
   Col,
-  Checkbox,
   Input,
   SelectPicker,
-  Pagination,
   Modal,
   ControlLabel
 } from "rsuite"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
-
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import DashboardService from "../../services/dashboarddata.service"
 
 import TrialService from "../../services/trial.service"
@@ -32,16 +30,16 @@ import SuccessMessage from "../../components/SharedComponent/SuccessMessage"
 
 import { publish } from "../../services/pubsub.service"
 const { Column, HeaderCell, Cell } = Table
-const initialState = {
-  displaylength: 10,
-  prev: true,
-  next: true,
-  first: false,
-  last: false,
-  ellipsis: true,
-  boundaryLinks: true,
-  activePage: 1
-}
+// const initialState = {
+//   displaylength: 10,
+//   prev: true,
+//   next: true,
+//   first: false,
+//   last: false,
+//   ellipsis: true,
+//   boundaryLinks: true,
+//   activePage: 1
+// }
 let progenyIdSet = []
 let replicateSelector = "All"
 const AttachProgeny = ({
@@ -62,7 +60,7 @@ const AttachProgeny = ({
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [quickSaveData, setQuickSaveData] = useState(null)
   const [successMessage, setSuccessMessage] = useState(false)
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   const [nPalm, setnPalm] = useState(16)
   const [nPalmValue, setNPalmValue] = useState(null)
   const [trialIds, setTrialIds] = useState([])
@@ -83,14 +81,15 @@ const AttachProgeny = ({
     
     if (option.trial) {
       setTrials()
-      setPlots()
       setProgeny()
+      setPlots()  
     }
   }, [])
 
   function onReset() {
     setFilters(() => ({ ...filters, trialCode: null, estate: null }))
     setTrialPlots([])
+    replicateSelector = 'All'
   }
 
   function setFilterTrialIds() {
@@ -106,7 +105,6 @@ const AttachProgeny = ({
   }
   async function setProgeny() {
     const result = await DashboardService.getDashboardData("progeny")
-    console.log(result.data)
     setProgenies(result.data)
     const selectorProgenyIds = []
     result.data.forEach(progeny => {
@@ -133,9 +131,9 @@ const AttachProgeny = ({
 
   function onApply() {
     setTrials()
-    setPlots()
     setProgeny()
-
+    setPlots()
+  
     setTrialEstateReplicates()
   }
 
@@ -148,8 +146,8 @@ const AttachProgeny = ({
     const selectedTrial = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-
-    setEditableTrial(selectedTrial.isEditable)
+    const isEditableTrial =  selectedTrial.isEditable === "true"?true: false;
+    setEditableTrial(isEditableTrial)
     setTrialEstates(selectedTrial)
   }
   function setTrialEstates(trial) {
@@ -209,25 +207,48 @@ const AttachProgeny = ({
     const { trialId } = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-    setLoading(true)
+    // setLoading(true)
     const data = await PlotService.getTrialPlots(trialId)
-
+    const progenyData = await DashboardService.getDashboardData("progeny")
     data.forEach(item => {
       item["blockId"] = item.estateblocks[0].id
       item["isUpdated"] = false
+      //IF PROGENY ID IS AVAILABLE, FILL THE PROGENY DATA
+      if(item.progenyId){
+        const foundedProgeny = progenyData.data.find(
+          pro => pro.progenyId === item.progenyId
+        )
+        item["progeny"] = foundedProgeny?.progeny
+        item["ortet"] = foundedProgeny?.ortet ? foundedProgeny.ortet : "-"
+        item["fp"] = foundedProgeny?.fp
+        item["mp"] = foundedProgeny?.mp
+      }
     })
     console.log({ data })
-
-    if (replicateSelector != "All") {
+      
+    // CHECK IF ALL PLOTS ARE MAPPED WITH PROGENY ID & PALM NUMBER
+     setCompleteState(isPlotsMapped(data))
+    if (replicateSelector !== "All") {
       console.log(replicateSelector)
-      const filteredReps = data.filter(d => d.replicate === replicateSelector)
+      const filteredReps = data.filter(d => d.replicateId === replicateSelector)
       return setTrialPlots(filteredReps)
     } else {
       setTrialPlots(data)
     }
-    setLoading(false)
+    // setLoading(false)
   }
 
+  const isPlotsMapped = (data)=>{
+     let isMapped =  true;
+     for (let i = 0 ; i< data.length; i++){
+       const obj =  data[i];
+      if(obj.hasOwnProperty('progenyId') && obj.progenyId  && obj.hasOwnProperty('nPalm') && obj.nPalm){
+        isMapped = false
+      }
+     }
+
+     return isMapped
+  } 
   function handleProgenyChange(value, idx, replicate) {
     console.log({ disabledRepIds })
     const existingProgenies = [...progenies]
@@ -310,7 +331,7 @@ const AttachProgeny = ({
       const  {data} = await ProgenyService.attachProgeny(payload, filters.trialCode)
       console.log(data)
       data.nofplot = trialPlots.length
-      setCompleteState(!data.isComplete)
+      setCompleteState(!data[0].isComplete)
       setSuccessMessage(true)
       setQuickSaveData(data)
     } catch (err) {
@@ -320,20 +341,20 @@ const AttachProgeny = ({
   }
 
  
-  const containsAll = (obj, arr) => {
-    let contain = true
-    for(const str of arr){
-      console.log(obj, str)
-       if(Object.keys(obj).includes(str) ){
-          continue;
-       }else{
-         contain = false
-          break ;
+//   const containsAll = (obj, arr) => {
+//     let contain = true
+//     for(const str of arr){
+//       console.log(obj, str)
+//        if(Object.keys(obj).includes(str) ){
+//           continue;
+//        }else{
+//          contain = false
+//           break ;
          
-       }
-    }
-    return contain;
- };
+//        }
+//     }
+//     return contain;
+//  };
 
   function getEstateBlocksItem(items) {
     const blocks = []
@@ -365,7 +386,8 @@ const AttachProgeny = ({
       const {trialId} =  option
       await TrialService.updateTrialState(trialId, "Active")
       setShowConfirmation(false)
-
+        
+        dispatch(getDashboardData('trial'))
         const savedData = {
           type: "TRIAL_PLOTS_ATTACHED_TO_PROGENY",
           data: option,

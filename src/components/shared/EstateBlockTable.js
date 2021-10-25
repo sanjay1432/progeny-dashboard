@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React, { useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
   FlexboxGrid,
@@ -14,6 +14,7 @@ import {
   Message
 } from "rsuite"
 import DashboardDataService from "../../services/dashboarddata.service"
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import EstateService from "../../services/estate.service"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
@@ -27,7 +28,7 @@ const initialState = {
   activePage: 1
 }
 let tableData = []
-let currentTableDataFields = []
+// let currentTableDataFields = []
 const EstateBlockTable = ({
   currentSubNavState,
   currentItem,
@@ -36,20 +37,20 @@ const EstateBlockTable = ({
 }) => {
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    currentTableDataFields = []
-  })
+  // useEffect(() => {
+  //   currentTableDataFields = []
+  // })
 
   const [isModal, setModal] = useState(false)
   const [ebAdded, setebAdded] = useState(null)
   const [ebDeleted, setebDeleted] = useState(null)
   const [pagination, setPagination] = useState(initialState)
-  const [checkStatus, setCheckStatus] = useState([])
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
   const [estateBlocks, setEstateBlocks] = useState([])
   const [updateDate, setUpdateDate] = useState(null)
   const { activePage, displaylength } = pagination
   const { active } = currentSubNavState
+  const { user } = useSelector((state) => state.authReducer);
 
   const perpage = [
     {
@@ -95,7 +96,6 @@ const EstateBlockTable = ({
 
   function getData(displaylength) {
     return tableData.filter((v, i) => {
-      // v["rowNumber"] = i
       const start = displaylength * (activePage - 1)
       const end = start + displaylength
       return i >= start && i < end
@@ -128,24 +128,6 @@ const EstateBlockTable = ({
     </Cell>
   )
 
-  let checked = false
-  let indeterminate = false
-  let disabled = true
-
-  if (checkStatus.length === 0) {
-    checked = false
-    indeterminate = false
-    disabled = true
-  } else if (checkStatus.length > 0 && checkStatus.length < tableData.length) {
-    checked = false
-    indeterminate = true
-    disabled = false
-  } else if (checkStatus.length === tableData.length) {
-    checked = true
-    indeterminate = false
-    disabled = false
-  }
-
   let ebchecked = false
   let ebindeterminate = false
 
@@ -160,21 +142,17 @@ const EstateBlockTable = ({
     ebindeterminate = true
   }
 
-  const handleCheckAll = (value, checked) => {
-    const keys = checked ? tableData.map(item => item.estateblock) : []
-    setCheckStatus(keys)
-  }
 
   const handleCheckAllEstateBlocks = (value, checked) => {
     const keys = checked ? estateBlocks.map(item => item.estateblock) : []
     setCheckStatusEstateBlock(keys)
   }
-  const handleCheck = (value, checked) => {
-    const keys = checked
-      ? [...checkStatus, value]
-      : checkStatus.filter(item => item !== value)
-    setCheckStatus(keys)
-  }
+  // const handleCheck = (value, checked) => {
+  //   const keys = checked
+  //     ? [...checkStatus, value]
+  //     : checkStatus.filter(item => item !== value)
+  //   setCheckStatus(keys)
+  // }
   const handleCheckEstateBlocks = (value, checked) => {
     const keys = checked
       ? [...checkStatusEstateBlock, value]
@@ -197,16 +175,17 @@ const EstateBlockTable = ({
         eb.assigned = false
       }
     })
-    const payload = {
+    const payload = [{
       estate: option.estate,
       estateId: option.estateId,
-      blocks: estateBlocks
-    }
-    console.log("payload", payload)
+      estateblocks: estateBlocks,
+      updatedBy: user.username
+    }]
     setModal(false)
     EstateService.assignEstateBlocksToEstate(payload).then(
       data => {
         console.log("Success", data)
+        dispatch(getDashboardData('estate'))
         setebAdded(true)
       },
       err => {
@@ -216,35 +195,6 @@ const EstateBlockTable = ({
     )
   }
 
-  function onDelete() {
-    console.log({ checkStatus }, { tableData })
-    const estateBlocks = tableData.map(eb => ({
-      estateblock: eb.estateblock,
-      assigned: true
-    }))
-
-    estateBlocks.forEach(eb => {
-      if (checkStatus.includes(eb.estateblock)) {
-        eb.assigned = false
-      } else {
-        eb.assigned = true
-      }
-    })
-
-    const payload = {
-      estate: option.estate,
-      blocks: estateBlocks
-    }
-    console.log({ estateBlocks })
-    EstateService.assignEstateBlocksToEstate(payload).then(
-      data => {
-        setebDeleted(true)
-      },
-      err => {
-        setebDeleted(false)
-      }
-    )
-  }
 
   function SuccessMessage() {
     if (ebAdded === true) {
@@ -323,7 +273,7 @@ const EstateBlockTable = ({
               </p>
               <p>List of Estate Blocks ({estateBlocks.length})</p>
             </div>
-            <Table wordWrap data={estateBlocks} id="modalEstateTable">
+            <Table wordWrap data={estateBlocks} id="modalEstateTable" autoHeight>
               <Column width={80}>
                 <HeaderCell>
                   <Checkbox
@@ -387,20 +337,6 @@ const EstateBlockTable = ({
                   </Button>
                 </FlexboxGrid.Item>
               </Col>
-
-              {/* <Col sm={4} md={4} lg={3}>
-                <FlexboxGrid.Item>
-                  <div className="deleteButtonLayout">
-                    <Button
-                      className="deleteButton"
-                      disabled={disabled}
-                      onClick={onDelete}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </FlexboxGrid.Item>
-              </Col> */}
             </FlexboxGrid>
           </Row>
         </Grid>
@@ -409,37 +345,27 @@ const EstateBlockTable = ({
           id="dashboardTable"
           wordWrap
           data={getData(displaylength)}
-          onRowClick={data1 => {}}
           autoHeight
         >
-          {/* <Column width={70} align="center" fixed>
-            <HeaderCell className="tableHeader">
-              <Checkbox
-                checked={checked}
-                indeterminate={indeterminate}
-                onChange={handleCheckAll}
-              />
-            </HeaderCell>
-            <CheckCell
-              dataKey="estateblock"
-              checkedKeys={checkStatus}
-              onChange={handleCheck}
-            />
-          </Column> */}
 
-          <Column flexGrow={1} align="left">
+          <Column flexGrow={2} align="left">
             <HeaderCell className="tableHeader">Estate Block</HeaderCell>
             <Cell dataKey="estateblock" />
           </Column>
 
-          <Column flexGrow={1} align="left">
+          <Column flexGrow={2} align="left">
             <HeaderCell className="tableHeader">Size (ha)</HeaderCell>
             <Cell dataKey="size" />
           </Column>
 
-          <Column flexGrow={4} align="left">
+          <Column flexGrow={2} align="left">
             <HeaderCell className="tableHeader">Density (p/ha)</HeaderCell>
             <Cell dataKey="density" />
+          </Column>
+
+          <Column flexGrow={2} align="left">
+            <HeaderCell className="tableHeader">Trial ID</HeaderCell>
+            <Cell dataKey="trialCode" />
           </Column>
         </Table>
         <SuccessMessage />

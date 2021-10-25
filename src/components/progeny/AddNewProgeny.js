@@ -1,15 +1,15 @@
-import React, { useState } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import { clearBreadcrumb } from "../../redux/actions/app.action"
-import { Grid, Row, Col, Input, Button } from "rsuite"
-import ConfirmationModal from "components/SharedComponent/ConfirmationModal"
-import DataPicker from "../SharedComponent/DataPicker"
-import ProgenyService from "../../services/progeny.service"
-import { publish } from "../../services/pubsub.service"
-
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { clearBreadcrumb } from "../../redux/actions/app.action";
+import { Grid, Row, Col, Input, Button } from "rsuite";
+import ConfirmationModal from "../SharedComponent/ConfirmationModal";
+import DataPicker from "../SharedComponent/DataPicker";
+import ProgenyService from "../../services/progeny.service";
+import { publish } from "../../services/pubsub.service";
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 const AddNewProgeny = () => {
   const initialForm = {
-    progenyId: "",
+    progenyCode: "",
     popvar: "",
     origin: "",
     progenyremark: "",
@@ -23,75 +23,96 @@ const AddNewProgeny = () => {
     mp: "",
     mpVar: "",
     cross: "",
-    crossType: ""
-  }
-  const [formData, setFormData] = useState(initialForm)
-  const [confirmationModal, setConfirmationModal] = useState(false)
-  const dispatch = useDispatch()
+    crossType: "",
+  };
+  const [formData, setFormData] = useState(initialForm);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+
+  const [dupProps, setDupProps] = useState(false);
+  const dispatch = useDispatch();
 
   const ProgenyData = useSelector(
-    state => state.dashboardDataReducer.result.progeny
-  )
+    (state) => state.dashboardDataReducer.result.progeny
+  );
 
   const data = [
     {
-      crossType: "sibbing"
+      crossType: "sibbing",
     },
     {
-      crossType: "selfing"
+      crossType: "selfing",
     },
     {
-      crossType: "intercross"
-    }
-  ]
+      crossType: "intercross",
+    },
+  ];
 
-  const crossTypeData = data.map(item => {
-    const addOn = formData.fpVar + "x" + formData.mpVar + " "
-    return addOn.concat(item.crossType)
-  })
+  const crossTypeData = data.map((item) => {
+    const addOn = formData.fpVar + "x" + formData.mpVar + " ";
+    return addOn.concat(item.crossType);
+  });
 
   function handleChange(e) {
-    e.persist()
-    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }))
+    console.log(e.target.value);
+    //CHECK FOR EXISTING PROGENY ID
+    checkDups(e.target.value);
+    e.persist();
+    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }));
   }
 
+  function checkDups(value) {
+    const found = ProgenyData.find(
+      (pd) => pd.progenyCode.toLowerCase() === value.toLowerCase()
+    );
+    const isDuplicate = found ? true : false;
+    setDupProps(isDuplicate);
+  }
   function handleFpChange(e) {
-    e.persist()
+    e.persist();
     setFormData(() => ({
       ...formData,
-      fp: formData.fpFam + "." + e.target.value
-    }))
+      fp: formData.fpFam + "." + e.target.value,
+    }));
   }
 
   function handleMpChange(e) {
-    e.persist()
+    e.persist();
     setFormData(() => ({
       ...formData,
-      mp: formData.mpFam + "," + e.target.value
-    }))
+      mp: formData.mpFam + "." + e.target.value,
+      cross: formData.fp + " x " + formData.mp,
+    }));
   }
 
   function createProgeny() {
     setFormData(() => ({
       ...formData,
-      cross: formData.fp + " x " + formData.mp
-    }))
+      cross: formData.fp + " x " + formData.mp,
+    }));
     ProgenyService.createProgeny(formData).then(
-      data => {
+      (data) => {
         const savedData = {
           type: "PROGENY_CREATE",
           data: formData,
-          action: "CREATE"
-        }
-        dispatch(clearBreadcrumb())
-        publish(savedData)
+          action: "CREATE",
+        };
+        dispatch(getDashboardData('progeny'))
+        dispatch(clearBreadcrumb());
+        publish(savedData);
       },
-      error => {
-        console.log(error.message)
+      (error) => {
+        console.log(error.message);
       }
-    )
+    );
   }
 
+  function checkDisableState() {
+    const length = Object.keys(formData).length;
+    const filled = Object.keys(formData).filter(
+      (key, index) => formData[key] != ""
+    );
+    return length === filled.length && !dupProps;
+  }
   return (
     <div id="ProgenyAction">
       <ConfirmationModal
@@ -109,10 +130,15 @@ const AddNewProgeny = () => {
           </Col>
           <Col md={10} lg={10} className="inputLayout">
             <Input
-              name="progenyId"
+              name="progenyCode"
               onChange={(value, e) => handleChange(e)}
               placeholder="Key in Progeny ID"
             />
+            {dupProps ? (
+              <p style={{ color: "red", fontSize: "12px", float: "right" }}>
+                Progeny ID already existed *
+              </p>
+            ) : null}
           </Col>
         </Row>
         <Row>
@@ -124,7 +150,7 @@ const AddNewProgeny = () => {
               dataType="popvar"
               searchable="true"
               OriginalData={ProgenyData}
-              onChange={value =>
+              onChange={(value) =>
                 setFormData(() => ({ ...formData, popvar: value }))
               }
               placeholder="Choose or Create New Pop Var"
@@ -176,7 +202,7 @@ const AddNewProgeny = () => {
               dataType="generation"
               searchable="true"
               OriginalData={ProgenyData}
-              onChange={value =>
+              onChange={(value) =>
                 setFormData(() => ({ ...formData, generation: value }))
               }
               placeholder="Choose or Create New Generation"
@@ -204,7 +230,7 @@ const AddNewProgeny = () => {
               dataType="fpFam"
               searchable="true"
               OriginalData={ProgenyData}
-              onChange={value =>
+              onChange={(value) =>
                 setFormData(() => ({ ...formData, fpFam: value }))
               }
               placeholder="Choose or Create New FP Fam"
@@ -259,7 +285,7 @@ const AddNewProgeny = () => {
               dataType="fpVar"
               searchable="true"
               OriginalData={ProgenyData}
-              onChange={value =>
+              onChange={(value) =>
                 setFormData(() => ({ ...formData, fpVar: value }))
               }
               placeholder="Choose or Create New FP Var"
@@ -276,7 +302,7 @@ const AddNewProgeny = () => {
               dataType="mpFam"
               searchable="true"
               OriginalData={ProgenyData}
-              onChange={value =>
+              onChange={(value) =>
                 setFormData(() => ({ ...formData, mpFam: value }))
               }
               placeholder="Choose or Create New MP Fam"
@@ -331,7 +357,7 @@ const AddNewProgeny = () => {
               dataType="mpVar"
               searchable="true"
               OriginalData={ProgenyData}
-              onChange={value =>
+              onChange={(value) =>
                 setFormData(() => ({ ...formData, mpVar: value }))
               }
               placeholder="Choose or Create New MP Var"
@@ -352,7 +378,7 @@ const AddNewProgeny = () => {
               <Input
                 name="cross"
                 value={formData.fp + " x " + formData.mp}
-                onChange={value =>
+                onChange={(value) =>
                   setFormData(() => ({ ...formData, cross: value }))
                 }
                 disabled
@@ -372,7 +398,7 @@ const AddNewProgeny = () => {
                 dataType="crossType"
                 searchable="true"
                 completedData={crossTypeData}
-                onChange={value =>
+                onChange={(value) =>
                   setFormData(() => ({ ...formData, crossType: value }))
                 }
                 placeholder="Choose or Create New MP Var"
@@ -400,6 +426,7 @@ const AddNewProgeny = () => {
             <Button
               className="saveButton"
               appearance="primary"
+              disabled={!checkDisableState()}
               onClick={() => setConfirmationModal(true)}
             >
               Save
@@ -408,7 +435,7 @@ const AddNewProgeny = () => {
         </Row>
       </Grid>
     </div>
-  )
-}
+  );
+};
 
-export default AddNewProgeny
+export default AddNewProgeny;

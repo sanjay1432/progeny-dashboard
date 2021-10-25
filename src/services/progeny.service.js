@@ -1,5 +1,5 @@
 import { API_URL } from "../constants"
-import axiosApiInstance from "api/api"
+import axiosApiInstance from "../api/api"
 
 const createProgeny = payload => {
   return axiosApiInstance
@@ -8,10 +8,16 @@ const createProgeny = payload => {
       return response.data
     })
 }
-
+const deleteProgeny = payload => {
+  return axiosApiInstance
+    .post(`${API_URL}/delete-progeny`, payload)
+    .then(response => {
+      return response.data
+    })
+}
 const updateProgeny = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-progeny`, payload)
+    .post(`${API_URL}/update-progeny`, payload)
     .then(response => {
       return response.data
     })
@@ -19,7 +25,7 @@ const updateProgeny = payload => {
 
 const attachProgeny = (payload, trialId) => {
   return axiosApiInstance
-    .put(`${API_URL}/attach-progeny?trialId=${trialId}`, payload)
+    .post(`${API_URL}/attach-progeny?trialCode=${trialId}`, payload)
     .then(response => {
       return response.data
     })
@@ -28,7 +34,8 @@ const attachProgeny = (payload, trialId) => {
 const ProgenyService = {
   createProgeny,
   updateProgeny,
-  attachProgeny
+  attachProgeny,
+  deleteProgeny
 }
 
 export default ProgenyService

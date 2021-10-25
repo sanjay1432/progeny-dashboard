@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react"
-import { CANCEL_REQUEST } from "../constants"
-import { activeDashboard, progenySubject } from "../services/pubsub.service"
-import MenuRoundedIcon from "@material-ui/icons/MenuRounded"
-import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded"
-import ShowChartIcon from "@material-ui/icons/ShowChart"
-import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
-import Insights_black from "../assets/img/icons/insights_black_24dp.svg"
-import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded"
-import logo from "assets/img/Progeny-logo/logoStyle02.png"
+import React, { useState, useEffect } from "react";
+import { CANCEL_REQUEST } from "../constants";
+import { Redirect } from "react-router-dom"
+import { activeDashboard, progenySubject } from "../services/pubsub.service";
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
+import ImportantDevicesRoundedIcon from "@material-ui/icons/ImportantDevicesRounded";
+import Insights_black from "../assets/img/icons/insights_black_24dp.svg";
+import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
+import logo from "../assets/img/Progeny-logo/logoStyle02.png";
 // reactstrap components
-import { Container } from "reactstrap"
+import { Container } from "reactstrap";
 
 import {
   Loader,
@@ -21,25 +20,27 @@ import {
   Container as ContainerRS,
   Dropdown,
   Drawer,
-  Sidenav
-} from "rsuite"
-import { useDispatch, useSelector } from "react-redux"
-import { getDashboardData } from "../redux/actions/dashboarddata.action"
-import axios from "axios"
-import ProgenySubNavBar from "../components/nav/ProgenySubNavBar"
-import TabPanel from "../components/shared/TabPanel"
-import { useHistory } from "react-router-dom"
-import { logout } from "../redux/actions/auth.action"
-import GeneralHelper from "../helper/general.helper"
-import SuccessMessage from "components/SharedComponent/SuccessMessage"
-
+  Sidenav,
+} from "rsuite";
+import { useDispatch, useSelector } from "react-redux";
+import { getDashboardData } from "../redux/actions/dashboarddata.action";
+import axios from "axios";
+import ProgenySubNavBar from "../components/nav/ProgenySubNavBar";
+import TabPanel from "../components/shared/TabPanel";
+import { useHistory } from "react-router-dom";
+import { logout } from "../redux/actions/auth.action";
+import GeneralHelper from "../helper/general.helper";
+import SuccessMessage from "../components/SharedComponent/SuccessMessage";
+import { useKeycloak } from "@react-keycloak/web";
+import AccessDenied from "./AccessDenied";
+import Dashboard from "./Dashboard";
 const initialSidenavState = {
   expanded: true,
-  activeKey: "1"
-}
+  activeKey: "1",
+};
 const initialSubnavState = {
-  active: "estate"
-}
+  active: "estate",
+};
 const listItems = [
   {
     name: "Master Data",
@@ -55,16 +56,16 @@ const listItems = [
             name: "estate",
             label: "Estate",
             type: "select",
-            disable: false
+            disable: false,
           },
           {
             name: "estatefullname",
             label: "Estate Full Name",
             type: "select",
-            disable: false
-          }
+            disable: false,
+          },
         ],
-        search: true
+        search: true,
       },
       {
         name: "Trial and Replicate",
@@ -72,24 +73,24 @@ const listItems = [
         filters: [
           {
             name: "trialCode",
-            label: "Trial Id",
+            label: "Trial ID",
             type: "select",
-            disable: false
+            disable: false,
           },
           {
             name: "planteddate",
-            label: "Planted Date (year)",
+            label: "Planted Date (Year)",
             type: "select",
-            disable: false
+            disable: false,
           },
           {
             name: "estate",
             label: "Estate",
             type: "select",
-            disable: false
-          }
+            disable: false,
+          },
         ],
-        search: false
+        search: false,
       },
       {
         name: "Plot",
@@ -97,24 +98,24 @@ const listItems = [
         filters: [
           {
             name: "trialCode",
-            label: "Trial Id",
+            label: "Trial ID",
             type: "select",
-            disable: false
+            disable: false,
           },
           {
             name: "estate",
             label: "Estate",
             type: "select",
-            disable: false
+            disable: false,
           },
           {
             name: "replicate",
             label: "Replicate",
             type: "select",
-            disable: true
-          }
+            disable: true,
+          },
         ],
-        search: false
+        search: false,
       },
       {
         name: "Palm",
@@ -122,30 +123,30 @@ const listItems = [
         filters: [
           {
             name: "trialCode",
-            label: "Trial Id",
+            label: "Trial ID",
             type: "select",
-            disable: false
+            disable: false,
           },
           {
             name: "estate",
             label: "Estate",
             type: "select",
-            disable: false
+            disable: false,
           },
-          {
-            name: "replicate",
-            label: "Replicate",
-            type: "select",
-            disable: true
-          },
-          {
-            name: "plot",
-            label: "Plot",
-            type: "select",
-            disable: true
-          }
+          // {
+          //   name: "replicate",
+          //   label: "Replicate",
+          //   type: "select",
+          //   disable: true
+          // },
+          // {
+          //   name: "plot",
+          //   label: "Plot",
+          //   type: "select",
+          //   disable: true
+          // }
         ],
-        search: false
+        search: false,
       },
       {
         name: "Progeny",
@@ -154,43 +155,44 @@ const listItems = [
           {
             name: "progenyCode",
             label: "Progeny ID",
-            type: "text"
+            type: "text",
           },
           {
             name: "progeny",
             label: "Progeny",
-            type: "text"
+            type: "text",
           },
           {
-            name: "fp",
-            label: "FP",
-            type: "text"
-          },
-          {
-            name: "fpfam",
+            name: "fpFam",
             label: "FP Fam",
-            type: "text"
+            type: "text",
+          },
+          {
+            name: "mpFam",
+            label: "MP Fam",
+            type: "text",
           },
           {
             name: "mp",
             label: "MP",
-            type: "text"
+            type: "text",
           },
           {
-            name: "mpfam",
-            label: "MP Fam",
-            type: "text"
+            name: "fp",
+            label: "FP",
+            type: "text",
           },
+
           {
             name: "orlet",
             label: "Orlet",
-            type: "text"
-          }
+            type: "text",
+          },
         ],
-        search: false
-      }
+        search: false,
+      },
     ],
-    type: "single"
+    type: "single",
   },
   {
     name: "Statistician",
@@ -212,10 +214,10 @@ const listItems = [
                 name: "year",
                 label: "Year",
                 type: "select",
-                disable: false
-              }
+                disable: false,
+              },
             ],
-            search: true
+            search: true,
           },
           {
             name: "Verify Forms",
@@ -223,26 +225,26 @@ const listItems = [
             filters: [
               {
                 name: "trialCode",
-                label: "Trial Id",
+                label: "Trial ID",
                 type: "select",
-                disable: false
+                disable: false,
               },
               {
-                name: "uploadedBy",
+                name: "uploadedby",
                 label: "Uploaded By",
                 type: "select",
-                disable: false
+                disable: false,
               },
               {
-                name: "recordedBy",
+                name: "recordedby",
                 label: "Recorded By",
                 type: "select",
-                disable: false
-              }
+                disable: false,
+              },
             ],
-            search: false
-          }
-        ]
+            search: false,
+          },
+        ],
       },
       {
         name: "Data List",
@@ -254,13 +256,13 @@ const listItems = [
             name: "Form Data",
             eventKey: "formdata",
             filters: [],
-            search: true
-          }
-        ]
-      }
+            search: true,
+          },
+        ],
+      },
     ],
-    type: "multiple"
-  }
+    type: "multiple",
+  },
   // {
   //   name: "User Management",
   //   icon: "group",
@@ -327,117 +329,135 @@ const listItems = [
   //     }
   //   ]
   // }
-]
+];
 
-const Overview = props => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDrawer, setDrawer] = useState(false)
-  const [sidenavState, setSidenavState] = useState(initialSidenavState)
-  const [subnavState, setSubnavState] = useState(initialSubnavState)
-  const [successMessage, setSuccessMessage] = useState(false)
-  const [action, setAction] = useState("")
-  const dispatch = useDispatch()
+const Overview = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDrawer, setDrawer] = useState(false);
+  const [sidenavState, setSidenavState] = useState(initialSidenavState);
+  const [subnavState, setSubnavState] = useState(initialSubnavState);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [action, setAction] = useState("");
+  const dispatch = useDispatch();
+  const { keycloak } = useKeycloak();
+  const isAutherized = (roles) => {
+    if (keycloak && roles) {
+      return roles.some((r) => {
+        const realm = keycloak.hasRealmRole(r);
+        const resource = keycloak.hasResourceRole(r);
+        return realm || resource;
+      });
+    }
+    return false;
+  };
 
-  const { isLoggedIn, user } = useSelector(state => state.authReducer)
-
+  const { isLoggedIn, user } = useSelector((state) => state.authReducer);
+  dispatch(getDashboardData("trial"));
   useEffect(() => {
     function subscribedData(data) {
-      handleSelect(data)
+      handleSelect(data);
     }
 
-    activeDashboard.subscribe(data => {
-      subscribedData(data)
-    })
-  }, [])
+    activeDashboard.subscribe((data) => {
+      subscribedData(data);
+    });
+  }, []);
 
   useEffect(() => {
     function Success(data) {
-      itemSaved(data)
+      itemSaved(data);
     }
 
-    progenySubject.subscribe(data => {
-      Success(data)
-    })
-  }, [])
+    progenySubject.subscribe((data) => {
+      Success(data);
+    });
+  }, []);
 
   function itemSaved(data) {
-    setAction(data.type)
-    setSuccessMessage(true)
+    setAction(data.type);
+    setSuccessMessage(true);
   }
 
-  const history = useHistory()
+  const history = useHistory();
 
-  const mainKey = sidenavState.activeKey.split("-")[0]
-  let currentSideItem
+  const mainKey = sidenavState.activeKey.split("-")[0];
+  let currentSideItem;
   if (mainKey === sidenavState.activeKey) {
     currentSideItem = listItems.find(
-      item => item.eventKey === sidenavState.activeKey
-    )
+      (item) => item.eventKey === sidenavState.activeKey
+    );
   } else {
-    const mainItem = listItems.find(item => item.eventKey === mainKey)
+    const mainItem = listItems.find((item) => item.eventKey === mainKey);
 
     currentSideItem = mainItem.subItems.find(
-      item => item.eventKey === sidenavState.activeKey
-    )
+      (item) => item.eventKey === sidenavState.activeKey
+    );
   }
 
   function toggleDrawer() {
-    setDrawer(true)
+    setDrawer(true);
   }
   function handleSelectTab(eventKey) {
-    setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }))
+    setSidenavState(() => ({ ...sidenavState, activeKey: eventKey }));
     if (eventKey === "1") {
-      setSubnavState(() => ({ ...subnavState, active: "estate" }))
-      handleSelect("estate")
+      setSubnavState(() => ({ ...subnavState, active: "estate" }));
+      handleSelect("estate");
     } else if (eventKey === "2") {
-      setSubnavState(() => ({ ...subnavState, active: "userlist" }))
-      handleSelect("userlist")
+      setSubnavState(() => ({ ...subnavState, active: "userlist" }));
+      handleSelect("userlist");
     } else if (eventKey === "2-1") {
-      setSubnavState(() => ({ ...subnavState, active: "yearlyverification" }))
-      handleSelect("yearlyverification")
+      setSubnavState(() => ({ ...subnavState, active: "yearlyverification" }));
+      handleSelect("yearlyverification");
     } else if (eventKey === "2-2") {
-      setSubnavState(() => ({ ...subnavState, active: "formdata" }))
-      handleSelect("formdata")
+      setSubnavState(() => ({ ...subnavState, active: "formdata" }));
+      handleSelect("formdata");
     }
 
-    close()
+    close();
   }
   function handleSelect(activeKey) {
-    console.log({ activeKey })
-    dispatch(getDashboardData(activeKey))
-    setSubnavState(() => ({ ...subnavState, active: activeKey }))
+    console.log({ activeKey });
+    if (activeKey != "palm") {
+      dispatch(getDashboardData(activeKey));
+    }
+
+    setSubnavState(() => ({ ...subnavState, active: activeKey }));
   }
   function close() {
-    setDrawer(false)
+    setDrawer(false);
   }
   useEffect(() => {
     if (!isLoggedIn) {
       history.push({
-        pathname: "/login"
-      })
+        pathname: "/",
+      });
     } else {
-      const { active } = subnavState
+      const { active } = subnavState;
+      console.log({ active });
+      if (active !== "palm") {
+        dispatch(getDashboardData(active));
+      }
 
-      dispatch(getDashboardData(active))
-      const CancelToken = axios.CancelToken
-      const source = CancelToken.source()
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
 
       const fetchData = async () => {
-        setIsLoading(false)
-      }
+        setIsLoading(false);
+      };
 
-      fetchData()
+      fetchData();
       return () => {
-        source.cancel(CANCEL_REQUEST)
-      }
+        source.cancel(CANCEL_REQUEST);
+      };
     }
-  }, [dispatch, history, isLoggedIn, props.location.state, user])
+  }, [dispatch, history, isLoggedIn, props.location.state, user, keycloak]);
+  // }, [dispatch, history, isLoggedIn, props.location.state, user])
 
   if (isLoading) {
-    return <Loader center content="Loading" />
+    return <Loader center content="Loading" />;
   }
-  const { activeKey, expanded } = sidenavState
-  const { active } = subnavState
+  const { activeKey, expanded } = sidenavState;
+  const { active } = subnavState;
   return (
     <>
       <SuccessMessage
@@ -446,144 +466,162 @@ const Overview = props => {
         hide={() => setSuccessMessage("")}
       />
       {isLoggedIn && (
-        <ContainerRS>
-          <Header>
-            <Navbar>
-              <Navbar.Header id="header">
-                <div className="headerLayout">
-                  <MenuRoundedIcon
-                    className="toggle"
-                    onClick={() => toggleDrawer()}
-                  />
-                  <img
-                    className="progenyLogo"
-                    alt="Progeny Management System"
-                    src={logo}
-                  />
-
-                  <p className="title">Progeny Management System</p>
-
-                  <NavRS pullRight className="logoutToggle">
-                    <Dropdown
-                      icon={<AccountCircleRoundedIcon className="logoutLogo" />}
-                      title={GeneralHelper.buildDisplayName(
-                        user.firstName,
-                        user.lastName,
-                        user.username
-                      )}
-                    >
-                      <Dropdown.Item
-                        icon={<Icon icon="sign-out" />}
-                        onClick={() => dispatch(logout())}
-                      >
-                        Logout
-                      </Dropdown.Item>
-                    </Dropdown>
-                  </NavRS>
-                </div>
-              </Navbar.Header>
-            </Navbar>
-
-            <div id="subNavigation">
-              <ProgenySubNavBar
-                active={active}
-                onSelect={handleSelect}
-                currentItem={currentSideItem}
-              />
-            </div>
-          </Header>
-
-          <Content>
-            <main id="contentSection">
-              <div className="content">
-                <section id="overview">
-                  {isLoading ? (
-                    <Loader center content="Loading" />
-                  ) : (
-                    <Container fluid>
-                      {/* MAIN COMPOENTS */}
-                      <TabPanel
-                        currentSubNavState={subnavState}
-                        currentItem={currentSideItem}
+        <>
+          <ContainerRS>
+            <Header>
+              <Navbar>
+                <Navbar.Header id="header">
+                  <div className="headerLayout">
+                    {isAutherized(["Administrator", "Supervisor"]) && (
+                      <MenuRoundedIcon
+                        className="toggle"
+                        onClick={() => toggleDrawer()}
                       />
-                    </Container>
-                  )}
-                </section>
-              </div>
-            </main>
-            <NavRS pullRight></NavRS>
-          </Content>
+                    )}
+                    <img
+                      className="progenyLogo"
+                      alt="Progeny Management System"
+                      src={logo}
+                    />
 
-          <Drawer
-            id="sideNavigation"
-            size="xs"
-            placement="left"
-            backdrop
-            show={isDrawer}
-            onHide={close}
-          >
-            <Drawer.Header>
-              <img src={logo} className="progenyLogo" />
-              <div className="title">
-                <b className="titleContent">Progeny</b>
-                <b className="titleContent">Management System</b>
-              </div>
-            </Drawer.Header>
-            <Drawer.Body>
-              <div style={{ width: "100% " }}>
-                <Sidenav
-                  expanded={expanded}
-                  activeKey={activeKey}
-                  onSelect={handleSelectTab}
-                >
-                  <Sidenav.Body>
-                    <NavRS>
-                      {listItems.map((item, i) => {
-                        if (item.type === "multiple") {
-                          return (
-                            <Dropdown
-                              eventKey={item.eventKey}
-                              title={<p>{item.name}</p>}
-                              icon={
-                                <img src={item.customIcon} alt=""
-                                  key={i}
-                                />
-                              }
-                            >
-                              {item.subItems.map((subitem, idx) => {
-                                return (
-                                  <Dropdown.Item eventKey={subitem.eventKey} key = {idx}>
-                                    <p>{subitem.name}</p>
-                                  </Dropdown.Item>
-                                )
-                              })}
-                            </Dropdown>
-                          )
-                        } else {
-                          return (
-                            <NavRS.Item
-                              eventKey={item.eventKey}
-                              icon={
-                                <item.customIcon
-                                  className="contentIcon"
-                                  key={i}
-                                />
-                              }
-                            >
-                              <p>{item.name}</p>
-                            </NavRS.Item>
-                          )
+                    <p className="title">Progeny Management System</p>
+
+                    <NavRS pullRight className="logoutToggle">
+                      <Dropdown
+                        icon={
+                          <AccountCircleRoundedIcon className="logoutLogo" />
                         }
-                      })}
+                        title={GeneralHelper.buildDisplayName(
+                          user.firstName,
+                          user.lastName,
+                          user.username
+                        )}
+                      >
+                        {/* <Dropdown.Item
+                          icon={<Icon icon="sign-out" />}
+                          onClick={() => dispatch(logout())}
+                        >
+                          Logout
+                        </Dropdown.Item> */}
+                        <Dropdown.Item
+                          icon={<Icon icon="sign-out" />}
+                          onClick={() => {
+                            keycloak.logout();
+                          }}
+                        >
+                          Logout
+                        </Dropdown.Item>
+                      </Dropdown>
                     </NavRS>
-                  </Sidenav.Body>
-                </Sidenav>
-              </div>
-            </Drawer.Body>
-          </Drawer>
-        </ContainerRS>
+                  </div>
+                </Navbar.Header>
+              </Navbar>
+              {isAutherized(["Administrator"]) && (
+                <div id="subNavigation">
+                  <ProgenySubNavBar
+                    active={active}
+                    onSelect={handleSelect}
+                    currentItem={currentSideItem}
+                  />
+                </div>
+              )}
+            </Header>
+            {isAutherized(["Administrator"]) ? (
+              <Content>
+                <main id="contentSection">
+                  <div className="content">
+                    <section id="overview">
+                      {isLoading ? (
+                        <Loader center content="Loading" />
+                      ) : (
+                        <Container fluid>
+                          {/* MAIN COMPOENTS */}
+                          <TabPanel
+                            currentSubNavState={subnavState}
+                            currentItem={currentSideItem}
+                          />
+                        </Container>
+                      )}
+                    </section>
+                  </div>
+                </main>
+                <NavRS pullRight></NavRS>
+              </Content>
+            ) : isAutherized(["Supervisor"])? (<Dashboard/>): (
+              <AccessDenied />
+            )}
+            <Drawer
+              id="sideNavigation"
+              size="xs"
+              placement="left"
+              backdrop
+              show={isDrawer}
+              onHide={close}
+            >
+              <Drawer.Header>
+                <img src={logo} className="progenyLogo" />
+                <div className="title">
+                  <b className="titleContent">Progeny</b>
+                  <b className="titleContent">Management System</b>
+                </div>
+              </Drawer.Header>
+              <Drawer.Body>
+                <div style={{ width: "100% " }}>
+                  <Sidenav
+                    expanded={expanded}
+                    activeKey={activeKey}
+                    onSelect={handleSelectTab}
+                  >
+                    <Sidenav.Body>
+                      <NavRS>
+                        {listItems.map((item, i) => {
+                          if (item.type === "multiple") {
+                            return (
+                              <Dropdown
+                                eventKey={item.eventKey}
+                                title={<p>{item.name}</p>}
+                                icon={
+                                  <img src={item.customIcon} alt="" key={i} />
+                                }
+                              >
+                                {item.subItems.map((subitem, idx) => {
+                                  return (
+                                    <Dropdown.Item
+                                      eventKey={subitem.eventKey}
+                                      key={idx}
+                                    >
+                                      <p>{subitem.name}</p>
+                                    </Dropdown.Item>
+                                  );
+                                })}
+                              </Dropdown>
+                            );
+                          } else {
+                            return (
+                              <NavRS.Item
+                                eventKey={item.eventKey}
+                                icon={
+                                  <item.customIcon
+                                    className="contentIcon"
+                                    key={i}
+                                  />
+                                }
+                              >
+                                <p>{item.name}</p>
+                              </NavRS.Item>
+                            );
+                          }
+                        })}
+                      </NavRS>
+                    </Sidenav.Body>
+                  </Sidenav>
+                </div>
+              </Drawer.Body>
+            </Drawer>
+          </ContainerRS>
+        </>
       )}
     </>
-  )
-}
-export default Overview
+  );
+};
+export default Overview;

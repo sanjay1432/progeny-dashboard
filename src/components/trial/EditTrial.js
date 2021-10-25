@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
+
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import {
   Table,
   FlexboxGrid,
@@ -16,7 +18,8 @@ import {
   Radio,
   RadioGroup,
   SelectPicker,
-  Modal
+  Modal,
+  InputNumber
 } from "rsuite"
 import EstateService from "../../services/estate.service"
 
@@ -24,6 +27,8 @@ import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
 import TrialService from "../../services/trial.service"
 import { publish } from "../../services/pubsub.service"
+
+import SuccessModal from "../modal/masterData/success/success"
 const styles = { width: 280, display: "block", marginBottom: 10 }
 const { Column, HeaderCell, Cell } = Table
 const initializeTrailState = {
@@ -44,12 +49,21 @@ const initializeTrailState = {
 function findEstateBlocks(ebs, estate) {
   let estateBlocks = ebs.find(row => row.estate === estate)?.estateblocks
   const mappedEstateBlocks = []
-  for (let item in estateBlocks) {
-    mappedEstateBlocks.push({
-      label: estateBlocks[item].estateblock,
-      value: estateBlocks[item].estateblock
-    })
+  if(estateBlocks) {
+    const assignedEstateBlocks = []
+    estateBlocks.forEach(eb => {
+      if(eb.assigned){
+       assignedEstateBlocks.push(eb)
+      }
+    });
+    for (let item in assignedEstateBlocks) {
+      mappedEstateBlocks.push({
+        label: assignedEstateBlocks[item].estateblock,
+        value: assignedEstateBlocks[item].estateblock
+      })
+    }
   }
+ 
   return mappedEstateBlocks
 }
 
@@ -61,13 +75,14 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
       {editing && dataKey !== "estateblock" ? (
         <input
           className="rs-input"
+          type = {dataKey === "density"?"number":"text"}
           defaultValue={rowData[dataKey]}
           disabled={["estate", "replicate", "design", "soiltype"].includes(
             dataKey
           )}
           onChange={event => {
             onChange &&
-              onChange(rowData.replicate, dataKey, event.target.value)
+              onChange(rowData.replicate,rowData.estate, dataKey, event.target.value)
           }}
         />
       ) : editing && dataKey === "estateblock" ? (
@@ -77,7 +92,7 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
           placeholder="-"
           value={rowData.estateblock}
           onChange={value => {
-            onChange && onChange(rowData.replicate, dataKey, value)
+            onChange && onChange(rowData.replicate,rowData.estate, dataKey, value)
           }}
         />
       ) : (
@@ -91,32 +106,44 @@ export const EditCell = ({ rowData, dataKey, onChange, estatesWithBlocks, ...pro
 const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const dispatch = useDispatch()
   const [trial, setTrial] = useState(initializeTrailState)
+  const [trialTypes, setTrialTypes] = useState([])
   const [status, setStatus] = useState("")
   const [disabled, setDisabled] = useState("no")
   const [regenerateTable, setRegenerateTable] = useState(false)
   const [replicatesInEstate, setReplicatesInEstate] = useState([])
+  const [ebList, setEbList] = useState([]);
+  const [isSuccessModal, setSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState(null)
+  const [regenerateEnabled, setRegenerateEnabled] = useState(false)
+
   const [existingReplicatesInEstate, setExistingReplicatesInEstate] = useState(
     []
   )
   const trialData = useSelector(state => state.dashboardDataReducer.result.trial)
-  useEffect(() => {
 
-    const data =  trialData.find((t)=> t.trialId === option.trial)
-      setTrial(data)
+  useEffect( () => {
+    EstateService.getDesigns().then(response => {
+      console.log({response})
+      const designsData =  response.data;
+      const data =  trialData.find((t)=> t.trialId === option.trial)
+      const designObj = designsData.find((t)=> t.design === data.design)
+      data.designId =  designObj.designId
+      setTrial(data) 
       setStatus(data.status)
 
       let replicates = data.replicates
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
         const blocks = reps.estateblocks
-        if (blocks.length < 2) {
+        if (blocks && blocks.length < 2) {
           reps.estateblock = blocks[0].name
           reps.design = data.design
+          reps.designId = designObj.designId
           reps.density = blocks[0].density
           reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
         }
-        if (blocks.length > 1) {
+        if (blocks && blocks.length > 1) {
           const uni = reps
           delete uni.estateblock
           for (let i = 0; i < blocks.length; i++) {
@@ -125,13 +152,12 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             reps.density = blocks[i].density
             reps.soiltype = blocks[i].soiltype
             reps.design = data.design
+            reps.designId = designObj.designId
             Object.keys(uni).forEach(key => (reps[key] = uni[key]));
             newSetOfReps.push(reps)
           }
         }
       })
-
-      console.log({newSetOfReps})
       setExistingReplicatesInEstate(newSetOfReps)
       //Can be multiple estate in trial
       const estateReps = []
@@ -143,6 +169,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       })
 
       setReplicatesInEstate(estateReps)
+    })
+    
 
   }, [])
 
@@ -152,38 +180,50 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [isMultplicationValid, setMultplicationValid] = useState(null)
 
   const [checkStatusReplicates, setCheckStatusReplicate] = useState([])
-  const [estateblocks, setEstateblocks] = useState([])
+  // const [estateblocks, setEstateblocks] = useState([])
   const [disbaledANR, setDisbaledANR] = useState(true)
   const [disbaledANRV, setDisbaledANRV] = useState(true)
   const [disbaledRD, setDisbaledRD] = useState(true)
   const [show, setShow] = useState(false)
   const [activeRow, setActiveRow] = useState(null)
   const [showRegenerateWarning, setShowRegenerateWarning] = useState(false)
+
+  const dashboardData = useSelector((state) => state.dashboardDataReducer);
+
   useEffect(() => {
+    fetchTypes()
     fetchEstates()
     fetchDesigns()
   }, [isMultplicationValid, trial])
 
   async function fetchEstates() {
-    const { data } = await EstateService.getUpdatedEstateBlocks()
-    console.log("EstatesWithBlocks", data)
-    setEstatesWithBlocks(data)
+    const mappedEstates =  dashboardData.result['estate']
+    setEstatesWithBlocks(mappedEstates)
     const mappedEstate = []
 
-    for (let item in data) {
-      mappedEstate.push({ label: data[item].estate, value: data[item].estate })
+    for (let item in mappedEstates) {
+      mappedEstate.push({ label: mappedEstates[item].estate, value: mappedEstates[item].estate })
     }
-    console.log({ mappedEstate })
     setEstates(mappedEstate)
   }
+  async function fetchTypes() {
+    const types = await TrialService.getTrialTypes()
+    const { data } = await EstateService.getUpdatedEstateBlocks()
+    setEbList(data)
+    const mappedTypes = []
+
+    for (let item in types) {
+      mappedTypes.push({ label: types[item], value: types[item] })
+    }
+    setTrialTypes(mappedTypes)
+  }  
   async function fetchDesigns() {
     const { data } = await EstateService.getDesigns()
     const mappedDesigns = []
 
     for (let item in data) {
-      mappedDesigns.push({ label: data[item].design, value: data[item].design })
+      mappedDesigns.push({ label: data[item].design, value: data[item].designId })
     }
-    console.log(mappedDesigns)
     setDesigns(mappedDesigns)
   }
   function onInput(e) {
@@ -199,7 +239,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       setMultplicationValid(isValid)
     }
     e.persist()
-    setTrial(() => ({ ...trial, [e.target.name]: e.target.value }))
+    const val =  e.target.value % 1 > 0 && ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name) ? parseInt(e.target.value): e.target.value
+    setTrial(() => ({ ...trial, [e.target.name]: val }));
+    handleDisableState()
   }
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
@@ -209,7 +251,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       value = e
     } else {
       name = e.target.name
-      value = e.target.value
+      value = e.target.value?parseInt(e.target.value): 1;
 
       //UPDATE THE number of Replicare in Trial
       const currentnoOfRep =
@@ -220,6 +262,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const list = [...replicatesInEstate]
     list[index][name] = value
     setReplicatesInEstate(list)
+    setRegenerateEnabled(true)
+    handleDisableState()
   }
   function verifyMultiplicationOfSubblockandPlot(name, value) {
     const { nofprogeny, nofsubblock, nofplot_subblock } = trial
@@ -242,16 +286,19 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     list.splice(index, 1)
     setReplicatesInEstate(list)
   }
-  function onSelectDesign(design) {
-    setTrial(() => ({ ...trial, design }))
+  function onSelectDesign(designId) {
+    const designLabel =  designs.find((design)=> design.value ===  designId)
+    setTrial(() => ({ ...trial, design: designLabel.label, designId }))
   }
 
+  function onSelectType(type){
+    setTrial(() => ({ ...trial, type }))
+  }
   function onReGenerateTable() {
     const trialData = { ...trial }
     setExistingReplicatesInEstate([])
     for (let i = 0; i < replicatesInEstate.length; i++) {
       const noOfReps = parseInt(replicatesInEstate[i].replicate)
-      console.log({ noOfReps })
       for (let replicate = 0; replicate < noOfReps; replicate++) {
         const item = {
           estate: replicatesInEstate[i].estate,
@@ -259,16 +306,15 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           estateblock: "",
           density: trialData.density,
           design: trialData.design,
+          designId: trialData.designId,
           soiltype: ""
         }
-        console.log(item)
         setExistingReplicatesInEstate(oldtableData => [...oldtableData, item])
       }
     }
 
     trialData["replicates"] = existingReplicatesInEstate
 
-    console.log({ trialData })
     setRegenerateTable(true)
     setShowRegenerateWarning(false)
     setDisbaledANR(false)
@@ -326,25 +372,30 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function getEstateBlocks(estate) {
-    let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
+    let estateBlocks = ebList.find((row) => row.estate === estate);
+    const assignedEstateBlocks = []
     if (estateBlocks) {
-      estateBlocks = estateBlocks.estateblocks
-      setEstateblocks(estateBlocks)
+      estateBlocks = estateBlocks.estateblocks;
+      estateBlocks.forEach(eb => {
+       if(eb.assigned){
+        assignedEstateBlocks.push(eb)
+       }
+     });
+      // setEstateblocks(estateBlocks)
     }
-
-    const mappedEstateBlocks = []
-    for (let item in estateBlocks) {
+    const mappedEstateBlocks = [];
+    for (let item in assignedEstateBlocks) {
       mappedEstateBlocks.push({
-        label: estateBlocks[item].estateblock,
-        value: estateBlocks[item].estateblock
-      })
+        label: assignedEstateBlocks[item].estateblock,
+        value: assignedEstateBlocks[item].estateblock,
+      });
     }
-    return mappedEstateBlocks
+    return mappedEstateBlocks;
   }
 
-  function handleEstateBlockChange(block, replicate, rowIndex) {
+  async function handleEstateBlockChange(block, replicate, rowIndex) {
     if (block) {
-      const foundedBlock = findEstateBlock(block)
+      const foundedBlock = await findEstateBlock(block)
       const data = [...existingReplicatesInEstate]
       data[rowIndex].estateblock = block
       data[rowIndex].blockId = foundedBlock.id
@@ -375,11 +426,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate(data)
   }
   function onAddingNewReplicateVarient() {
-    console.log(checkStatusReplicates)
     const data = [...existingReplicatesInEstate]
-    console.log(data)
     for (let index in checkStatusReplicates) {
-      console.log(checkStatusReplicates[index])
       const repIndex = checkStatusReplicates[index]
       const existingRep = data[repIndex]
       const variant = {
@@ -394,7 +442,6 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
       data.splice(repIndex + 1, 0, variant)
       setExistingReplicatesInEstate(data)
-      console.log(existingRep)
     }
   }
 
@@ -410,9 +457,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   function onSaveTrial() {
     setShow(false)
     trial["replicates"] = existingReplicatesInEstate
-    console.log(trial)
     trial.status = status
-    console.log({ disabled })
     if (disabled === "yes") {
       TrialService.saveTrial(trial).then(
         data => {
@@ -421,8 +466,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "CREATED"
           }
-          dispatch(clearBreadcrumb())
-          publish(savedData)
+          dispatch(getDashboardData('trial'))
+          setSuccessModal(true)
+          setSuccessData(savedData)
         },
         err => console.log(err)
       )
@@ -434,8 +480,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "UPDATED"
           }
-          dispatch(clearBreadcrumb())
-          publish(savedData)
+          dispatch(getDashboardData('trial'))
+          setSuccessModal(true)
+          setSuccessData(savedData)
         },
         err => console.log(err)
       )
@@ -464,7 +511,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               color="green"
               size="xs"
               onClick={() => {
-                onClick && onClick(rowData.replicate)
+                onClick && onClick(rowData.replicate, rowData.estate)
               }}
             />
             &nbsp;
@@ -484,7 +531,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             src={CreateIcon}
             alt=""
             onClick={() => {
-              onClick && onClick(rowData.replicate)
+              onClick && onClick(rowData.replicate, rowData.estate)
             }}
           />
         )}
@@ -499,40 +546,45 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate(nextData)
  }
 
-  const handleChange = (replicate, key, value) => {
-    console.log({replicate, key, value})
+  const handleChange = async (replicate,estate, key, value) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
     if(key === "estateblock"){
-       const foundedBlock = findEstateBlock(value)
+       const foundedBlock = await findEstateBlock(value)
+       console.log({foundedBlock})
+       const trialReplicate  = nextData.find(item => item.replicate === replicate)
+       trialReplicate.estateblocks[0].id = foundedBlock.id
+       trialReplicate.estateblocks[0].name = foundedBlock.estateblock
        nextData.find(item => item.replicate === replicate)['soiltype'] = foundedBlock.soiltype
-
+      //  nextData.find(item => item.replicate === replicate)['blockId'] = foundedBlock.id
     }
-    nextData.find(item => item.replicate === replicate)[key] = value
+    nextData.find(item => item.replicate === replicate && item.estate === estate)[key] = value
     setExistingReplicatesInEstate(nextData)
   }
 
 
-  const findEstateBlock = (value)=>{
+  const findEstateBlock = async (value)=>{
     const estateBlocksItems = []
-    estatesWithBlocks.forEach(estate => {
+    const { data } = await EstateService.getUpdatedEstateBlocks()
+    data.forEach(estate => {
       estateBlocksItems.push(...estate.estateblocks)
     })
-    const estateBlocks = [
-      ...new Set(
-        estateBlocksItems
-          .map(item => item.estateblock)
-          .map(block =>
-            estateBlocksItems.find(eb => eb.estateblock === block)
-          )
-      )
-    ]
+    // const estateBlocks = [
+    //   ...new Set(
+    //     estateBlocksItems
+    //       .map(item => item.estateblock)
+    //       // .map(block =>
+    //       //   estateBlocksItems.find(eb => eb.estateblock === block)
+    //       // )
+    //   )
+    // ]
 
-    const foundedBlock = estateBlocks.find(eb => eb.estateblock === value)
+    const foundedBlock = estateBlocksItems.find(eb => eb.estateblock === value)
     return foundedBlock
   }
-  const handleEditState = replicate => {
+  const handleEditState = (replicate, estate) => {
     const nextData = Object.assign([], existingReplicatesInEstate)
-    const activeItem = nextData.find(item => item.replicate === replicate)
+    nextData.map((row)=>(row.replicate === replicate && row.estate === estate)?row.status = row.status : row.status = null)
+    const activeItem = nextData.find(item => item.replicate === replicate && item.estate === estate)
     setActiveRow({...activeItem})
     activeItem.status = activeItem.status ? null : "EDIT"
     setExistingReplicatesInEstate(nextData)
@@ -559,6 +611,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setExistingReplicatesInEstate(data)
   }
 
+  function CloseSuccessModal() {
+    setSuccessModal(false)
+    dispatch(clearBreadcrumb())
+  }
+
   function getMultipleEstateString(estates) {
     let estateString = ""
     if (estates) {
@@ -569,6 +626,26 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     }
 
     return estateString
+  }
+
+   function handleDisableState() {
+    const isEmpty = checkProperties(trial);
+    let isEmptyreplicatesInEstate =  false
+    replicatesInEstate.forEach(rpEs => {
+      isEmptyreplicatesInEstate = checkProperties(rpEs);
+    });
+    // if (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate) {
+    //   return true
+    // } else {
+    //   return false
+    // }
+    return (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate)?true:false
+  }
+  function checkProperties(obj) {
+    for (var key in obj) {
+      if (obj[key] === null || obj[key] === "") return true;
+    }
+    return false;
   }
   return (
     <div id="TrialAction">
@@ -583,7 +660,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       <Grid fluid>
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
-            <p className="labelForm">Trail ID</p>
+            <p className="labelForm">Trial ID</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -597,7 +674,24 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Row>
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
-            <p className="labelForm">Trail</p>
+            <p className="labelForm">Type</p>
+          </Col>
+          <Col md={10} lg={10}>
+            <SelectPicker
+              id="type"
+              className="designPicker"
+              data={trialTypes}
+              value={trial.type}
+              onSelect={type => onSelectType(type)}
+              placeholder="Select Type"
+              block
+            />{" "}
+          </Col>
+        </Row>
+
+        <Row className="show-grid TrialFormLayout">
+          <Col md={9} lg={8}>
+            <p className="labelForm">Trial</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -678,8 +772,8 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               style={{ color: "#353131f2" }}
             >
               {/* <Radio value="active">Active</Radio> */}
-              <Radio value="canceled">Canceled</Radio>
-              <Radio value="finished">Finished</Radio>
+              <Radio value="Canceled">Canceled</Radio>
+              <Radio value="Closed">Closed</Radio>
             </RadioGroup>
           </Col>
         </Row>
@@ -788,7 +882,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                       />
                     </Col>
                     <Col md={5} lg={5}>
-                      <Input
+                      <InputNumber
                         placeholder="Select No of Replicate"
                         className="formField"
                         value={input.replicate}
@@ -862,7 +956,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           appearance="primary"
           className="generateTableButton"
           onClick={() => setShowRegenerateWarning(true)}
-          disabled={disabled === "no" || !isMultplicationValid}
+          disabled={handleDisableState()}
         >
           <Icon icon="table" /> Regenerate Table
         </Button>
@@ -1065,31 +1159,31 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           >
             <Column width={200}>
               <HeaderCell>Estate</HeaderCell>
-              <EditCell dataKey="estate" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="estate" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={200}>
               <HeaderCell>Replicate</HeaderCell>
-              <EditCell dataKey="replicate" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="replicate" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Estate Block</HeaderCell>
-              <EditCell dataKey="estateblock" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="estateblock" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Density</HeaderCell>
-              <EditCell dataKey="density" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="density" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
 
             <Column width={250}>
               <HeaderCell>Design</HeaderCell>
-              <EditCell dataKey="design" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="design" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
             <Column width={250}>
               <HeaderCell>Soil Type</HeaderCell>
-              <EditCell dataKey="soiltype" onChange={handleChange} estatesWithBlocks = {estatesWithBlocks}/>
+              <EditCell dataKey="soiltype" onChange={handleChange} estatesWithBlocks = {ebList}/>
             </Column>
             <Column width={130}>
               <HeaderCell>Action</HeaderCell>
@@ -1191,6 +1285,13 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Footer>
       </Modal>
       {/* EDIT CONFIRMATION MODEL END */}
+
+
+      <SuccessModal
+                show={isSuccessModal}
+                hide={CloseSuccessModal}
+                data={successData}
+              />
     </div>
   )
 }

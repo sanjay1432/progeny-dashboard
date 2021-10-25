@@ -1,4 +1,4 @@
-import { DASHBOARDDATA_FAIL, DASHBOARDDATA_SUCCESS } from "../actions/types"
+import { DASHBOARDDATA_FAIL,DASHBOARDDATA_CLEAR, DASHBOARDDATA_SUCCESS } from "../actions/types"
 import StateLoader from "../StateLoader"
 const stateLoader = new StateLoader()
 
@@ -14,7 +14,12 @@ export const DashboardDataReducer = (
         ...state,
         result: payload.result
       }
-    case DASHBOARDDATA_FAIL:
+    // case DASHBOARDDATA_FAIL:
+    //   return {
+    //     ...state,
+    //     result: {}
+    //   }
+    case DASHBOARDDATA_CLEAR:
       return {
         ...state,
         result: {}

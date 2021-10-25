@@ -1,24 +1,11 @@
 const InitializeState = {
   appReducer: {
-    mill: {
-      millId: 1,
-      millCode: "KRC",
-      buId: 1,
-      logo: "Kerinci",
-      name: "Kerinci",
-      countryId: 1
-    },
-    mills: null,
     breadcrumb: {},
-    expandChart: {
-      show: false,
-      data: {},
-      title: "Chart"
-    }
   },
   authReducer: { isLoggedIn: false, user: null },
   dashboardDataReducer: { result: {} },
   userReducer: { result: {} },
+  filterReducer: {filter: ""},
   dashboardReducer: {
     displayAsDate: null,
     latestDate: null,
@@ -26,7 +13,8 @@ const InitializeState = {
     displayProcessLine: {},
     displayPeriods: []
   },
-  trialReducer: {}
+  trialReducer: {},
+  resetReducer: false
 }
 
 const KEY = "progeny-app-state"

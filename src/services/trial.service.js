@@ -10,7 +10,7 @@ const saveTrial = payload => {
 }
 const editTrial = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-trial`, payload)
+    .post(`${API_URL}/update-trial`, payload)
     .then(response => {
       return response.data
     })
@@ -18,15 +18,25 @@ const editTrial = payload => {
 
 const getTrial = trialCode => {
   return axiosApiInstance
-    .get(`${API_URL}/trial/${trialCode}`)
+    .get(`${API_URL}/trial?trialCode='${trialCode}'`)
     .then(response => {
-      return response.data.data
+      return response.data.data[0]
+    })
+}
+
+const getTrialTypes = () => {
+  return axiosApiInstance
+    .get(`${API_URL}/trial-types`)
+    .then(response => {
+      const {data} = response.data;
+      const types = [...new Set(data.map((type) => type.trialType))];
+      return types;
     })
 }
 
 const updateTrialReplicate = body => {
   return axiosApiInstance
-    .put(`${API_URL}/trial/replicate`, body)
+    .post(`${API_URL}/trial/replicate`, body)
     .then(response => {
       return response.data
     })
@@ -43,6 +53,7 @@ const TrialService = {
   saveTrial,
   editTrial,
   getTrial,
+  getTrialTypes,
   updateTrialReplicate,
   updateTrialState
 }

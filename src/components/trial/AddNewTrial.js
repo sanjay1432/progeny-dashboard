@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react"
-import { useDispatch } from "react-redux"
-import { clearBreadcrumb } from "../../redux/actions/app.action"
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { clearBreadcrumb } from "../../redux/actions/app.action";
+import { getDashboardData } from "../../redux/actions/dashboarddata.action";
 import {
   Table,
   FlexboxGrid,
@@ -16,19 +17,23 @@ import {
   Radio,
   RadioGroup,
   SelectPicker,
-  Modal
-} from "rsuite"
-import EstateService from "../../services/estate.service"
+  Modal,
+  InputNumber,
+  Tag,
+} from "rsuite";
+import EstateService from "../../services/estate.service";
 
-import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24px.svg"
+import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24px.svg";
 
-import TrialService from "../../services/trial.service"
-import { publish } from "../../services/pubsub.service"
-const styles = { width: 280, display: "block", marginBottom: 10 }
-const { Column, HeaderCell, Cell } = Table
+import TrialService from "../../services/trial.service";
+
+import SuccessModal from "../modal/masterData/success/success";
+const styles = { width: 280, display: "block", marginBottom: 10 };
+const { Column, HeaderCell, Cell } = Table;
 const initializeTrailState = {
   trialCode: "",
   trial: "",
+  type: "",
   trialremark: "",
   area: "",
   planteddate: "",
@@ -37,57 +42,86 @@ const initializeTrailState = {
   nofplot_subblock: 0,
   nofsubblock: 0,
   design: "",
-  density: ""
-}
+  density: "",
+};
 const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
-  const dispatch = useDispatch()
-  const [trial, setTrial] = useState(initializeTrailState)
-  const [disabledGenerateTable, setDisabledGenerateTable] = useState(true)
-  const [estates, setEstates] = useState([])
-  const [estatesWithBlocks, setEstatesWithBlocks] = useState([])
-  const [tableData, setTableData] = useState([])
-  const [designs, setDesigns] = useState([])
-  const [isMultplicationValid, setMultplicationValid] = useState(null)
+  const dispatch = useDispatch();
+  const [trial, setTrial] = useState(initializeTrailState);
+  const [trialTypes, setTrialTypes] = useState([]);
+  const [disabledGenerateTable, setDisabledGenerateTable] = useState(true);
+  const [estates, setEstates] = useState([]);
+  const [estatesWithBlocks, setEstatesWithBlocks] = useState([]);
+  const [ebList, setEbList] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [designs, setDesigns] = useState([]);
+  const [isMultplicationValid, setMultplicationValid] = useState(null);
   const [radioInputForTrialInEState, setRadioInputForTrialInEState] =
-    useState("yes")
-  const [radioInputForSameDensity, setRadioInputForSameDensity] = useState("no")
+    useState("yes");
+  const [radioInputForSameDensity, setRadioInputForSameDensity] =
+    useState("no");
   const [inputListForTrialInEState, setInputListForTrialInEState] = useState([
-    { estate: "", estatenofreplicate: "" }
-  ])
+    { estate: "", estatenofreplicate: "" },
+  ]);
+  const [checkStatusReplicates, setCheckStatusReplicate] = useState([]);
+  const [disbaledANR, setDisbaledANR] = useState(true);
+  const [disbaledANRV, setDisbaledANRV] = useState(true);
+  const [disbaledRD, setDisbaledRD] = useState(true);
+  const [show, setShow] = useState(false);
+  const [isSuccessModal, setSuccessModal] = useState(false);
+  const [successData, setSuccessData] = useState(null);
 
-  const [checkStatusReplicates, setCheckStatusReplicate] = useState([])
-  const [estateblocks, setEstateblocks] = useState([])
-  const [disbaledANR, setDisbaledANR] = useState(true)
-  const [disbaledANRV, setDisbaledANRV] = useState(true)
-  const [disbaledRD, setDisbaledRD] = useState(true)
-  const [show, setShow] = useState(false)
+  const dashboardData = useSelector((state) => state.dashboardDataReducer);
+
   useEffect(() => {
-    fetchEstates()
-    fetchDesigns()
-    handleDisableState()
-  }, [isMultplicationValid, trial, radioInputForSameDensity, tableData])
+    fetchEstates();
+    fetchTypes();
+    fetchDesigns();
+    handleDisableState();
+  }, [
+    isMultplicationValid,
+    trial,
+    radioInputForSameDensity,
+    tableData,
+    inputListForTrialInEState,
+  ]);
   async function fetchEstates() {
-    const { data } = await EstateService.getUpdatedEstateBlocks()
-    setEstatesWithBlocks(data)
-    const mappedEstate = []
-    for (let item in data) {
+    const { data } = await EstateService.getUpdatedEstateBlocks();
+    setEbList(data);
+    const mappedEstates = dashboardData.result["estate"];
+    setEstatesWithBlocks(mappedEstates);
+    const mappedEstate = [];
+    for (let item in mappedEstates) {
       mappedEstate.push({
-        label: data[item].estate,
-        value: data[item].estateId
-      })
+        label: mappedEstates[item].estate,
+        value: mappedEstates[item].estateId,
+      });
     }
-    console.log("mappedEstate", data)
-    setEstates(mappedEstate)
+    console.log("mappedEstate", mappedEstate);
+    setEstates(mappedEstate);
   }
+
+  async function fetchTypes() {
+    const types = await TrialService.getTrialTypes();
+    const mappedTypes = [];
+
+    for (let item in types) {
+      mappedTypes.push({ label: types[item], value: types[item] });
+    }
+    setTrialTypes(mappedTypes);
+  }
+
   async function fetchDesigns() {
-    const { data } = await EstateService.getDesigns()
-    const mappedDesigns = []
+    const { data } = await EstateService.getDesigns();
+    const mappedDesigns = [];
 
     for (let item in data) {
-      mappedDesigns.push({ label: data[item].design, value: data[item].design })
+      mappedDesigns.push({
+        label: data[item].design,
+        value: data[item].designId,
+      });
     }
-    console.log(mappedDesigns)
-    setDesigns(mappedDesigns)
+    console.log(mappedDesigns);
+    setDesigns(mappedDesigns);
   }
   function onInput(e) {
     if (
@@ -97,90 +131,129 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       const isValid = verifyMultiplicationOfSubblockandPlot(
         e.target.name,
         e.target.value
-      )
-      setMultplicationValid(isValid)
+      );
+      setMultplicationValid(isValid);
     }
-    e.persist()
-    setTrial(() => ({ ...trial, [e.target.name]: e.target.value }))
-    handleDisableState()
+    e.persist();
+    const val =
+      e.target.value % 1 > 0 &&
+      ["nofprogeny", "nofsubblock", "nofplot_subblock","nofreplicate"].includes(e.target.name)
+        ? parseInt(e.target.value)
+        : e.target.value;
+    setTrial(() => ({ ...trial, [e.target.name]: val }));
+    // handleDisableState();
   }
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
-    let name, value
+    let name, value;
     if (type === "select") {
-      name = "estate"
-      value = e
+      name = "estate";
+      value = e;
     } else {
-      name = e.target.name
-      value = e.target.value
+      name = e.target.name;
+      value = e.target.value ? parseInt(e.target.value) : 1;
 
       //UPDATE THE number of Replicare in Trial
       const currentnoOfRep =
-        trial.nofreplicate !== "" ? parseInt(trial.nofreplicate) : 0
-      const updatednoOfRep = currentnoOfRep + parseInt(e.target.value)
-      setTrial(() => ({ ...trial, nofreplicate: updatednoOfRep.toString() }))
+        trial.nofreplicate !== "" ? parseInt(trial.nofreplicate) : 0;
+      const updatednoOfRep = currentnoOfRep + parseInt(e.target.value);
+      setTrial(() => ({ ...trial, nofreplicate: updatednoOfRep.toString() }));
     }
-    const list = [...inputListForTrialInEState]
-    list[index][name] = value
-    setInputListForTrialInEState(list)
-  }
+    const list = [...inputListForTrialInEState];
+    list[index][name] = value;
+    setInputListForTrialInEState(list);
+  };
   function verifyMultiplicationOfSubblockandPlot(name, value) {
-    const { nofprogeny, nofsubblock, nofplot_subblock } = trial
-    const progenyNo = name === "nofprogeny" ? value : nofprogeny
-    const subblockNo = name === "nofsubblock" ? value : nofsubblock
+    const { nofprogeny, nofsubblock, nofplot_subblock } = trial;
+    const progenyNo = name === "nofprogeny" ? value : nofprogeny;
+    const subblockNo = name === "nofsubblock" ? value : nofsubblock;
     const plot_subblockNo =
-      name === "nofplot_subblock" ? value : nofplot_subblock
-    const multi = parseInt(subblockNo) * parseInt(plot_subblockNo)
-    return parseInt(progenyNo) === multi
+      name === "nofplot_subblock" ? value : nofplot_subblock;
+    const multi = parseInt(subblockNo) * parseInt(plot_subblockNo);
+    return parseInt(progenyNo) === multi;
   }
   function onRadioInputTrialInEState(e) {
-    setRadioInputForTrialInEState(e)
+    if (e === "no") {
+      console.log(e);
+      setTrial(() => ({ ...trial, estate: "" }));
+    }
+    if (e === "yes") {
+      console.log(e);
+      setInputListForTrialInEState([{ estate: "", estatenofreplicate: "" }]);
+    }
+    setRadioInputForTrialInEState(e);
   }
   function onRadioInputSameDensity(e) {
     if (radioInputForSameDensity === "no") {
-      trial["density"] = ""
+      trial["density"] = "";
     }
-    setRadioInputForSameDensity(e)
+    setRadioInputForSameDensity(e);
   }
   function onAddTrialInEstate() {
     setInputListForTrialInEState([
       ...inputListForTrialInEState,
-      { estate: "", estatenofreplicate: "" }
-    ])
+      { estate: "", estatenofreplicate: "" },
+    ]);
+    // handleDisableState();
   }
   function onRemoveTrialInEstate(index) {
-    const list = [...inputListForTrialInEState]
-    list.splice(index, 1)
-    setInputListForTrialInEState(list)
+    const list = [...inputListForTrialInEState];
+    list.splice(index, 1);
+    setInputListForTrialInEState(list);
+    // handleDisableState();
   }
-  function onSelectDesign(design) {
-    setTrial(() => ({ ...trial, design }))
-    handleDisableState()
+  function onSelectDesign(designId) {
+    const designLabel = designs.find((design) => design.value === designId);
+    setTrial(() => ({ ...trial, design: designLabel.label, designId }));
+    // handleDisableState();
+  }
+
+  function onSelectType(type) {
+    setTrial(() => ({ ...trial, type }));
   }
 
   function onSelectEstate(estate) {
-    setTrial(() => ({ ...trial, estate }))
-    handleDisableState()
+    setTrial(() => ({ ...trial, estate }));
+    // handleDisableState();
   }
   async function handleDisableState() {
-    console.log(trial)
-    console.log({ radioInputForSameDensity })
+    console.log(trial);
+    console.log({ radioInputForSameDensity });
     if (radioInputForSameDensity === "no") {
-      delete trial["density"]
+      delete trial["density"];
     }
-    const isEmpty = checkProperties(trial)
-    console.log({ isEmpty })
-    if (isEmpty || !isMultplicationValid) {
-      setDisabledGenerateTable(true)
+
+    console.log({ trial });
+    const isEmpty = checkProperties(trial);
+
+    if (radioInputForTrialInEState === "no") {
+      // trial.nofreplicate = "";
+      const trialToCheck = { ...trial };
+      delete trialToCheck["nofreplicate"];
+      delete trialToCheck["estate"];
+      const isEmptyTrial = checkProperties(trialToCheck);
+      let isEmptyreplicatesInEstate = false;
+      inputListForTrialInEState.forEach((rpEs) => {
+        isEmptyreplicatesInEstate = checkProperties(rpEs);
+      });
+      if (isEmptyTrial || !isMultplicationValid || isEmptyreplicatesInEstate) {
+        setDisabledGenerateTable(true);
+      } else {
+        setDisabledGenerateTable(false);
+      }
     } else {
-      setDisabledGenerateTable(false)
+      if (isEmpty || !isMultplicationValid) {
+        setDisabledGenerateTable(true);
+      } else {
+        setDisabledGenerateTable(false);
+      }
     }
   }
   function onGenerateTable() {
-    setTableData([])
+    setTableData([]);
 
     if (radioInputForTrialInEState === "yes") {
-      const noOfReplicates = parseInt(trial.nofreplicate)
+      const noOfReplicates = parseInt(trial.nofreplicate);
       for (let replicate = 0; replicate < noOfReplicates; replicate++) {
         const item = {
           estateId: trial.estate,
@@ -189,18 +262,19 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           estateblock: "",
           density: trial.density,
           design: trial.design,
-          soiltype: ""
-        }
-        console.log(item)
-        setTableData(oldtableData => [...oldtableData, item])
+          designId: trial.designId,
+          soiltype: "",
+        };
+        console.log(item);
+        setTableData((oldtableData) => [...oldtableData, item]);
       }
     } else {
-      console.log(inputListForTrialInEState)
+      console.log(inputListForTrialInEState);
       for (let i = 0; i < inputListForTrialInEState.length; i++) {
         const noOfReps = parseInt(
           inputListForTrialInEState[i].estatenofreplicate
-        )
-        console.log({ noOfReps })
+        );
+        console.log({ noOfReps });
         for (let replicate = 0; replicate < noOfReps; replicate++) {
           const item = {
             estateId: inputListForTrialInEState[i].estate,
@@ -209,42 +283,43 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             estateblock: "",
             density: trial.density,
             design: trial.design,
-            soiltype: ""
-          }
-          console.log(item)
-          setTableData(oldtableData => [...oldtableData, item])
+            designId: trial.designId,
+            soiltype: "",
+          };
+          console.log(item);
+          setTableData((oldtableData) => [...oldtableData, item]);
         }
       }
     }
-    setDisbaledANR(false)
+    setDisbaledANR(false);
   }
 
   function getEstateName(id) {
-    const noOfestates = [...estates]
-    console.log({ noOfestates }, { id })
-    const est = noOfestates.find(est => est.value === id)
-    return est.label
+    const noOfestates = [...estates];
+    console.log({ noOfestates }, { id });
+    const est = noOfestates.find((est) => est.value === id);
+    return est.label;
   }
   function checkProperties(obj) {
     for (var key in obj) {
-      if (obj[key] === null || obj[key] === "") return true
+      if (obj[key] === null || obj[key] === "") return true;
     }
-    return false
+    return false;
   }
   // GENERATE TABLE FUNCTIONS
 
-  let checked = false
-  let indeterminate = false
-  const replicates = parseInt(trial.nofreplicate)
+  let checked = false;
+  let indeterminate = false;
+  const replicates = parseInt(trial.nofreplicate);
   if (checkStatusReplicates.length === replicates) {
-    checked = true
+    checked = true;
   } else if (checkStatusReplicates.length === 0) {
-    checked = false
+    checked = false;
   } else if (
     checkStatusReplicates.length > 0 &&
     checkStatusReplicates.length < replicates
   ) {
-    indeterminate = true
+    indeterminate = true;
   }
 
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -257,147 +332,173 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 value={i}
                 inline
                 onChange={onChange}
-                checked={checkedKeys.some(item => item === i)}
+                checked={checkedKeys.some((item) => item === i)}
               />
             </div>
           </>
-        )
+        );
       }}
     </Cell>
-  )
+  );
 
   const handleCheckAllReplicates = (value, checked) => {
-    const keys = checked ? tableData.map((item, i) => i) : []
-    setCheckStatusReplicate(keys)
-  }
+    const keys = checked ? tableData.map((item, i) => i) : [];
+    setCheckStatusReplicate(keys);
+  };
 
   const handleCheckReplicates = (value, checked) => {
     const keys = checked
       ? [...checkStatusReplicates, value]
-      : checkStatusReplicates.filter(item => item !== value)
-    setCheckStatusReplicate(keys)
-    setDisbaledANRV(!checked)
-    setDisbaledRD(!checked)
-  }
+      : checkStatusReplicates.filter((item) => item !== value);
+    setCheckStatusReplicate(keys);
+    setDisbaledANRV(!checked);
+    setDisbaledRD(!checked);
+  };
 
   function getEstateBlocks(estate) {
-    let estateBlocks = estatesWithBlocks.find(row => row.estate === estate)
+    let estateBlocks = ebList.find((row) => row.estate === estate);
+    const assignedEstateBlocks = [];
     if (estateBlocks) {
-      estateBlocks = estateBlocks.estateblocks
-      setEstateblocks(estateBlocks)
+      estateBlocks = estateBlocks.estateblocks;
+      estateBlocks.forEach((eb) => {
+        if (eb.assigned) {
+          assignedEstateBlocks.push(eb);
+        }
+      });
+      // setEstateblocks(estateBlocks)
     }
-    const mappedEstateBlocks = []
-    for (let item in estateBlocks) {
+    const mappedEstateBlocks = [];
+    for (let item in assignedEstateBlocks) {
       mappedEstateBlocks.push({
-        label: estateBlocks[item].estateblock,
-        value: estateBlocks[item].estateblock
-      })
+        label: assignedEstateBlocks[item].estateblock,
+        value: assignedEstateBlocks[item].estateblock,
+      });
     }
-    return mappedEstateBlocks
+    return mappedEstateBlocks;
   }
 
-  function handleEstateBlockChange(block, replicate, rowIndex) {
+  function handleEstateBlockChange(block, estate, rowIndex) {
     if (block) {
-      const estateBlocksItems = []
-      estatesWithBlocks.forEach(estate => {
-        estateBlocksItems.push(...estate.estateblocks)
-      })
-      const estateBlocks = [
-        ...new Set(
-          estateBlocksItems
-            .map(item => item.estateblock)
-            .map(block =>
-              estateBlocksItems.find(eb => eb.estateblock === block)
-            )
-        )
-      ]
+      let estateBlocks = ebList.find((row) => row.estate === estate);
 
-      const foundedBlock = estateBlocks.find(eb => eb.estateblock === block)
-      const data = [...tableData]
-      data[rowIndex].estateblock = block
-      data[rowIndex].blockId = foundedBlock.id
-      data[rowIndex].soiltype = foundedBlock.soiltype
-      setTableData(data)
+      const assignedEstateBlocks = [];
+      if (estateBlocks) {
+        estateBlocks = estateBlocks.estateblocks;
+        estateBlocks.forEach((eb) => {
+          if (eb.assigned) {
+            assignedEstateBlocks.push(eb);
+          }
+        });
+      }
+      // const estateBlocksItems = [];
+      // estatesWithBlocks.forEach((estate) => {
+      //   estateBlocksItems.push(...estate.estateblocks);
+      // });
+      // const estateBlocks = [
+      //   ...new Set(
+      //     estateBlocksItems
+      //       .map((item) => item.estateblock)
+      //       .map((block) =>
+      //         estateBlocksItems.find((eb) => eb.estateblock === block)
+      //       )
+      //   ),
+      // ];
+
+      const foundedBlock = assignedEstateBlocks.find(
+        (eb) => eb.estateblock === block
+      );
+      const data = [...tableData];
+      data[rowIndex].estateblock = block;
+      data[rowIndex].blockId = foundedBlock.id;
+      data[rowIndex].soiltype = foundedBlock.soiltype;
+      setTableData(data);
     } else {
-      const data = [...tableData]
-      data[rowIndex].estateblock = block
-      setTableData(data)
+      const data = [...tableData];
+      data[rowIndex].estateblock = block;
+      setTableData(data);
     }
   }
   function onAddingNewReplicate() {
-    const data = [...tableData]
-    let replicateObj = data[data.length - 1]
+    const data = [...tableData];
+    let replicateObj = data[data.length - 1];
     const newRep = {
       estate: replicateObj.estate,
       replicate: parseInt(replicateObj.replicate) + 1,
       estateblock: replicateObj.estateblock,
       density: replicateObj.density,
       design: replicateObj.design,
-      soiltype: replicateObj.soiltype
-    }
-    data[data.length] = newRep
+      soiltype: replicateObj.soiltype,
+    };
+    data[data.length] = newRep;
     const currentnoOfRep =
-      trial.nofreplicate !== "" ? parseInt(trial.nofreplicate) : 0
-    const updatednoOfRep = currentnoOfRep + 1
-    setTrial(() => ({ ...trial, nofreplicate: updatednoOfRep.toString() }))
-    setTableData(data)
+      trial.nofreplicate !== "" ? parseInt(trial.nofreplicate) : 0;
+    const updatednoOfRep = currentnoOfRep + 1;
+    setTrial(() => ({ ...trial, nofreplicate: updatednoOfRep.toString() }));
+    setTableData(data);
   }
   function onAddingNewReplicateVarient() {
-    console.log(checkStatusReplicates)
-    const data = [...tableData]
-    console.log(data)
+    console.log(checkStatusReplicates);
+    const data = [...tableData];
+    console.log(data);
     for (let index in checkStatusReplicates) {
-      console.log(checkStatusReplicates[index])
-      const repIndex = checkStatusReplicates[index]
-      const existingRep = data[repIndex]
+      console.log(checkStatusReplicates[index]);
+      const repIndex = checkStatusReplicates[index];
+      const existingRep = data[repIndex];
       const variant = {
-        estateId:existingRep.estateId,
+        estateId: existingRep.estateId,
         estate: existingRep.estate,
         replicate: existingRep.replicate,
         estateblock: existingRep.estateblock,
         density: existingRep.density,
         design: existingRep.design,
         soiltype: existingRep.soiltype,
-        isvariant: true
-      }
+        isvariant: true,
+      };
 
-      data.splice(repIndex + 1, 0, variant)
-      setTableData(data)
-      console.log(existingRep)
+      data.splice(repIndex + 1, 0, variant);
+      setTableData(data);
+      console.log(existingRep);
     }
   }
 
   function deleteReplicate() {
-    const data = [...tableData]
+    const data = [...tableData];
     for (let index in checkStatusReplicates) {
-      data.splice(checkStatusReplicates[index], 1)
-      checkStatusReplicates.splice(index, 1)
+      data.splice(checkStatusReplicates[index], 1);
+      checkStatusReplicates.splice(index, 1);
     }
-    setTableData(data)
+    setTableData(data);
   }
 
   function onSaveTrial() {
-    trial["replicates"] = tableData
-    console.log(trial)
-    trial["trialId"] = null
+    trial["replicates"] = tableData;
+    console.log(trial);
+    trial["trialId"] = null;
 
     delete trial.estate;
     TrialService.saveTrial(trial).then(
-      data => {
+      (data) => {
         const savedData = {
           type: "TRIAL",
           data: trial,
-          action: "CREATED"
-        }
-        dispatch(clearBreadcrumb())
-        publish(savedData)
+          action: "CREATED",
+        };
+        setShow(false);
+        dispatch(getDashboardData("trial"));
+        setSuccessData(savedData);
+        setSuccessModal(true);
       },
-      err => console.log(err)
-    )
+      (err) => console.log(err)
+    );
   }
 
   function hide() {
-    setShow(false)
+    setShow(false);
+  }
+
+  function CloseSuccessModal() {
+    setSuccessModal(false);
+    dispatch(clearBreadcrumb());
   }
   return (
     <div id="TrialAction">
@@ -412,7 +513,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       <Grid fluid>
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
-            <p className="labelForm">Trail ID</p>
+            <p className="labelForm">Trial ID</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -422,10 +523,37 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               onChange={(value, e) => onInput(e)}
             />
           </Col>
+          {/* <Col>
+            {trial.trialCode === "" ? (
+              <Tag color="red">Trial Code is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
+
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
-            <p className="labelForm">Trail</p>
+            <p className="labelForm">Type</p>
+          </Col>
+          <Col md={10} lg={10}>
+            <SelectPicker
+              id="type"
+              className="designPicker"
+              data={trialTypes}
+              onSelect={(type) => onSelectType(type)}
+              placeholder="Select Type"
+              block
+            />{" "}
+          </Col>
+          {/* <Col>
+            {trial.type === "" ? (
+              <Tag color="red">Trial type is Required!</Tag>
+            ) : null}
+          </Col> */}
+        </Row>
+
+        <Row className="show-grid TrialFormLayout">
+          <Col md={9} lg={8}>
+            <p className="labelForm">Trial</p>
           </Col>
           <Col md={10} lg={10}>
             <Input
@@ -435,6 +563,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               onChange={(value, e) => onInput(e)}
             />
           </Col>
+          {/* <Col>
+            {trial.trial === "" ? (
+              <Tag color="red">Trial is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
@@ -450,6 +583,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               onChange={(value, e) => onInput(e)}
             />
           </Col>
+          {/* <Col>
+            {trial.trialremark === "" ? (
+              <Tag color="red">Trial Remark is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -461,9 +599,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               placeholder="Key in Area"
               className="formField"
               name="area"
+              type="number"
               onChange={(value, e) => onInput(e)}
             />
           </Col>
+          {/* <Col>
+            {trial.area === "" ? (
+              <Tag color="red">Trial Area is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -479,11 +623,16 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               format="MM/YYYY"
               style={styles}
               name="planteddate"
-              onSelect={date =>
+              onSelect={(date) =>
                 setTrial(() => ({ ...trial, planteddate: date }))
               }
             />
           </Col>
+          {/* <Col>
+            {trial.planteddate === "" ? (
+              <Tag color="red">Trial planted date is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -491,13 +640,21 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Progeny</p>
           </Col>
           <Col md={10} lg={10}>
-            <Input
+            <InputNumber
               placeholder="Key in No.of Progeny"
               className="formField"
               name="nofprogeny"
+              min="1"
+              step="1"
+              value={trial.nofprogeny}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
+          {/* <Col>
+            {trial.nofprogeny === 0 || trial.nofprogeny === ""? (
+              <Tag color="red">Trial No of Progenies is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
 
         <Row className="show-grid TrialFormLayout">
@@ -505,18 +662,24 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Subblock and No.of Plot/Subblock</p>
           </Col>
           <Col md={5} lg={5}>
-            <Input
+            <InputNumber
               placeholder="No. of Subblock"
               className="subPlotInput"
               name="nofsubblock"
+              min="1"
+              step="1"
+              value={trial.nofsubblock}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
           <Col md={5} lg={5}>
-            <Input
+            <InputNumber
               placeholder="No. of Plot/Subblock "
               className="plotInput"
               name="nofplot_subblock"
+              min="1"
+              step="1"
+              value={trial.nofplot_subblock}
               onChange={(value, e) => onInput(e)}
             />
             {isMultplicationValid === false ? (
@@ -541,8 +704,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <RadioGroup
               name="radioList"
               value={radioInputForTrialInEState}
-              onChange={value => {
-                onRadioInputTrialInEState(value)
+              onChange={(value) => {
+                onRadioInputTrialInEState(value);
               }}
               inline
             >
@@ -557,7 +720,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 className="estatePicker"
                 data={estates}
                 placeholder="Select Estate"
-                onSelect={estate => onSelectEstate(estate)}
+                onSelect={(estate) => onSelectEstate(estate)}
                 block
               />{" "}
             </Col>
@@ -585,6 +748,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                         className="estatePickerwithNo"
                         data={estates}
                         placeholder="Select Estate"
+                        value={input.estate}
                         onChange={(value, event) =>
                           handleTrialInEStateInputChange(value, i, "select")
                         }
@@ -592,10 +756,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                       />
                     </Col>
                     <Col md={5} lg={5}>
-                      <Input
+                      <InputNumber
                         placeholder="Select No of Replicate"
                         className="replicateInput"
                         name="estatenofreplicate"
+                        value={input.estatenofreplicate}
                         onChange={(value, e) =>
                           handleTrialInEStateInputChange(e, i, "input")
                         }
@@ -638,9 +803,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                 placeholder="Enter Number of Replicate for this Trial"
                 className="formField"
                 name="nofreplicate"
+                value={trial.nofreplicate}
                 onChange={(value, e) => onInput(e)}
               />
             </Col>
+            {/* <Col>
+            {trial.nofreplicate === "" ? (
+              <Tag color="red">Trial no of replicate is Required!</Tag>
+            ) : null}
+          </Col> */}
           </Row>
         ) : (
           ""
@@ -657,8 +828,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <RadioGroup
               name="radioList"
               value={radioInputForSameDensity}
-              onChange={value => {
-                onRadioInputSameDensity(value)
+              onChange={(value) => {
+                onRadioInputSameDensity(value);
               }}
               inline
             >
@@ -671,9 +842,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               <Input
                 placeholder="Enter Density"
                 name="density"
+                type="number"
                 className="densityInput"
                 onChange={(value, e) => onInput(e)}
               />
+              {/* {trial.density === "" ? (
+              <Tag color="red">Trial density is Required!</Tag>
+            ) : null} */}
             </Col>
           ) : (
             ""
@@ -689,11 +864,16 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               id="design"
               className="designPicker"
               data={designs}
-              onSelect={design => onSelectDesign(design)}
+              onSelect={(design) => onSelectDesign(design)}
               placeholder="Choose Design"
               block
             />{" "}
           </Col>
+          {/* <Col>
+            {trial.design === "" ? (
+              <Tag color="red">Trial Design is Required!</Tag>
+            ) : null}
+          </Col> */}
         </Row>
       </Grid>
 
@@ -785,7 +965,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Column width={200} align="left">
           <HeaderCell className="tableHeader">Estate</HeaderCell>
           <Cell dataKey="estate">
-            {rowData => {
+            {(rowData) => {
               return (
                 <>
                   {!rowData.isvariant ? (
@@ -794,7 +974,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                     ""
                   )}
                 </>
-              )
+              );
             }}
           </Cell>
         </Column>
@@ -802,7 +982,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Column width={200} align="left">
           <HeaderCell className="tableHeader">Replicate</HeaderCell>
           <Cell dataKey="replicate">
-            {rowData => {
+            {(rowData) => {
               return (
                 <>
                   {!rowData.isvariant ? (
@@ -811,13 +991,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                     <img src={SubDirectoryIcon} style={{ margin: "0 50%" }} />
                   )}
                 </>
-              )
+              );
             }}
           </Cell>
         </Column>
 
         <Column width={200} align="left">
-          <HeaderCell className="tableHeader">Estate Block</HeaderCell>
+          <HeaderCell className="tableHeader">Estate Block </HeaderCell>
           <Cell>
             {(rowData, i) => {
               return (
@@ -827,10 +1007,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                   placeholder="-"
                   value={rowData.estateblock}
                   onChange={(value, event) =>
-                    handleEstateBlockChange(value, rowData.replicate, i)
+                    handleEstateBlockChange(value, rowData.estate, i)
                   }
                 />
-              )
+              );
             }}
           </Cell>
         </Column>
@@ -838,8 +1018,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Column width={200} align="left">
           <HeaderCell className="tableHeader">Density</HeaderCell>
           <Cell>
-            {rowData => {
-              return <Input value={rowData.density} />
+            {(rowData) => {
+              return <Input value={rowData.density} />;
             }}
           </Cell>
         </Column>
@@ -847,8 +1027,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Column width={200} align="left">
           <HeaderCell className="tableHeader">Design</HeaderCell>
           <Cell>
-            {rowData => {
-              return <Input value={rowData.design} disabled />
+            {(rowData) => {
+              return <Input value={rowData.design} disabled />;
             }}
           </Cell>
         </Column>
@@ -856,8 +1036,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Column width={200} align="left">
           <HeaderCell className="tableHeader">Soil Type</HeaderCell>
           <Cell>
-            {rowData => {
-              return <Input value={rowData.soiltype} disabled placeholder="-" />
+            {(rowData) => {
+              return (
+                <Input value={rowData.soiltype} disabled placeholder="-" />
+              );
             }}
           </Cell>
         </Column>
@@ -918,7 +1100,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         </Modal.Footer>
       </Modal>
       {/* CONFIRMATION MODEL END */}
+
+      <SuccessModal
+        show={isSuccessModal}
+        hide={CloseSuccessModal}
+        data={successData}
+      />
     </div>
-  )
-}
-export default AddNewTrial
+  );
+};
+export default AddNewTrial;

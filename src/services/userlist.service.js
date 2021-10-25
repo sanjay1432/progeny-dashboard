@@ -17,7 +17,7 @@ const createUser = payload => {
 
 const updateUser = payload => {
   return axiosApiInstance
-    .put(`${API_URL}/update-user`, payload)
+    .post(`${API_URL}/update-user`, payload)
     .then(response => {
       return response.data
     })

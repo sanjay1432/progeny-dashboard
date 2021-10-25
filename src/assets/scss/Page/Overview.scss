@@ -200,3 +200,14 @@
   padding: 15px 5px;
   background-color: $body-color;
 }
+
+.rs-table-cell-header-icon-sort{
+  color: #ffffff;
+}
+
+.rs-table-cell-header-icon-sort-desc::after {
+  color: #ffffff;
+}
+.rs-table-cell-header-icon-sort-asc::after {
+  color: #ffffff;
+}

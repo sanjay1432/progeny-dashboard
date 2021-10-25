@@ -1,5 +1,5 @@
-import FilterPanel from "components/modal/sharedComponent/FilterPanel"
-import Table from "components/modal/sharedComponent/DataTable"
+import FilterPanel from "../../sharedComponent/FilterPanel"
+import Table from "../../sharedComponent/DataTable"
 import React, { useState, useEffect } from "react"
 import UserAssignmentService from "../../../../services/userAssignment.service"
 import { Modal, Button } from "rsuite"

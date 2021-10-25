@@ -4,10 +4,10 @@ import { configureStore } from "@reduxjs/toolkit"
 import { DEBUG } from "../constants"
 
 const loggerMiddleware = store => next => action => {
-  console.group(action.type)
-  console.info("dispatching", action)
+  // console.group(action.type)
+  // console.info("dispatching", action)
   let result = next(action)
-  console.log("next state", store.getState())
+  // console.log("next state", store.getState())
   console.groupEnd()
   return result
 }
@@ -25,7 +25,7 @@ const monitorReducerEnhancer = createStore => (
     const end = performance.now()
     const diff = round(end - start)
 
-    console.log("reducer process time:", diff)
+    // console.log("reducer process time:", diff)
 
     return newState
   }

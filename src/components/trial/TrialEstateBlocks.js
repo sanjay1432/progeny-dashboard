@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import {
   Table,
   FlexboxGrid,
@@ -19,6 +20,7 @@ import {
 import EstateService from "../../services/estate.service"
 import TrialService from "../../services/trial.service"
 import CreateIcon from "../../assets/img/icons/create_24px.svg"
+import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 const { Column, HeaderCell, Cell } = Table
 const initialState = {
   displaylength: 10,
@@ -37,7 +39,7 @@ export const EditCell = ({ rowData, rowIndex, dataKey, onChange, estateBlocks,..
       {editing && dataKey !== "estateblock" ? (
         <Input
           defaultValue={rowData[dataKey]}
-          disabled={["replicate", "design", "soiltype"].includes(dataKey)}
+          disabled={["replicate", "design", "soiltype", "estate"].includes(dataKey)}
           onChange={(value, event) => {
             onChange && onChange(rowIndex, dataKey, event.target.value)
           }}
@@ -64,6 +66,7 @@ const TrialEstateBlocks = ({
   option,
   ...props
 }) => {
+  const dispatch = useDispatch()
   const [tableData, setTableData] = useState([])
   const [filteredTableData, setFilteredTableData] = useState([])
   const [ebAdded, setebAdded] = useState(null)
@@ -79,21 +82,19 @@ const TrialEstateBlocks = ({
     async function fetchData() {
       // You can await here
       const trial =  option.trial;
-
-       
       let replicates = trial.replicates
       console.log({ replicates })
       const newSetOfReps = []
       replicates.forEach((reps, idx) => {
         const blocks = reps.estateblocks
-        if (blocks.length < 2) {
+        if (blocks && blocks.length < 2) {
           reps.estateblock = blocks[0].name
           reps.design = trial.design
           reps.density = blocks[0].density
           reps.soiltype = blocks[0].soiltype
           newSetOfReps.push(reps)
         }
-        if (blocks.length > 1) {
+        if (blocks && blocks.length > 1) {
           const uni = reps
           delete uni.estateblock
           for (let i = 0; i < blocks.length; i++) {
@@ -106,6 +107,7 @@ const TrialEstateBlocks = ({
             newSetOfReps.push(reps)
           }
         }
+        delete reps.status;
       })
       setTableData([...newSetOfReps])
       console.log({ newSetOfReps })
@@ -238,6 +240,7 @@ const TrialEstateBlocks = ({
     setFilteredTableData(nextData)
   }
   const handleEditState = (idx, save = false) => {
+    setebAdded(null)
     const nextData = Object.assign([], filteredTableData)
     const activeItem = nextData.find((item, i) => i === idx)
     console.log({activeItem})
@@ -346,6 +349,7 @@ const TrialEstateBlocks = ({
       }
       await TrialService.updateTrialReplicate(payload)
       setebAdded(true)
+      dispatch(getDashboardData('trial'))
     } catch (err) {
       setebAdded(false)
       console.log(err)
@@ -393,7 +397,7 @@ const TrialEstateBlocks = ({
           </Row>
           <Row className="show-grid" id="dashboardTableSetting">
             <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-              <b>Total records ({tableData ? tableData.length : null})</b>
+              <b>Total records ({filteredTableData ? filteredTableData.length : null})</b>
             </Col>
 
             <FlexboxGrid justify="end">
@@ -413,6 +417,10 @@ const TrialEstateBlocks = ({
         </Grid>
 
         <Table wordWrap data={filteredTableData} autoHeight id="dashboardTable">
+        <Column flexGrow={1}>
+            <HeaderCell className="tableHeader">Estate</HeaderCell>
+            <EditCell dataKey="estate" onChange={handleChange} estateBlocks = {estateBlocks}/>
+          </Column>
           <Column flexGrow={1}>
             <HeaderCell className="tableHeader">Replicate</HeaderCell>
             <EditCell dataKey="replicate" onChange={handleChange} estateBlocks = {estateBlocks}/>

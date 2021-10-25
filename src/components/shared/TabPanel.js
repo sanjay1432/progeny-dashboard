@@ -8,12 +8,12 @@ import EditUser from "../userList/EditUser"
 import AddNewTrial from "../trial/AddNewTrial"
 import EditTrial from "../trial/EditTrial"
 import TrialEstateBlocks from "../trial/TrialEstateBlocks"
-import EstateInformation from "components/estateAssignment/EstateInformation"
-import AddNewProgeny from "components/progeny/AddNewProgeny"
-import AttachProgeny from "components/progeny/AttachProgeny"
-import EditProgeny from "components/progeny/EditProgeny"
-import GenerationQRCode from "components/plot/GenerationQRCode"
-import EditPalmInformation from "components/plot/EditPalmInformation"
+import EstateInformation from "../estateAssignment/EstateInformation"
+import AddNewProgeny from "../progeny/AddNewProgeny"
+import AttachProgeny from "../progeny/AttachProgeny"
+import EditProgeny from "../progeny/EditProgeny"
+import GenerationQRCode from "../plot/GenerationQRCode"
+import EditPalmInformation from "../plot/EditPalmInformation"
 import VerificationDataTable from "./VerificationDataTable"
 
 const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
@@ -75,7 +75,7 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
             </>
           )
         }
-        if (option.type == "attach") {
+        if (option.type === "attach") {
           return (
             <>
               <AttachProgeny
@@ -92,13 +92,13 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
               <GenerationQRCode option={option} />
             </>
           )
-        } else if (option.type == "edit") {
+        } else if (option.type === "edit") {
           return (
             <>
               <EditPalmInformation option={option} />
             </>
           )
-        } else if (option.type == "attach") {
+        } else if (option.type === "attach") {
           return (
             <>
               <AttachProgeny
@@ -176,15 +176,6 @@ const TabPanel = ({ currentItem, currentSubNavState, ...props }) => {
 
   return (
     <>
-      {/* <main>
-        <SearchFilter
-          id="searchFilter"
-          currentSubNavState={currentSubNavState}
-          currentItem={currentItem}
-          ref={searchFiltersRef}
-        />
-        <DataTable currentSubNavState={currentSubNavState} />
-      </main> */}
       <TabPanelSection />
     </>
   )
