@@ -299,15 +299,19 @@ const TrialEstateBlocks = ({
             </FlexboxGrid.Item>
           </FlexboxGrid>
         ) : (
-          <span>
-            <img
-              src={CreateIcon}
-              alt=""
-              onClick={() => {
-                onClick && onClick(rowIndex) //handleEditState
-              }}
-            />
-          </span>
+          option.trial.isEditable === "true" ? (
+            <span>
+              <img
+                src={CreateIcon}
+                alt=""
+                onClick={() => {
+                  onClick && onClick(rowIndex) //handleEditState
+                }}
+              />
+            </span>
+          ) : (
+              <img src={CreateIcon} style={{ opacity: 0.2 }} alt="create" />
+          )
         )}
         {/* </Button> */}
       </Cell>
