@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearBreadcrumb } from "../../redux/actions/app.action";
 import { Grid, Row, Col, Input, Button } from "rsuite";
-import Regex from 'regex'
 import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import DataPicker from "../SharedComponent/DataPicker";
 import ProgenyService from "../../services/progeny.service";
