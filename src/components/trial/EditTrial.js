@@ -120,7 +120,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     []
   )
   const trialData = useSelector(state => state.dashboardDataReducer.result.trial)
-
+  const authData = useSelector((state) => state.authReducer);
   useEffect( () => {
     EstateService.getDesigns().then(response => {
       console.log({response})
@@ -456,6 +456,9 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
   function onSaveTrial() {
     setShow(false)
+    const {user}   =  authData;
+    trial["updatedBy"] = user.username;
+    trial["updatedDate"] = new Date();
     trial["replicates"] = existingReplicatesInEstate
     trial.status = status
     if (disabled === "yes") {
@@ -629,17 +632,19 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
    function handleDisableState() {
-    const isEmpty = checkProperties(trial);
+   
+     const trialToCheck = {...trial}
+     delete trialToCheck.createdDate;
+     delete trialToCheck.createdBy;
+     delete trialToCheck.updatedBy;
+     delete trialToCheck.updatedDate;
+    const isEmpty = checkProperties(trialToCheck);
     let isEmptyreplicatesInEstate =  false
     replicatesInEstate.forEach(rpEs => {
       isEmptyreplicatesInEstate = checkProperties(rpEs);
     });
-    // if (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate) {
-    //   return true
-    // } else {
-    //   return false
-    // }
-    return (isEmpty || !isMultplicationValid || disabled === "no" )?true:false
+
+    return (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate )?true:false
   }
   function checkProperties(obj) {
     for (var key in obj) {
