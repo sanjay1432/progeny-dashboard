@@ -633,7 +633,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         }
       });
     }
-    console.log({resetData})
+
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;

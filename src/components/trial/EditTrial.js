@@ -639,7 +639,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     // } else {
     //   return false
     // }
-    return (isEmpty || !isMultplicationValid || disabled === "no" ||isEmptyreplicatesInEstate)?true:false
+    return (isEmpty || !isMultplicationValid || disabled === "no" )?true:false
   }
   function checkProperties(obj) {
     for (var key in obj) {
