@@ -71,7 +71,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [successData, setSuccessData] = useState(null);
 
   const dashboardData = useSelector((state) => state.dashboardDataReducer);
-
+  const authData = useSelector((state) => state.authReducer);
   useEffect(() => {
     fetchEstates();
     fetchTypes();
@@ -471,10 +471,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function onSaveTrial() {
+    const {user}   =  authData;
     trial["replicates"] = tableData;
-    console.log(trial);
+    console.log(trial, user);
     trial["trialId"] = null;
-
+    trial["createdBy"] = user.username;
+    trial["createdDate"] = new Date();
     delete trial.estate;
     TrialService.saveTrial(trial).then(
       (data) => {

@@ -29,7 +29,6 @@ const AddNewProgeny = () => {
   const [confirmationModal, setConfirmationModal] = useState(false);
 
   const [dupProps, setDupProps] = useState(false);
-  const [notAllowSpecial, setNotAllowSpecial] = useState(false);
   const dispatch = useDispatch();
 
   const ProgenyData = useSelector(
@@ -54,24 +53,10 @@ const AddNewProgeny = () => {
   });
 
   function handleChange(e) {
-    console.log(e.target.value);
     //CHECK FOR EXISTING PROGENY ID
     checkDups(e.target.value);
     e.persist();
-    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }));
-  }
-
-  function handleProgenyIDChange(e) {
-    //CHECK FOR EXISTING PROGENY ID
-    const re = /^[a-zA-Z0-9\b]+$/;
-    if (!re.test(e.target.value)) {
-      setNotAllowSpecial(true)
-    } else {
-      setNotAllowSpecial(false)
-    }
-    checkDups(e.target.value);
-    e.persist();
-    setFormData(() => ({ ...formData, [e.target.name]: e.target.value }));
+    setFormData(() => ({ ...formData, [e.target.name]: e.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') }));
   }
 
   function checkDups(value) {
@@ -81,7 +66,6 @@ const AddNewProgeny = () => {
     const isDuplicate = found ? true : false;
     setDupProps(isDuplicate);
   }
-
   function handleFpChange(e) {
     e.persist();
     setFormData(() => ({
@@ -146,14 +130,10 @@ const AddNewProgeny = () => {
           <Col md={10} lg={10} className="inputLayout">
             <Input
               name="progenyCode"
-              onChange={(value, e) => handleProgenyIDChange(e)}
+              value = {formData.progenyCode}
+              onChange={(value, e) => handleChange(e)}
               placeholder="Key in Progeny ID"
             />
-            {notAllowSpecial ? (
-              <p style={{ color: "red", fontSize: "12px", float: "right" }}>
-                Special character not allowed *
-              </p>
-            ) : null}
             {dupProps ? (
               <p style={{ color: "red", fontSize: "12px", float: "right" }}>
                 Progeny ID already existed *

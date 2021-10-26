@@ -184,7 +184,7 @@ const listItems = [
           },
 
           {
-            name: "ortet",
+            name: "orlet",
             label: "Ortet",
             type: "text",
           },
