@@ -349,6 +349,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       value: "replicateId",
     },
     {
+      label: "Replicate",
+      value: "replicateno",
+    },
+    {
       label: "Estate Block",
       value: "estateblock",
     },
@@ -724,7 +728,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             const date = eachObj[eachKey];
             return GeneralHelper.modifyDate({ date }) === filters[eachKey];
           }
-          return eachObj[eachKey] === filters[eachKey];
+          return eachObj[eachKey].toLowerCase() === filters[eachKey].toLowerCase();
         });
       }
      
@@ -1627,7 +1631,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             field.flexGrow = 1;
             palmfields[1] = field;
           }
-          if (field.value === "replicateId") {
+          if (field.value === "replicateno") {
             field.flexGrow = 1;
             field.sorting = true;
             palmfields[2] = field;
