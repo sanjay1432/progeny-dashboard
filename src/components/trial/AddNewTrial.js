@@ -63,6 +63,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     { estate: "", estatenofreplicate: "" },
   ]);
   const [checkStatusReplicates, setCheckStatusReplicate] = useState([]);
+  const [replicateValue, setReplicateValue] = useState([]);
   const [disbaledANR, setDisbaledANR] = useState(true);
   const [disbaledANRV, setDisbaledANRV] = useState(true);
   const [disbaledRD, setDisbaledRD] = useState(true);
@@ -89,14 +90,26 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setEbList(data);
     const mappedEstates = dashboardData.result["estate"];
     setEstatesWithBlocks(mappedEstates);
-    const mappedEstate = [];
+
+    mappedEstates.sort(function (a, b) {
+      var keyA = a['estate'],
+        keyB = b['estate'];
+      // Compare the 2 dates
+      if (keyA < keyB) return -1;
+      if (keyA > keyB) return 1;
+      return 0;
+    });
+
+    let mappedEstate = [];
     for (let item in mappedEstates) {
+      console.log(item)
       mappedEstate.push({
         label: mappedEstates[item].estate,
         value: mappedEstates[item].estateId,
       });
     }
     console.log("mappedEstate", mappedEstate);
+
     setEstates(mappedEstate);
   }
 
@@ -350,6 +363,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const keys = checked
       ? [...checkStatusReplicates, value]
       : checkStatusReplicates.filter((item) => item !== value);
+    const values = keys.map((item, index) => {
+      if(tableData[item] !== null || tableData[item] !== undefined) {
+        return tableData[item]['replicate']
+      }
+      else {
+        return 
+      }
+    })  
+    setReplicateValue(values)
     setCheckStatusReplicate(keys);
     setDisbaledANRV(!checked);
     setDisbaledRD(!checked);
@@ -462,11 +484,19 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
 
   function deleteReplicate() {
-    const data = [...tableData];
-    for (let index in checkStatusReplicates) {
-      data.splice(checkStatusReplicates[index], 1);
-      checkStatusReplicates.splice(index, 1);
-    }
+    let data = tableData
+    //const data = [...tableData];
+    //console.log(replicateValue)
+    // for (let index in checkStatusReplicates) {
+    //   data.splice(checkStatusReplicates[index], 1);
+    //   checkStatusReplicates.splice(index, 1);
+    // }
+    // setTableData(data);
+    replicateValue.map((item, index) => {
+      data = data.filter(item2 => item2['replicate'] !== item)
+      return data
+    })
+    setCheckStatusReplicate([]);
     setTableData(data);
   }
 
