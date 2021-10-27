@@ -46,6 +46,7 @@ const EstateBlockTable = ({
   const [ebDeleted, setebDeleted] = useState(null)
   const [pagination, setPagination] = useState(initialState)
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([])
+  const [originalCheckStatusEstateBlock, setOriginalCheckStatusEstateBlock] = useState([])
   const [estateBlocks, setEstateBlocks] = useState([])
   const [updateDate, setUpdateDate] = useState(null)
   const { activePage, displaylength } = pagination
@@ -111,6 +112,7 @@ const EstateBlockTable = ({
     const { estateblocks } = estatedata
     setEstateBlocks(estateblocks)
     const keys = estateblocks.map(eb => (eb.assigned ? eb.estateblock : null))
+    setOriginalCheckStatusEstateBlock(keys.filter(key => key))
     setCheckStatusEstateBlock(keys.filter(key => key))
   }
 
@@ -167,6 +169,17 @@ const EstateBlockTable = ({
   }
 
   function onAddEB() {
+    let saveMessage = "";
+    if (checkStatusEstateBlock.length > originalCheckStatusEstateBlock.length) {
+      saveMessage = "add"
+    }
+    else if (checkStatusEstateBlock.length === originalCheckStatusEstateBlock.length) {
+      saveMessage = "exchange"
+    }
+    else if (checkStatusEstateBlock.length < originalCheckStatusEstateBlock.length) {
+      saveMessage = "delete"
+    }
+
     estateBlocks.forEach(eb => {
       if (checkStatusEstateBlock.includes(eb.estateblock)) {
         eb.assigned = true
@@ -185,65 +198,124 @@ const EstateBlockTable = ({
       data => {
         console.log("Success", data)
         dispatch(getDashboardData('estate'))
-        setebAdded(true)
+        setebAdded(saveMessage)
       },
       err => {
         console.log("Error", err)
-        setebAdded(false)
+        setebAdded("error")
       }
     )
   }
 
-
-  function SuccessMessage() {
-    if (ebAdded === true) {
-      return (
-        <>
-          <Message
-            showIcon
-            type="success"
-            description="Estate Blocks have been added to the system."
-            onClick={() => {
-              setebAdded(null)
-            }}
-          />
-        </>
-      )
-    } else if (ebAdded === false) {
-      return (
-        <>
-          <h1>ERROR</h1>
-        </>
-      )
-    } else {
-      return <></>
+  function EbSaveMessage() {
+    switch (ebAdded) {
+      case ("add"):
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description="Estate Blocks have been added into the system."
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      case ("exchange"):
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description="Estate Blocks have been changed into the system."
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      case ("delete"):
+        return (
+          <>
+            <Message
+              showIcon
+              type="success"
+              description="Estate Blocks have been deleted into the system."
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      case ("error"):
+        return (
+          <>
+            <Message
+              showIcon
+              type="error"
+              description="Error 404"
+              onClick={() => {
+                setebAdded(null)
+              }}
+            />
+          </>
+        )
+      default:
+        return null;
     }
   }
 
-  function EbDeletionMessage() {
-    if (ebDeleted === true) {
-      return (
-        <>
-          <Message
-            showIcon
-            type="success"
-            description="Estate Blocks have been deleted from the system."
-            onClick={() => {
-              setebDeleted(null)
-            }}
-          />
-        </>
-      )
-    } else if (ebDeleted === false) {
-      return (
-        <>
-          <h1>ERROR</h1>
-        </>
-      )
-    } else {
-      return <></>
-    }
-  }
+
+  // function SuccessMessage() {
+  //   if (ebAdded === true) {
+  //     return (
+  //       <>
+  //         <Message
+  //           showIcon
+  //           type="success"
+  //           description="Estate Blocks have been added to the system."
+  //           onClick={() => {
+  //             setebAdded(null)
+  //           }}
+  //         />
+  //       </>
+  //     )
+  //   } else if (ebAdded === false) {
+  //     return (
+  //       <>
+  //         <h1>ERROR</h1>
+  //       </>
+  //     )
+  //   } else {
+  //     return <></>
+  //   }
+  // }
+
+  // function EbDeletionMessage() {
+  //   if (ebDeleted === true) {
+  //     return (
+  //       <>
+  //         <Message
+  //           showIcon
+  //           type="success"
+  //           description="Estate Blocks have been deleted from the system."
+  //           onClick={() => {
+  //             setebDeleted(null)
+  //           }}
+  //         />
+  //       </>
+  //     )
+  //   } else if (ebDeleted === false) {
+  //     return (
+  //       <>
+  //         <h1>ERROR</h1>
+  //       </>
+  //     )
+  //   } else {
+  //     return <></>
+  //   }
+  // }
 
   return (
     <>
@@ -272,7 +344,7 @@ const EstateBlockTable = ({
               </p>
               <p>List of Estate Blocks ({estateBlocks.length})</p>
             </div>
-            <Table wordWrap data={estateBlocks} id="modalEstateTable" autoHeight>
+            <Table wordWrap data={estateBlocks} id="modalEstateTable" autoHeight={true}>
               <Column width={80}>
                 <HeaderCell>
                   <Checkbox
@@ -367,8 +439,9 @@ const EstateBlockTable = ({
             <Cell dataKey="trialCode" />
           </Column>
         </Table>
-        <SuccessMessage />
-        <EbDeletionMessage />
+        {/* <SuccessMessage />
+        <EbDeletionMessage /> */}
+        <EbSaveMessage />
 
         <Pagination
           className="pagination"
