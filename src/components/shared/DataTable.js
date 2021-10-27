@@ -518,7 +518,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       //SET REPLICATES
       if (currentPalmTableData.length > 0) {
         const reps = [
-          ...new Set(currentPalmTableData.map((palm) => palm.replicate)),
+          ...new Set(currentPalmTableData.map((palm) => palm.replicateno)),
         ];
         // const plots = [
         //   ...new Set(currentPalmTableData.map((palm) => palm.plotId)),
