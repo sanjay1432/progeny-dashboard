@@ -727,6 +727,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             const date = eachObj[eachKey];
             return GeneralHelper.modifyDate({ date }) === filters[eachKey];
           }
+          if(typeof eachObj[eachKey] !== 'string'){
+            return eachObj[eachKey] === filters[eachKey];
+          }
           return eachObj[eachKey].toLowerCase() === filters[eachKey].toLowerCase();
         });
       }
