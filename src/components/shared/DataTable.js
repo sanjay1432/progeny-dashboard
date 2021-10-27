@@ -110,8 +110,6 @@ const EditableCell = ({
                     "estateblock",
                     "design",
                     "density",
-                    "subblock",
-                    "progeny",
                     "ortet",
                     "fp",
                     "mp",
@@ -563,6 +561,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
       if (!activeRow) {
+        console.log(dashboardData.result[active])
         setTableData(dashboardData.result[active]);
       }
       const firstRow = dashboardData.result[active][0];
@@ -1011,13 +1010,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
     activeItem[key] = value;
     setTableData(nextData);
-    // if (key === "palmno") {
-    //   nextData.find((item) => item.trialId === trialId)[key] = value;
-    //   setTableData(nextData);
-    // } else {
-    //   nextData.find((item) => item.trialId === trialId)[key] = value;
-    //   setTableData(nextData);
-    // }
   };
 
   function handlePalmEditStatus(palmId) {
@@ -1062,7 +1054,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function savePalmData(trialId) {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.trialId === trialId);
-    activeItem.status = activeItem.status ? null : true;
     const payload = {
       palmnos: [
         {
@@ -1077,17 +1068,18 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     };
     PalmService.updatePalm(payload).then(
       (data) => {
-        // setTableData(nextData);
-        setConfirmationModal(false);
+        setTableData(nextData);
+        activeItem.status = activeItem.status ? null : true;
         setSuccessData(confirmationData);
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);
         setActiveRow(null);
-        fetchCurrentTrialPalmData();
+        //fetchCurrentTrialPalmData();
       },
       (error) => {
-        setErrorMessage(active);
+        setConfirmationModal(false);
         setErrorData(error.message);
+        setErrorMessage(active);
       }
     );
   }
@@ -1413,36 +1405,36 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  function ErrorMessage({ activeNav, errorData }) {
-    switch (activeNav && errorData) {
-      case "plot" && errorData !== undefined:
-        return (
-          <>
-            <Message
-              showIcon
-              type="error"
-              description={`${errorData} is the problem unable to edit plot`}
-              onClick={() => {
-                setErrorMessage("");
-              }}
-            />
-          </>
-        );
-      case "palm" && errorData !== undefined:
-        return (
-          <>
-            <Message
-              showIcon
-              type="error"
-              description={`${errorData} is the problem unable to edit palm.`}
-              onClick={() => {
-                setErrorMessage("");
-              }}
-            />
-          </>
-        );
-      default:
-        return <></>;
+  const ErrorMessage = ({ activeNav, errorData }) => {
+    if(activeNav === "plot" && errorData !== undefined) {
+      return (
+        <>
+          <Message
+            showIcon
+            type="error"
+            description={`${errorData} is the problem unable to edit plot`}
+            onClick={() => {
+              setErrorMessage("");
+            }}
+          />
+        </>
+      );
+    } 
+    else if (activeNav === "palm" && errorData !== undefined) {
+      return (
+        <>
+          <Message
+            showIcon
+            type="error"
+            description={`${errorData} is the problem unable to edit palm.`}
+            onClick={() => {
+              setErrorMessage("");
+            }}
+          />
+        </>
+      );
+    } else {
+      return null;
     }
   }
 

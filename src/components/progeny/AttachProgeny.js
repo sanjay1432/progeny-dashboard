@@ -401,6 +401,7 @@ const AttachProgeny = ({
     }
     
   }
+
   return (
     <div id="TrialAction">
       {/* STEP 1 GENERATE TABLE START*/}
@@ -472,7 +473,7 @@ const AttachProgeny = ({
               <Grid fluid>
                 <Row className="show-grid" id="dashboardTableSetting">
                   <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-                    <b>Total records ({trialPlots.length})</b>
+                    <b>Total records ({trialPlots ? trialPlots.length : "N/A"})</b>
                   </Col>
 
                   <FlexboxGrid justify="end">
