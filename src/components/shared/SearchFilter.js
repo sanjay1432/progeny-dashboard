@@ -90,7 +90,7 @@ const SearchFilter = forwardRef(
             if(active === "palm" || active === 'plot') {
               const nonNullValues = estates.filter((item)=>item);
               nonNullValues.sort()  
-              filterData['replicate'] = noofreps
+              // filterData['replicate'] = noofreps
               filterData['estate'] = nonNullValues 
             }   
           }
