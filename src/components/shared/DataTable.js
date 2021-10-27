@@ -1108,6 +1108,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </span>
         );
       case "trial":
+        const editable = 
+        data.isEditable === "true" && 
+        data.status === "Finished" || data.status === "Pending" || data.status === "Active" ? true : false;
         return (
           <FlexboxGrid className="spaceBetweenThree" justify="space-between">
             <FlexboxGrid.Item>
@@ -1120,6 +1123,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     ["Trial and Replicate", `Trial ${data.trialCode}`],
                     {
                       trial: data,
+                      columnEditable: editable,
                       // estate: data.estate,
                       // replicates:data.replicates,
                       type: "expand",
@@ -1129,7 +1133,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable === "true" && data.status !== "Closed" ? (
+              {editable ? (
                 <img
                   src={CreateIcon}
                   alt=""
@@ -1157,7 +1161,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               )}
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {data.isEditable === "true" && data.status !== "Closed" ? (
+              {editable ? (
                 <img
                   src={LinkIcon}
                   alt="edit"
@@ -1318,7 +1322,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             )}
           </>
         );
-
       case "progeny":
         return (
           <span>

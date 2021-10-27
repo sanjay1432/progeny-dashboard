@@ -264,8 +264,6 @@ const TrialEstateBlocks = ({
     )
   }
 
- 
-
   const ActionCell = ({ rowData, rowIndex, dataKey, onClick, ...props }) => {
     return (
       <Cell align="center" {...props}>
@@ -299,7 +297,7 @@ const TrialEstateBlocks = ({
             </FlexboxGrid.Item>
           </FlexboxGrid>
         ) : (
-          option.trial.isEditable === "true" ? (
+            option.columnEditable ? (
             <span>
               <img
                 src={CreateIcon}

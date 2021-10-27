@@ -63,6 +63,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     { estate: "", estatenofreplicate: "" },
   ]);
   const [checkStatusReplicates, setCheckStatusReplicate] = useState([]);
+  const [dupProps, setDupProps] = useState(false);
   const [replicateValue, setReplicateValue] = useState([]);
   const [disbaledANR, setDisbaledANR] = useState(true);
   const [disbaledANRV, setDisbaledANRV] = useState(true);
@@ -136,7 +137,19 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     console.log(mappedDesigns);
     setDesigns(mappedDesigns);
   }
+
+  const trialId = dashboardData.result['trial'].map((item, index) => {
+    return item['trialCode']
+  })
+  
   function onInput(e) {
+    if(e.target.name === "trialCode") {
+      if(trialId.includes(e.target.value)) {
+        setDupProps(true)
+      } else{
+        setDupProps(null)
+      }
+    }
     if (
       ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name)
     ) {
@@ -156,6 +169,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setTrial(() => ({ ...trial, [e.target.name]: val }));
     // handleDisableState();
   }
+
+  
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
     let name, value;
@@ -249,13 +264,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       inputListForTrialInEState.forEach((rpEs) => {
         isEmptyreplicatesInEstate = checkProperties(rpEs);
       });
-      if (isEmptyTrial || !isMultplicationValid || isEmptyreplicatesInEstate) {
+      if (!dupProps || isEmptyTrial || !isMultplicationValid || isEmptyreplicatesInEstate) {
         setDisabledGenerateTable(true);
       } else {
         setDisabledGenerateTable(false);
       }
     } else {
-      if (isEmpty || !isMultplicationValid) {
+      if (!dupProps || isEmpty || !isMultplicationValid) {
         setDisabledGenerateTable(true);
       } else {
         setDisabledGenerateTable(false);
@@ -554,6 +569,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               name="trialCode"
               onChange={(value, e) => onInput(e)}
             />
+            {dupProps ? (
+              <p style={{ color: "red", fontSize: "12px", float: "right" }}>
+                Progeny ID already existed *
+              </p>
+            ) : null}
           </Col>
           {/* <Col>
             {trial.trialCode === "" ? (
