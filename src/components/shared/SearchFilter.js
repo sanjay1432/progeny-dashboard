@@ -87,7 +87,7 @@ const SearchFilter = forwardRef(
             const nonNullValues = filterdata.filter((item)=>item);
             filterData[filterName] = nonNullValues 
             nonNullValues.sort()      
-            if(active === "palm") {
+            if(active === "palm" || active === 'plot') {
               const nonNullValues = estates.filter((item)=>item);
               nonNullValues.sort()  
               filterData['estate'] = nonNullValues 
@@ -154,7 +154,7 @@ const SearchFilter = forwardRef(
 
     function onChange(e) {
       // FIND THE ESTATE OF TRIAL CODE
-      if(active === 'palm'){
+      if(active === 'palm' || active === 'plot'){
         const trials = dashboardData.result['trial']
        if(trials){
         const trialEstates =  trials.find((trial)=> trial.trialCode ===  e.target.value)?.estate;
