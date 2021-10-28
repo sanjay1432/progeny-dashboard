@@ -2,7 +2,7 @@ import React from "react"
 import { Message } from "rsuite"
 
 const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
- setTimeout(()=> hide() ,3000)
+ setTimeout(()=> hide() ,5000)
   if (show === true) {
     switch (action) {
       case "PLOTDATA_UPDATE":

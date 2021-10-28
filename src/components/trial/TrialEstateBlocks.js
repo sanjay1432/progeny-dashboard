@@ -15,7 +15,9 @@ import {
   Modal,
   IconButton,
   Icon,
-  Input
+  Input,
+  Tooltip,
+  Whisper
 } from "rsuite"
 import EstateService from "../../services/estate.service"
 import TrialService from "../../services/trial.service"
@@ -66,7 +68,11 @@ const TrialEstateBlocks = ({
   option,
   ...props
 }) => {
+
+  const editProgeny = <Tooltip>Data exists for Palms</Tooltip>;
+  const closedTrial = <Tooltip>Trial has been Closed</Tooltip>;
   const dispatch = useDispatch()
+
   const [tableData, setTableData] = useState([])
   const [filteredTableData, setFilteredTableData] = useState([])
   const [ebAdded, setebAdded] = useState(null)
@@ -308,7 +314,13 @@ const TrialEstateBlocks = ({
               />
             </span>
           ) : (
-              <img src={CreateIcon} style={{ opacity: 0.2 }} alt="create" />
+              <Whisper
+                placement="left"
+                trigger="hover"
+                speaker={option.trial.status === "Closed" ? closedTrial : editProgeny}
+              >
+                <img src={CreateIcon} style={{ opacity: 0.2 }} alt="create" />
+              </Whisper>
           )
         )}
         {/* </Button> */}

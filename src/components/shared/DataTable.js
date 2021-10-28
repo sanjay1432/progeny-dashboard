@@ -1070,6 +1070,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       (data) => {
         setTableData(nextData);
         activeItem.status = activeItem.status ? null : true;
+        setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);

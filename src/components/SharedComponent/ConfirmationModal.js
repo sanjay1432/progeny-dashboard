@@ -116,7 +116,7 @@ const ConfirmationModal = ({
             <Modal.Body>
               <p>
                 Are you sure want to save this Progeny
-                <b className="targetName"> {data.progenyCode}</b>? This Progeny
+                <b> </b><b className="targetName">{data.progenyCode}</b>? This Progeny
                 will be created inside the system.
               </p>
             </Modal.Body>
@@ -142,7 +142,7 @@ const ConfirmationModal = ({
               <Modal.Body>
                 <p>
                   Are you sure want to edit  Progeny ID
-                  <b className="targetName"> {data.progenyCode}</b>? This might 
+                  <b> </b><b className="targetName">{data.progenyCode}</b>? This might 
                   change data that is associate with it as well!.
                 </p>
               </Modal.Body>

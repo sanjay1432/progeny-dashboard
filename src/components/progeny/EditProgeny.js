@@ -7,6 +7,7 @@ import ProgenyService from "../../services/progeny.service"
 import { publish } from "../../services/pubsub.service"
 import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import ConfirmationModal from "../SharedComponent/ConfirmationModal";
+import ErrorMessage from "../SharedComponent/ErrorMessage";
 const EditProgeny = ({ option, ...props }) => {
   const initialForm = {
     progenyId: option.progenyId,
@@ -27,6 +28,7 @@ const EditProgeny = ({ option, ...props }) => {
     crossType: option.crossType
   }
   const [confirmationModal, setConfirmationModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
   const [formData, setFormData] = useState(initialForm)
   const dispatch = useDispatch()
   const ProgenyData = useSelector(
@@ -72,15 +74,16 @@ const EditProgeny = ({ option, ...props }) => {
   }
 
   function updateProgeny() {
-    setFormData(() => ({
+    const payload = {
       ...formData,
       cross: formData.fp + " x " + formData.mp
-    }))
-    ProgenyService.updateProgeny(formData).then(
+    }
+    
+    ProgenyService.updateProgeny(payload).then(
       data => {
         const savedData = {
           type: "PROGENY_UPDATE",
-          data: formData,
+          data: payload,
           action: "UPDATE"
         }
         dispatch(getDashboardData('progeny'))
@@ -88,7 +91,8 @@ const EditProgeny = ({ option, ...props }) => {
         publish(savedData)
       },
       error => {
-        console.log(error.message)
+        setConfirmationModal(false);
+        setErrorMessage(true);
       }
     )
   }
@@ -102,6 +106,7 @@ const EditProgeny = ({ option, ...props }) => {
         data={formData}
         action="PROGENY_EDIT"
       />
+      <ErrorMessage description={`Our system has some issues, please try again later`} show={errorMessage} hide={() => setErrorMessage(false)} />
       <Grid fluid>
         <Row>
           <Col md={5} lg={5}>

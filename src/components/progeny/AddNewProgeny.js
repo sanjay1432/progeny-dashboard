@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearBreadcrumb } from "../../redux/actions/app.action";
 import { Grid, Row, Col, Input, Button } from "rsuite";
 import ConfirmationModal from "../SharedComponent/ConfirmationModal";
+import ErrorMessage from "../SharedComponent/ErrorMessage";
 import DataPicker from "../SharedComponent/DataPicker";
 import ProgenyService from "../../services/progeny.service";
 import { publish } from "../../services/pubsub.service";
@@ -29,6 +30,7 @@ const AddNewProgeny = () => {
   const [confirmationModal, setConfirmationModal] = useState(false);
 
   const [dupProps, setDupProps] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
   const dispatch = useDispatch();
 
   const ProgenyData = useSelector(
@@ -84,15 +86,16 @@ const AddNewProgeny = () => {
   }
 
   function createProgeny() {
-    setFormData(() => ({
+    const payload = {
       ...formData,
-      cross: formData.fp + " x " + formData.mp,
-    }));
-    ProgenyService.createProgeny(formData).then(
+      cross: formData.fp + " x " + formData.mp
+    }
+
+    ProgenyService.createProgeny(payload).then(
       (data) => {
         const savedData = {
           type: "PROGENY_CREATE",
-          data: formData,
+          data: payload,
           action: "CREATE",
         };
         dispatch(getDashboardData('progeny'))
@@ -100,7 +103,8 @@ const AddNewProgeny = () => {
         publish(savedData);
       },
       (error) => {
-        console.log(error.message);
+        setConfirmationModal(false);
+        setErrorMessage(true);
       }
     );
   }
@@ -121,7 +125,7 @@ const AddNewProgeny = () => {
         data={formData}
         action="PROGENY_CREATE"
       />
-
+      <ErrorMessage description={`Our system has some issues, please try again later`} show={errorMessage} hide={() =>setErrorMessage(false)} />
       <Grid fluid>
         <Row>
           <Col md={5} lg={5}>
