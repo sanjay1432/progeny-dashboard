@@ -28,7 +28,7 @@ const SearchFilter = forwardRef(
     const [isDrawer, setDrawer] = useState(false)
     const [selectedFilters, setFilters] = useState(initialFilters)
     const [estates, setEstates] = useState([])
-
+    const [noofreps, setNoofreps] = useState([])
     const { active } = currentSubNavState
 
     const dashboardData = useSelector(state => state.dashboardDataReducer)
@@ -87,9 +87,10 @@ const SearchFilter = forwardRef(
             const nonNullValues = filterdata.filter((item)=>item);
             filterData[filterName] = nonNullValues 
             nonNullValues.sort()      
-            if(active === "palm") {
+            if(active === "palm" || active === 'plot') {
               const nonNullValues = estates.filter((item)=>item);
               nonNullValues.sort()  
+              // filterData['replicate'] = noofreps
               filterData['estate'] = nonNullValues 
             }   
           }
@@ -154,11 +155,19 @@ const SearchFilter = forwardRef(
 
     function onChange(e) {
       // FIND THE ESTATE OF TRIAL CODE
-      if(active === 'palm'){
+      if(active === 'palm' || active === 'plot'){
         const trials = dashboardData.result['trial']
        if(trials){
         const trialEstates =  trials.find((trial)=> trial.trialCode ===  e.target.value)?.estate;
-
+        if(active === 'plot'){
+          const trialReplicates =  trials.find((trial)=> trial.trialCode ===  e.target.value)?.nofreplicate;
+          if(trialReplicates){
+            setNoofreps([trialReplicates])
+          }
+      
+          filterData['replciate'] = trialReplicates
+        }
+        
         if(trialEstates){
           const estates = trialEstates.map((te)=>te.name)
 

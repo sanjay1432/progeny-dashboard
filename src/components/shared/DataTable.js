@@ -140,7 +140,7 @@ const EditableCell = ({
               disabled={[
                 "trialCode",
                 "estate",
-                "replicate",
+                "replicateno",
                 "estateblock",
                 "plot",
               ].includes(dataKey)}
@@ -532,7 +532,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       //SET REPLICATES
       if (currentPalmTableData.length > 0) {
         const reps = [
-          ...new Set(currentPalmTableData.map((palm) => palm.replicate)),
+          ...new Set(currentPalmTableData.map((palm) => palm.replicateno)),
         ];
         // const plots = [
         //   ...new Set(currentPalmTableData.map((palm) => palm.plotId)),
@@ -1873,7 +1873,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                           className="dashboardSelectFilter"
                           value={replicateSelector}
                           onChange={(value, e) => {
-                            filterData.filter["replicate"] = value;
+                            filterData.filter["replicateno"] = value;
                             if (value === "All") {
                               delete filterData.filter.replicate;
                               const foundTrial = dashboardData.result[
