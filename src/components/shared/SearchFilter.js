@@ -240,15 +240,30 @@ const SearchFilter = forwardRef(
       if(active === 'palm'){
          //FETCH TRIAL ID & ESTATEID
           const {trialCode, estate} =  selectedFilters
-        const foundTrial =  dashboardData.result['trial'].find((trial)=> trial.trialCode === trialCode)
-        const foundEstate =  foundTrial.estate.find((est)=> est.name === estate)
-        const payload = {
-          trialId: foundTrial.trialId,
-          estateId: foundEstate.id
+        const foundTrial =  dashboardData.result['trial'].find((trial) => trial.trialCode === trialCode)
+
+        let trialId;
+        let id;
+        let isPending;
+        if(foundTrial.status !== "Pending") {
+          const foundEstate = foundTrial.estate.find((est) => est.name === estate)
+          trialId = foundTrial.trialId
+          id = foundEstate.id
+          isPending = false
+        } else {
+          trialId = null
+          id = null
+          isPending = true
         }
-        dispatch(getPalmData(payload))
+        const payload = {
+          trialId: trialId,
+          estateId: id,
+          isPending: isPending
+        }
+         dispatch(getPalmData(payload))
       }
       dispatch(setFilter(selectedFilters))
+      setDrawer(false)
     }
 
     return (
@@ -329,6 +344,7 @@ const SearchFilter = forwardRef(
             <Button
               onClick={onApply}
               appearance="primary"
+              disabled={selectedFilters && active === 'palm' ? Object.keys(selectedFilters).length < 2 : selectedFilters ? !Object.keys(selectedFilters).length : true}
               //style={{ width: "100%" }}
             >
               Apply
