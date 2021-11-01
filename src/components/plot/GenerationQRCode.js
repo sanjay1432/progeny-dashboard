@@ -95,13 +95,19 @@ const GenerationQRCode = ({ option }) => {
 
       <Grid className="qrFunctionSetting" fluid>
         <Row>
-          <Col md={3} lg={3}>
+          <Col md={3} lg={2}>
             <p className="trial">
               Trial ID : <b className="trialData">{option.trialCode}</b>
             </p>
           </Col>
 
-          <Col md={3} lg={3}>
+          <Col md={4} lg={4}>
+            <p className="trial">
+              Trial : <b className="trialData">{option.trial}</b>
+            </p>
+          </Col>
+
+          <Col md={3} lg={2}>
             <p className="plot">
               Plot : <b className="plotData">{option.plot}</b>
             </p>
@@ -117,7 +123,7 @@ const GenerationQRCode = ({ option }) => {
             <p className="selectDesc">Select All</p>
           </Col>
 
-          <Col xsOffset={11} md={4} lg={4}>
+          <Col xsOffset={7} md={4} lg={6}>
             <Button
               className="qrPrintButton"
               appearance="primary"
@@ -130,7 +136,7 @@ const GenerationQRCode = ({ option }) => {
         </Row>
       </Grid>
       <div className="ContentLayout">
-        {qrData.map(data => {
+        {qrData.map((data, index) => {
           function ZoomInQRCode(trialId,plotId, estateId, estateblockId, palmId, palmNo) {
             var Info = {
               trialId: trialId,
@@ -146,7 +152,7 @@ const GenerationQRCode = ({ option }) => {
             setZoomInData(Info)
           }
           return (
-            <div className="QrItemLayout">
+            <div className="QrItemLayout" key={index}>
              
               <Panel shaded>
                 <QRCode
