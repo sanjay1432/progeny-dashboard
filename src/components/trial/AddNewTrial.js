@@ -103,7 +103,6 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
     let mappedEstate = [];
     for (let item in mappedEstates) {
-      console.log(item)
       mappedEstate.push({
         label: mappedEstates[item].estate,
         value: mappedEstates[item].estateId,
@@ -378,18 +377,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     const keys = checked
       ? [...checkStatusReplicates, value]
       : checkStatusReplicates.filter((item) => item !== value);
-    const values = keys.map((item, index) => {
-      if(tableData[item] !== null || tableData[item] !== undefined) {
-        return tableData[item]['replicate']
-      }
-      else {
-        return 
-      }
-    })  
-    setReplicateValue(values)
-    setCheckStatusReplicate(keys);
+    const key_values = keys.sort();
+    setCheckStatusReplicate(key_values);
     setDisbaledANRV(!checked);
-    setDisbaledRD(!checked);
+    //setDisbaledRD(!checked);
   };
 
   function getEstateBlocks(estate) {
@@ -427,19 +418,6 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           }
         });
       }
-      // const estateBlocksItems = [];
-      // estatesWithBlocks.forEach((estate) => {
-      //   estateBlocksItems.push(...estate.estateblocks);
-      // });
-      // const estateBlocks = [
-      //   ...new Set(
-      //     estateBlocksItems
-      //       .map((item) => item.estateblock)
-      //       .map((block) =>
-      //         estateBlocksItems.find((eb) => eb.estateblock === block)
-      //       )
-      //   ),
-      // ];
 
       const foundedBlock = assignedEstateBlocks.find(
         (eb) => eb.estateblock === block
@@ -475,12 +453,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
   function onAddingNewReplicateVarient() {
     console.log(checkStatusReplicates);
-    const data = [...tableData];
-    console.log(data);
+    let data = [...tableData];
+    let count = 0;
     for (let index in checkStatusReplicates) {
       console.log(checkStatusReplicates[index]);
-      const repIndex = checkStatusReplicates[index];
+      const repIndex = checkStatusReplicates[index] + count;
       const existingRep = data[repIndex];
+      console.log(count)
       const variant = {
         estateId: existingRep.estateId,
         estate: existingRep.estate,
@@ -493,13 +472,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       };
 
       data.splice(repIndex + 1, 0, variant);
+      console.log(data);
+      count = count + 1;
+      setCheckStatusReplicate([]);
       setTableData(data);
-      console.log(existingRep);
     }
   }
 
   function deleteReplicate() {
-    let data = tableData
+    let data = [...tableData]
     //const data = [...tableData];
     //console.log(replicateValue)
     // for (let index in checkStatusReplicates) {
@@ -507,9 +488,14 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     //   checkStatusReplicates.splice(index, 1);
     // }
     // setTableData(data);
-    replicateValue.map((item, index) => {
-      data = data.filter(item2 => item2['replicate'] !== item)
-      return data
+    let count = 0;
+    console.log(checkStatusReplicates)
+    checkStatusReplicates.map((item, index) => {
+      const d_index = item + count
+      console.log(d_index)
+      data = data.filter((item2, index2) => index2 !== d_index)
+      count = count - 1
+      console.log(data)
     })
     setCheckStatusReplicate([]);
     setTableData(data);
@@ -971,10 +957,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               <FlexboxGrid.Item>
                 <div className="buttonLayout">
                   <Button
-                    appearance="primary"
+                    appearance="ghost"
                     className="variant variantButton"
                     onClick={onAddingNewReplicateVarient}
-                    disabled={disbaledANRV}
+                    //disabled={disbaledANRV}
                   >
                     Add Replicate Variant
                   </Button>
@@ -987,7 +973,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                   <Button
                     className="deleteButton"
                     onClick={deleteReplicate}
-                    disabled={disbaledRD}
+                    //disabled={disbaledRD}
+                    disabled={checkStatusReplicates.length > 0 ? false : true}
                   >
                     Delete
                   </Button>
