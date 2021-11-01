@@ -76,6 +76,7 @@ const EditPalmInformation = ({ option }) => {
   const trialData = useSelector(
     (state) => state.dashboardDataReducer.result.trial
   );
+  const [palmList, setPalmList] = useState([])
   const [trialIds, setTrialIds] = useState([]);
   const [estates, setEstates] = useState([]);
   const [plots, setPlots] = useState([]);
@@ -86,21 +87,9 @@ const EditPalmInformation = ({ option }) => {
     if (filterValue.trialId) {
       setFilterTrialIds();
       setTrials();
-      async function fetchData() {
-        const data = await PlotService.getPalmInformation(filterValue.trialId);
-        setPlotFilterData(data);
-        setReplicateFilterData(data);
-        setInitialData(data);
-        filterTableData(data);
-      }
       fetchData();
     }
-  }, [
-    filterValue.trialId,
-    filterValue.estate,
-    filterValue.plotId,
-    filterValue.replicate,
-  ]);
+  }, [filterValue]);
 
   const { user } = useSelector((state) => state.authReducer);
 
@@ -109,6 +98,14 @@ const EditPalmInformation = ({ option }) => {
     user.lastName,
     user.username
   );
+
+  async function fetchData() {
+    const data = await PlotService.getPalmInformation(filterValue.trialId);
+    setPlotFilterData(data);
+    setReplicateFilterData(data);
+    setInitialData(data);
+    filterTableData(data);
+  }
 
   function setTrials() {
     const selectedTrial = trialData.find(
@@ -447,7 +444,7 @@ const EditPalmInformation = ({ option }) => {
               </Col>
 
               <FlexboxGrid justify="end">
-                <Col mdOffset={6} md={4} lgOffset={9} lg={3}>
+                <Col mdOffset={6} md={5} lgOffset={8} lg={4}>
                   <SelectPicker
                     data={replicates}
                     className="dashboardSelectFilter"
@@ -464,7 +461,7 @@ const EditPalmInformation = ({ option }) => {
                   />
                 </Col>
 
-                <Col md={3} lg={2} className="quickSaveLayout">
+                <Col md={2} lg={1} className="quickSaveLayout">
                   <Button
                     className="quickSaveButton"
                     appearance="primary"
@@ -485,12 +482,12 @@ const EditPalmInformation = ({ option }) => {
             shouldUpdateScroll={false}
             wordWrap
           >
-            {columns.map((col) => {
-              const width = col.width ? col.width : false;
-              const flexGrow = col.flexGrow ? col.flexGrow : false;
-              const fixed = col.fixed ? col.fixed : false;
+            {columns.map((col, index) => {
+              const width = col.width ? col.width : null;
+              const flexGrow = col.flexGrow ? col.flexGrow : null;
+              const fixed = col.fixed ? col.fixed : null;
               return (
-                <Column width={width} flexGrow={flexGrow} fixed={fixed}>
+                <Column key={index} width={width} flexGrow={flexGrow} fixed={fixed}>
                   <HeaderCell className="tableHeader">{col.name}</HeaderCell>
                   <EditableCell
                     dataKey={col.dataKey}
@@ -500,24 +497,9 @@ const EditPalmInformation = ({ option }) => {
               );
             })}
           </Table>
+          <div style={{ marginBottom: "50px" }}>
 
-          <Grid fluid className="footerLayout">
-            <Row className="show-grid">
-              <FlexboxGrid justify="end">
-                <Col md={5} lg={4} className="cancelButtonLayout">
-                  <FlexboxGrid.Item>
-                    <Button
-                      appearance="subtle"
-                      className="cancelButton"
-                      onClick={() => dispatch(clearBreadcrumb())}
-                    >
-                      Cancel
-                    </Button>
-                  </FlexboxGrid.Item>
-                </Col>
-              </FlexboxGrid>
-            </Row>
-          </Grid>
+          </div>
         </>
       )}
     </div>

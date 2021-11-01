@@ -12,7 +12,7 @@ const BreadcrumbProgeny = () => {
   return (
     <>
       <Breadcrumb
-        classname="breadcrumbLayout"
+        className="breadcrumbLayout"
         separator={<Icon icon="angle-right" />}
       >
         {breadcrumb &&

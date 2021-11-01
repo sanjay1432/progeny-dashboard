@@ -115,10 +115,11 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [isSuccessModal, setSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState(null)
   const [regenerateEnabled, setRegenerateEnabled] = useState(false)
-
   const [existingReplicatesInEstate, setExistingReplicatesInEstate] = useState(
     []
   )
+  const date = new Date(trial.planteddate)
+
   const trialData = useSelector(state => state.dashboardDataReducer.result.trial)
   const authData = useSelector((state) => state.authReducer);
   useEffect( () => {
@@ -739,7 +740,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             />
           </Col>
         </Row>
-
+        
         <Row className="show-grid TrialFormLayout">
           <Col md={9} lg={8}>
             <p className="labelForm">Planted Date</p>
@@ -750,7 +751,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               size="lg"
               className="datePicker"
               placeholder="Enter Date"
-              value={trial.planteddate}
+              value={date}
               format="MM/YYYY"
               style={styles}
               name="planteddate"

@@ -33,7 +33,7 @@ const Filter = forwardRef(
             id={filter.name}
             className="dashboardSelectFilter"
             data={dataToFilter}
-            value={selected ? selected.value : null}
+            value={selected ? selected.value : ""}
             disabled={filter.disable}
             onChange={(value, e) =>
               onChangeSelection({ target: { name: filter.name, value: value } })
@@ -44,7 +44,7 @@ const Filter = forwardRef(
             id={filter.name}
             className="dashboardInputFilter"
             name={filter.name}
-            value={selected ? selected : null}
+            value={selected ? selected : ""}
             placeholder={` Enter ${filter.label}`}
             onChange={(value, e) =>
               onUpdate({ target: { name: filter.name, value: value } })

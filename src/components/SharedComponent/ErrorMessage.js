@@ -2,7 +2,10 @@ import React from 'react'
 import {Message} from 'rsuite';
 
 const ErrorMessage = ({ description, show, hide }) => {
-  setTimeout(() =>hide(), 5000)
+  if (show) {
+    setTimeout(() => hide(), 5000)
+  }
+  
   return (
     <>
       {show ? (
