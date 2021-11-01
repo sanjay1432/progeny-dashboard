@@ -10,6 +10,7 @@ import {
 import GeneralHelper from "../../helper/general.helper";
 import DeleteModal from "../../components/modal/DeleteModal";
 import { progenySubject, resetSubject } from "../../services/pubsub.service";
+import DashboarddataService from "../../services/dashboarddata.service";
 import ProgenyService from "../../services/progeny.service";
 import SuccessMessage from "../SharedComponent/SuccessMessage";
 import SearchMessage from "../../assets/img/SearchMessage.svg";
@@ -30,6 +31,7 @@ import {
   Icon,
   Tooltip,
   Whisper,
+  Loader
 } from "rsuite";
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg";
 import LinkIcon from "../../assets/img/icons/link_24px.svg";
@@ -181,8 +183,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     currentTableDataFields = [];
     // SET TABLE DATA
     setCurrentTableData();
+    }
+  );
 
-  });
   const resetData = useSelector((state) => state.resetReducer);
 
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
@@ -202,6 +205,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [checkStatus, setCheckStatus] = useState([]);
   const { activePage, displaylength } = pagination;
   const { active } = currentSubNavState;
+  console.log(active)
+  const [originalData, setOriginalData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [activeRow, setActiveRow] = useState(null);
   const [progenies, setProgenies] = useState([]);
@@ -219,6 +224,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     progenySubject.subscribe((data) => {
       subscribedData(data);
     });
+
+
     
     if (active === "plot") {
       const progenies = await DashboardDataService.getDashboardData("progeny");
@@ -236,6 +243,15 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    async function originalData() {
+      const data = await DashboarddataService.getOriginalData(active)
+      console.log(data)
+      setOriginalData(data)
+    }
+    originalData();
+  }, [active])
 
   const { user } = useSelector((state) => state.authReducer);
 
@@ -508,7 +524,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   function setTrialEstateReplicates() {
     if (active === "palm") {
-      let currentPalmTableData = [...dashboardData.result[active]];
+      let currentPalmTableData = dashboardData.result[active];
       palmReplicates = [];
       palmPlots = [];
       replicateSelector = "All";
@@ -561,7 +577,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
       if (!activeRow) {
-        console.log(dashboardData.result[active])
+        console.log(dashboardData.result)
         setTableData(dashboardData.result[active]);
       }
       const firstRow = dashboardData.result[active][0];
@@ -774,7 +790,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       case "trial":
         return (
           <Col sm={5} md={5} lg={4} className="addButtonLayout">
-            <FlexboxGrid.Item>
+            <FlexboxGrid.Item style={{ minWidth: '130px', maxWidth: '130px' }}>
               <Button
                 appearance="primary"
                 className="addTrialButton"
@@ -850,7 +866,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </Col>
         );
       default:
-        return null;
+        return "";
     }
   }
 
@@ -964,7 +980,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function cancelPlotData(plotId) {
-    const nextData = Object.assign([], tableData);
+    const nextData = Object.assign([], originalData);
     const activeItemIdx = nextData.findIndex((item) => item.plotId === plotId);
     if (activeRow) {
       nextData[activeItemIdx] = activeRow;
@@ -976,7 +992,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function savePlotData(plotId) {
     const nextData = Object.assign([], tableData);
     const activeItem = nextData.find((item) => item.plotId === plotId);
-    activeItem.status = activeItem.status ? null : true;
     const { plot, progenyCode } = confirmationData;
 
     const payload = {
@@ -989,17 +1004,19 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
     PlotService.updatePlot(payload).then(
       (data) => {
-        dispatch(getDashboardData("plot"));
-        setActiveRow(null);
+        //dispatch(getDashboardData("plot"));
         setTableData(nextData);
+        activeItem.status = activeItem.status ? null : true;
         setConfirmationModal(false);
         setSuccessData(confirmationData);
         setAction("PLOTDATA_UPDATE");
         setSuccessMessage(true);
+        setActiveRow(null);
       },
       (error) => {
-        setErrorMessage(active);
+        setConfirmationModal(false);
         setErrorData(error.message);
+        setErrorMessage(active);
       }
     );
   }
@@ -1109,7 +1126,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </span>
         );
       case "trial":
-        const editable = 
+        const trialIsEditable = 
         data.isEditable === "true" && 
         data.status === "Finished" || data.status === "Pending" || data.status === "Active" ? true : false;
         return (
@@ -1124,7 +1141,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     ["Trial and Replicate", `Trial ${data.trialCode}`],
                     {
                       trial: data,
-                      columnEditable: editable,
+                      columnEditable: trialIsEditable,
                       // estate: data.estate,
                       // replicates:data.replicates,
                       type: "expand",
@@ -1134,7 +1151,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               />
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {editable ? (
+              {trialIsEditable ? (
                 <img
                   src={CreateIcon}
                   alt=""
@@ -1162,7 +1179,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               )}
             </FlexboxGrid.Item>
             <FlexboxGrid.Item>
-              {editable ? (
+              {trialIsEditable ? (
                 <img
                   src={LinkIcon}
                   alt="edit"
@@ -1195,6 +1212,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </FlexboxGrid>
         );
       case "plot":
+        const plotIsQRCode = getTrailEditStatus(data.trialId).status !== "Pending"
+        const plotIsEditable = getTrailEditStatus(data.trialId).status !== "Pending" && getTrailEditStatus(data.trialId).status !== "Canceled";
         return (
           <>
             {data.status ? (
@@ -1221,24 +1240,34 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             ) : (
               <FlexboxGrid justify="space-between">
                 <FlexboxGrid.Item>
-                  <img
-                    src={QrCodeScanner}
-                    alt=""
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      handleActionExpand(["Plot", "Generate QR Code"], {
-                        type: "generate QR",
-                        plotId: data.plotId,
-                        trialCode: data.trialCode,
-                        plot: data.plot,
-                      })
-                    }
-                  />
+                    {plotIsQRCode ? (
+                      <img
+                        src={QrCodeScanner}
+                        alt=""
+                        style={{
+                        cursor: "pointer" }}
+                        onClick={() =>
+                          handleActionExpand(["Plot", "Generate QR Code"], {
+                            type: "generate QR",
+                            plotId: data.plotId,
+                            trialCode: data.trialCode,
+                            trial: data.trial,
+                            plot: data.plot,
+                          })
+                        }
+                      />
+                  ) : (
+                      <img
+                        src={QrCodeScanner}
+                        alt=""
+                        style={{ opacity: 0.2 }}
+                      />
+                  )}
                 </FlexboxGrid.Item>
 
                
-                <FlexboxGrid.Item>
-                {getTrailEditStatus(data.trialId).isEditable === "true" && getTrailEditStatus(data.trialId).status !== "Closed" ?(
+              <FlexboxGrid.Item>
+                {plotIsEditable ? (
                   <img
                   src={CreateIcon}
                   alt=""
@@ -1257,7 +1286,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
-                {getTrailEditStatus(data.trialId).isEditable === "true" && getTrailEditStatus(data.trialId).status !== "Closed" ?(
+                {plotIsEditable ?(
                   <img
                     src={LinkIcon}
                     alt=""
@@ -1804,6 +1833,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   };
 
   function handleSortColumn(sortColumn, sortType) {
+    console.log(sortType, sortColumn)
     setSortType(sortType);
     setSortColumn(sortColumn);
     setLoading(true);
@@ -1873,7 +1903,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       </FlexboxGrid.Item>
                     </Col>
 
-                    <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
+                    <Col sm={4} md={4} lg={3} className="replicateFilterLayout">
                       <FlexboxGrid.Item>
                         <SelectPicker
                           data={palmPlots}
@@ -1959,79 +1989,85 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
             </Row>
           </Grid>
 
-          <Table
-            id="dashboardTable"
-            wordWrap
-            virtualized
-            rowHeight={55}
-            data={getData(displaylength)}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            loading={loading}
-            onSortColumn={handleSortColumn}
-            // autoHeight
-            height = {500}
-          >
-            {active === "progeny" ? (
-              <Column width={70} align="center" fixed>
-                <HeaderCell className="tableHeader">
-                  <Checkbox
-                    checked={checked}
-                    indeterminate={indeterminate}
-                    onChange={handleCheckAll}
-                  />
-                </HeaderCell>
-                <CheckCell
-                  dataKey="rowNumber"
-                  checkedKeys={checkStatus}
-                  onChange={handleCheck}
-                />
-              </Column>
-            ) : null}
-            {reArrangeTableFields().map((field, i) => (
-              <Column
-                width={field.width ? field.width : null}
-                flexGrow={field.flexGrow ? field.flexGrow : null}
-                align={field.align ? field.align : "left"}
-                fixed={field.fixed ? field.fixed : null}
-                key={i}
-                sortable={field.sorting}
-              >
-                <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                {field.value === "status" ? (
-                  <Cell align="center" {...props}>
-                    {(rowData) => <StatusButton status={rowData.status} />}
-                  </Cell>
-                ) : (
-                  <EditableCell
-                    dataKey={field.value}
-                    OriginalData={tableData}
-                    handlePalmEditChange={handlePalmEditChange}
-                    handlePlotEditChange={handlePlotEditChange}
-                    active={active}
-                    progenies={progenies}
-                  />
-                )}
-              </Column>
-            ))}
+          {tableData.length !== undefined ? (
+            <>
+                <Table
+                  id="dashboardTable"
+                  wordWrap
+                  virtualized
+                  rowHeight={55}
+                  data={getData(displaylength)}
+                  sortColumn={sortColumn}
+                  sortType={sortType}
+                  loading={loading}
+                  onSortColumn={handleSortColumn}
+                  // autoHeight
+                  height={500}
+                >
+                  {active === "progeny" ? (
+                    <Column width={70} align="center" fixed>
+                      <HeaderCell className="tableHeader">
+                        <Checkbox
+                          checked={checked}
+                          indeterminate={indeterminate}
+                          onChange={handleCheckAll}
+                        />
+                      </HeaderCell>
+                      <CheckCell
+                        dataKey="rowNumber"
+                        checkedKeys={checkStatus}
+                        onChange={handleCheck}
+                      />
+                    </Column>
+                  ) : null}
+                  {reArrangeTableFields().map((field, i) => {
+                    return (
+                      <Column
+                        width={field.width ? field.width : null}
+                        flexGrow={field.flexGrow ? field.flexGrow : null}
+                        align={field.align ? field.align : "left"}
+                        fixed={field.fixed ? field.fixed : null}
+                        key={i}
+                        sortable={field.sorting}
+                      >
+                        <HeaderCell className="tableHeader">{field.label}</HeaderCell>
+                        {field.value === "status" ? (
+                          <Cell align="center" {...props}>
+                            {(rowData) => <StatusButton status={rowData.status} />}
+                          </Cell>
+                        ) : (
+                          <EditableCell
+                            dataKey={field.value}
+                            OriginalData={tableData}
+                            handlePalmEditChange={handlePalmEditChange}
+                            handlePlotEditChange={handlePlotEditChange}
+                            active={active}
+                            progenies={progenies}
+                          />
+                        )}
+                      </Column>
+                    )
+                  })}
 
-            <Column width={130} align="center" fixed="right">
-              <HeaderCell className="tableHeader">Action</HeaderCell>
-              <Cell align="center" {...props}>
-                {(rowData) => <ActionButtons data={rowData} />}
-              </Cell>
-            </Column>
-          </Table>
+                  <Column width={130} align="center" fixed="right">
+                    <HeaderCell className="tableHeader">Action</HeaderCell>
+                    <Cell align="center" {...props}>
+                      {(rowData) => <ActionButtons data={rowData} />}
+                    </Cell>
+                  </Column>
+                </Table>
 
-          <div className="pagination">
-            <Pagination
-              {...pagination}
-              pages={getNoPages()}
-              maxButtons={2}
-              activePage={activePage}
-              onSelect={handleChangePage}
-            />
-          </div>
+                <div className="pagination">
+                  <Pagination
+                    {...pagination}
+                    pages={getNoPages()}
+                    maxButtons={2}
+                    activePage={activePage}
+                    onSelect={handleChangePage}
+                  />
+                </div>
+            </>
+            ) : <Loader size="lg" content="Large" />}
         </div>
       )}
     </>

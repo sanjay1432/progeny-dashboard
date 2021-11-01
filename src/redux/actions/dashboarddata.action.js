@@ -25,6 +25,7 @@ export const getPalmData = (payload) => dispatch => {
       const { data } = response
       const { result } = store.getState().dashboardDataReducer
       result['palm'] = data
+      result['isPending'] = payload.isPending
       dispatch({
         type: DASHBOARDDATA_SUCCESS,
         payload: { result }

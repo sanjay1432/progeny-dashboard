@@ -6,6 +6,13 @@ const getDashboardData = type => {
     return response.data
   })
 }
+
+const getOriginalData = type => {
+  return axiosApiInstance.get(`${API_URL}/${type}`).then(response => {
+    return response.data.data
+  })
+}
+
 const getUpdatedEstateBlocks = () => {
   return axiosApiInstance
     .get(`${API_URL}/estate/estate-blocks`)
@@ -15,6 +22,7 @@ const getUpdatedEstateBlocks = () => {
 }
 const DashboarddataService = {
   getDashboardData,
+  getOriginalData,
   getUpdatedEstateBlocks
 }
 
