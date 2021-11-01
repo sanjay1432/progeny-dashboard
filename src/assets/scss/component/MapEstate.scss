@@ -1,0 +1,22 @@
+#addEstate {
+  #mapEstateFilterPanel {
+    margin-bottom: 20px;
+  }
+
+  .map-estate-table {
+    width: 98% !important;
+
+    .table-header-checkbox {
+      .rs-checkbox-wrapper {
+        left: 18px;
+        top: 3px;
+      }
+    }
+
+    .rs-table-cell-header {
+      .rs-table-cell-content {
+            font-size: 15px;
+      }
+    } 
+  }
+}

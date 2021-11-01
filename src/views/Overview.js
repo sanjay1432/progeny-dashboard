@@ -578,6 +578,7 @@ const Overview = (props) => {
                           if (item.type === "multiple") {
                             return (
                               <Dropdown
+                                key={i}
                                 eventKey={item.eventKey}
                                 title={<p>{item.name}</p>}
                                 icon={
@@ -599,6 +600,7 @@ const Overview = (props) => {
                           } else {
                             return (
                               <NavRS.Item
+                                key={i}
                                 eventKey={item.eventKey}
                                 icon={
                                   <item.customIcon

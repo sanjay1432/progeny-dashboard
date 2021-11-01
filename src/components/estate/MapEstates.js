@@ -26,7 +26,7 @@ const ExpandCell = ({
   onChange,
   ...props
 }) => (
-  <Cell {...props}>
+  <Cell {...props} key={dataKey}>
     <IconButton
       size="lg"
       appearance="subtle"
@@ -140,8 +140,9 @@ const MapEstates = ({
           value={rowData[dataKey]}
           inline
           onChange={onChange}
-          checked={checkedKeys.some((item) => item === rowData[dataKey])}
-          indeterminate={checkedKeys.length && !checkedKeys.some((item) => item === rowData[dataKey])}
+          //checked={checkedKeys.some((item) => item === rowData[dataKey])}
+          checked={true}
+          //indeterminate={checkedKeys.length && !checkedKeys.some((item) => item === rowData[dataKey])}
         />
       </div>
     </Cell>
@@ -330,6 +331,7 @@ const MapEstates = ({
         <p>List of Estates ({estateFilterData.length})</p>
 
         <Table
+          className="map-estate-table"
           wordWrap
           height={400}
           data={estatesList}
@@ -372,10 +374,11 @@ const MapEstates = ({
           <Column width={80}>
             <HeaderCell>
               <Checkbox
-              disabled
+                disabled
                 checked={estatechecked}
                 indeterminate={estateindeterminate}
                 onChange={handleCheckAllEstate}
+                className="table-header-checkbox"
               />
             </HeaderCell>
             <CheckCell
@@ -390,7 +393,7 @@ const MapEstates = ({
             <Cell dataKey="estate" />
           </Column>
 
-          <Column width={70} align="center">
+          <Column width={80} align="center">
             <HeaderCell>Action</HeaderCell>
             <ExpandCell
               dataKey="estateId"

@@ -127,7 +127,7 @@ const DeleteModal = ({
 
   return (
     <>
-      <Modal backdrop show={show} onHide={hide}>
+      <Modal id="confirmationModal" backdrop show={show} onHide={hide} style={{ marginTop: "100px" }}>
         <Modal.Header>
           <Modal.Title style={{ "text-transform": "capitalize", color: "red" }}>
             Delete {activeNav}
@@ -137,10 +137,10 @@ const DeleteModal = ({
           <Message />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={hide} appearance="subtle">
+          <Button onClick={hide} appearance="subtle" className="noButton">
             No
           </Button>
-          <Button onClick={deleteRecord} appearance="primary">
+          <Button onClick={deleteRecord} appearance="primary" className="yesButton">
             Yes
           </Button>
         </Modal.Footer>
