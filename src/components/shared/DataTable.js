@@ -1853,144 +1853,153 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </p>
         </div>
       ) : (
-        <div>
-          <Grid fluid>
-            <Row className="show-grid" id="dashboardTableSetting">
-              <Col sm={6} md={6} lg={6} className="totalRecordLayout">
-                <b>
-                  Total records ({getFilteredDataWithoutDisplayLength().length}){" "}
-                </b>
-              </Col>
-
-              <FlexboxGrid justify="end">
-                {active === "palm" && palmReplicates.length ? (
-                  <>
-                    <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
-                      {/* <ControlLabel className="labelFilter">Replicate</ControlLabel> */}
-                      <FlexboxGrid.Item>
-                        <SelectPicker
-                          data={palmReplicates}
-                          className="dashboardSelectFilter"
-                          value={replicateSelector}
-                          onChange={(value, e) => {
-                            filterData.filter["replicateno"] = value;
-                            if (value === "All") {
-                              delete filterData.filter.replicate;
-                              const foundTrial = dashboardData.result[
-                                "trial"
-                              ].find(
-                                (trial) =>
-                                  trial.trialCode ===
-                                  filterData.filter.trialCode
-                              );
-                              const foundEstate = foundTrial.estate.find(
-                                (est) => est.name === filterData.filter.estate
-                              );
-                              const payload = {
-                                trialId: foundTrial.trialId,
-                                estateId: foundEstate.id,
-                              };
-                              dispatch(getPalmData(payload), () => {
-                                dispatch(setFilter(filterData.filter));
-                              });
-                            } else {
-                              setPalmFilter(true)
-                              dispatch(setFilter(filterData.filter));
-                            }
-                            replicateSelector = value;
-                          }}
-                        />
-                      </FlexboxGrid.Item>
-                    </Col>
-
-                    <Col sm={4} md={4} lg={3} className="replicateFilterLayout">
-                      <FlexboxGrid.Item>
-                        <SelectPicker
-                          data={palmPlots}
-                          className="dashboardSelectFilter"
-                          value={plotSelector}
-                          onChange={(value, e) => {
-                            filterData.filter["plotId"] = value;
-                            if (value === "All") {
-                              delete filterData.filter.plotId;
-                              const foundTrial = dashboardData.result[
-                                "trial"
-                              ].find(
-                                (trial) =>
-                                  trial.trialCode ===
-                                  filterData.filter.trialCode
-                              );
-                              const foundEstate = foundTrial.estate.find(
-                                (est) => est.name === filterData.filter.estate
-                              );
-                              const payload = {
-                                trialId: foundTrial.trialId,
-                                estateId: foundEstate.id,
-                              };
-                              dispatch(getPalmData(payload), () => {
-                                dispatch(setFilter(filterData.filter));
-                              });
-                            } else {
-                              setPalmFilter(true)
-                              dispatch(setFilter(filterData.filter));
-                            }
-
-                            plotSelector = value;
-                          }}
-                        />
-                      </FlexboxGrid.Item>
-                    </Col>
-                  </>
-                ) : (
-                  ""
-                )}
-
-                <Col sm={5} md={5} lg={5} className="pageOptionLayout">
-                  <FlexboxGrid.Item className="selectPage">
-                    <InputPicker
-                      className="option"
-                      data={perpage}
-                      defaultValue={"10"}
-                      onChange={handleChangeLength}
-                    />{" "}
-                    <b className="page">per page</b>
-                  </FlexboxGrid.Item>
+          active === 'palm' && dashboardData.result.isPending ? (
+            <div className="imageLayout">
+              <img src={SearchMessage} alt="" />
+              <p className="desc mb-0">This is Pending.</p>
+              <p className="desc mt-0">
+                Please <b className="title">attach Progeny</b> for this trial
+              </p>
+            </div> 
+        ) : (
+          <div>
+            <Grid fluid>
+              <Row className="show-grid" id="dashboardTableSetting">
+                <Col sm={6} md={6} lg={6} className="totalRecordLayout">
+                  <b>
+                    Total records ({getFilteredDataWithoutDisplayLength().length}){" "}
+                  </b>
                 </Col>
 
-                <AddButton />
+                <FlexboxGrid justify="end">
+                  {active === "palm" && palmReplicates.length ? (
+                    <>
+                      <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
+                        {/* <ControlLabel className="labelFilter">Replicate</ControlLabel> */}
+                        <FlexboxGrid.Item>
+                          <SelectPicker
+                            data={palmReplicates}
+                            className="dashboardSelectFilter"
+                            value={replicateSelector}
+                            onChange={(value, e) => {
+                              filterData.filter["replicateno"] = value;
+                              if (value === "All") {
+                                delete filterData.filter.replicate;
+                                const foundTrial = dashboardData.result[
+                                  "trial"
+                                ].find(
+                                  (trial) =>
+                                    trial.trialCode ===
+                                    filterData.filter.trialCode
+                                );
+                                const foundEstate = foundTrial.estate.find(
+                                  (est) => est.name === filterData.filter.estate
+                                );
+                                const payload = {
+                                  trialId: foundTrial.trialId,
+                                  estateId: foundEstate.id,
+                                };
+                                dispatch(getPalmData(payload), () => {
+                                  dispatch(setFilter(filterData.filter));
+                                });
+                              } else {
+                                setPalmFilter(true)
+                                dispatch(setFilter(filterData.filter));
+                              }
+                              replicateSelector = value;
+                            }}
+                          />
+                        </FlexboxGrid.Item>
+                      </Col>
 
-                <DeleteButton />
-                <DeleteModal
-                  show={isDeleteModal}
-                  hide={() => setDeleteModal(false)}
-                  deleteRecord={handleDeleteRecords}
-                  activeNav={active}
-                  rows={rowsToDelete}
-                />
-                <SuccessMessage
-                  rowsToDelete={rowsToDelete}
-                  data={successData}
-                  show={successMessage}
-                  hide={() => setSuccessMessage("")}
-                  action={action}
-                />
+                      <Col sm={4} md={4} lg={3} className="replicateFilterLayout">
+                        <FlexboxGrid.Item>
+                          <SelectPicker
+                            data={palmPlots}
+                            className="dashboardSelectFilter"
+                            value={plotSelector}
+                            onChange={(value, e) => {
+                              filterData.filter["plotId"] = value;
+                              if (value === "All") {
+                                delete filterData.filter.plotId;
+                                const foundTrial = dashboardData.result[
+                                  "trial"
+                                ].find(
+                                  (trial) =>
+                                    trial.trialCode ===
+                                    filterData.filter.trialCode
+                                );
+                                const foundEstate = foundTrial.estate.find(
+                                  (est) => est.name === filterData.filter.estate
+                                );
+                                const payload = {
+                                  trialId: foundTrial.trialId,
+                                  estateId: foundEstate.id,
+                                };
+                                dispatch(getPalmData(payload), () => {
+                                  dispatch(setFilter(filterData.filter));
+                                });
+                              } else {
+                                setPalmFilter(true)
+                                dispatch(setFilter(filterData.filter));
+                              }
 
-                <ErrorMessage activeNav={errorMessage} errorData={errorData} />
+                              plotSelector = value;
+                            }}
+                          />
+                        </FlexboxGrid.Item>
+                      </Col>
+                    </>
+                  ) : (
+                    ""
+                  )}
 
-                <ConfirmationModal
-                  show={confirmationModal}
-                  hide={closeConfirmationModal}
-                  data={confirmationData}
-                  savePlotData={savePlotData}
-                  savePalmData={savePalmData}
-                  action={active}
-                />
-              </FlexboxGrid>
-            </Row>
-          </Grid>
+                  <Col sm={5} md={5} lg={5} className="pageOptionLayout">
+                    <FlexboxGrid.Item className="selectPage">
+                      <InputPicker
+                        className="option"
+                        data={perpage}
+                        defaultValue={"10"}
+                        onChange={handleChangeLength}
+                      />{" "}
+                      <b className="page">per page</b>
+                    </FlexboxGrid.Item>
+                  </Col>
 
-          {tableData.length !== undefined ? (
-            <>
+                  <AddButton />
+
+                  <DeleteButton />
+                  <DeleteModal
+                    show={isDeleteModal}
+                    hide={() => setDeleteModal(false)}
+                    deleteRecord={handleDeleteRecords}
+                    activeNav={active}
+                    rows={rowsToDelete}
+                  />
+                  <SuccessMessage
+                    rowsToDelete={rowsToDelete}
+                    data={successData}
+                    show={successMessage}
+                    hide={() => setSuccessMessage("")}
+                    action={action}
+                  />
+
+                  <ErrorMessage activeNav={errorMessage} errorData={errorData} />
+
+                  <ConfirmationModal
+                    show={confirmationModal}
+                    hide={closeConfirmationModal}
+                    data={confirmationData}
+                    savePlotData={savePlotData}
+                    savePalmData={savePalmData}
+                    action={active}
+                  />
+                </FlexboxGrid>
+              </Row>
+            </Grid>
+
+            {tableData.length !== undefined ? (
+              <>
                 <Table
                   id="dashboardTable"
                   wordWrap
@@ -2066,9 +2075,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     onSelect={handleChangePage}
                   />
                 </div>
-            </>
+              </>
             ) : <Loader size="lg" content="Large" />}
-        </div>
+          </div>
+        )
       )}
     </>
   );

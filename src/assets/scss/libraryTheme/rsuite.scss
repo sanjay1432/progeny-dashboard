@@ -112,6 +112,11 @@
 .rs-table {
   border-radius: 10px;
 
+  .rs-table-cell {
+    border-style: hidden;
+    border-color: inherit;
+  }
+
   .rs-table-row-header {
     color: $secondary-green;
     background-color: $secondary-green;
