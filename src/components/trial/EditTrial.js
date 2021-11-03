@@ -484,9 +484,10 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             data: trial,
             action: "UPDATED"
           }
+          dispatch(clearBreadcrumb())
           dispatch(getDashboardData('trial'))
-          setSuccessModal(true)
-          setSuccessData(savedData)
+          // setSuccessModal(true)
+          // setSuccessData(savedData)
         },
         err => console.log(err)
       )
@@ -876,7 +877,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                         ""
                       )}
                     </Col>
-                    <Col md={5} lg={5} style={{ "margin-bottom": "12px" }}>
+                    <Col md={5} lg={5} style={{ marginBottom: "12px" }}>
                       <SelectPicker
                         data={estates}
                         placeholder="Select Estate"
