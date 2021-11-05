@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 import { Grid, Row, Col, Input, Button } from "rsuite"
@@ -8,6 +8,7 @@ import { publish } from "../../services/pubsub.service"
 import { getDashboardData } from "../../redux/actions/dashboarddata.action"
 import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import ErrorMessage from "../SharedComponent/ErrorMessage";
+import { initial } from "lodash"
 const EditProgeny = ({ option, ...props }) => {
   const initialForm = {
     progenyId: option.progenyId,
@@ -27,13 +28,6 @@ const EditProgeny = ({ option, ...props }) => {
     cross: option.cross,
     crossType: option.crossType
   }
-  const [confirmationModal, setConfirmationModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [formData, setFormData] = useState(initialForm)
-  const dispatch = useDispatch()
-  const ProgenyData = useSelector(
-    state => state.dashboardDataReducer.result.progeny
-  )
 
   const data = [
     {
@@ -46,6 +40,19 @@ const EditProgeny = ({ option, ...props }) => {
       crossType: "intercross"
     }
   ]
+
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [disabled, setDisabled] = useState(false)
+  const [formData, setFormData] = useState(initialForm)
+  const dispatch = useDispatch()
+  const ProgenyData = useSelector(
+    state => state.dashboardDataReducer.result.progeny
+  )
+  
+  useEffect(() => {
+    checkDisabled()
+  }, [formData])
 
   const crossTypeData = data.map(item => {
     const addOn = formData.fpVar + "x" + formData.mpVar + " "
@@ -71,6 +78,17 @@ const EditProgeny = ({ option, ...props }) => {
       ...formData,
       [e.target.name]: formData.mpFam + "." + e.target.value
     }))
+  }
+
+  const checkDisabled = () => {
+    console.log(formData.fp.split(".")[1], formData.mp.split(".")[1])
+
+    for(var key in formData) {
+      if (formData[key] === "" || formData[key] === null || formData.fp.split(".")[1] === "" || formData.mp.split(".")[1] === "") {
+        return true
+      }
+    }
+    return false
   }
 
   function updateProgeny() {
@@ -421,6 +439,7 @@ const EditProgeny = ({ option, ...props }) => {
               className="saveButton"
               appearance="primary"
               onClick={() => setConfirmationModal(true)}
+              disabled={checkDisabled()}
             >
               Save
             </Button>

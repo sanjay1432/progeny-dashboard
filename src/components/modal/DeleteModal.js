@@ -101,9 +101,9 @@ const DeleteModal = ({
             {rows.length < 2 ? (
               <p style={{ color: "#444444" }}>
                 Are you sure to delete{" "}
-                <b style={{ "text-transform": "capitalize" }}>
-                  {activeNav} {rows[0].progenyCode}
-                </b>{" "}
+                <b style={{ "text-transform": "capitalize" }}>{activeNav} </b>
+                <span><b>{rows[0].progenyCode}</b></span>
+                {" "}
                 from the list? This might change data that is associate with it
                 as well!
               </p>
