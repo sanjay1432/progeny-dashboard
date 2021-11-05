@@ -146,7 +146,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       if(trialId.includes(e.target.value)) {
         setDupProps(true)
       } else{
-        setDupProps(null)
+        setDupProps(false)
       }
     }
     if (
@@ -252,7 +252,6 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
 
     console.log({ trial });
     const isEmpty = checkProperties(trial);
-
     if (radioInputForTrialInEState === "no") {
       // trial.nofreplicate = "";
       const trialToCheck = { ...trial };
@@ -263,13 +262,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       inputListForTrialInEState.forEach((rpEs) => {
         isEmptyreplicatesInEstate = checkProperties(rpEs);
       });
-      if (!dupProps || isEmptyTrial || !isMultplicationValid || isEmptyreplicatesInEstate) {
+      if (dupProps || isEmptyTrial || !isMultplicationValid || isEmptyreplicatesInEstate) {
         setDisabledGenerateTable(true);
       } else {
         setDisabledGenerateTable(false);
       }
     } else {
-      if (!dupProps || isEmpty || !isMultplicationValid) {
+      if (dupProps || isEmpty || !isMultplicationValid) {
         setDisabledGenerateTable(true);
       } else {
         setDisabledGenerateTable(false);
@@ -659,6 +658,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               className="datePicker"
               placeholder="Enter Date"
               format="MM/YYYY"
+              value={trial['planteddate']}
               style={styles}
               name="planteddate"
               onSelect={(date) =>
