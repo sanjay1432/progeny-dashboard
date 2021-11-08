@@ -183,15 +183,17 @@ const AttachProgeny = ({
     const selectedTrial = trialData.find(
       trial => trial.trialCode === filters.trialCode
     )
-    const reps = selectedTrial.replicates;
+    let reps = selectedTrial.replicates;
     const trialReps = []
     const map = new Map()
+    reps = await removeDuplicate(reps, item => item.replicate)
+
     for (const item of reps) {
       if (!map.has(item.replicateId)) {
         map.set(item.replicateId, true) // set any value to Map
         trialReps.push({
           label: item.replicate,
-          value: item.replicateId
+          value: item.replicate
         })
       }
     }
@@ -202,6 +204,13 @@ const AttachProgeny = ({
     console.log({ trialReps })
     setReplicates(trialReps)
   }
+
+  const removeDuplicate = (data, key) => {
+    return [
+      ...new Map(data.map(item => [key(item), item])).values()
+    ]
+  }
+
   async function setPlots(replicate = undefined) {
     if (replicate) replicateSelector = replicate
     const { trialId } = trialData.find(
@@ -230,7 +239,7 @@ const AttachProgeny = ({
      setCompleteState(isPlotsMapped(data))
     if (replicateSelector !== "All") {
       console.log(replicateSelector)
-      const filteredReps = data.filter(d => d.replicateId === replicateSelector)
+      const filteredReps = data.filter(d => d.replicate === replicateSelector)
       return setTrialPlots(filteredReps)
     } else {
       setTrialPlots(data)
@@ -477,9 +486,10 @@ const AttachProgeny = ({
                   </Col>
 
                   <FlexboxGrid justify="end">
-                    <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
+                    <Col sm={6} md={6} lg={5} className="replicateFilterLayout">
                       <FlexboxGrid.Item>
                         <SelectPicker
+                          style={{ minWidth: "145.8px" }}
                           data={replicates}
                           className="dashboardSelectFilter"
                           value={replicateSelector}
