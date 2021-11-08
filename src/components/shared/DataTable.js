@@ -8,7 +8,7 @@ import {
   getPalmData,
 } from "../../redux/actions/dashboarddata.action";
 import GeneralHelper from "../../helper/general.helper";
-import DeleteModal from "../../components/modal/DeleteModal";
+import DeleteModal from "../modal/DeleteModal";
 import { progenySubject, resetSubject } from "../../services/pubsub.service";
 import DashboarddataService from "../../services/dashboarddata.service";
 import ProgenyService from "../../services/progeny.service";
@@ -41,7 +41,7 @@ import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import PalmService from "../../services/palm.service";
 import PlotService from "../../services/plot.service";
 import DashboardDataService from "../../services/dashboarddata.service";
-import MapEstates from "../../components/estate/MapEstates";
+import MapEstates from "../estate/MapEstates";
 const { Column, HeaderCell, Cell } = Table;
 const initialState = {
   displaylength: 10,
@@ -79,16 +79,6 @@ const EditableCell = ({
           )}
         </Cell>
       );
-    // case "userAssignment":
-    //   return (
-    //     <Cell {...cellProps}>
-    //       {dataKey === "estate" ? (
-    //         <span>{getMultipleEstateString(rowData.estate)}</span>
-    //       ) : (
-    //         <span>{rowData[dataKey]}</span>
-    //       )}
-    //     </Cell>
-    //   );
     case "plot":
       return (
         <>
@@ -251,7 +241,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       setOriginalData(data)
     }
     originalData();
-  }, [active])
+  }, [tableData])
 
   const { user } = useSelector((state) => state.authReducer);
 
@@ -530,7 +520,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       replicateSelector = "All";
       plotSelector = "All";
       //SET REPLICATES
-      if (currentPalmTableData.length > 0) {
+      if (currentPalmTableData !== undefined && currentPalmTableData.length > 0) {
         const reps = [
           ...new Set(currentPalmTableData.map((palm) => palm.replicateno)),
         ];
@@ -751,9 +741,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
      
     });
   }
-  async function OpenModal() {
-    setModal(!isModal);
-  }
 
   function CloseModal(message) {
     if (typeof message !== "object") {
@@ -768,12 +755,12 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     switch (active) {
       case "estate":
         return (
-          <Col sm={5} md={5} lg={3}>
+          <Col md={5} lg={4}>
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="addTrialButton"
-                onClick={OpenModal}
+                onClick={() => setModal(!isModal)}
               >
                 Map Estate
               </Button>
@@ -789,13 +776,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         );
       case "trial":
         return (
-          <Col sm={5} md={5} lg={4} className="addButtonLayout">
-            <FlexboxGrid.Item style={{ minWidth: '130px', maxWidth: '130px' }}>
+          <Col md={5} lg={4} className="addButtonLayout">
+            <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="addTrialButton"
                 onClick={() =>
-                  handleAddNewTrial(
+                  handleActionExpand(
                     ["Trial and Replicate", `Add New Trial & Replicate`],
                     {
                       trial: null,
@@ -811,7 +798,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         );
       case "plot":
         return (
-          <Col sm={5} md={5} lg={5} className="addButtonLayout">
+          <Col md={5} lg={5} className="addButtonLayout">
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
@@ -832,13 +819,13 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         );
       case "progeny":
         return (
-          <Col sm={5} md={6} lg={5} className="addButtonLayout">
+          <Col md={5} lg={4} className="addButtonLayout" style={{ textAlign: "center" }}>
             <FlexboxGrid.Item>
               <Button
                 appearance="primary"
                 className="addProgenyButton"
                 onClick={() =>
-                  handleAddNewTrial(["Progeny", `Add New Progeny`], {
+                  handleActionExpand(["Progeny", `Add New Progeny`], {
                     type: "add",
                   })
                 }
@@ -1051,7 +1038,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
     delete nextData[activeItemIdx].status
     setTableData(nextData);
-    setActiveRow(null);
+    fetchCurrentTrialPalmData();
   }
 
   function fetchCurrentTrialPalmData() {
@@ -1092,7 +1079,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         setAction("PALMDATA_UPDATE");
         setSuccessMessage(true);
         setActiveRow(null);
-        //fetchCurrentTrialPalmData();
+        fetchCurrentTrialPalmData();
       },
       (error) => {
         setConfirmationModal(false);
@@ -1406,10 +1393,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   }
 
   function handleActionExpand(breadcrumb, option) {
-    dispatch(setBreadcrumb({ breadcrumb, option }));
-  }
-
-  function handleAddNewTrial(breadcrumb, option) {
     dispatch(setBreadcrumb({ breadcrumb, option }));
   }
 

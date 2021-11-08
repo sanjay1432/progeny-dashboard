@@ -333,7 +333,6 @@ const MapEstates = ({
         <Table
           className="map-estate-table"
           wordWrap
-          height={400}
           data={estatesList}
           autoHeight
           rowKey={rowKey}

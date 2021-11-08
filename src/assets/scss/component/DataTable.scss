@@ -10,8 +10,8 @@
   }
 
   .pageOptionLayout {
-    min-width: 155px;
-    max-width: 155px;    
+    min-width: 145px;
+    max-width: 145px;    
 
     .selectPage {
       
@@ -43,26 +43,26 @@
   .addButtonLayout {
     min-width: 160px;
     max-width: 180px;
-    text-align: center;
+    text-align: right;
   }
 
   .addEstateButton {
-    width: 116px;
+    width: 140px;
     float: right;
   }
 
   .addTrialButton {
-    width: 123px;
+    width: 140px;
     float: right;
   }
 
   .attachProgeniesButton {
-    width: 138px;
+    width: 140px;
     float: right;
   }
 
   .addProgenyButton {
-    width: 142px;
+    width: 140px;
   }
 
   .addUserButton {
@@ -79,22 +79,19 @@
     float: right;
   }
 
-  .deleteButtonLayout {
-    max-width: 130px;
-    float: right;
 
-    .deleteButton {
-      width: 116px;
-      color: white;
-      background-color: $primary-red;
-    }
-
-    .rs-btn-disabled {
-      width: 116px;
-      color: $primary-grey;
-      background-color: $secondary-grey;
-    }
+  .deleteButton {
+    width: 116px;
+    color: white;
+    background-color: $primary-red;
   }
+
+  .rs-btn-disabled {
+    width: 116px;
+    color: $primary-grey;
+    background-color: $secondary-grey;
+  }
+  
 }
 
 #dashboardTable {
