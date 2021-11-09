@@ -28,6 +28,7 @@ import SubDirectoryIcon from "../../assets/img/icons/subdirectory_arrow_right_24
 import TrialService from "../../services/trial.service";
 
 import SuccessModal from "../modal/masterData/success/success";
+import _ from "lodash";
 const styles = { width: 280, display: "block", marginBottom: 10 };
 const { Column, HeaderCell, Cell } = Table;
 const initializeTrailState = {
@@ -68,7 +69,10 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   const [disbaledANR, setDisbaledANR] = useState(true);
   const [disbaledANRV, setDisbaledANRV] = useState(true);
   const [disbaledRD, setDisbaledRD] = useState(true);
+  const [disabledSave, setDisabledSave] = useState(true);
   const [show, setShow] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [errorData, setErrorData] = useState("");
   const [isSuccessModal, setSuccessModal] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
@@ -79,6 +83,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     fetchTypes();
     fetchDesigns();
     handleDisableState();
+    checkDisabledSave();
   }, [
     isMultplicationValid,
     trial,
@@ -239,6 +244,12 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     setTrial(() => ({ ...trial, type }));
   }
 
+  const handleTableDataChange = (e, i) => {
+    let values = [...tableData]
+    values[i][e.target.name] = e.target.value
+    setTableData(values)
+  }
+
   function onSelectEstate(estate) {
     setTrial(() => ({ ...trial, estate }));
     // handleDisableState();
@@ -275,6 +286,27 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       }
     }
   }
+
+  const checkDisabledSave = () => {
+    //Check the status before generate table
+    if(tableData.length < 1) {
+      return setDisabledSave(true)
+    }
+
+    //Check the status by density && estateblock after generate table
+    const validation = tableData.map((item, index) => {
+      if (_.isEmpty(item['density']) || _.isNil(item['density']) || _.isEmpty(item['estateblock']) || _.isNil(item['estateblock'])) {
+        return false
+      } return true
+    })
+
+    if(validation.includes(false)) {
+      setDisabledSave(true)
+    } else {
+      return setDisabledSave(false)
+    }
+  }
+
   function onGenerateTable() {
     setTableData([]);
 
@@ -520,7 +552,11 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         setSuccessData(savedData);
         setSuccessModal(true);
       },
-      (err) => console.log(err)
+      (err) => {
+        setShow(false);
+        setErrorMessage(true);
+        setErrorData(err.message);
+      }
     );
   }
 
@@ -534,6 +570,17 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
   }
   return (
     <div id="TrialAction">
+      {errorMessage ? (
+        <Message
+          showIcon
+          type="error"
+          description={errorData}
+          onClick={() => {
+            setErrorMessage(false);
+          }}
+        />
+      ) : null}
+
       {/* STEP 1 GENERATE TABLE START*/}
       <div>
         <h4 className="title">
@@ -1057,8 +1104,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
         <Column width={200} align="left">
           <HeaderCell className="tableHeader">Density</HeaderCell>
           <Cell>
-            {(rowData) => {
-              return <Input value={rowData.density} />;
+            {(rowData, i) => {
+              return <Input value={rowData.density} onChange={(value, e) => handleTableDataChange(e, i)} />;
             }}
           </Cell>
         </Column>
@@ -1105,6 +1152,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
                   appearance="primary"
                   onClick={() => setShow(true)}
                   type="button"
+                  disabled={disabledSave}
                 >
                   Save
                 </Button>

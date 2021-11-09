@@ -61,6 +61,7 @@ const MapEstates = ({
   const [estateFilterData, setEstateFilterData] = useState([]);
   const [checkStatusEstate, setCheckStatusEstate] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState(null);
+  const [originalCheck, setOriginalCheck] = useState([]);
   const [checkStatusEstateBlock, setCheckStatusEstateBlock] = useState([]);
   const [selectedEstate, setSelectedEstate] = useState(null);
   const [estateToUpdate, setEstateToUpdate] = useState([]);
@@ -129,7 +130,9 @@ const MapEstates = ({
     const keys = rowData.estateblocks.map((eb) =>
       eb.assigned ? eb.estateblock : null
     );
-
+    rowData.estateblocks.sort((x,y) => x.estateblock.charCodeAt() - y.estateblock.charCodeAt())
+    rowData.estateblocks.sort((x, y) => y.assigned - x.assigned)
+    setOriginalCheck(keys.filter((key) => key));
     setCheckStatusEstateBlock(keys.filter((key) => key));
   }
   const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -241,10 +244,19 @@ const MapEstates = ({
 
   function mapEstate() {
     console.log({ estateToUpdate });
-    const message =
-      estateToUpdate.length > 1
-        ? `${estateToUpdate.length}  Estates has been mapped to the system`
-        : `Estate ${estateToUpdate[0].estate} has been mapped to the system`;
+    let message = ""
+    if(originalCheck.length <= checkStatusEstateBlock.length) {
+      const message =
+        estateToUpdate.length > 1
+          ? `${estateToUpdate.length}  Estates has been mapped to the system`
+          : `Estate ${estateToUpdate[0].estate} has been mapped to the system`;
+    } else {
+      const message =
+        estateToUpdate.length > 1
+          ? `${estateToUpdate.length}  Estates has been removed in the system`
+          : `Estate ${estateToUpdate[0].estate} has been removed in the system`;
+    }
+    
     EstateService.assignEstateBlocksToEstate(estateToUpdate).then(
       (data) => {
         dispatch(getDashboardData('estate'))
@@ -348,7 +360,8 @@ const MapEstates = ({
               }}>
                 <Table
                   showHeader={false}
-                  data={getSortedBlocks(rowData.estateblocks)}
+                  //data={getSortedBlocks(rowData.estateblocks)}
+                  data={rowData.estateblocks}
                   id="modalEstateTable"
                   autoHeight
                 >

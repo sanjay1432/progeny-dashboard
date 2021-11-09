@@ -392,7 +392,8 @@ const AttachProgeny = ({
 
   async function onComplete(){
     try{
-      const {trialId} =  option
+      const trialId = option.trialId
+
       await TrialService.updateTrialState(trialId, "Active")
       setShowConfirmation(false)
         
