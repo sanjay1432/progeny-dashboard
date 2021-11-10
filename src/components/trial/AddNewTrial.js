@@ -19,7 +19,7 @@ import {
   SelectPicker,
   Modal,
   InputNumber,
-  Tag,
+  Message,
 } from "rsuite";
 import EstateService from "../../services/estate.service";
 
