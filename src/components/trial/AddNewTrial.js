@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { isAfter } from 'date-fns'
 import { useDispatch, useSelector } from "react-redux";
 import { clearBreadcrumb } from "../../redux/actions/app.action";
 import { getDashboardData } from "../../redux/actions/dashboarddata.action";
@@ -167,10 +168,15 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
     e.persist();
     const val =
       e.target.value % 1 > 0 &&
-      ["nofprogeny", "nofsubblock", "nofplot_subblock","nofreplicate"].includes(e.target.name)
-        ? parseInt(e.target.value)
-        : e.target.value;
-    setTrial(() => ({ ...trial, [e.target.name]: val }));
+      ["nofprogeny", "nofsubblock", "nofplot_subblock","nofreplicate", ].includes(e.target.name)
+      ? e.target.name === "area"
+      ? parseFloat(e.target.value) : parseInt(e.target.value)
+      : e.target.value;
+    if(!isNaN(val)) {
+      setTrial(() => ({ ...trial, [e.target.name]: val }));
+    } else {
+      setTrial({...trial})
+    }
     // handleDisableState();
   }
 
@@ -682,6 +688,8 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <Input
               placeholder="Key in Area"
               className="formField"
+              value={trial['area'] !== "" ? trial['area'] : ""}
+              min={0}
               name="area"
               type="number"
               onChange={(value, e) => onInput(e)}
@@ -704,6 +712,7 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               size="lg"
               className="datePicker"
               placeholder="Enter Date"
+              disabledDate={date => isAfter(date, new Date())}
               format="MM/YYYY"
               value={trial['planteddate']}
               style={styles}
@@ -725,12 +734,13 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Progeny</p>
           </Col>
           <Col md={10} lg={10}>
-            <InputNumber
+            <Input
               placeholder="Key in No.of Progeny"
               className="formField"
               name="nofprogeny"
-              min="1"
-              step="1"
+              type="number"
+              min={1}
+              step={1}
               value={trial.nofprogeny}
               onChange={(value, e) => onInput(e)}
             />
@@ -747,23 +757,25 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
             <p className="labelForm">No. of Subblock and No.of Plot/Subblock</p>
           </Col>
           <Col md={5} lg={5}>
-            <InputNumber
+            <Input
               placeholder="No. of Subblock"
               className="subPlotInput"
               name="nofsubblock"
-              min="1"
-              step="1"
+              type="number"
+              min={1}
+              step={1}
               value={trial.nofsubblock}
               onChange={(value, e) => onInput(e)}
             />
           </Col>
           <Col md={5} lg={5}>
-            <InputNumber
+            <Input
               placeholder="No. of Plot/Subblock "
               className="plotInput"
               name="nofplot_subblock"
-              min="1"
-              step="1"
+              type="number"
+              min={1}
+              step={1}
               value={trial.nofplot_subblock}
               onChange={(value, e) => onInput(e)}
             />
@@ -1105,7 +1117,16 @@ const AddNewTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
           <HeaderCell className="tableHeader">Density</HeaderCell>
           <Cell>
             {(rowData, i) => {
-              return <Input value={rowData.density} onChange={(value, e) => handleTableDataChange(e, i)} />;
+              return (
+                <Input 
+                  name="density"
+                  type="number"
+                  min={0}
+                  value={rowData.density} 
+                  onChange={(value, e) => handleTableDataChange(e, i)} 
+                  disabled={radioInputForSameDensity === "yes" ? true : false}
+                />
+              );
             }}
           </Cell>
         </Column>

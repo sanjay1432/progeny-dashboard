@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { isAfter } from 'date-fns'
 import { useDispatch, useSelector } from "react-redux"
 import { clearBreadcrumb } from "../../redux/actions/app.action"
 
@@ -240,9 +241,18 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
       setMultplicationValid(isValid)
     }
     e.persist()
-    const val =  e.target.value % 1 > 0 && ["nofprogeny", "nofsubblock", "nofplot_subblock"].includes(e.target.name) ? parseInt(e.target.value): e.target.value
-    setTrial(() => ({ ...trial, [e.target.name]: val }));
-    handleDisableState()
+    const val =
+      e.target.value % 1 > 0 &&
+        ["nofprogeny", "nofsubblock", "nofplot_subblock", "nofreplicate",].includes(e.target.name)
+        ? e.target.name === "area"
+          ? parseFloat(e.target.value) : parseInt(e.target.value)
+        : e.target.value;
+    if (!isNaN(val)) {
+      setTrial(() => ({ ...trial, [e.target.name]: val }));
+    } else {
+      setTrial({ ...trial })
+    }
+    // handleDisableState();
   }
   // handle input change
   const handleTrialInEStateInputChange = (e, index, type) => {
@@ -753,6 +763,7 @@ const EditTrial = ({ currentSubNavState, currentItem, option, ...props }) => {
               className="datePicker"
               placeholder="Enter Date"
               value={date}
+              disabledDate={date => isAfter(date, new Date())}
               format="MM/YYYY"
               style={styles}
               name="planteddate"

@@ -143,7 +143,7 @@ const ConfirmationModal = ({
                 <p>
                   Are you sure want to edit  Progeny ID
                   <b> </b><b className="targetName">{data.progenyCode}</b>? This might 
-                  change data that is associate with it as well!.
+                  change data that is associate with it as well.
                 </p>
               </Modal.Body>
               <Modal.Footer>

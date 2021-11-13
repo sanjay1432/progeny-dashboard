@@ -42,7 +42,7 @@ const SuccessMessage = ({ action, rowsToDelete, data, show, hide }) => {
               type="success"
               description={`Palm ${data.palmno} in 
                                  ${data.plot} in 
-                                 Replicate ${data.replicate} in 
+                                 Replicate ${data.replicateno} in 
                                  Trial ${data.trialCode} has been successfully edited.`}
               onClick={hide}
             />

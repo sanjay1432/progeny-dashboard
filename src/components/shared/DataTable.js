@@ -41,6 +41,8 @@ import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import PalmService from "../../services/palm.service";
 import PlotService from "../../services/plot.service";
 import DashboardDataService from "../../services/dashboarddata.service";
+import EditableCell from '../SharedComponent/DataTable/EditableCell';
+import StatusCell from "../SharedComponent/DataTable/StatusCell";
 import MapEstates from "../estate/MapEstates";
 const { Column, HeaderCell, Cell } = Table;
 const initialState = {
@@ -53,114 +55,6 @@ const initialState = {
   boundaryLinks: true,
   activePage: 1,
 };
-
-const EditableCell = ({
-  rowData,
-  dataKey,
-  onChange,
-  handlePlotEditChange,
-  handlePalmEditChange,
-  active,
-  progenies,
-  OriginalData,
-  ...cellProps
-}) => {
-  const editing = rowData.status === true;
-  switch (active) {
-    case "trial":
-      return (
-        <Cell {...cellProps}>
-          {dataKey === "estate" ? (
-            <span>{getMultipleEstateString(rowData.estate)}</span>
-          ) : dataKey === "planteddate" ? (
-            <span>{GeneralHelper.modifyDate({ date: rowData[dataKey] })}</span>
-          ) : (
-            <span>{rowData[dataKey]}</span>
-          )}
-        </Cell>
-      );
-    case "plot":
-      return (
-        <>
-          {rowData["status"] ? (
-            <Cell {...cellProps}>
-              {dataKey === "progenyCode" ? (
-                <SelectPicker
-                  data={progenies}
-                  value={rowData[dataKey]}
-                  onChange={(value, event) =>
-                    handlePlotEditChange(rowData.plotId, dataKey, value)
-                  }
-                />
-              ) : (
-                <Input
-                  value={rowData[dataKey]}
-                  disabled={[
-                    "trialCode",
-                    "estate",
-                    "replicate",
-                    "estateblock",
-                    "design",
-                    "density",
-                    "ortet",
-                    "fp",
-                    "mp",
-                    "noofPalm",
-                  ].includes(dataKey)}
-                  onChange={(value) =>
-                    handlePlotEditChange(rowData.plotId, dataKey, value)
-                  }
-                />
-              )}
-            </Cell>
-          ) : (
-            <Cell {...cellProps}>
-              <span>{rowData[dataKey]}</span>
-            </Cell>
-          )}
-        </>
-      );
-    case "palm":
-      return (
-        <Cell {...cellProps}>
-          {rowData["status"] ? (
-            <Input
-              className="editTableInput"
-              defaultValue={rowData[dataKey]}
-              disabled={[
-                "trialCode",
-                "estate",
-                "replicateno",
-                "estateblock",
-                "plot",
-              ].includes(dataKey)}
-              onChange={(value, e) =>
-                handlePalmEditChange(rowData.palmId, dataKey, e.target.value)
-              }
-            />
-          ) : (
-            <span>{rowData[dataKey]}</span>
-          )}
-        </Cell>
-      );
-    default:
-      return (
-        <Cell {...cellProps}>
-          <span>{rowData[dataKey]}</span>
-        </Cell>
-      );
-  }
-};
-
-function getMultipleEstateString(estates) {
-  let estateString = "";
-  estates.forEach((element, idx) => {
-    const pipe = estates.length - idx > 1 ? "|" : "";
-    estateString += ` ${element.name} ${pipe}`;
-  });
-
-  return estateString;
-}
 
 let currentTableDataFields = [];
 let palmReplicates = [];
@@ -237,7 +131,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   useEffect(() => {
     async function originalData() {
       const data = await DashboarddataService.getOriginalData(active)
-      console.log(data)
+      //console.log(data)
       setOriginalData(data)
     }
     originalData();
@@ -493,7 +387,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
   ];
   function handleChangePage(dataKey) {
-    console.log({pagination})
+    //console.log({pagination})
     setPagination(() => ({ ...pagination, activePage: dataKey }));
   }
   function handleChangeLength(dataKey) {
@@ -567,7 +461,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
       if (!activeRow) {
-        console.log(dashboardData.result)
+        //console.log(dashboardData.result)
         setTableData(dashboardData.result[active]);
       }
       const firstRow = dashboardData.result[active][0];
@@ -876,63 +770,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       );
     } else {
       return null;
-    }
-  }
-
-  function StatusButton({ status }) {
-    switch (status) {
-      case "Active":
-        return (
-          <Button className="activeStatusButton" style={{ cursor: "default" }}>
-            Active
-          </Button>
-        );
-      case "Inactive":
-        return (
-          <Button
-            className="inavtiveStatusButton"
-            style={{ cursor: "default" }}
-          >
-            Inactive
-          </Button>
-        );
-      case "Canceled":
-        return (
-          <Button
-            className="canceledStatusButton"
-            style={{ cursor: "default" }}
-          >
-            Canceled
-          </Button>
-        );
-      case "Pending":
-        return (
-          <Button className="pendingStatusButton" style={{ cursor: "default" }}>
-            Pending
-          </Button>
-        );
-
-      case "Finished":
-        return (
-          <Button
-            className="finishedStatusButton"
-            style={{ cursor: "default" }}
-          >
-            Finished
-          </Button>
-        );
-      case "Closed":
-        return (
-          <Button
-            className="finishedStatusButton"
-            style={{ cursor: "default" }}
-          >
-            Closed
-          </Button>
-        );
-
-      default:
-        return null;
     }
   }
 
@@ -1816,7 +1653,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   };
 
   function handleSortColumn(sortColumn, sortType) {
-    console.log(sortType, sortColumn)
+    //console.log(sortType, sortColumn)
     setSortType(sortType);
     setSortColumn(sortColumn);
     setLoading(true);
@@ -1861,6 +1698,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                         {/* <ControlLabel className="labelFilter">Replicate</ControlLabel> */}
                         <FlexboxGrid.Item>
                           <SelectPicker
+                            style={{ width: "151.3px" }}
                             data={palmReplicates}
                             className="dashboardSelectFilter"
                             value={replicateSelector}
@@ -1898,6 +1736,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       <Col sm={4} md={4} lg={3} className="replicateFilterLayout">
                         <FlexboxGrid.Item>
                           <SelectPicker
+                            style={{ width: "121.3px" }}
                             data={palmPlots}
                             className="dashboardSelectFilter"
                             value={plotSelector}
@@ -2025,7 +1864,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                         <HeaderCell className="tableHeader">{field.label}</HeaderCell>
                         {field.value === "status" ? (
                           <Cell align="center" {...props}>
-                            {(rowData) => <StatusButton status={rowData.status} />}
+                            {(rowData) => <StatusCell status={rowData.status} />}
                           </Cell>
                         ) : (
                           <EditableCell
