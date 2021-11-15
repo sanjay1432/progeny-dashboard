@@ -44,6 +44,7 @@ import DashboardDataService from "../../services/dashboarddata.service";
 import EditableCell from '../SharedComponent/DataTable/EditableCell';
 import StatusCell from "../SharedComponent/DataTable/StatusCell";
 import MapEstates from "../estate/MapEstates";
+import DataPicker from "../SharedComponent/DataPicker";
 const { Column, HeaderCell, Cell } = Table;
 const initialState = {
   displaylength: 10,
@@ -73,6 +74,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const resetData = useSelector((state) => state.resetReducer);
 
   const attachProgeny = <Tooltip>Data exists for Palms</Tooltip>;
+  const notAttachProgeny = <Tooltip>Progeny not attached</Tooltip>;
   const editProgeny = <Tooltip>Data exists for Palms</Tooltip>;
   const closedTrial = <Tooltip>Trial has been Closed</Tooltip>;
   const [successMessage, setSuccessMessage] = useState(false);
@@ -95,10 +97,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [activeRow, setActiveRow] = useState(null);
   const [progenies, setProgenies] = useState([]);
   const [progenyData, setProgenyData] = useState([]);
-  const [palmFilter, setPalmFilter] = useState(false);
+  const [palmFilter, setPalmFilter] = useState(true);
   const [sortColumn, setSortColumn] = useState("");
   const [sortType, setSortType] = useState("asc");
   const [loading, setLoading] = useState(false);
+
+  //Filter data in Palm Page
+  const [replicateFilter, setReplicateFilter] = useState("All");
+  const [plotFilter, setPlotFilter] = useState("All");
 
   useEffect(async () => {
     function subscribedData(data) {
@@ -387,7 +393,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     },
   ];
   function handleChangePage(dataKey) {
-    //console.log({pagination})
     setPagination(() => ({ ...pagination, activePage: dataKey }));
   }
   function handleChangeLength(dataKey) {
@@ -406,9 +411,8 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
 
   const filterData = useSelector((state) => state.filterReducer);
 
-  function setTrialEstateReplicates() {
+  function setTrialEstateReplicates(currentPalmTableData) {
     if (active === "palm") {
-      let currentPalmTableData = dashboardData.result[active];
       palmReplicates = [];
       palmPlots = [];
       replicateSelector = "All";
@@ -461,12 +465,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function setCurrentTableData() {
     if (dashboardData.result[active]) {
       if (!activeRow) {
-        //console.log(dashboardData.result)
         setTableData(dashboardData.result[active]);
       }
       const firstRow = dashboardData.result[active][0];
       const availableKeys = Object.keys(firstRow);
-
+      
       availableKeys.forEach((key) => {
         const field = tableDataFields.find((field) => field.value === key);
         if (field) {
@@ -503,22 +506,31 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       handleChangePage(1)
       dispatch(clearReset())
     }
-    setTrialEstateReplicates();
-    // if (
-    //   Object.keys(filterData).length > 0 &&
-    //   filterData.filter !== "" &&
-    //   active != "palm"
-    // ) {
-    //   currentTableData = filterTable(filterData.filter, currentTableData);
-    //   // return currentTableData;
-    // }
-    //   if(palmFilter) {
-    //     currentTableData = filterTable(filterData.filter, currentTableData);
-    //     // return currentTableData;
-    //   }
-    if( filterData.filter !== "") {
-     return currentTableData = filterTable(filterData.filter, currentTableData);
+
+    if(active === "palm") {
+      console.log(currentTableData)
+      if (filterData.filter['replicateno'] !== "All" && filterData.filter['replicateno'] !== undefined) {
+        currentTableData = currentTableData.filter(item => item.replicateno === filterData.filter['replicateno'])
+      }
+      if (filterData.filter['plotId'] !== "All" && filterData.filter['plotId'] !== undefined) {
+        currentTableData = currentTableData.filter(item => item.plotId === filterData.filter['plotId'])
+      }
+
+      setTrialEstateReplicates(currentTableData);
+
+      return currentTableData.filter((v, i) => {
+        v["check"] = false;
+        v["rowNumber"] = i;
+        const start = displaylength * (activePage - 1);
+        const end = start + displaylength;
+        return i >= start && i < end;
+      });
     }
+
+    if( filterData.filter !== "") {
+     currentTableData = filterTable(filterData.filter, currentTableData);
+    }
+
     if (sortColumn && sortType) {
       currentTableData.sort((a, b) => {
         let x = a[sortColumn];
@@ -536,6 +548,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         }
       });
     }
+
     return currentTableData.filter((v, i) => {
       v["check"] = false;
       v["rowNumber"] = i;
@@ -544,8 +557,10 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       return i >= start && i < end;
     });
   }
+
   function getFilteredDataWithoutDisplayLength() {
     let currentTableData = [...tableData];
+    
     if (Object.keys(filterData).length > 0 && filterData.filter !== "") {
       currentTableData = filterTable(filterData.filter, currentTableData);
     }
@@ -929,6 +944,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   function getTrailEditStatus(trialId){
     const trails = dashboardData.result['trial']
     const {isEditable, status}  = trails.find((trial)=> trial.trialId === trialId)
+    console.log(status)
      return {isEditable, status}
   }
   function ActionButtons({ data }) {
@@ -1037,7 +1053,9 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
         );
       case "plot":
         const plotIsQRCode = getTrailEditStatus(data.trialId).status !== "Pending"
-        const plotIsEditable = getTrailEditStatus(data.trialId).status !== "Pending" && getTrailEditStatus(data.trialId).status !== "Canceled";
+        const plotIsEditable = getTrailEditStatus(data.trialId).status !== "Pending" || getTrailEditStatus(data.trialId).status !== "Closed" || getTrailEditStatus(data.trialId).status !== "Canceled";
+        const plotIsAttachable = getTrailEditStatus(data.trialId).status !== "Pending" || getTrailEditStatus(data.trialId).status !== "Closed" || getTrailEditStatus(data.trialId).status !== "Canceled";
+
         return (
           <>
             {data.status ? (
@@ -1102,7 +1120,11 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     <Whisper
                     placement="left"
                     trigger="hover"
-                    speaker={data.status === "Closed" ? closedTrial : editProgeny}
+                    speaker={
+                      data.status === "Pending" && notAttachProgeny,
+                      data.status === "Closed" && closedTrial,
+                      data.status === "Canceled" && editProgeny
+                      }
                   >
                     <img src={CreateIcon} style={{ opacity: 0.2 }} alt="create" />
                   </Whisper>
@@ -1110,7 +1132,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item>
-                {plotIsEditable ?(
+                  {plotIsAttachable ?(
                   <img
                     src={LinkIcon}
                     alt=""
@@ -1186,44 +1208,29 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               onClick={() =>
                 handleActionExpand(["Progeny", "Edit Progeny"], {
                   type: "edit",
-                  progenyId: data.progenyId,
-                  progenyCode: data.progenyCode,
-                  popvar: data.popvar,
-                  origin: data.origin,
-                  progenyremark: data.progenyremark,
-                  progeny: data.progeny,
-                  generation: data.generation,
-                  ortet: data.ortet,
-                  fp: data.fp,
-                  fpVar: data.fpVar,
-                  fpFam: data.fpFam,
-                  mp: data.mp,
-                  mpFam: data.mpFam,
-                  mpVar: data.mpVar,
-                  cross: data.cross,
-                  crossType: data.crossType,
+                  ...data
                 })
               }
             />
           </span>
         );
-      case "userlist":
-        return (
-          <span>
-            <img
-              src={CreateIcon}
-              alt=""
-              onClick={() =>
-                handleActionExpand(["User List", "Edit User"], {
-                  userId: data.userId,
-                  username: data.username,
-                  position: data.position,
-                  status: data.status,
-                })
-              }
-            />
-          </span>
-        );
+      // case "userlist":
+      //   return (
+      //     <span>
+      //       <img
+      //         src={CreateIcon}
+      //         alt=""
+      //         onClick={() =>
+      //           handleActionExpand(["User List", "Edit User"], {
+      //             userId: data.userId,
+      //             username: data.username,
+      //             position: data.position,
+      //             status: data.status,
+      //           })
+      //         }
+      //       />
+      //     </span>
+      //   );
       default:
         return null;
     }
@@ -1694,40 +1701,43 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 <FlexboxGrid justify="end">
                   {active === "palm" && palmReplicates.length ? (
                     <>
-                      <Col sm={5} md={5} lg={4} className="replicateFilterLayout">
+                      <Col sm={6} md={6} lg={4} className="replicateFilterLayout">
                         {/* <ControlLabel className="labelFilter">Replicate</ControlLabel> */}
                         <FlexboxGrid.Item>
                           <SelectPicker
                             style={{ width: "151.3px" }}
                             data={palmReplicates}
                             className="dashboardSelectFilter"
-                            value={replicateSelector}
+                            value={replicateFilter}
                             onChange={(value, e) => {
-                              filterData.filter["replicateno"] = value;
-                              if (value === "All") {
-                                delete filterData.filter.replicate;
-                                const foundTrial = dashboardData.result[
-                                  "trial"
-                                ].find(
-                                  (trial) =>
-                                    trial.trialCode ===
-                                    filterData.filter.trialCode
-                                );
-                                const foundEstate = foundTrial.estate.find(
-                                  (est) => est.name === filterData.filter.estate
-                                );
-                                const payload = {
-                                  trialId: foundTrial.trialId,
-                                  estateId: foundEstate.id,
-                                };
+                              const foundTrial = dashboardData.result["trial"].find((trial) =>trial.trialCode ===filterData.filter.trialCode);
+                              const foundEstate = foundTrial.estate.find((est) => est.name === filterData.filter.estate)
+                              const payload = {
+                                trialId: foundTrial['trialId'],
+                                estateId: foundEstate['id']
+                              }   
+
+                              if(value !== "All") {
+                                filterData.filter["replicateno"] = value;
+                              } else {
+                                delete filterData.filter["replicateno"]
+                              }    
+
+                              if(plotFilter !== "All") {
+                                filterData.filter["plotId"] = plotFilter;
+                              } else {
+                                delete filterData.filter["plotId"]
+                              }
+                              console.log(filterData.filter)
+                              if (replicateFilter === "All" && value === "All") {
+                                dispatch(getPalmData(payload));
+                              } else {
                                 dispatch(getPalmData(payload), () => {
                                   dispatch(setFilter(filterData.filter));
                                 });
-                              } else {
-                                setPalmFilter(true)
-                                dispatch(setFilter(filterData.filter));
                               }
-                              replicateSelector = value;
+
+                              return setReplicateFilter(value);
                             }}
                           />
                         </FlexboxGrid.Item>
@@ -1739,34 +1749,37 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                             style={{ width: "121.3px" }}
                             data={palmPlots}
                             className="dashboardSelectFilter"
-                            value={plotSelector}
+                            value={plotFilter}
                             onChange={(value, e) => {
-                              filterData.filter["plotId"] = value;
-                              if (value === "All") {
-                                delete filterData.filter.plotId;
-                                const foundTrial = dashboardData.result[
-                                  "trial"
-                                ].find(
-                                  (trial) =>
-                                    trial.trialCode ===
-                                    filterData.filter.trialCode
-                                );
-                                const foundEstate = foundTrial.estate.find(
-                                  (est) => est.name === filterData.filter.estate
-                                );
-                                const payload = {
-                                  trialId: foundTrial.trialId,
-                                  estateId: foundEstate.id,
-                                };
+                              const foundTrial = dashboardData.result["trial"].find((trial) => trial.trialCode === filterData.filter.trialCode);
+                              const foundEstate = foundTrial.estate.find((est) => est.name === filterData.filter.estate)
+                              const payload = {
+                                trialId: foundTrial['trialId'],
+                                estateId: foundEstate['id']
+                              }
+
+                              if(replicateFilter !== "All") {
+                                filterData.filter["replicateno"] = replicateFilter;
+                              } else {
+                                delete filterData.filter["replicateno"]
+                              }
+
+                              if(value !== "All") {
+                                filterData.filter["plotId"] = value;
+                              } else {
+                                delete filterData.filter["plotId"]
+                              }
+                              console.log(filterData.filter)
+                              if(replicateFilter === "All" && value === "All") {
+                                dispatch(getPalmData(payload));
+                              } else {
                                 dispatch(getPalmData(payload), () => {
                                   dispatch(setFilter(filterData.filter));
                                 });
-                              } else {
-                                setPalmFilter(true)
-                                dispatch(setFilter(filterData.filter));
                               }
+                              
 
-                              plotSelector = value;
+                              return setPlotFilter(value);
                             }}
                           />
                         </FlexboxGrid.Item>
