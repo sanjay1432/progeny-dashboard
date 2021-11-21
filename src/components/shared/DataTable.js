@@ -41,10 +41,11 @@ import ConfirmationModal from "../SharedComponent/ConfirmationModal";
 import PalmService from "../../services/palm.service";
 import PlotService from "../../services/plot.service";
 import DashboardDataService from "../../services/dashboarddata.service";
-import EditableCell from '../SharedComponent/DataTable/EditableCell';
-import StatusCell from "../SharedComponent/DataTable/StatusCell";
+import { StatusCell, EditableCell } from "../SharedComponent/Table/CustomCell";
 import MapEstates from "../estate/MapEstates";
-import DataPicker from "../SharedComponent/DataPicker";
+import { isEmpty } from "lodash";
+import Columns from "../SharedComponent/Table/Columns";
+import perPage from '../SharedComponent/Table/PaginationOption.json'
 const { Column, HeaderCell, Cell } = Table;
 const initialState = {
   displaylength: 10,
@@ -101,6 +102,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
   const [sortColumn, setSortColumn] = useState("");
   const [sortType, setSortType] = useState("asc");
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
 
   //Filter data in Palm Page
   const [replicateFilter, setReplicateFilter] = useState("All");
@@ -175,223 +177,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  const tableDataFields = [
-    {
-      label: "Estate",
-      value: "estate",
-    },
-    {
-      label: "Estate Full Name",
-      value: "estatefullname",
-    },
-    {
-      label: "No of Estate Block",
-      value: "noofestateblock",
-    },
-    {
-      label: "No. Trials on this Estate",
-      value: "nooftrails",
-    },
-    {
-      label: "No. Trials on this Estate",
-      value: "nooftrails",
-    },
-    {
-      label: "Trial ID",
-      value: "trialCode",
-    },
-    {
-      label: "Trial",
-      value: "trial",
-    },
-    {
-      label: "Type",
-      value: "type",
-    },
-    {
-      label: "Trial Remarks",
-      value: "trialremark",
-    },
-    {
-      label: "Area (ha)",
-      value: "area",
-    },
-    {
-      label: "Planted Date",
-      value: "planteddate",
-    },
-    {
-      label: "n Progeny",
-      value: "nofprogeny",
-    },
-    {
-      label: "n Of Replicate",
-      value: "nofreplicate",
-    },
-    {
-      label: "n Of Plot",
-      value: "nofplot",
-    },
-    {
-      label: "n Of Subblock/Rep",
-      value: "nofsubblock",
-    },
-    {
-      label: "n Of Plot/subblock",
-      value: "nofplot_subblock",
-    },
-    {
-      label: "Status",
-      value: "status",
-    },
-    {
-      label: "Replicate",
-      value: "replicate",
-    },
-    {
-      label: "Replicate",
-      value: "replicateId",
-    },
-    {
-      label: "Replicate",
-      value: "replicateno",
-    },
-    {
-      label: "Estate Block",
-      value: "estateblock",
-    },
-    {
-      label: "Design",
-      value: "design",
-    },
-    {
-      label: "Density",
-      value: "density",
-    },
-    {
-      label: "Plot",
-      value: "plot",
-    },
-    {
-      label: "Subblock",
-      value: "subblock",
-    },
-    {
-      label: "Progeny ID",
-      value: "progenyCode",
-    },
-    {
-      label: "Progeny",
-      value: "progeny",
-    },
-    {
-      label: "Ortet",
-      value: "ortet",
-    },
-    {
-      label: "FP",
-      value: "fp",
-    },
-    {
-      label: "MP",
-      value: "mp",
-    },
-    {
-      label: "nPalm",
-      value: "noofPalm",
-    },
-    {
-      label: "Palm Number",
-      value: "palmno",
-    },
-    {
-      label: "Progeny ID",
-      value: "progenyCode",
-    },
-    {
-      label: "Pop Var",
-      value: "popvar",
-    },
-    {
-      label: "Origin",
-      value: "origin",
-    },
-    {
-      label: "Progeny Remark",
-      value: "progenyremark",
-    },
-    {
-      label: "Progeny Remark",
-      value: "progenyremark",
-    },
-    {
-      label: "Generation",
-      value: "generation",
-    },
-    {
-      label: "FP Fam",
-      value: "fpFam",
-    },
-    {
-      label: "FP Var",
-      value: "fpVar",
-    },
-    {
-      label: "MP Fam",
-      value: "mpFam",
-    },
-    {
-      label: "MP Var",
-      value: "mpVar",
-    },
-    {
-      label: "Cross",
-      value: "cross",
-    },
-    {
-      label: "Cross Type",
-      value: "crossType",
-    },
-    {
-      label: "User ID",
-      value: "userId",
-    },
-    {
-      label: "Username",
-      value: "username",
-    },
-    {
-      label: "Position",
-      value: "position",
-    },
-    {
-      label: "No. Trials on this Estate",
-      value: "noTrialOnHere",
-    },
-    {
-      label: "No.of Users Assigned",
-      value: "assignedUser",
-    },
-  ];
-
-  const perpage = [
-    {
-      label: "10",
-      value: "10",
-    },
-    {
-      label: "20",
-      value: "20",
-    },
-    {
-      label: "50",
-      value: "50",
-    },
-    {
-      label: "100",
-      value: "100",
-    },
-  ];
   function handleChangePage(dataKey) {
     setPagination(() => ({ ...pagination, activePage: dataKey }));
   }
@@ -471,7 +256,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
       const availableKeys = Object.keys(firstRow);
       
       availableKeys.forEach((key) => {
-        const field = tableDataFields.find((field) => field.value === key);
+        const field = Columns(active).find((field) => field.value === key);
         if (field) {
           currentTableDataFields.push(field);
         }
@@ -714,9 +499,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                 className="attachProgeniesButton"
                 onClick={() =>
                   handleActionExpand(["Plot", `Attach Progenies`], {
-                    // trial: data.trialCode,
-                    // trialId: data.trialId,
-                    // estate: data.estate,
                     type: "attach",
                   })
                 }
@@ -966,6 +748,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
           </span>
         );
       case "trial":
+        console.log(data.isEditable)
         const trialIsEditable = 
         data.isEditable === "true" && 
         data.status === "Finished" || data.status === "Pending" || data.status === "Active" ? true : false;
@@ -1298,397 +1081,48 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
     }
   }
 
-  const reArrangeTableFields = () => {
-    switch (active) {
-      case "estate":
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "estate") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            currentTableDataFields[0] = field;
-          }
-          if (field.value === "estatefullname") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            currentTableDataFields[1] = field;
-          }
-          if (field.value === "noofestateblock") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            currentTableDataFields[2] = field;
-          }
-          if (field.value === "nooftrails") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            currentTableDataFields[3] = field;
-          }
-        });
-        return currentTableDataFields;
-
-      case "trial":
-        const trialfields = [];
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialCode") {
-            field.width = 120;
-            field.sorting = true;
-            trialfields[0] = field;
-          }
-          if (field.value === "type") {
-            field.width = 200;
-            field.sorting = true;
-            trialfields[1] = field;
-          }
-          if (field.value === "trial") {
-            field.width = 200;
-            field.sorting = true;
-            trialfields[2] = field;
-          }
-          if (field.value === "trialremark") {
-            field.width = 500;
-            trialfields[3] = field;
-          }
-          if (field.value === "area") {
-            field.width = 300;
-            field.sorting = true;
-            trialfields[4] = field;
-          }
-          if (field.value === "planteddate") {
-            field.sorting = true;
-            field.width = 200;
-            trialfields[5] = field;
-          }
-          if (field.value === "nofprogeny") {
-            field.width = 120;
-            field.sorting = true;
-            trialfields[6] = field;
-          }
-          if (field.value === "estate") {
-            field.width = 120;
-            if(active!=='trial'){
-              field.sorting = true;
-            }
-           
-            trialfields[7] = field;
-          }
-          if (field.value === "nofreplicate") {
-            field.width = 140;
-            field.sorting = true;
-            trialfields[8] = field;
-          }
-          if (field.value === "nofplot") {
-            field.width = 120;
-            field.sorting = true;
-            trialfields[9] = field;
-          }
-          if (field.value === "nofsubblock") {
-            field.width = 170;
-            field.sorting = true;
-            trialfields[10] = field;
-          }
-          if (field.value === "nofplot_subblock") {
-            field.width = 170;
-            field.sorting = true;
-            trialfields[11] = field;
-          }
-
-          if (field.value === "status") {
-            field.width = 130;
-            field.align = "center";
-            field.fixed = "right";
-            trialfields[12] = field;
-          }
-        });
-        return trialfields;
-
-      case "plot":
-        const plotfields = [];
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialCode") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[0] = field;
-          }
-          if (field.value === "estate") {
-            field.width = 140;
-            plotfields[1] = field;
-          }
-          if (field.value === "replicate") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[2] = field;
-          }
-          if (field.value === "estateblock") {
-            field.width = 140;
-            plotfields[3] = field;
-          }
-          if (field.value === "design") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[4] = field;
-          }
-          if (field.value === "density") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[5] = field;
-          }
-          if (field.value === "plot") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[6] = field;
-          }
-          if (field.value === "subblock") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[7] = field;
-          }
-          if (field.value === "progenyCode") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[8] = field;
-          }
-          if (field.value === "progeny") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[9] = field;
-          }
-          if (field.value === "ortet") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[10] = field;
-          }
-          if (field.value === "fp") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[11] = field;
-          }
-          if (field.value === "mp") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[12] = field;
-          }
-          if (field.value === "noofPalm") {
-            field.width = 140;
-            field.sorting = true;
-            plotfields[13] = field;
-          }
-        });
-        return plotfields;
-
-      case "palm":
-        const palmfields = [];
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "trialCode") {
-            field.flexGrow = 1;
-            palmfields[0] = field;
-          }
-          if (field.value === "estate") {
-            field.flexGrow = 1;
-            palmfields[1] = field;
-          }
-          if (field.value === "replicateno") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            palmfields[2] = field;
-          }
-          if (field.value === "estateblock") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            palmfields[3] = field;
-          }
-          if (field.value === "plot") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            palmfields[4] = field;
-          }
-          if (field.value === "palmno") {
-            field.flexGrow = 1;
-            field.sorting = true;
-            palmfields[5] = field;
-          }
-        });
-        return palmfields;
-
-      case "progeny":
-        const fieldsTodisplay = [];
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "progenyCode") {
-            field.width = 200;
-            field.sorting = true;
-            fieldsTodisplay[0] = field;
-          }
-          if (field.value === "popvar") {
-            field.width = 170;
-            field.sorting = true;
-            fieldsTodisplay[1] = field;
-          }
-          if (field.value === "origin") {
-            field.width = 200;
-            field.sorting = true;
-            fieldsTodisplay[2] = field;
-          }
-          if (field.value === "progenyremark") {
-            field.width = 200;
-            field.sorting = true;
-            fieldsTodisplay[3] = field;
-          }
-          if (field.value === "progeny") {
-            field.width = 150;
-            field.sorting = true;
-            fieldsTodisplay[4] = field;
-          }
-          if (field.value === "generation") {
-            field.width = 170;
-            field.sorting = true;
-            fieldsTodisplay[5] = field;
-          }
-          if (field.value === "ortet") {
-            field.width = 170;
-            field.sorting = true;
-            fieldsTodisplay[6] = field;
-          }
-          if (field.value === "fp") {
-            field.width = 150;
-            field.sorting = true;
-            fieldsTodisplay[7] = field;
-          }
-          if (field.value === "fpFam") {
-            field.width = 150;
-            field.sorting = true;
-            fieldsTodisplay[8] = field;
-          }
-          if (field.value === "fpVar") {
-            field.width = 150;
-            field.sorting = true;
-            fieldsTodisplay[9] = field;
-          }
-          if (field.value === "mp") {
-            field.width = 150;
-            field.sorting = true;
-            fieldsTodisplay[10] = field;
-          }
-          if (field.value === "mpFam") {
-            field.width = 150;
-            field.sorting = true;
-            fieldsTodisplay[11] = field;
-          }
-          if (field.value === "mpVar") {
-            field.sorting = true;
-            field.width = 150;
-            fieldsTodisplay[12] = field;
-          }
-          if (field.value === "cross") {
-            field.width = 200;
-            field.sorting = true;
-            fieldsTodisplay[13] = field;
-          }
-          if (field.value === "crossType") {
-            field.width = 200;
-            field.sorting = true;
-            fieldsTodisplay[14] = field;
-          }
-        });
-        return fieldsTodisplay;
-
-      case "userlist":
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "userId") {
-            field.flexGrow = 1;
-            currentTableDataFields[0] = field;
-          }
-          if (field.value === "username") {
-            field.flexGrow = 1;
-            currentTableDataFields[1] = field;
-          }
-          if (field.value === "position") {
-            field.flexGrow = 4;
-            currentTableDataFields[2] = field;
-          }
-          if (field.value === "status") {
-            field.width = 130;
-            field.align = "center";
-            field.fixed = "right";
-            currentTableDataFields[3] = field;
-          }
-        });
-        return currentTableDataFields;
-
-      case "estateAssignment":
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "estate") {
-            field.flexGrow = 2;
-            currentTableDataFields[0] = field;
-          }
-          if (field.value === "estatefullname") {
-            field.flexGrow = 2;
-            currentTableDataFields[1] = field;
-          }
-          if (field.value === "noTrialOnHere") {
-            field.flexGrow = 2;
-            currentTableDataFields[2] = field;
-          }
-          if (field.value === "assignedUser") {
-            field.flexGrow = 3;
-            currentTableDataFields[3] = field;
-          }
-        });
-        return currentTableDataFields;
-
-      case "userAssignment":
-        currentTableDataFields.forEach((field, i) => {
-          if (field.value === "userId") {
-            field.flexGrow = 1;
-            currentTableDataFields[0] = field;
-          }
-          if (field.value === "username") {
-            field.flexGrow = 1;
-            currentTableDataFields[1] = field;
-          }
-          if (field.value === "position") {
-            field.flexGrow = 1;
-            currentTableDataFields[2] = field;
-          }
-          if (field.value === "estate") {
-            field.flexGrow = 4;
-            currentTableDataFields[3] = field;
-          }
-        });
-        return currentTableDataFields;
-
-      default:
-        return currentTableDataFields;
-    }
-  };
-
   function handleSortColumn(sortColumn, sortType) {
     //console.log(sortType, sortColumn)
     setSortType(sortType);
     setSortColumn(sortColumn);
-    setLoading(true);
+    setTableLoading(true);
     setTimeout(() => {
-      setLoading(false);
+      setTableLoading(false);
     }, 500);
+  }
+
+  if(loading) {
+    return (
+      <>
+        <Loader size="md" content="loading..." backdrop vertical />
+      </>
+    )
+  }
+
+  if(active === "palm" && isEmpty(filterData.filter)) {
+    return (
+      <div className="imageLayout">
+        <img src={SearchMessage} alt="" />
+        <p className="desc">
+          Please enter <b className="title">Trial ID and Estate</b> to view
+          records of Palms.
+        </p>
+      </div>
+    )
+  }
+
+  if(active === "palm" && dashboardData.result.isPending) {
+    <div className="imageLayout">
+      <img src={SearchMessage} alt="" />
+      <p className="desc mb-0">This is Pending.</p>
+      <p className="desc mt-0">
+        Please <b className="title">attach Progeny</b> for this trial
+      </p>
+    </div>
   }
 
   return (
     <>
-      {active === "palm" && !showPalmRecord() ? (
-        <div className="imageLayout">
-          <img src={SearchMessage} alt="" />
-          <p className="desc">
-            Please enter <b className="title">Trial ID and Estate</b> to view
-            records of Palms.
-          </p>
-        </div>
-      ) : (
-          active === 'palm' && dashboardData.result.isPending ? (
-            <div className="imageLayout">
-              <img src={SearchMessage} alt="" />
-              <p className="desc mb-0">This is Pending.</p>
-              <p className="desc mt-0">
-                Please <b className="title">attach Progeny</b> for this trial
-              </p>
-            </div> 
-        ) : (
           <div>
             <Grid fluid>
               <Row className="show-grid" id="dashboardTableSetting">
@@ -1793,7 +1227,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                     <FlexboxGrid.Item className="selectPage">
                       <InputPicker
                         className="option"
-                        data={perpage}
+                        data={perPage}
                         defaultValue={"10"}
                         onChange={handleChangeLength}
                       />{" "}
@@ -1843,7 +1277,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                   data={getData(displaylength)}
                   sortColumn={sortColumn}
                   sortType={sortType}
-                  loading={loading}
+                  loading={tableLoading}
                   onSortColumn={handleSortColumn}
                   // autoHeight
                   height={500}
@@ -1864,7 +1298,7 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                       />
                     </Column>
                   ) : null}
-                  {reArrangeTableFields().map((field, i) => {
+                  {Columns(active).map((field, i) => {
                     return (
                       <Column
                         width={field.width ? field.width : null}
@@ -1874,14 +1308,14 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
                         key={i}
                         sortable={field.sorting}
                       >
-                        <HeaderCell className="tableHeader">{field.label}</HeaderCell>
-                        {field.value === "status" ? (
-                          <Cell align="center" {...props}>
+                        <HeaderCell className="tableHeader">{field.name}</HeaderCell>
+                        {field.dataKey === "status" ? (
+                          <Cell align="center" dataKey={field.dataKey} {...props}>
                             {(rowData) => <StatusCell status={rowData.status} />}
                           </Cell>
                         ) : (
                           <EditableCell
-                            dataKey={field.value}
+                            dataKey={field.dataKey}
                             OriginalData={tableData}
                             handlePalmEditChange={handlePalmEditChange}
                             handlePlotEditChange={handlePlotEditChange}
@@ -1913,8 +1347,6 @@ const DataTable = ({ currentSubNavState, currentItem, ...props }) => {
               </>
             ) : <Loader size="lg" content="Large" />}
           </div>
-        )
-      )}
     </>
   );
 };

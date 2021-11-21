@@ -20,7 +20,6 @@ import {
 } from "rsuite";
 const { Column, HeaderCell, Cell } = Table;
 
-
 const EditableCell = ({
   rowData,
   dataKey,
@@ -129,4 +128,65 @@ const EditableCell = ({
   }
 };
 
-export default EditableCell
+const StatusCell = ({ status }) => {
+  console.log(status)
+  switch (status) {
+    case "Active":
+      return (
+        <Button className="activeStatusButton" style={{ cursor: "default" }}>
+          Active
+        </Button>
+      );
+    case "Inactive":
+      return (
+        <Button
+          className="inavtiveStatusButton"
+          style={{ cursor: "default" }}
+        >
+          Inactive
+        </Button>
+      );
+    case "Canceled":
+      return (
+        <Button
+          className="canceledStatusButton"
+          style={{ cursor: "default" }}
+        >
+          Canceled
+        </Button>
+      );
+    case "Pending":
+      return (
+        <Button className="pendingStatusButton" style={{ cursor: "default" }}>
+          Pending
+        </Button>
+      );
+
+    case "Finished":
+      return (
+        <Button
+          className="finishedStatusButton"
+          style={{ cursor: "default" }}
+        >
+          Finished
+        </Button>
+      );
+    case "Closed":
+      return (
+        <Button
+          className="finishedStatusButton"
+          style={{ cursor: "default" }}
+        >
+          Closed
+        </Button>
+      );
+
+    default:
+      return null;
+  }
+}
+
+export {
+  EditableCell,
+  StatusCell
+}

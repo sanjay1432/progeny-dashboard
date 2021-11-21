@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from "react-redux"
 import OpenNew from "../../assets/img/icons/open_in_new_24px.svg"
+import Columns from '../SharedComponent/Table/Columns'
 import {
   Table,
   FlexboxGrid,
@@ -51,100 +52,7 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
   </Cell>
   )
 
-  const columns_new = () => {
-    switch(active){
-      case "yearlyverification":
-        const columns_yearly = [
-          {
-            name: "Trial ID",
-            dataKey: "trialCode",
-            flexGrow: 1,
-          },
-          {
-            name: "Trial",
-            dataKey: "trial",
-            flexGrow: 1,
-          },
-          {
-            name: "Form",
-            dataKey: "form",
-            flexGrow: 1,
-          },
-          {
-            name: "UploadedDate",
-            dataKey: "uploadedDate",
-            flexGrow: 1,
-          },
-          {
-            name: "Uploaded By",
-            dataKey: "uploadedBy",
-            flexGrow: 1,
-          },
-          {
-            name: "Record Date",
-            dataKey: "recordDate",
-            flexGrow: 1,
-          },
-          {
-            name: "Recorded By",
-            dataKey: "recordedBy",
-            flexGrow: 1,
-          },
-          {
-            name: "Action",
-            dataKey: "trialId",
-            width: 120,
-            customCell: ActionCell
-          },
-        ]
-        return columns_yearly
-      case "verifyforms":
-        const columns_verify = [
-          {
-            name: "Trial ID",
-            dataKey: "trialCode",
-            flexGrow: 1,
-          },
-          {
-            name: "Trial",
-            dataKey: "trial",
-            flexGrow: 1,
-          },
-          {
-            name: "Form",
-            dataKey: "form",
-            flexGrow: 1,
-          },
-          {
-            name: "UploadedDate",
-            dataKey: "uploadedDate",
-            flexGrow: 1,
-          },
-          {
-            name: "Uploaded By",
-            dataKey: "uploadedBy",
-            flexGrow: 1,
-          },
-          {
-            name: "Record Date",
-            dataKey: "recordDate",
-            flexGrow: 1,
-          },
-          {
-            name: "Recorded By",
-            dataKey: "recordedBy",
-            flexGrow: 1,
-          },
-          {
-            name: "Action",
-            dataKey: "trialId",
-            width: 120,
-            customCell: ActionCell
-          },
-        ]
-        return columns_verify
-    }
-  }
+
 
   // const columns = [
   //   {
@@ -317,7 +225,7 @@ const VerificationtableData = ({currentItem ,currentSubNavState}) => {
           wordWrap
           autoHeight
         >
-          {columns_new().map(col => {
+          {Columns(active).map(col => {
             const width = col.width ? col.width : false
             const flexGrow = col.flexGrow ? col.flexGrow : false
             const fixed = col.fixed ? col.fixed : false
